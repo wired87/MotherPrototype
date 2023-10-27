@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import { View, ScrollView } from 'react-native';
-import { styles } from '../../toolStyles';
 import {useNavigation} from "@react-navigation/native";
 import {getAuth} from "firebase/auth";
 
@@ -14,6 +13,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import {HeadingText} from "../../components/text/HeadingText";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
+import { userStyles } from './userStyles';
 const dispatch = useDispatch();
 
 
@@ -66,13 +66,13 @@ export const AccountMain = () => {
     // @ts-ignore
     return (
         <ScrollView contentContainerStyle={{justifyContent: "center", alignItems: "center"}} style={{paddingTop: 50}}>
-            <View style={styles.adContainer}>
+            <View style={userStyles.adContainer}>
                 <PlusAdContainer />
             </View>
-            <View style={styles.profileSection}>
-                <HeadingText text={text.profileHeading}/>
+            <View style={userStyles.profileSection}>
+                <HeadingText text={text.profileHeading} extraStyles={undefined}/>
 
-                <View style={styles.inputSection}>
+                <View style={userStyles.inputSection}>
                     {/*@ts-ignore*/}
                     <DefaultInput placeholder={undefined} value={user.email}
                                   onChangeAction={null} secure={false} editable={false}/>
@@ -88,9 +88,8 @@ export const AccountMain = () => {
                                               extraBtnStyles={undefined}/>
                 </View>
             </View>
-            <View style={styles.mainContainerProfile}>
+            <View style={userStyles.mainContainerProfile}>
                 <DefaultButton
-                    loading={loading}
                     onPressAction={moveToScreen(screens.settingsScreen)}
                     indicatorColor={undefined}
                     extraStyles={undefined}
@@ -98,9 +97,8 @@ export const AccountMain = () => {
                     text={text.settings}
                     secondIcon={
                         <MaterialCommunityIcons name={icon.settingsIcon} size={24} color={"rgb(255,255,255)"}
-                                                style={styles.buttonIcon} />} />
+                                                style={userStyles.buttonIcon} />} />
                 <DefaultButton
-                    loading={loading}
                     onPressAction={logout}
                     indicatorColor={undefined}
                     extraStyles={undefined}
@@ -108,9 +106,8 @@ export const AccountMain = () => {
                     text={text.logoutButtonText}
                     secondIcon={
                         <MaterialCommunityIcons name={text.logoutIcon} size={24} color={"rgb(255,255,255)"}
-                                                style={styles.buttonIcon} />} />
+                                                style={userStyles.buttonIcon} />} />
                 <DefaultButton
-                    loading={loading}
                     onPressAction={logout}
                     indicatorColor={undefined}
                     extraStyles={undefined}
@@ -118,7 +115,7 @@ export const AccountMain = () => {
                     text={text.deleteAccount}
                     secondIcon={
                         <MaterialCommunityIcons name={"trash"} size={24} color={"rgb(255,255,255)"}
-                                                style={styles.buttonIcon} />} />
+                                                style={userStyles.buttonIcon} />} />
             </View>
             <BottomImage />
         </ScrollView>

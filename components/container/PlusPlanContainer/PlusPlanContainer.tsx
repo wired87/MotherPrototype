@@ -1,12 +1,13 @@
-import {Animated, FlatList, Text, TouchableOpacity, View} from "react-native";
-import React, {useCallback, useEffect, useNavigation, useState} from "react";
+import {Animated, FlatList, Text, View} from "react-native";
+import React, {useCallback, useEffect, useState} from "react";
 import {LinearGradient} from "expo-linear-gradient";
+import {useNavigation} from "@react-navigation/native";
 import Chroma from 'chroma-js';
 import {styles} from "../../styles";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import MIcon from "react-native-vector-icons/MaterialIcons";
 import {DefaultButton} from "../../buttons/DefaultButton";
 import {SingleProContainer} from "./SingleProContainer";
+
 
 const TOP_COLORS =  ['#9c0582', '#0e198c', '#1d155e', '#2A3BEF', '#662250', '#6b0e5e'];
 const BOTTOM_COLORS = ['#0e198c', '#1d155e', '#4f0c3d', '#7F00FF', '#0e198c'];
@@ -17,7 +18,6 @@ const INTERVAL = 2;
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
-
 export const PlusAdContainer = () => {
     const [topIndex, setTopIndex] = useState(0);
     const [bottomIndex, setBottomIndex] = useState(0);
@@ -26,6 +26,9 @@ export const PlusAdContainer = () => {
 
     // @ts-ignore
     const text = useSelector(state => state.text.text)
+
+    // @ts-ignore
+    const screens = useSelector(state => state.screens.screens)
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -50,7 +53,8 @@ export const PlusAdContainer = () => {
     const navigation = useNavigation();
 
     const onExplore = useCallback(() => {
-        navigation.navigate("PlusPlanInfo");
+        // @ts-ignore
+        navigation.navigate(screens.plusPlanInfo);
     }, []);
 
     const proArgumentContainers = [

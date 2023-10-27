@@ -1,5 +1,8 @@
-import {StyleSheet} from "react-native";
-import {themeColors} from "../../theme/theme";
+import {Dimensions, StyleSheet} from "react-native";
+import {themeColors} from "../colors/theme";
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export const styles = StyleSheet.create({
     container: {
@@ -19,15 +22,6 @@ export const styles = StyleSheet.create({
 
     },
 
-    topBtnTxt: {
-        marginLeft: 10,
-        marginRight: 30,
-        textAlign: 'left',
-        fontSize: 18,
-        color:"rgba(255,255,255,1)"
-
-
-    },
     box1: {
         marginTop: 20,
         backgroundColor: "black",
@@ -48,35 +42,10 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 4,
     },
-    box2: {
-        marginHorizontal: 10,
 
-    },
-    settingsButton: {
-        padding: 15,
-        flexDirection: "row",
-        alignItems: 'center',
-        backgroundColor: themeColors.sexyBlue,
-        marginBottom: 5,
 
-    },
 
-    TouchableView: {
-        flexDirection: "row",
-        flex: 1,
-        gap: 15
-    },
 
-    btnHeading: {
-        // backgroundColor: "#2b2a27",
-        paddingVertical: 10,
-        fontWeight: 'bold',
-        fontSize: 16,
-        letterSpacing: 2,
-        marginHorizontal: 20,
-        marginVertical: 10
-
-    },
     subBox2: {
         textDecorationLine: "underline",
         display: "flex",
@@ -89,30 +58,8 @@ export const styles = StyleSheet.create({
         paddingBottom: 15
 
     },
-    box2Icon: {
-        backgroundColor: "#2b2a27",
-        borderRadius: 10,
-        width: 34,
-        height: 34,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    buttonText: {
 
-        fontSize: 20,
-        color: "rgb(255,255,255)",
-    },
 
-    poweredBy: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 40,
-    },
-    poweredTxt: {
-        fontSize: 20,
-        color: "black",
-        fontWeight: 'bold'
-    },
     adsCont: {
         borderColor :"white",
         marginTop: 50,
@@ -120,14 +67,383 @@ export const styles = StyleSheet.create({
         paddingVertical: 30,
         border:'1px solid white'
     },
-    singleProtextContainer: {
-        flexDirection: "row",
+
+
+
+
+    infoElementContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+    },
+
+    optionsContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 45,
+        paddingHorizontal: 30,
+        borderRadius: 14,
+        borderWidth: 1,
+    },
+    optionsElement: {
+        width: windowWidth * .7,
+        height: 60,
+        justifyContent: "center",
+        alignItems: 'flex-start',
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: '#01152a',
+        marginTop: 20,
+    },
+
+
+
+    authTextInfo: {
+        marginTop: 20,
+    },
+
+    authNavHeaderContainerSmall: {
+        marginHorizontal: 15,
+        borderRadius: 14,
+    },
+    authNavHeaderContainerText: {
+        fontSize: 20,
+        color: '#000000',
+        textAlign: 'center',
+        paddingVertical: 10,
+    },
+    headerContainerAuth:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
 
     },
-    logoBottom: {
-        width: 70,
-        height: 40,
-        resizeMode: 'cover',
+
+
+    infoChangeContainer: {
+        justifyContent: 'center',
+        alignItems: "center",
+        flexDirection: "row",
+        paddingHorizontal: 0,
+        paddingVertical: 5,
+        backgroundColor: 'transparent',
+        width: 300,
+        height: 60,
+    },
+    personalInfoText: {
+        width: 250,
+        borderWidth: .5,
+        borderRadius: 9,
+        fontSize: 17,
+        paddingLeft: 10,
+        paddingVertical: 7,
+        overflow: 'hidden',
+    },
+    label: {
+        marginRight: 10,
+        width: 80,
+        fontSize: 17,
+    },
+
+    mainUserInfoContainer: {
+        marginBottom: 80,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderColor: themeColors.sexyBlue,
+        borderWidth: 1,
+        borderRadius: 14,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+
+    },
+    purchasePlanContainer: {
+        backgroundColor: themeColors.bg,
+        marginTop: 50,
+        marginBottom: 100,
+        width: 350,
+        height: 300,
+        borderRadius: 14,
+    },
+    purchaseButtonAccountMain: {
+        borderRadius: 20,
+        width: 200,
+        height: 50,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+
+    tabBArContainer: {
+        width: window.innerWidth,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+        flex: 1,
+    },
+    smallTabBArContainer: {
+        padding: 10,
+        width: window.innerWidth * .33,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+        flex: 1,
+    },
+    linearGradient: {
+        borderRadius: 9,
+        width: 300,
+        paddingVertical: 2,
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: 'rgba(1,21,42,0.2)',
+    },
+
+
+    endButton: {
+        marginBottom: 120,
+        width: 300,
+        height: 220,
+        marginTop: 36,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+    adsContainer: {
+        flex: 1,
+    },
+    rowPadding: {
+        paddingHorizontal: 20
+    },
+
+    header: {
+        flexDirection: 'row',
+        gap: 10,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        marginTop: 10
+    },
+    headerDesc: {
+        lineHeight: 28,
+        color: 'white',
+        textAlign: 'left'
+    },
+    mainContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        paddingBottom: 20
+    },
+    btnContainer: {
+        borderColor:"white",
+        borderWidth: 2,
+        backgroundColor: 'rgba(255, 255, 255, .3)',
+        paddingVertical: 8,
+        marginHorizontal: 10,
+        justifyContent:"center",
+        alignItems:"center",
+        borderRadius: 20,
+        elevation: 50,
+        shadowOffset: { width: 70, height: 40 },
+        shadowOpacity: .5,
+        shadowRadius: 4,
+        padding: 16,
+        shadowColor: "#FFFFFF",
+    },
+
+
+
+
+    profile: {
+        paddingHorizontal: 20,
+        marginTop: 20,
+        flexDirection: 'row',
+        gap: 16,
+        alignItems: 'center',
+
+
+    },
+    whiteProfileBox :{
+
+        borderWidth: 2,
+        borderColor:"lightgray",
+
+        borderRadius: 10,
+        marginRight:10,
+        marginLeft:10,
+        marginTop:10,
+        padding:20
+
+
+    },
+    profilePhoto: {
+        height: 100,
+        width: 100,
+        borderRadius: 100 / 2,
+        borderWidth: 2,
+        backgroundColor: 'lightgray',
+        borderColor: 'gray'
+    },
+    profileInfo: {
+        flex: 1
+    },
+    btnTxtProfile :{
+        fontSize: 18,
+        color: 'white',
+        textAlign: 'center',
+
+    },
+    infoTxt: {
+        color: 'black',
+        fontSize: 15,
+        marginBottom: 30,
+        flexWrap:"wrap",
+    },
+
+
+    // INput
+
+
+    logoText: {
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
+        color:"black",
+        fontSize:40,
+        marginBottom: 0,
+    },
+
+    logoCont :{
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
+        paddingTop:30,
+        marginTop:20,
+        paddingBottom:130
+    },
+    optionBtn: {
+        borderRadius: 6,
+        borderWidth: 1,
+        paddingHorizontal: 14,
+        paddingVertical: 8
+    },
+    optionTxt: {
+        color: 'black',
+        fontSize: 16
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    image: {
+        width: 80,
+        height: 80,
+    },
+    MoreBtn :{
+        backgroundColor:"#030824",
+        height:50 ,
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
+        borderRadius:10,
+        marginTop:15
+    },
+    buttonDeleteContainer: {
+        borderRadius: 30,
+        paddingVertical: 8,
+        paddingHorizontal: 0,
+        backgroundColor: themeColors.deleteRed,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop:30,
+        flexDirection: 'row',
+        width: 250,
+    },
+    buttonTextProfile:{
+        color:"white",
+        fontSize:18,
+    },
+
+
+    buttonIconProfile: {
+        marginRight: 5,
+        color:"black",
+
+    },
+    buttonIconCont: {
+        marginRight: 5,
+        color:"black",
+    },
+    roundBtn: {
+        width: 200,
+        borderRadius: 20,
+        padding: 10,
+        marginTop: 10,
+        marginBottom: 30,
+        backgroundColor:"#030824",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    profileHeader: {
+        fontSize: 34,
+        color: '#000000',
+        textAlign: 'center',
+        marginTop: 40,
+        marginHorizontal: "auto",
+    },
+
+    mirrorLogo: {
+        fontSize: 60,
+        opacity: .5,
+        margin: 0,
+    },
+
+    modalInfoText: {
+        marginBottom: 15,
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlignVertical: "center",
+    },
+
+    button: {
+        borderRadius: 20,
+        paddingHorizontal: 30,
+
+        elevation: 2,
+    },
+    buttonOpen: {
+        backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+        backgroundColor: '#2196F3',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    errorImg: {
+        width: 100,
+        height: 100,
         marginVertical: 10,
-    }
+    },
+
+    topBtnTxt: {
+        marginLeft: 10,
+        marginRight: 30,
+        textAlign: 'left',
+        fontSize: 18,
+        color:"rgba(255,255,255,1)"
+    },
+
+
 })

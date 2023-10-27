@@ -6,15 +6,13 @@ import {getAuth} from "firebase/auth";
 const windowWidth = Dimensions.get('window').width;
 export default function ToolMain() {
     const user = getAuth().currentUser;
+
     return(
         <ScrollView style={styles.main_container}
                     contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
             <SafeAreaView style={styles.safeFullViewContainer}
-                          contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
-
-
-
-
+                // @ts-ignore
+                contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
 
                 <View style={styles.headingContainer}>
                     <Text>{user ? user.email : "HelloWorld"}</Text>

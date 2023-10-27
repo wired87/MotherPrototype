@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {DefaultText} from "../../components/text/DefaultText";
 
 const logoutText = "You are now logged out . . ."
+// @ts-ignore
 export const Logout = ({navigation}) => {
     const [seconds, setSeconds] = useState(2);
 

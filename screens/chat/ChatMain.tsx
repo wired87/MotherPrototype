@@ -1,14 +1,14 @@
 
-
-
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Dimensions, KeyboardAvoidingView, Platform, SafeAreaView, View, StyleSheet} from "react-native";
 import {MessageInput, MessageList,} from "@pubnub/react-native-chat-components";
 import axios from "axios";
 import {IconButton} from "react-native-paper";
-import * as Animatable from 'react-native-animatable';
-import {TypeIndicator} from "../../screens/chat/components/typeIndicator/dotBubble";
+
 import {DefaultText} from "../../components/text/DefaultText";
+import {getAuth} from "firebase/auth";
+import { TypeIndicator } from "../../components/animations/TypeIndicator";
+import {chatStyles} from "./chatStyles";
 
 const white = "rgb(255, 255, 255)";
 const black = "rgb(0, 0, 0)";
@@ -92,6 +92,7 @@ export const ChatMain = (
 
 
 
+    // @ts-ignore
     return(
         <>
             <SafeAreaView style={{ backgroundColor: "#f0f3f7", flex: 1 }}>
@@ -124,13 +125,14 @@ export const ChatMain = (
                     <MessageInput
                         maxLength={1000}
                         id={"mainInput"}
+                        // @ts-ignore
                         contentContainerStyle={{ alignItems: 'flex-end', justifyContent: 'center' }}
                         senderInfo={false}
                         typingIndicator={false} // if user or ai is typing you see al little typingIndicator
                         onChange={(value: any) => setText(value)}
                         value={text}
                         // extraActionsRenderer={} extra stuff  to render in the msg bar -> later file + audio btn
-                        sendButton={<IconButton icon={"send-outline"} sitze={70}
+                        sendButton={<IconButton icon={"send-outline"} size={70}// @ts-ignore
                                                 color={"#252427"} onPress={setSendDifferent}/>}/>
                 </KeyboardAvoidingView>
             </SafeAreaView>
@@ -404,60 +406,6 @@ Loading small
 
 
 
-const styles = StyleSheet.create({
-    inputContainer: {
-        width: windowWidth,
-        borderColor: "#01152a",
-        borderTopWidth: 1,
-        height: 54,
-        backgroundColor: "rgb(255, 0, 0)",
-    },
-    safeFullViewContainer: {
-        flex: 1,
-        flexDirection: "column",
-        flexWrap: "wrap",
-        backgroundColor: '#282525',
-        paddingVertical: 70,
-        paddingHorizontal: windowWidth * .05,
-        borderWidth: 1,
-        borderColor: '#01152a',
-    },
-    maintextInput: {
-        width: windowWidth * .8,
-        borderColor: "#01152a",
-        borderRightWidth: 1,
-        marginLeft: 20,
-        fontWeight: "bold",
-        color: white,
-        fontSize: 17,
-    },
-    aiMessageContainer: {
-        width: "auto",
-        position: "relative",
-        height: "auto",
-        minHeight: 30,
-        marginLeft: 20,
-        marginRight: 20,
-        borderTopWidth: .5,
-        borderBottomWidth: .5,
-        borderColor: "rgba(0, 0, 0, .1)",
-        paddingTop: 13,
-        paddingBottom: 13,
-    },
-    userMessageContainer: {
-        minHeight: 30,
-        position: "relative",
-        width: "auto",
-        height: "auto",
-        marginLeft: 20,
-        borderTopWidth: .5,
-        borderBottomWidth: .5,
-        borderColor: "rgba(0, 0, 0, .1)",
-        marginRight: 20,
-        paddingTop: 13,
-        paddingBottom: 13,
-    }
-})
 
 
 

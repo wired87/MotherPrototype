@@ -1,25 +1,26 @@
 import {
     KeyboardAvoidingView,
     Platform,
-    Pressable,
     SafeAreaView,
     Text,
-    TextInput,
-    TouchableOpacity,
     View
 } from "react-native";
-import {styles} from "../../toolStyles";
-import {themeColors} from "../../../../theme/theme";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import React, {useCallback, useState} from "react";
 import {createUserWithEmailAndPassword, getAuth} from "firebase/auth";
-import {AlertBox} from "../../../universal/errorBox";
-import errorImg from "../../../../assets/errorImg.png";
-import successAuth from '../../../../assets/successAuth.png';
+
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../components/input/DefaultInput";
 import {HeadingText} from "../../components/text/HeadingText";
-
+import {useDispatch} from "react-redux";
+import LottieView from "lottie-react-native";
+import failLottie from "../../assets/animations/failLottie.json";
+import successLottie from "../../assets/animations/successLottie.json";
+import {themeColors} from "../../colors/theme";
+import {AlertBox} from "../../components/modals/errorBox";
+import {styles} from "../../components/modals/styles";
+import {userStyles} from "./userStyles";
 
 // Text
 const signUpText = "Sign up";
@@ -28,13 +29,18 @@ const indicatorSize = "small";
 const success = "success";
 const emailPlaceholder = "Your Email";
 const passwordPlaceholder = "Create a Password";
-const successRedirectPage = "ToolsMain";
-const goHomeText = "Go Home";
-const tryAgain = "Try again";
 const googleIcon = "google"
 
-// @ts-ignore
-export const SignUp = ({navigation}) => {
+
+export const SignUp = (
+    // @ts-ignore
+    {navigation}
+) => {
+
+    // @ts-ignore
+    const text = useSelector(state => state.text.text)
+    // @ts-ignore
+    const screen = useSelector(state => state.screens.screen)
 
     const auth = getAuth();
     const [loading, setLoading] = useState(false);
@@ -47,34 +53,44 @@ export const SignUp = ({navigation}) => {
     const onChangeEmail = useCallback((text: React.SetStateAction<string>) => setEmail(text), []);
     const onChangePassword = useCallback((text: React.SetStateAction<string>) => setPassword(text), []);
     const onSignUp = useCallback(() => signUp(), []); // change onSignUp on google login btn to right funcktion -> creat right fucntion
-
+    const dispatch = useDispatch()
     const signUp = async () => {
         try {
-            setLoading(true);
+            // @ts-ignore
+            let action = {
+                type: 'LOADING',
+                payload: true
+            };
+            dispatch(action);
+            // @ts-ignore
             setUser(await createUserWithEmailAndPassword(auth, email, password));
-            await setError(success);
+            setError(success);
             console.log("user: ", user);
             setVisibility(true)
         // @ts-ignore
         } catch (error) {
             // @ts-ignore
-            await setError(error.message);
+            setError(error.message);
             console.log("Error in signUp function while try to register the user: ", inputError);
             setVisibility(true);
             // @ts-ignore
             console.log("There was an error while signing you up: ", error.message);
 
         } finally {
-            setLoading(false);
+            let action = {
+                type: 'LOADING',
+                payload: false
+            };
+            dispatch(action);
         }
     }
 
     return(
         <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <View style={styles.loginContainer}>
+                <View style={userStyles.loginContainer}>
 
-                    <HeadingText text={signUpText}/>
+                    <HeadingText text={signUpText} extraStyles={undefined}/>
 
                     <DefaultInput placeholder={emailPlaceholder} value={email}
                                   onChangeAction={onChangeEmail}
@@ -84,35 +100,42 @@ export const SignUp = ({navigation}) => {
                                   onChangeAction={onChangePassword}
                                   secure={true} editable={true}/>
 
-                    <DefaultButton text={signUpText} loading={loading}
+                    <DefaultButton text={signUpText}
                                    indicatorColor={themeColors.headerText}
                                    onPressAction={onSignUp}
                                    indicatorSize={indicatorSize}
-                                   secondIcon={null} />
+                                   secondIcon={null}
+                                   extraStyles={undefined} />
 
-                    <Text style={styles.authTextInfo}>Or</Text>
+                    <Text style={userStyles.authTextInfo}>Or</Text>
                 </View>
 
-                <View style={styles.alternativeAuthMethodContainer}>
-                    <DefaultButton text={signUpGoogleText} loading={loading}
-                                   indicatorColor={themeColors.headerText}
-                                   onPressAction={onSignUp}
-                                   indicatorSize={indicatorSize}
-                                   secondIcon={
-                                       <MaterialCommunityIcons
+                <View style={userStyles.alternativeAuthMethodContainer}>
+                    <DefaultButton
+                        text={signUpGoogleText}
+                        indicatorColor={themeColors.headerText}
+                        onPressAction={onSignUp}
+                        indicatorSize={indicatorSize}
+                        extraStyles={undefined}
+                        secondIcon={
+                            <MaterialCommunityIcons
                                            style={{marginRight: 5}}
                                            name={googleIcon}
                                            color={"#fff"} size={26}/>
-                                   }/>
+                        }
+                    />
                 </View>
             </KeyboardAvoidingView>
             <AlertBox
-                alert={<ErrorAlert inputError={inputError} navigation={navigation} />}
                 modalVisible={modalVisible}
                 setModalVisible={setVisibility}
-                buttonText={inputError.includes(success) ? goHomeText : tryAgain}
-                redirectAction={inputError.includes(success) ? navigation.navigate(successRedirectPage) : null}
-                errorImg={inputError.includes(success) ? successAuth : errorImg}
+                buttonText={inputError.includes(text.success) ? text.goHomeText : text.tryAgain}
+                redirectAction={inputError.includes(text.success) ? navigation.navigate(screen.account) : null}
+                errorAnimation={
+                    <LottieView
+                        source={inputError.includes(text.success) ? failLottie : successLottie}
+                        style={styles.lottieAnimationView}/>
+                }
             />
         </SafeAreaView>
     );

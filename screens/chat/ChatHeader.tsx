@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+/*import React, {useCallback, useEffect} from "react";
 import {getHeaderTitle} from "@react-navigation/elements";
 import {ActivityIndicator, Appbar, Menu} from "react-native-paper";
 import { Platform, SafeAreaView } from "react-native";
@@ -6,7 +6,7 @@ import {styles} from "../../universalStyles";
 import {themeColors} from "../../../theme/theme";
 import axios from "axios";
 import {useSelector} from "react-redux";
-import bgBottom from "../../../assets/bgBottom.jpg";
+import bgBottom from "../../../assets/bgModalChat.jpg";
 import {StyleSheet} from "react-native";
 import {getAuth} from "firebase/auth";
 import {LinearGradient} from "expo-linear-gradient";
@@ -67,12 +67,7 @@ export default function ChatHeader({ navigation, route, options, back, setText }
                         [styles.headerContainer],
                         Platform.OS === "ios" ? "padding" : undefined
                     ]}>
-                    {back ? <Appbar.BackAction onPress={navigation.goBack}/> : null}
-                    <Menu
-                        visible={visible}
-                        name={title}
-                        onDismiss={closeModal} // if click anywhere outside then close
-                        anchor={<Appbar.Action icon="menu" onPress={openModal}/>}/>
+
                 </Appbar.Header>
             </SafeAreaView>
             <SwipeModal
@@ -90,4 +85,4 @@ export default function ChatHeader({ navigation, route, options, back, setText }
         </>
     );
 }
-
+*/

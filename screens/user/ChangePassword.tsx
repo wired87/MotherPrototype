@@ -1,25 +1,24 @@
 import React, {useCallback, useState} from 'react';
 import { TextInput, View, Text, TouchableOpacity } from 'react-native';
 import { getAuth, EmailAuthProvider, updatePassword, reauthenticateWithCredential } from 'firebase/auth';
-import { styles } from '../../toolStyles';
-import {AlertBox} from "../../../universal/errorBox";
+
 
 // @ts-ignore
 import {useSelector, useDispatch} from "react-redux";
 const dispatch = useDispatch();
 import LottieView from 'lottie-react-native';
 // animations
-import successAnimation from "../../../../assets/lottie_animations/successAnimation.json";
-import failed from "../../../../assets/lottie_animations/failed.json";
+import successLottie from "../../assets/animations/successLottie.json"
+import failLottie from "../../assets/animations/failLottie.json"
 
 import {DefaultInput} from "../../components/input/DefaultInput";
 import {HeadingText} from "../../components/text/HeadingText";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
+import { styles } from '../../components/modals/styles';
+import {userStyles} from "./userStyles";
+import {AlertBox} from "../../components/modals/errorBox";
 
 
-
-
-// useselecotor for loading
 // @ts-ignore
 export const  PasswordChangeComponent = ({navigation}) => {
 
@@ -48,13 +47,18 @@ export const  PasswordChangeComponent = ({navigation}) => {
         console.log("user: ", user);
         console.log("current password: ", currentPassword);
         console.log("new password: ", newPassword);
+        // @ts-ignore
         const credential = EmailAuthProvider.credential(user.email, currentPassword);
         try {
+            // @ts-ignore
             await reauthenticateWithCredential(user, credential).then(r => console.log("reauthenticated...")).catch(err => console.log("error: ", err));
+            // @ts-ignore
             await updatePassword(user, newPassword).then(r => console.log("password changed...")).catch(err => console.log("error: ", err));
+            // @ts-ignore
             setError(false);
         } catch (error) {
             console.log("not able to change password!", error);
+            // @ts-ignore
             setError(true);
         } finally {
             action = {
@@ -63,12 +67,12 @@ export const  PasswordChangeComponent = ({navigation}) => {
             };
             dispatch(action);
         }
-    };
-    return (
-        <View style={[styles.main_container,{flex:1, justifyContent: "center", alignItems: "center"}]}>
-            <View style={styles.infoContainer}>
+    }, [])
 
-                <HeadingText text={text.changePassword} />
+    return (
+        <View style={[userStyles.main_container,{flex:1, justifyContent: "center", alignItems: "center"}]}>
+            <View style={userStyles.infoContainer}>
+                <HeadingText text={text.changePassword} extraStyles={undefined} />
 
                 <DefaultInput placeholder={text.currentPasswordText}
                               value={currentPassword}
@@ -82,34 +86,32 @@ export const  PasswordChangeComponent = ({navigation}) => {
                               secure={true}
                               editable={true} />
 
-                <DefaultButton loading={loading}
+                <DefaultButton
                                onPressAction={handleChangePassword}
                                indicatorColor={undefined}
                                indicatorSize={text.indicatorSizeSmall}
                                text={text.changePassword}
                                secondIcon={undefined}
                                extraStyles={undefined} />
-                <TouchableOpacity style={styles.changeInfoBtn} onPress={}>
-                    <Text style={{color: '#fff'}}>change Password</Text>
-                </TouchableOpacity>
+                <DefaultButton
+                    extraStyles={userStyles.changeInfoBtn}
+                    onPressAction={handleChangePassword}
+                    indicatorColor={undefined}
+                    indicatorSize={"small"}
+                    text={"Change Password"}
+                    secondIcon={undefined} />
             </View>
-            {error === true ? (
-                <AlertBox
-                    modalVisible={modalVisible}
-                    setModalVisible={setModalVisible}
-                    buttonText={text.tryAgain}
-                    redirectAction={() => navigation.navigate(text.navigatePasswordChange)}
-                    errorAnimation={<LottieView source={failed}/>}
-                />
-            ): error === false ? (
-                <AlertBox
-                    modalVisible={modalVisible}
-                    setModalVisible={setModalVisible}
-                    buttonText={text.goHomeText}
-                    redirectAction={() => navigation.navigate(text.navigateToolsMain)}
-                    errorAnimation={<LottieView source={successAnimation} style={styles.lottieAnimationView}/>}
-                />
-            ):null}
+            <AlertBox
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                buttonText={text.goHomeText}
+                redirectAction={
+                    () => navigation.navigate(error ? text.navigatePasswordChange : text.navigateToolsMain)
+                }
+                errorAnimation={
+                    <LottieView source={error? failLottie : successLottie} style={styles.lottieAnimationView}/>
+                }
+            />
         </View>
     );
 }

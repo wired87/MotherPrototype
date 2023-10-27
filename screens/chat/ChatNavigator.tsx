@@ -1,26 +1,107 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import ChatMain from "../../components/Chat/ChatMain";
-import ChatHeader from "./components/chatHeader";
-import Menu from "./singleScreens/menu";
-import {useEffect, useState} from "react";
 
-export const ChatScreens = () => {
+import React, {useCallback, useEffect, useState} from "react";
+import {DefaultHeader} from "../../components/navigation/DefaultHeader";
+import {Appbar, Menu} from "react-native-paper";
+import {ChatMenuModalContent} from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
+import {SwipeModal} from "../../components/modals/ChatMenuSwipeUpDownModal";
+import {getAuth} from "firebase/auth";
+import axios from "axios/index";
+import {useNavigation} from "@react-navigation/native";
+// @ts-ignore
+import bgModalChat from "../../assets/images/bgModalChat";
+import {ChatMain} from "./ChatMain";
+
+export const ChatNavigation = () => {
+    // State variables
     const [text, setText] = useState("");
     const [send, setSend] = useState(false);
+    const[loading, setLoading] = React.useState(true);
+    const [visible, setVisible] = React.useState(false);
+    const[modalVisible, setModalVisible] = React.useState(false);
+    const[animation, setAnimation] = React.useState(false);
+    const[history, setHistory] = React.useState([]);
 
+    // other Variables
     const ChatStack = createNativeStackNavigator();
+    const user = getAuth().currentUser
+
+    // @ts-ignore
+    const openModal = useCallback(() => {
+        setModalVisible(true);
+        setAnimation(true);
+    });
+
+    // @ts-ignore
+    const closeModal = useCallback(() => {
+        setModalVisible(false);
+        setAnimation(false);
+    });
+
+    const onPressHistory = useCallback(() => {
+        setAnimation(true);
+        setSend(true);
+    }, []);
+
+    const dispatchUserData = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = // @ts-ignore
+                await axios.post("http://192.168.178.51:8000/open/chat-history/", {"user_id": user.uid,})
+            console.log("data raw: ", response);
+            setHistory(response.data.chat_history);
+            console.log("data list: ", history);
+        } catch(error) {
+            console.log("There was an error get the User ID: ", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [])
+
+    useEffect(() => {
+        if (user) {
+            dispatchUserData().catch(error => console.log("Error in useEffect ChatHeader:", error));
+        }
+    }, [user])
 
     return(
-        <ChatStack.Navigator initialRouteName="ChatMain"
-                             screenOptions={{
-                                 header: (props) => <ChatHeader {...props} setText={setText} setSend={setSend}/>,
-                             }}>
+        <ChatStack.Navigator
+            initialRouteName="ChatMain"
+            screenOptions={{
+                header:
+                    (props: any) =>
+                        <DefaultHeader
+                            {...props}
+                            visible={true}
+                            extraStyles={undefined}
+                            statement={undefined}
+                            children={
+                                <>
+                                    <Menu
+                                        visible={visible}
+                                        onDismiss={closeModal} // if click anywhere outside then close
+                                        anchor={<Appbar.Action icon="menu" onPress={openModal}/>} children={undefined}/>
+                                    <SwipeModal
+                                        bgImage={bgModalChat}
+                                        animation={animation}
+                                        modalVisible={modalVisible}
+                                        closeModal={closeModal}
+                                        setAnimation={setAnimation}
+                                        Content={<ChatMenuModalContent
+                                            history={history}
+                                            setText={setText}
+                                            loading={loading}
+                                            action={onPressHistory}/>}/>
+                                </>
+                            }/>
+                        }}>
             <ChatStack.Screen name="ChatMain">
-                {(props) => <ChatMain {...props} send={send} setSendHistoryMessage={setSend}
-                                      text={text} setText={setText} />
+                {(props) =>
+                    <ChatMain setSend={undefined} {...props} send={send}
+                              setSendHistoryMessage={setSend}
+                              text={text} setText={setText} />
                 }
             </ChatStack.Screen>
-            <ChatStack.Screen name="Menu" component={Menu} />
         </ChatStack.Navigator>
     );
 }

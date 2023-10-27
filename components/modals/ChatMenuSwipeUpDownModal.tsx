@@ -3,8 +3,10 @@ import {HeadingText} from "../text/HeadingText";
 import {DefaultText} from "../text/DefaultText";
 import {ModalContentNoLog} from "../container/ChatMenuModalContainer/ModalContentNoLog";
 import React, {useCallback} from "react";
+// @ts-ignore
 import SwipeUpDownModal from 'react-native-swipe-modal-up-down';
-import { ActivityIndicator, IconButton } from "react-native-paper";
+import { IconButton } from "react-native-paper";
+import {uniStyles} from "../../screens/universalStyles"
 
 // Strings
 const modalIcon = "menu-down-outline";
@@ -13,30 +15,32 @@ const modalIcon = "menu-down-outline";
 
 export const SwipeModal = (
     // @ts-ignore
-    { bgBottom, animation, modalVisible, closeModal, Content, setAnimation }
+    { bgImage, animation, modalVisible, closeModal, Content, setAnimation }
 ) => {
-
     const action = useCallback(() => setAnimation(true), []);
+
+
 
     return(
         <SwipeUpDownModal
             modalVisible={modalVisible}
             PressToanimate={animation}
             onClose={closeModal}
-            ImageBackgroundModal={bgBottom}
-            ImageBackgroundModalStyle={styles.bgImage}
-            HeaderStyle={styles.headerContent}
-            ContentModalStyle={styles.Modal}
+            ImageBackgroundModal={bgImage}
+            ImageBackgroundModalStyle={uniStyles.bgImage}
+            HeaderStyle={uniStyles.headerContent}
+            ContentModalStyle={uniStyles.Modal}
             ContentModal={
                 Content
             }
             HeaderContent={
-                <View style={styles.containerHeader}>
+                <View style={uniStyles.containerHeader}>
+                    {/*@ts-ignore*/}
                     <IconButton style={{color: 'rgba(255, 255, 255, 0.98)'}}
                                 onPress={action}
                                 icon={modalIcon}
                                 size={28}
-                                color={'rgba(255, 255, 255, 0.98)'}/>
+                                color={'rgb(0, 0, 0)'}/>
                 </View>
             }/>
     );

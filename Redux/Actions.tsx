@@ -77,6 +77,11 @@ const screens = {
         passwordChangeScreen: "PasswordChange",
         logoutScreen: "Logout",
         settingsScreen: "SettingsMain",
+        account: "AccountMain",
+        plusPlanInfo: "PlusPlanInfo",
+        login: "Login",
+        register: "Register",
+        toolsMain: "ToolsMain"
     }
 }
 

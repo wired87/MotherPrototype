@@ -1,33 +1,31 @@
 import {getHeaderTitle} from "@react-navigation/elements";
 import {Platform, SafeAreaView} from "react-native";
 import {Appbar, Menu} from "react-native-paper";
-import {styles} from "../../universalStyles";
 import {useEffect, useState} from "react";
+import {getAuth} from "firebase/auth";
 
-export default function ToolHeader({
-                                       navigation,
-                                       route,
-                                       options,
-                                       back,
-                                   }) {
-
+export const ToolHeader = (
+    // @ts-ignore
+    {navigation, route, options, back,}
+) => {
+    const user = getAuth().currentUser
     const [visible, setVisible] = useState(true);
     const closeMenu = () => setVisible(false);
-    const user = false;
+
     const title = getHeaderTitle(options, route.name);
-// got an invalid value for 'children' prop for the screen 'chat'. It must be a function returning a React Element.
     useEffect(() => {
         console.log("routeName: ", route.name)
     }, []);
 
+
+
     return (
+        // @ts-ignore
         <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "space-between"}}>
             <Appbar.Header
                 visible={!(route.name === "Login" || route.name === "Signup" || route.name === "AccountMain")}
-                style={[
-                    [styles.headerContainer],
-                    Platform.OS === "ios" ? "padding" : undefined
-                ]}>
+                // @ts-ignore
+                style={[[styles.headerContainer], Platform.OS === "ios" ? "padding" : undefined]}>
                 {!(route.name === "AuthNavigator") ?(
                     <Appbar.Action  // set here the icon for to action
                         icon="account-circle"

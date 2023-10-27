@@ -1,11 +1,16 @@
-// @ts-ignore
-const ErrorAlert = ({ inputError, navigation }) => {
+import { styles } from "../modals/styles";
+import { Text, Pressable } from 'react-native';
+import React from 'react';
+
+interface AlertBoxProps {
+    inputError: string;
+    navigation: any;
+}
+
+export const AlertBoxText: React.FC<AlertBoxProps> = ({ inputError, navigation }) => {
     if (inputError.includes("auth/invalid-email")) {
-        // @ts-ignore
         return <Text style={styles.errorText}>Invalid E-Mail format. Please try again.</Text>;
     } else if (inputError.includes("auth/email-already-in-use")) {
-
-        // @ts-ignore
         return (
             <>
                 <Text style={styles.errorText}>
@@ -14,17 +19,16 @@ const ErrorAlert = ({ inputError, navigation }) => {
                 <Pressable style={styles.redirectLogin} onPress={() => navigation.navigate("Login")}>
                     <Text style={{color: "rgb(255,255,255)"}}>Here</Text>
                 </Pressable>
-                <Text style={{marginBottom: 10}}>Or</Text>
+                <Text style={{marginBottom: 10}}>
+                    Or
+                </Text>
             </>
         );
     } else if (inputError.includes("auth/too-many-requests")) {
-        // @ts-ignore
         return <Text style={styles.errorText}>Too many requests. Take a break and try again later.</Text>;
     } else if (inputError.includes("auth/weak-password")) {
-        // @ts-ignore
         return <Text style={styles.errorText}>Your Password is not strong enough. Give him some Tren!</Text>;
     } else if (inputError.includes("success")) {
-        // @ts-ignore
         return (
             <Text>
                 Your Account jas been successfully created. {"\n"}
@@ -32,7 +36,6 @@ const ErrorAlert = ({ inputError, navigation }) => {
             </Text>
         );
     } else if (inputError.includes("invalid-login-credentials")) {
-        // @ts-ignore
         return(
             <>
                 <Text style={styles.errorText}>

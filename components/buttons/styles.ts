@@ -1,6 +1,7 @@
 import {StyleSheet} from "react-native";
+import {themeColors} from "../../colors/theme";
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     buttonSelected: {
         backgroundColor: "rgb(4,24,44)",
         paddingVertical: 15,
@@ -27,6 +28,32 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: "700",
         color: 'white',
+    },
+
+    TouchableView: {
+        flexDirection: "row",
+        flex: 1,
+        gap: 15
+    },
+    box2Icon: {
+        backgroundColor: "#2b2a27",
+        borderRadius: 10,
+        width: 34,
+        height: 34,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    buttonText: {
+
+        fontSize: 20,
+        color: "rgb(255,255,255)",
+    },
+    settingsButton: {
+        padding: 15,
+        flexDirection: "row",
+        alignItems: 'center',
+        backgroundColor: themeColors.sexyBlue,
+        marginBottom: 5,
     },
 
 })

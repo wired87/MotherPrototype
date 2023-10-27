@@ -2,19 +2,13 @@ import React, {useEffect, useState} from 'react'
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated, Image, FlatList} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {styles} from "../settingStyles";
 import {LinearGradient} from "expo-linear-gradient";
-import Chroma from "chroma-js";
-import {useNavigation} from "@react-navigation/native";
 import {useSelector} from "react-redux";
-import auth from '@react-native-firebase/auth';
-import {SingleProContainer} from "../../components/container/PlusPlanContainer/SingleProContainer";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
-import {HeadingText} from "../../components/text/HeadingText";
 import {DefaultFlatList} from "../../components/flatlist/DefaultFlatList";
 import {BottomImage} from "../../components/images/BottomImage";
-
+import {settingStyles} from "./settingStyles";
+import {styles} from "../../components/styles"
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 
@@ -99,23 +93,23 @@ export const SettingsMain = () => {
 
                 <View>
                     <Text
-                        style={styles.btnHeading}>
+                        style={settingStyles.btnHeading}>
                         SETTINGS
                     </Text>
                     <View
-                        style={styles.box2} >
+                        style={settingStyles.box2} >
                         <DefaultFlatList
                             data={settings} />
                     </View>
                 </View>
                 <View>
                     <Text
-                        style={styles.btnHeading}>
+                        style={settingStyles.btnHeading}>
                         OTHER
                     </Text>
                     <View>
                         <View
-                            style={styles.box2} >
+                            style={settingStyles.box2} >
                             <DefaultFlatList
                                 data={other} />
                         </View>
@@ -123,7 +117,7 @@ export const SettingsMain = () => {
                 </View>
                 <View>
                     <Text
-                        style={styles.btnHeading}>
+                        style={settingStyles.btnHeading}>
                         ABOUT
                     </Text>
                     <View>

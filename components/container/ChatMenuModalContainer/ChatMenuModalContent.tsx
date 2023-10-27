@@ -1,11 +1,13 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, StyleSheet, TouchableOpacity, View} from "react-native";
 import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
 import {ModalContentNoLog} from "./ModalContentNoLog";
 import {getAuth} from "firebase/auth";
 // @ts-ignore
 import React, {useCallback, useNavigation} from "react";
-import { ActivityIndicator, IconButton } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
+import {themeColors} from "../../../colors/theme";
+import {styles} from "../../../screens/universalStyles"
 
 // Strings
 const indicatorSize = "medium";
@@ -15,17 +17,11 @@ const historyReminder = "To see your Chat History, you must be {\"\\n\"} logged 
 const loginText = "Login";
 const registerText = "Register";
 
-const user = getAuth.currentUser;
-
-
 export const ChatMenuModalContent = (
     // @ts-ignore
-    {  history, setText, loading }
+    {  history, setText, loading, action }
 ) => {
-    const onPressHistory = useCallback(() => {
-        setAnimation(true);
-        setSend(true);
-    }, []);
+    const user = getAuth().currentUser;
 
     return(
         <View style={{flex: 1, justifyContent: "flex-start", alignItems: "center"}}>
@@ -38,7 +34,7 @@ export const ChatMenuModalContent = (
                 borderBottomWidth: .5,
                 borderBottomColor: themeColors.borderThin,
                 marginTop: 40,}}>
-                <HeadingText text={historyText}/>
+                <HeadingText text={historyText} extraStyles={undefined}/>
             </View>
             <View>
                 {user ? (
@@ -46,6 +42,7 @@ export const ChatMenuModalContent = (
                         <>
                             <ActivityIndicator
                                 color={themeColors.sexyBlue}
+                                // @ts-ignore
                                 size={indicatorSize}/>
                         </>
                     ) : (
@@ -57,7 +54,7 @@ export const ChatMenuModalContent = (
                                     style={styles.historyList}
                                     renderItem={({ item }) => (
                                         <TouchableOpacity style={styles.historyItem} onPress={() => {
-                                            onPressHistory()
+                                            action()
                                             setText(item)
                                         }}>
                                            <DefaultText text={item} moreStyles={undefined} />
