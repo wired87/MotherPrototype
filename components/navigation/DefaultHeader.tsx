@@ -2,6 +2,7 @@ import { Platform, SafeAreaView } from "react-native";
 import { Appbar } from "react-native-paper";
 import {useNavigation} from "@react-navigation/native";
 import React from "react";
+import {uniStyles} from "../../screens/universalStyles";
 
 export const DefaultHeader = (
     // @ts-ignore
@@ -14,7 +15,7 @@ export const DefaultHeader = (
             <Appbar.Header
                 visible={visible}
                 // @ts-ignore
-                style={[[styles.headerContainer], Platform.OS === "ios" ? "padding" : undefined]}>
+                style={[[uniStyles.headerContainer], Platform.OS === "ios" ? "padding" : undefined]}>
                 {back ? (
                     <Appbar.Action
                         icon="less-than"

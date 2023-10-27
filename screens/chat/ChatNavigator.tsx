@@ -7,10 +7,10 @@ import {ChatMenuModalContent} from "../../components/container/ChatMenuModalCont
 import {SwipeModal} from "../../components/modals/ChatMenuSwipeUpDownModal";
 import {getAuth} from "firebase/auth";
 import axios from "axios/index";
-import {useNavigation} from "@react-navigation/native";
 // @ts-ignore
-import bgModalChat from "../../assets/images/bgModalChat";
+import {bgModalChat} from "../../assets/images/bgModalChat.jpg";
 import {ChatMain} from "./ChatMain";
+import {FIREBASE_AUTH} from "../../firebase.config";
 
 export const ChatNavigation = () => {
     // State variables
@@ -24,7 +24,7 @@ export const ChatNavigation = () => {
 
     // other Variables
     const ChatStack = createNativeStackNavigator();
-    const user = getAuth().currentUser
+    const user = FIREBASE_AUTH
 
     // @ts-ignore
     const openModal = useCallback(() => {

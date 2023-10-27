@@ -7,6 +7,7 @@ import {styles} from "../../styles";
 import MIcon from "react-native-vector-icons/MaterialIcons";
 import {DefaultButton} from "../../buttons/DefaultButton";
 import {SingleProContainer} from "./SingleProContainer";
+import { useSelector } from "react-redux";
 
 
 const TOP_COLORS =  ['#9c0582', '#0e198c', '#1d155e', '#2A3BEF', '#662250', '#6b0e5e'];
@@ -25,10 +26,10 @@ export const PlusAdContainer = () => {
     const [colorBottom, setColorBottom] = useState(BOTTOM_COLORS_SPECTRUM[0]);
 
     // @ts-ignore
-    const text = useSelector(state => state.text.text)
+    const text = useSelector(state => state.text.value)
 
     // @ts-ignore
-    const screens = useSelector(state => state.screens.screens)
+    const screens = useSelector(state => state.screens.value)
 
     useEffect(() => {
         const interval = setInterval(() => {

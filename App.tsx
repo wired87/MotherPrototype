@@ -10,13 +10,14 @@ import { PubNubProvider } from 'pubnub-react';
 import {Chat} from "@pubnub/react-native-chat-components";
 
 // other
-import NavigationMain from "./components/home/footer";
+
 
 // Redux
 import {store} from "./Redux/store";
 
 // @ts-ignore
 import {Provider} from "react-redux";
+import NavigationMain from "./components/navigation/Footer";
 
 const pubnub = new PubNub({
   publishKey: 'myPublishKey',

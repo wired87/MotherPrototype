@@ -1,14 +1,17 @@
 import {Text, View} from "react-native";
 import {TypingAnimation} from "react-native-typing-animation";
 import {StyleSheet} from "react-native";
-import {themeColors} from "../../../../theme/theme";
+import {themeColors} from "../../colors/theme";
 
 const aiNameList = ["C-3PO", "Computer", "R2D2", "Optimus Prime", "SkyNet", "JARVIS", "Morpheus"]
 
 export const TypeIndicator = () => {
     const aiName = aiNameList[Math.floor(Math.random() * aiNameList.length)];
+
     return (
-        <View style={{left: 0, flexDirection: "row", paddingBottom: 0, justifyContent: "center", alignItems: "center,"}}>
+        <View
+            // @ts-ignore
+            style={{left: 0, flexDirection: "row", paddingBottom: 0, justifyContent: "center", alignItems: "center,"}}>
             <Text style={{opacity: .6, fontSize: 13, color: themeColors.sexyBlue}}>{aiName} is typing</Text>
             <TypingAnimation
                 dotColor={"rgba(0, 0, 0, .7)"}
