@@ -8,68 +8,92 @@ import {DefaultInput} from "../../components/input/DefaultInput";
 import {DefaultPageNavigationBtn} from "../../components/buttons/DefaultPageNavigationBtn"
 import {BottomImage} from "../../components/images/BottomImage";
 
-// @ts-ignore
+
 import {useSelector, useDispatch} from "react-redux";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import {HeadingText} from "../../components/text/HeadingText";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
 import { userStyles } from './userStyles';
-const dispatch = useDispatch();
 
 
 export const AccountMain = () => {
-
+    const dispatch = useDispatch();
     const auth = getAuth();
     const user = auth.currentUser;
     const [error, setError] = useState(false);
     const navigation = useNavigation();
 
     // @ts-ignore
-    const loading = useSelector(state => state.loading.loading);
+    const loading = useSelector(state => state.loading.value);
     // @ts-ignore
-    const text = useSelector(state => state.text.text)
+    const text = useSelector(state => state.text.value)
     // @ts-ignore
-    const icon = useSelector(state => state.icon.icon)
+    const icon = useSelector(state => state.icon.value)
     // @ts-ignore
-    const screens = useSelector(state => state.screens.screens)
+    const screens = useSelector(state => state.screens.value)
 
 
-    const moveToScreen = useCallback((screenName: any) => {
+    const moveToScreen = useCallback((screenName: string, params?: object) => {
         // @ts-ignore
-        navigation.navigate(screenName);
+        return () => navigation.navigate(screenName, params);
     }, []);
 
-    const deleteUser = useCallback(() => {
-        // @ts-ignore
-        user.delete()
+
+    //modal zum bestätigenn einbauen
+    const deleteUser = useCallback(async() => {
+        dispatch({
+            type: 'LOADING',
+            payload: true
+        })
+
+        try {
+            // @ts-ignore
+            await user.delete().then(() => {
+                console.log("successfully sign the User out")
+                }
+            )
+        } catch(error) {
+            console.log(error)
+        } finally {
+            dispatch({
+                type: 'LOADING',
+                payload: false
+            })
+        }
+
     }, []);
 
     const logout = useCallback (async() => {
-        let action = {
+        dispatch({
             type: 'LOADING',
             payload: true
-        };
-        dispatch(action);
-        // @ts-ignore
-        user.logout();
+        });
 
         try {
             await auth.signOut().then(() => // vhange type
                 console.log("User is successfully logged out")
             );
+            setError(false)
         } catch (error) {
             setError(true); // @ts-ignore
             console.log("There was an error while logging the user out: \n" + error.message);
+        } finally {
+            dispatch({
+                type: 'LOADING',
+                payload: false
+            });
         }
     }, []);
 
-    // @ts-ignore
     return (
         <ScrollView contentContainerStyle={{justifyContent: "center", alignItems: "center"}} style={{paddingTop: 50}}>
             <View style={userStyles.adContainer}>
+
                 <PlusAdContainer />
+
             </View>
             <View style={userStyles.profileSection}>
+
                 <HeadingText text={text.profileHeading} extraStyles={undefined}/>
 
                 <View style={userStyles.inputSection}>
@@ -77,20 +101,24 @@ export const AccountMain = () => {
                     <DefaultInput placeholder={undefined} value={user.email}
                                   onChangeAction={null} secure={false} editable={false}/>
                     <DefaultPageNavigationBtn text={text.changeEmail}
-                                              onPressAction={moveToScreen(screens.emailChangeScreen)} extraTextStyles={undefined}
+                                              onPressAction={moveToScreen(screens.emailChangeScreen)}
+                                              extraTextStyles={undefined}
                                               extraBtnStyles={undefined}/>
 
                     <DefaultInput placeholder={null} value={text.password}
                                   onChangeAction={null}
                                   secure={true} editable={false}/>
+
                     <DefaultPageNavigationBtn text={text.changePassword}
-                                              onPressAction={moveToScreen(screens.passwordChangeScreen)} extraTextStyles={undefined}
+                                              onPressAction={moveToScreen(screens.passwordChangeScreen)}
+                                              extraTextStyles={undefined}
                                               extraBtnStyles={undefined}/>
                 </View>
             </View>
+
             <View style={userStyles.mainContainerProfile}>
                 <DefaultButton
-                    onPressAction={moveToScreen(screens.settingsScreen)}
+                    onPressAction={moveToScreen("Settings", { screen: screens.settingsScreen })}
                     indicatorColor={undefined}
                     extraStyles={undefined}
                     indicatorSize={text.indicatorSize}
@@ -99,7 +127,10 @@ export const AccountMain = () => {
                         <MaterialCommunityIcons name={icon.settingsIcon} size={24} color={"rgb(255,255,255)"}
                                                 style={userStyles.buttonIcon} />} />
                 <DefaultButton
-                    onPressAction={logout}
+                    onPressAction={
+                        logout
+
+                    }
                     indicatorColor={undefined}
                     extraStyles={undefined}
                     indicatorSize={text.indicatorSize}
@@ -108,13 +139,13 @@ export const AccountMain = () => {
                         <MaterialCommunityIcons name={text.logoutIcon} size={24} color={"rgb(255,255,255)"}
                                                 style={userStyles.buttonIcon} />} />
                 <DefaultButton
-                    onPressAction={logout}
+                    onPressAction={() => {deleteUser}}
                     indicatorColor={undefined}
                     extraStyles={undefined}
                     indicatorSize={text.indicatorSizeSmall}
                     text={text.deleteAccount}
                     secondIcon={
-                        <MaterialCommunityIcons name={"trash"} size={24} color={"rgb(255,255,255)"}
+                        <MaterialCommunityIcons name={icon.trashIcon} size={24} color={"rgb(255,255,255)"}
                                                 style={userStyles.buttonIcon} />} />
             </View>
             <BottomImage />

@@ -30,7 +30,9 @@ import {AlertBox} from "../../components/modals/errorBox";
 import failLottie from "../../assets/animations/failLottie.json";
 import successLottie from "../../assets/animations/successLottie.json";
 import {styles} from "../../components/modals/styles";
-import LottieView from "lottie-react-native";
+
+
+
 // Text
 const googleIcon = "google"
 
@@ -40,12 +42,14 @@ export default function Login({navigation}) {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [modalVisible, setVisibility] = useState(false);
+
     const auth = getAuth();
+    const user = auth.currentUser;
 
     // @ts-ignore
-    const text = useSelector(state => state.text.text)
+    const text = useSelector(state => state.text.value)
     // @ts-ignore
-    const screen = useSelector(state => state.screens.screen)
+    const screen = useSelector(state => state.screens.value)
 
     const[request, response, promptAsync] = Google.useAuthRequest({
         iosClientId: '638697637722-kgj3icuat9ggo05qn6uetsjsr7vcug27.apps.googleusercontent.com',
@@ -61,22 +65,20 @@ export default function Login({navigation}) {
         }
     }, [response])
 
-
-
     // Memisierte funktion
     // useCallback to not load your function every time the user visits the webspagfe.
     // this increase the performence of the mobileapp
     const onChangeEmail = useCallback((text: React.SetStateAction<string>) => setEmail(text), []);
     const onChangePassword = useCallback((text: React.SetStateAction<string>) => setPassword(text), []);
     const dispatch = useDispatch()
+
     const onSignIn = useCallback(async () => {
         try {
             // @ts-ignore
-            let action = {
+            dispatch({
                 type: 'LOADING',
                 payload: true
-            };
-            dispatch(action);
+            });
             const manualLoginResponse = await signInWithEmailAndPassword(getAuth(), email, password);
             setError(text.success);
             console.log("response:", manualLoginResponse)
@@ -89,13 +91,21 @@ export default function Login({navigation}) {
             console.log("please check your Input and try again. \n" + error.message);
         } finally {
             // @ts-ignore
-            let action = {
+            dispatch({
                 type: 'LOADING',
                 payload: false
-            };
-            dispatch(action);
+            });
         }
     }, [email, password]);
+
+    useEffect(() => {
+        // @ts-ignore
+        if (user.email) {
+            navigation.navigate("AuthNavigator", {screen: "account"});
+        }
+    }, []);
+
+
 
     return(
         <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
@@ -121,7 +131,6 @@ export default function Login({navigation}) {
                     <Text style={userStyles.authTextInfo}>
                         Or
                     </Text>
-
                 </View>
                 <View style={userStyles.alternativeAuthMethodContainer}>
                     <DefaultButton text={text.signInWithGoogle}
@@ -138,11 +147,9 @@ export default function Login({navigation}) {
                 modalVisible={modalVisible}
                 setModalVisible={setVisibility}
                 buttonText={error.includes(text.success) ? text.goHomeText : text.tryAgain}
-                redirectAction={error.includes(text.success) ? navigation.navigate(screen.account) : null}
+                redirectAction={error.includes(text.success) ? navigation.navigate("AuthNavigator", {screen: screen.account}) : null}
                 errorAnimation={
-                <LottieView
-                    source={error.includes(text.success) ? failLottie : successLottie}
-                    style={styles.lottieAnimationView}/>
+                undefined
                 }
             />
         </SafeAreaView>
@@ -152,7 +159,13 @@ export default function Login({navigation}) {
 
 
 
-
+/*
+// @ts-ignore
+import LottieView = require("lottie-react-native");
+<LottieView
+                    source={error.includes(text.success) ? failLottie : successLottie}
+                    style={styles.lottieAnimationViewContainer}/>
+ */
 
 
 

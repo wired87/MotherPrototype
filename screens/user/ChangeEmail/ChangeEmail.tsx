@@ -19,7 +19,7 @@ import {DefaultInput} from "../../../components/input/DefaultInput";
 import {DefaultButton} from "../../../components/buttons/DefaultButton";
 import {AwaitConfirmationModal} from "../../../components/modals/AwaitConfirmationModal";
 
-export const EmailChangeComponent =() => {
+export const EmailChange =() => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newEmail, setNewEmail] = useState('');
     const [error, setError] = useState("");
@@ -31,9 +31,9 @@ export const EmailChangeComponent =() => {
     const navigation = useNavigation()
     const dispatch = useDispatch()
     // @ts-ignore
-    const text = useSelector(state => state.text.text)
+    const text = useSelector(state => state.text.value)
     // @ts-ignore
-    const screen = useSelector(state => state.screens.screen)
+    const screen = useSelector(state => state.screens.value)
 
     const auth = getAuth();
     const user = auth.currentUser;

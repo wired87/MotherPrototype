@@ -109,12 +109,7 @@ export const styles = StyleSheet.create({
         marginHorizontal: 15,
         borderRadius: 14,
     },
-    authNavHeaderContainerText: {
-        fontSize: 20,
-        color: '#000000',
-        textAlign: 'center',
-        paddingVertical: 10,
-    },
+
     headerContainerAuth:{
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -290,12 +285,7 @@ export const styles = StyleSheet.create({
     profileInfo: {
         flex: 1
     },
-    btnTxtProfile :{
-        fontSize: 18,
-        color: 'white',
-        textAlign: 'center',
 
-    },
     infoTxt: {
         color: 'black',
         fontSize: 15,
@@ -378,16 +368,7 @@ export const styles = StyleSheet.create({
         marginRight: 5,
         color:"black",
     },
-    roundBtn: {
-        width: 200,
-        borderRadius: 20,
-        padding: 10,
-        marginTop: 10,
-        marginBottom: 30,
-        backgroundColor:"#030824",
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+
     profileHeader: {
         fontSize: 34,
         color: '#000000',

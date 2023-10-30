@@ -9,7 +9,7 @@ export const themeColors = {
     headerTextLight: "rgba(255, 255, 255,.8)",
     headerTextDark: "rgba(255, 255, 255",
     sexyBlue: '#01152a',
-    deleteRed: 'rgba(110,0,0)',
+    deleteRed: 'rgb(110,0,0)',
     darkModeBg: "#0e0e0f",
     dotNineWhite: "rgba(255,255,255,.9)",
     white: "rgb(255,255,255)",

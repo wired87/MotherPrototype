@@ -109,4 +109,10 @@ export const userStyles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 20,
     },
+    authNavHeaderContainerText: {
+        fontSize: 20,
+        color: '#000000',
+        textAlign: 'center',
+        paddingVertical: 10,
+    },
 })

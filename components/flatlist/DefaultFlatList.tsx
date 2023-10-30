@@ -8,10 +8,11 @@ export const DefaultFlatList = ({data}) => {
         <FlatList
             style={styles.box2}
             data={data}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
                 <SettingsNavigateButton title={item.title} icon={item.icon}
-                             isFirstItem={item.index === 0}  isLastItem={item.index === data.length - 1}
-                             key={item.index} />
+                                        isFirstItem={item.index === 0} isLastItem={item.index === data.length - 1}
+                                        key={index}
+                                        action={undefined} />
             )}/>
     );
 }

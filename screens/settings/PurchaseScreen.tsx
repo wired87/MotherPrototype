@@ -7,7 +7,8 @@ import {DefaultButton} from "../../components/buttons/DefaultButton";
 import { HeadingText } from '../../components/text/HeadingText';
 import ToggleButton from '../../components/buttons/ToggleButton';
 import {themeColors} from "../../colors/theme";
-import {styles} from "./settingStyles";
+import {settingStyles as styles} from "./settingStyles";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -55,6 +56,8 @@ export const PurchaseScreen = () => {
 
     const [selected, setSelected] = useState(1);
 
+    // @ts-ignore
+    const icon = useSelector(state => state.icon.value)
 
     const handleOptionSelect = (optionId: React.SetStateAction<number>) => {
         if (selected === optionId) {
@@ -112,7 +115,7 @@ export const PurchaseScreen = () => {
                         indicatorSize={undefined}
                         text={continuePurchaseText} // <Text style={[styles.BottomLastBtnText, { flex: 1 }]}></Text>
                         secondIcon={
-                            <Icon name="arrow-right" size={30} color={"rgba(255,255,255, .6)"} />
+                            <MaterialCommunityIcons name={icon.arrow} size={30} color={"rgba(255,255,255, .6)"} />
                         }
                     />
                 </View>

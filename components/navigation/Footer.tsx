@@ -15,7 +15,6 @@ export default function NavigationMain() {
     const theme = useTheme();
     theme.colors.secondaryContainer = "transparent";
 
-
     return (
         <Tab.Navigator
             shifting={false}

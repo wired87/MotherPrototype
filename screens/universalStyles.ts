@@ -14,10 +14,9 @@ export const uniStyles = StyleSheet.create({
     containerHeader: {
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'rgba(255, 255, 255, 0.98)',
-        backgroundColor: 'rgba(255, 255, 255, 0.98)',
         borderTopLeftRadius: 29,
         borderTopRightRadius: 29,
+        height: 40,
     },
     headerContent:{
         marginTop: 0,
@@ -27,7 +26,8 @@ export const uniStyles = StyleSheet.create({
     },
     Modal: {
         backgroundColor: 'rgba(255, 255, 255, 0.78)',
-
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
@@ -103,5 +103,9 @@ export const uniStyles = StyleSheet.create({
     bgImage: {
         resizeMode: 'cover',
         opacity: .6,
+    },
+    headerNavbarContainer: {
+        width: windowWidth * .3333,
+        margin: 0,
     }
 });

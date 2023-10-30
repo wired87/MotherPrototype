@@ -41,9 +41,11 @@ export const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
-    lottieAnimationView: {
+    lottieAnimationViewContainer: {
         width: 200,
 
     },
+
+
 
 })

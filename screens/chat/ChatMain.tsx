@@ -132,7 +132,7 @@ export const ChatMain = (
                         onChange={(value: any) => setText(value)}
                         value={text}
                         // extraActionsRenderer={} extra stuff  to render in the msg bar -> later file + audio btn
-                        sendButton={<IconButton icon={"send-outline"} size={70}// @ts-ignore
+                        sendButton={<IconButton icon={"send-outline"} size={24}// @ts-ignore
                                                 color={"#252427"} onPress={setSendDifferent}/>}/>
                 </KeyboardAvoidingView>
             </SafeAreaView>

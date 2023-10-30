@@ -8,6 +8,7 @@ import MIcon from "react-native-vector-icons/MaterialIcons";
 import {DefaultButton} from "../../buttons/DefaultButton";
 import {SingleProContainer} from "./SingleProContainer";
 import { useSelector } from "react-redux";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 const TOP_COLORS =  ['#9c0582', '#0e198c', '#1d155e', '#2A3BEF', '#662250', '#6b0e5e'];
@@ -27,7 +28,8 @@ export const PlusAdContainer = () => {
 
     // @ts-ignore
     const text = useSelector(state => state.text.value)
-
+    // @ts-ignore
+    const icon = useSelector(state => state.icon.value)
     // @ts-ignore
     const screens = useSelector(state => state.screens.value)
 
@@ -58,11 +60,6 @@ export const PlusAdContainer = () => {
         navigation.navigate(screens.plusPlanInfo);
     }, []);
 
-    const proArgumentContainers = [
-        <SingleProContainer text={"No Ads anymore!"} />,
-        <SingleProContainer text={"Unlimited Messages!"} />,
-        <SingleProContainer text={"Access to \n GPT-4V!"} />
-    ]
 
 
     return(
@@ -70,20 +67,18 @@ export const PlusAdContainer = () => {
             <View style={styles.header}>
                 <Text style={{ color: 'white', fontSize: 28, }}>Upgrade To Pro</Text>
             </View>
-            {/* <Image style={styles.topBtnImg} /> */}
-            <FlatList style={{flexDirection: "column"}}
-                      data={proArgumentContainers}
-                    // @ts-ignore
-                      renderItem={({ item }) => (
-                          {item}
-                      )}/>
+            <View style={{flexDirection: "column"}}>
+                <SingleProContainer text={"No Ads anymore!"} />
+                <SingleProContainer text={"Unlimited Messages!"} />
+                <SingleProContainer text={"Access to \n GPT-4V!"} />
+            </View>
             <DefaultButton
                 extraStyles={styles.btnContainer}
                 onPressAction={onExplore}
                 indicatorColor={undefined}
                 indicatorSize={text.indicatorSizeSmall}
                 text={text.plusPlanButton}
-                secondIcon={<MIcon name="arrow-right-thin" size={20} color="#40434f" />} />
+                secondIcon={<MaterialCommunityIcons name={icon.arrow} size={20} color="#40434f" />} />
         </LinearGradient>
     );
 }

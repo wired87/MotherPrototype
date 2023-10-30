@@ -10,4 +10,8 @@ export const textStyles = StyleSheet.create({
         marginBottom: 50,
         marginHorizontal: "auto",
     },
+    defaultText: {
+      lineHeight: 25,
+      textAlign: "center",
+    }
 })

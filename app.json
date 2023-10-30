@@ -1,13 +1,14 @@
 {
   "expo": {
+    "scheme": "aichat501",
     "name": "AiChat501",
     "slug": "AiChat501",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/logo_final.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/logo_final.png",
+      "image": "./assets/images/logo_final.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

@@ -5,7 +5,7 @@ import { getAuth, EmailAuthProvider, updatePassword, reauthenticateWithCredentia
 
 // @ts-ignore
 import {useSelector, useDispatch} from "react-redux";
-const dispatch = useDispatch();
+
 import LottieView from 'lottie-react-native';
 // animations
 import successLottie from "../../assets/animations/successLottie.json"
@@ -27,12 +27,13 @@ export const  PasswordChangeComponent = ({navigation}) => {
     const [error, setError] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
 
+    const dispatch = useDispatch();
 
     // use Selectors
     // @ts-ignore
-    const loading = useSelector(state => state.loading.loading);
+    const loading = useSelector(state => state.loading.value);
     // @ts-ignore
-    const text = useSelector(state => state.text.text)
+    const text = useSelector(state => state.text.value)
 
     const user = getAuth().currentUser;
 
@@ -42,8 +43,6 @@ export const  PasswordChangeComponent = ({navigation}) => {
             payload: true
         };
         dispatch(action);
-        const auth = getAuth();
-        const user = auth.currentUser;
         console.log("user: ", user);
         console.log("current password: ", currentPassword);
         console.log("new password: ", newPassword);
@@ -109,7 +108,7 @@ export const  PasswordChangeComponent = ({navigation}) => {
                     () => navigation.navigate(error ? text.navigatePasswordChange : text.navigateToolsMain)
                 }
                 errorAnimation={
-                    <LottieView source={error? failLottie : successLottie} style={styles.lottieAnimationView}/>
+                    <LottieView source={error? failLottie : successLottie} style={styles.lottieAnimationViewContainer}/>
                 }
             />
         </View>

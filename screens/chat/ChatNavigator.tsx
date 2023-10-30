@@ -4,14 +4,18 @@ import React, {useCallback, useEffect, useState} from "react";
 import {DefaultHeader} from "../../components/navigation/DefaultHeader";
 import {Appbar, Menu} from "react-native-paper";
 import {ChatMenuModalContent} from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
-import {SwipeModal} from "../../components/modals/ChatMenuSwipeUpDownModal";
+import {SwipeModal} from "../../components/modals/SwipeModal";
 import {getAuth} from "firebase/auth";
 import axios from "axios/index";
 // @ts-ignore
-import {bgModalChat} from "../../assets/images/bgModalChat.jpg";
 import {ChatMain} from "./ChatMain";
-import {FIREBASE_AUTH} from "../../firebase.config";
-
+import {useSelector} from "react-redux";
+import {useNavigation} from "@react-navigation/native";
+import {Dimensions, View} from "react-native";
+import {HeaderView} from "../../components/container/headerContainer";
+import {AccountMain} from "../user/Account";
+import {AuthNavigator} from "../user/AuthNavigator";
+const windowWidth = Dimensions.get('window').width;
 export const ChatNavigation = () => {
     // State variables
     const [text, setText] = useState("");
@@ -24,18 +28,27 @@ export const ChatNavigation = () => {
 
     // other Variables
     const ChatStack = createNativeStackNavigator();
-    const user = FIREBASE_AUTH
+    const user = getAuth().currentUser;
+
+    // @ts-ignore
+    const screen = useSelector(state => state.screens.value)
+
+
+    const navigation = useNavigation();
 
     // @ts-ignore
     const openModal = useCallback(() => {
         setModalVisible(true);
         setAnimation(true);
+        setVisible(true);
     });
 
     // @ts-ignore
     const closeModal = useCallback(() => {
         setModalVisible(false);
         setAnimation(false);
+        setVisible(false);
+
     });
 
     const onPressHistory = useCallback(() => {
@@ -59,7 +72,9 @@ export const ChatNavigation = () => {
     }, [])
 
     useEffect(() => {
+        console.log("user: " + user)
         if (user) {
+            console.log("there is a user:" + user)
             dispatchUserData().catch(error => console.log("Error in useEffect ChatHeader:", error));
         }
     }, [user])
@@ -77,17 +92,48 @@ export const ChatNavigation = () => {
                             statement={undefined}
                             children={
                                 <>
-                                    <Menu
-                                        visible={visible}
-                                        onDismiss={closeModal} // if click anywhere outside then close
-                                        anchor={<Appbar.Action icon="menu" onPress={openModal}/>} children={undefined}/>
+                                    <HeaderView children={undefined} extraStyles={undefined} />
+
+                                    <HeaderView
+                                        extraStyles={{justifyContent: "center", alignItems: "center", left: 3}}
+                                        children={
+                                            <Menu
+                                                anchor={
+                                                    <Appbar.Action
+                                                        icon="menu"
+                                                        onPress={openModal}
+                                                        size={30}
+                                                    />
+                                                }
+                                                children={undefined}
+                                                visible={visible}
+                                            />
+                                        }
+                                    />
+                                    <HeaderView
+                                        extraStyles={{justifyContent: "flex-end", alignItems: "flex-end"}}
+                                        children={
+                                            <Menu
+                                                anchor={
+                                                    <Appbar.Action
+                                                        icon="account-circle-outline"
+                                                        // @ts-ignore
+                                                        onPress={() => navigation.navigate( "AuthNavigator", {screen: user? screen.account : screen.login})}
+                                                        size={30}
+                                                    />
+                                                }
+                                                children={undefined}
+                                                visible={visible}
+                                            />
+                                        }
+                                    />
                                     <SwipeModal
-                                        bgImage={bgModalChat}
-                                        animation={animation}
+                                        animation={true}
                                         modalVisible={modalVisible}
                                         closeModal={closeModal}
                                         setAnimation={setAnimation}
-                                        Content={<ChatMenuModalContent
+                                        Content={
+                                        <ChatMenuModalContent
                                             history={history}
                                             setText={setText}
                                             loading={loading}
@@ -102,6 +148,15 @@ export const ChatNavigation = () => {
                               text={text} setText={setText} />
                 }
             </ChatStack.Screen>
+
+            <ChatStack.Screen
+                name={"AuthNavigator"}
+                component={AuthNavigator}
+                options={{
+                    headerShown: false
+                }}/>
+
+
         </ChatStack.Navigator>
     );
 }
@@ -112,7 +167,9 @@ how handle history-Text click?
 - define const text and send in ChatScreens
 - if user clicks on a text we setText to the text the user has clicked on and setSend to true
 - also set up in useEffect in "ChatMain" a if statement "if send: run the function to send text.
-- after that set terxt to "" and send to false
+- after thaA    t set terxt to "" and send to false
+
+
  */
 
 

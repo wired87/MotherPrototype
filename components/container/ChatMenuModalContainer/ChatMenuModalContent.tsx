@@ -7,7 +7,7 @@ import {getAuth} from "firebase/auth";
 import React, {useCallback, useNavigation} from "react";
 import { ActivityIndicator } from "react-native-paper";
 import {themeColors} from "../../../colors/theme";
-import {styles} from "../../../screens/universalStyles"
+import {uniStyles} from "../../../screens/universalStyles"
 
 // Strings
 const indicatorSize = "medium";
@@ -24,14 +24,15 @@ export const ChatMenuModalContent = (
     const user = getAuth().currentUser;
 
     return(
-        <View style={{flex: 1, justifyContent: "flex-start", alignItems: "center"}}>
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+
             <View style={{
                 justifyContent: "flex-start",
                 flex: 1,
                 ...StyleSheet.absoluteFillObject,
                 alignItems: "center",
                 paddingBottom: 5,
-                borderBottomWidth: .5,
+                borderBottomWidth: 1,
                 borderBottomColor: themeColors.borderThin,
                 marginTop: 40,}}>
                 <HeadingText text={historyText} extraStyles={undefined}/>
@@ -47,13 +48,13 @@ export const ChatMenuModalContent = (
                         </>
                     ) : (
                         history ? (
-                            <View style={styles.reminderModalContainer}>
+                            <View style={uniStyles.reminderModalContainer}>
                                 <FlatList
                                     // @ts-ignore
                                     data={history}
-                                    style={styles.historyList}
+                                    style={uniStyles.historyList}
                                     renderItem={({ item }) => (
-                                        <TouchableOpacity style={styles.historyItem} onPress={() => {
+                                        <TouchableOpacity style={uniStyles.historyItem} onPress={() => {
                                             action()
                                             setText(item)
                                         }}>

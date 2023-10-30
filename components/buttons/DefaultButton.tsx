@@ -6,19 +6,14 @@ import {userStyles} from "../../screens/user/userStyles";
 
 
 // @ts-ignore
-export const DefaultButton = ({ extraStyles, onPressAction, indicatorColor, indicatorSize, text, secondIcon }) => {
+export const DefaultButton = ({ extraStyles, onPressAction, text, secondIcon }) => {
     // @ts-ignore
     const loading = useSelector(state => state.loading.value);
 
     return(
         <TouchableOpacity style={extraStyles ? extraStyles: userStyles.changeInfoBtn} onPress={onPressAction}>
-            {loading ? (
-                // @ts-ignore
-                <ActivityIndicator style={{marginRight: 10}} color={!(indicatorColor ? "rgb(255,255,255)": indicatorColor)} size={indicatorSize} />
-            ) : (
-                secondIcon ? secondIcon : null
-            )}
-            <Text style={{color: "#fff"}}>{text}</Text>
+          <Text style={{color: "#fff", marginHorizontal: 5, fontSize: 16}}>{text}</Text>
+          {secondIcon ? secondIcon : null}
         </TouchableOpacity>
     );
 }

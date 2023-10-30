@@ -53,8 +53,9 @@ export const SetLoading = (state = loading, action: { type: any; payload: any; }
 const icon = {
     value: {
         settingsIcon: "cog-outline",
-        trashIcon: "trash",
+        trashIcon: "trash-can-outline",
         logoutIcon: "logout",
+        arrow: "arrow-right-thin"
     }
 }
 
@@ -73,14 +74,14 @@ export const SetIcon = (state = icon, action: { type: any; payload: any; }) => {
 
 const screens = {
     value: {
-        emailChangeScreen: "EmailChangeComponent",
+        emailChangeScreen: "EmailChange",
         passwordChangeScreen: "PasswordChange",
         logoutScreen: "Logout",
         settingsScreen: "SettingsMain",
         account: "AccountMain",
         plusPlanInfo: "PlusPlanInfo",
         login: "Login",
-        register: "Register",
+        register: "Signup",
         toolsMain: "ToolsMain"
     }
 }

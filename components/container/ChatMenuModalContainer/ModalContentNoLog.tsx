@@ -5,10 +5,11 @@ import React, {useCallback} from "react";
 import {uniStyles} from "../../../screens/universalStyles"
 import {useNavigation} from "@react-navigation/native";
 // Strings
-const historyReminder = "To see your Chat History, you must be {\"\\n\"} logged in.";
+const historyReminder = "To see your Chat History, \n you must be logged in.";
 const loginText = "Login";
 const registerText = "Register";
 import {useSelector} from "react-redux";
+import {themeColors} from "../../../colors/theme";
 
 
 
@@ -29,7 +30,8 @@ export const ModalContentNoLog = // @ts-ignore
                 borderRadius: 10,
                 paddingHorizontal: 10,
                 justifyContent: "center",
-                alignItems: "center"}}>
+                alignItems: "center",
+                }}>
                 <DefaultText text={historyReminder} moreStyles={uniStyles.reminderModalText}/>
             </View>
 

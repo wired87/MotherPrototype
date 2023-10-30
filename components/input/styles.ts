@@ -1,9 +1,13 @@
-import {StyleSheet} from "react-native";
+import {Dimensions, StyleSheet} from "react-native";
+import {themeColors} from "../../colors/theme";
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 export const inputStyles = StyleSheet.create({
-    loginContainerInput: {
-        height: 50,
-        width: 300,
+    defaultInput: {
+        width: windowWidth * .85,
+        justifyContent: "flex-start",
+        textAlign: "justify",
         borderWidth: .5,
         borderColor: '#01152a',
         borderRadius: 9,
@@ -11,5 +15,12 @@ export const inputStyles = StyleSheet.create({
         paddingHorizontal: 10,
         color: '#000000',
         backgroundColor: 'white'
+
     },
+    inputPicker: {
+        width: windowWidth * .8,
+        height: 300,
+        backgroundColor: themeColors.dotNineWhite
+    }
+
 })

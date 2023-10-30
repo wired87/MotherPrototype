@@ -13,7 +13,7 @@ import {createUserWithEmailAndPassword, getAuth} from "firebase/auth";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../components/input/DefaultInput";
 import {HeadingText} from "../../components/text/HeadingText";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import LottieView from "lottie-react-native";
 import failLottie from "../../assets/animations/failLottie.json";
 import successLottie from "../../assets/animations/successLottie.json";
@@ -21,6 +21,7 @@ import {themeColors} from "../../colors/theme";
 import {AlertBox} from "../../components/modals/errorBox";
 import {styles} from "../../components/modals/styles";
 import {userStyles} from "./userStyles";
+import {FIREBASE_AUTH} from "../../firebase.config";
 
 // Text
 const signUpText = "Sign up";
@@ -38,22 +39,23 @@ export const SignUp = (
 ) => {
 
     // @ts-ignore
-    const text = useSelector(state => state.text.text)
+    const text = useSelector(state => state.text.value)
     // @ts-ignore
-    const screen = useSelector(state => state.screens.screen)
+    const screen = useSelector(state => state.screens.value)
 
-    const auth = getAuth();
+    const auth = FIREBASE_AUTH;
+
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [modalVisible, setVisibility] = useState(false);
     const [inputError, setError] = useState("");
-    const [user, setUser] = useState("");
 
     const onChangeEmail = useCallback((text: React.SetStateAction<string>) => setEmail(text), []);
     const onChangePassword = useCallback((text: React.SetStateAction<string>) => setPassword(text), []);
     const onSignUp = useCallback(() => signUp(), []); // change onSignUp on google login btn to right funcktion -> creat right fucntion
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+
     const signUp = async () => {
         try {
             // @ts-ignore
@@ -63,7 +65,7 @@ export const SignUp = (
             };
             dispatch(action);
             // @ts-ignore
-            setUser(await createUserWithEmailAndPassword(auth, email, password));
+            const user = await createUserWithEmailAndPassword(auth, email, password);
             setError(success);
             console.log("user: ", user);
             setVisibility(true)
@@ -104,7 +106,7 @@ export const SignUp = (
                                    indicatorColor={themeColors.headerText}
                                    onPressAction={onSignUp}
                                    indicatorSize={indicatorSize}
-                                   secondIcon={null}
+                                   secondIcon={undefined}
                                    extraStyles={undefined} />
 
                     <Text style={userStyles.authTextInfo}>Or</Text>
@@ -119,9 +121,10 @@ export const SignUp = (
                         extraStyles={undefined}
                         secondIcon={
                             <MaterialCommunityIcons
-                                           style={{marginRight: 5}}
-                                           name={googleIcon}
-                                           color={"#fff"} size={26}/>
+                               style={{marginRight: 5}}
+                               name={googleIcon}
+                               color={"#fff"} size={26}
+                            />
                         }
                     />
                 </View>
@@ -130,11 +133,14 @@ export const SignUp = (
                 modalVisible={modalVisible}
                 setModalVisible={setVisibility}
                 buttonText={inputError.includes(text.success) ? text.goHomeText : text.tryAgain}
-                redirectAction={inputError.includes(text.success) ? navigation.navigate(screen.account) : null}
+                redirectAction={
+                inputError.includes(text.success) ?
+                    navigation.navigate("AuthNavigator", {screen: screen.account}) : undefined
+                }
                 errorAnimation={
                     <LottieView
                         source={inputError.includes(text.success) ? failLottie : successLottie}
-                        style={styles.lottieAnimationView}/>
+                        style={styles.lottieAnimationViewContainer}/>
                 }
             />
         </SafeAreaView>

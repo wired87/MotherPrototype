@@ -1,0 +1,21 @@
+value: Der Textwert, der im Textfeld angezeigt wird.
+onChangeText: Eine Callback-Funktion, die aufgerufen wird, wenn sich der Text im Textfeld ändert. Die aktuelle Texteingabe wird als Argument an die Funktion übergeben.
+placeholder: Ein Text, der im Textfeld angezeigt wird, wenn es leer ist, um dem Benutzer zu zeigen, was eingegeben werden soll.
+placeholderTextColor: Die Farbe des Platzhaltertextes.
+secureTextEntry: Wenn true, wird die Eingabe verdeckt, was bei Passwortfeldern nützlich ist.
+multiline: Ermöglicht mehrzeilige Eingaben, wenn auf true gesetzt.
+numberOfLines: Gibt an, wie viele Zeilen das Textfeld haben soll, wenn multiline auf true gesetzt ist.
+editable: Bestimmt, ob das Textfeld bearbeitbar ist. Wenn auf false gesetzt, kann der Benutzer keinen Text eingeben oder ändern.
+keyboardType: Definiert die Art der Tastatur, die angezeigt werden soll (z.B. default, numeric, email-address).
+autoCapitalize: Steuert, ob die Anfangsbuchstaben automatisch großgeschrieben werden sollen (none, sentences, words, characters).
+autoCorrect: Ob das Textfeld Auto-Korrektur-Vorschläge anbietet.
+autoFocus: Wenn auf true gesetzt, erhält das Textfeld beim Rendern automatisch den Fokus.
+blurOnSubmit: Wenn auf true gesetzt, verliert das Textfeld den Fokus, wenn der Benutzer auf "Senden" drückt.
+caretHidden: Verbirgt den Cursor im Textfeld, wenn auf true gesetzt.
+maxLength: Die maximale Anzahl an Zeichen, die im Textfeld eingegeben werden können.
+onBlur: Callback, der aufgerufen wird, wenn das Textfeld den Fokus verliert.
+onFocus: Callback, der aufgerufen wird, wenn das Textfeld den Fokus erhält.
+onSubmitEditing: Callback, der aufgerufen wird, wenn der Benutzer die Eingabetaste auf der Tastatur drückt.
+returnKeyType: Bestimmt das Aussehen der "Enter"-Taste auf der Tastatur (z.B. done, go, next, search, send).
+selectTextOnFocus: Wenn auf true gesetzt, wird der gesamte Text im Textfeld ausgewählt, wenn es den Fokus erhält.
+textContentType: Gibt Hinweise an das Betriebssystem über den Inhaltstyp des Textfelds, wie z.B. password oder emailAddress, was für Autofill-Funktionen genutzt werden kann.
