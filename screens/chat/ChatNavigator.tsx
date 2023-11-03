@@ -15,6 +15,8 @@ import {Dimensions, View} from "react-native";
 import {HeaderView} from "../../components/container/headerContainer";
 import {AccountMain} from "../user/Account";
 import {AuthNavigator} from "../user/AuthNavigator";
+import {themeColors} from "../../colors/theme";
+import {colors} from "../../Redux/cases";
 const windowWidth = Dimensions.get('window').width;
 export const ChatNavigation = () => {
     // State variables
@@ -32,6 +34,10 @@ export const ChatNavigation = () => {
 
     // @ts-ignore
     const screen = useSelector(state => state.screens.value)
+  // @ts-ignore
+    const icon = useSelector(state => state.icon.value)
+  // @ts-ignore
+    const darkmode = useSelector(state => state.darkmode.value)
 
 
     const navigation = useNavigation();
@@ -79,10 +85,12 @@ export const ChatNavigation = () => {
         }
     }, [user])
 
-    return(
+
+  return(
         <ChatStack.Navigator
             initialRouteName="ChatMain"
             screenOptions={{
+              // @ts-ignore
                 header:
                     (props: any) =>
                         <DefaultHeader
@@ -92,60 +100,65 @@ export const ChatNavigation = () => {
                             statement={undefined}
                             children={
                                 <>
-                                    <HeaderView children={undefined} extraStyles={undefined} />
+                                  <HeaderView children={undefined} extraStyles={undefined} />
 
-                                    <HeaderView
-                                        extraStyles={{justifyContent: "center", alignItems: "center", left: 3}}
-                                        children={
-                                            <Menu
-                                                anchor={
-                                                    <Appbar.Action
-                                                        icon="menu"
-                                                        onPress={openModal}
-                                                        size={30}
-                                                    />
-                                                }
-                                                children={undefined}
-                                                visible={visible}
-                                            />
+                                  <HeaderView
+                                    extraStyles={{justifyContent: "center", alignItems: "center", left: 3}}
+                                    children={
+                                      <Menu
+                                        anchor={
+                                          <Appbar.Action
+                                            icon="menu"
+                                            color={darkmode.headerIconColors}
+                                            onPress={openModal}
+                                            size={30}
+                                          />
                                         }
-                                    />
-                                    <HeaderView
-                                        extraStyles={{justifyContent: "flex-end", alignItems: "flex-end"}}
-                                        children={
-                                            <Menu
-                                                anchor={
-                                                    <Appbar.Action
-                                                        icon="account-circle-outline"
-                                                        // @ts-ignore
-                                                        onPress={() => navigation.navigate( "AuthNavigator", {screen: user? screen.account : screen.login})}
-                                                        size={30}
-                                                    />
-                                                }
-                                                children={undefined}
-                                                visible={visible}
-                                            />
+                                        children={undefined}
+                                        visible={visible}
+                                      />
+                                    }
+                                  />
+                                  <HeaderView
+                                    extraStyles={{justifyContent: "flex-end", alignItems: "flex-end"}}
+                                    children={
+                                      <Menu
+                                        anchor={
+                                          <Appbar.Action
+                                            icon="account-circle-outline"
+                                            color={darkmode.headerIconColors}
+
+                                          // @ts-ignore
+                                            onPress={() => navigation.navigate( "AuthNavigator", {screen: user? screen.account : screen.login})}
+                                            size={30}
+                                          />
                                         }
-                                    />
-                                    <SwipeModal
-                                        animation={true}
-                                        modalVisible={modalVisible}
-                                        closeModal={closeModal}
-                                        setAnimation={setAnimation}
-                                        Content={
-                                        <ChatMenuModalContent
-                                            history={history}
-                                            setText={setText}
-                                            loading={loading}
-                                            action={onPressHistory}/>}/>
+                                        children={undefined}
+                                        visible={visible}
+                                      />
+                                    }
+                                  />
+                                  <SwipeModal
+                                    animation={true}
+                                    modalVisible={modalVisible}
+                                    closeModal={closeModal}
+                                    Content={
+                                    <ChatMenuModalContent
+                                      history={history}
+                                      setText={setText}
+                                      loading={loading}
+                                      action={onPressHistory}/>}/>
                                 </>
                             }/>
                         }}>
-            <ChatStack.Screen name="ChatMain">
+            <ChatStack.Screen  name="ChatMain">
                 {(props) =>
-                    <ChatMain setSend={undefined} {...props} send={send}
-                              setSendHistoryMessage={setSend}
-                              text={text} setText={setText} />
+                    <ChatMain
+                      setSend={undefined}
+                      {...props}
+                      send={send}
+                      setSendHistoryMessage={setSend}
+                      text={text} setText={setText} />
                 }
             </ChatStack.Screen>
 

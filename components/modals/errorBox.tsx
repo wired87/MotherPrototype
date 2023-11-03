@@ -1,37 +1,39 @@
 import React from 'react';
 import { Modal, StyleSheet, Text, Pressable, View} from 'react-native';
 // @ts-ignore
-export const AlertBox = ({ modalVisible, setModalVisible, buttonText, errorAnimation, redirectAction}) => {
-    return (
-        <View style={styles.centeredView}>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-                supportedOrientations={ // just IOS
-                    ['portrait', 'landscape']
-                }>
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <View>
-                            {errorAnimation}
-                        </View>
+export const AlertBox = ({ modalVisible, setModalVisible, buttonText}) => {
 
-                        <Pressable
-                            style={[styles.button, styles.buttonClose]}
-                            onPress={() => {
-                                setModalVisible(!modalVisible);
-                            }}>
-                            <Text style={styles.textStyle} onPress={redirectAction}>{buttonText}</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>
-        </View>
-    );
+  const onPress = () => {
+    setModalVisible(!modalVisible)
+
+  }
+
+  return (
+    <View style={styles.centeredView}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+            setModalVisible(!modalVisible);
+        }}
+        supportedOrientations={ // just IOS
+            ['portrait', 'landscape']
+        }>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  setModalVisible(!modalVisible)
+                }}>
+                  <Text style={styles.textStyle}>{buttonText}</Text>
+              </Pressable>
+            </View>
+          </View>
+      </Modal>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

@@ -41,9 +41,10 @@ const inputOptions = [
 
 
 
-export const Contact = () => {
+// @ts-ignore
+export const Contact = ({ closeModal }) => {
     const [submit, setSubmit] = useState(false);
-    const [seconds, setSeconds] = useState(3);
+    const [seconds, setSeconds] = useState(5);
     const [status, setStatus] = useState(null);
     const [error, setError] = useState(null);
     const [form, setForm] = useState({
@@ -58,11 +59,12 @@ export const Contact = () => {
     // Use the useEffect hook to handle the countdown logic
     useEffect(() => {
         let interval: string | number | NodeJS.Timeout | undefined;
-        if (submit) {
+        if (status === 200 || status === 201) {
             interval = setInterval(() => {
                 setSeconds((prevSeconds) => {
                     if (prevSeconds <= 1) {
                         clearInterval(interval);
+                        closeModal();
                         return 0;
                     } else {
                         return prevSeconds - 1;
@@ -120,7 +122,17 @@ export const Contact = () => {
   return (
       <ScrollView contentContainerStyle={{justifyContent: "center", alignItems: "center"}} style={{paddingTop: 50}} >
         {status === 201 || status === 200 ? (
-          <LottieView style={{height: 40, width: 40,}} source={require("../../../assets/animations/successLottie.json")} autoPlay loop />
+          <>
+              <LottieView style={{height: 40, width: 40,}}
+                        source={require("../../../assets/animations/successLottie.json")} autoPlay
+                        loop/>
+              <DefaultText
+                text={"Thanks for your message! \n Someone from our Team wil contact you ASAP"}
+                moreStyles={undefined}/>
+              <DefaultText
+                text={"This modal will be closed in" + seconds + "seconds."}
+                moreStyles={undefined}/>
+          </>
         ): status === 400 || status === 404 ? (
           <LottieView source={require("../../../assets/animations/failLottie.json")} autoPlay loop />
           ):(
@@ -164,7 +176,11 @@ export const Contact = () => {
                 ):null)
               ):null}
               <View>
-                <LottieView source={require("../../../assets/animations/successSent.json")} autoPlay />
+                  <>
+                    <LottieView style={{height: 40, width: 40,}} source={require("../../../assets/animations/successSent.json")}
+                                autoPlay={true}
+                                loop={true}/>
+                  </>
                 {inputOptions.map((item, index) => (
                   <DefaultInput
                     key={index}

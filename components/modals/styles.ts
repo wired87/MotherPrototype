@@ -3,6 +3,7 @@ import {StyleSheet} from "react-native";
 export const styles = StyleSheet.create({
     errorText: {
         textAlign: 'center',
+        fontFamily: "JetBrainsMono",
         marginVertical: 40,
         lineHeight: 25,
         fontSize: 18,

@@ -9,18 +9,18 @@ import {View} from "react-native";
 export const AreYouSureContainer = ({ text, action, closeModalAction }) => {
     return(
         <DefaultContainer
-            extraStyles={undefined}>
+            extraStyles={{paddingHorizontal: 20, gap: 50,}}>
             <DefaultText
                 text={text}
                 moreStyles={styles.modalH4} />
             <View style={{flexDirection: "row"}}>
                 <DefaultPageNavigationBtn
-                    text={"skip"}
+                    text={"Skip"}
                     onPressAction={closeModalAction}
                     extraTextStyles={undefined}
                     extraBtnStyles={undefined} />
                 <DefaultPageNavigationBtn
-                    text={"do it!"}
+                    text={"Do it!"}
                     onPressAction={action}
                     extraTextStyles={undefined}
                     extraBtnStyles={undefined} />

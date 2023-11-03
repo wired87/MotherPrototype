@@ -1,5 +1,16 @@
-import React, {Key, useCallback, useEffect, useState} from 'react'
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated, Image, FlatList} from 'react-native'
+import React, {Key, useCallback, useEffect, useRef, useState} from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+  Image,
+  FlatList,
+  ActivityIndicator,
+  Alert, Share
+} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import {LinearGradient} from "expo-linear-gradient";
@@ -16,15 +27,19 @@ import {AreYouSureContainer} from "../../components/container/AreYouSureContaine
 import axios from "axios/index";
 import {ChatMenuModalContent} from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
 import {Contact} from "../../components/container/modalContainers/Contact";
+import {FeaturesInFuture} from "../../components/container/modalContainers/FeaturesInFuture";
+import {themeColors} from "../../colors/theme";
+import {DarkMode} from "../../components/container/modalContainers/DarkMode";
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 
 /////////////////////////////////////////////////////////////////////////////////////DATA FOR FAILED AND SUCCESS EINBAUENS
 
-export const SettingsMain = () => {
+export const  SettingsMain = () => {
     const [visible, setVisible] = useState(false);
     const [animation, setAnimation] = useState(false);
     const [data, setData] = useState(null);
+    const [status, setStatus] = useState(null);
 
     const dispatch = useDispatch()
 
@@ -32,8 +47,10 @@ export const SettingsMain = () => {
     const text = useSelector(state => state.text.value)
     // @ts-ignore
     const icon = useSelector(state => state.icon.value)
-
-
+    // @ts-ignore
+    const loading = useSelector(state => state.loading.value)
+    // @ts-ignore
+    const darkmode = useSelector(state => state.darkmode.value)
 
     const deleteHistory = useCallback(async() => {
         dispatch({
@@ -41,7 +58,10 @@ export const SettingsMain = () => {
             payload: true
         });
         try {
-            const response = await axios.post("http://endpoint")
+            const response = await axios.post("http://192.168.178.51:8000/delete-chat-history/")
+            // @ts-ignore
+            setStatus(response.status);
+
             console.log("response: " + response);
         } catch(error) {
             console.log("error: " + error);
@@ -64,23 +84,49 @@ export const SettingsMain = () => {
         setAnimation(true);
     },[]);
 
-
+    const share = useCallback(async() => {
+      try {
+        const result = await Share.share({
+          title: "Share AIX",
+          message: "Your AI https://pornhub.de",
+          url: "https://pornhub.de",
+        },
+        {
+          dialogTitle: "Look at this cool new App!",
+          subject: "AIX the cooles AI-App ever!",
+          tintColor: themeColors.sexyBlue,
+        });
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            console.log("1")
+          } else {
+            console.log("2")
+          }
+        } else if (result.action === Share.dismissedAction) {
+          console.log("3")
+        }
+      } catch (error: any) {
+        console.log(error.message)
+        Alert.alert(error.message);
+      }
+    }, [])
 
 
     let settings = [
         {
             id: 1,
-            icon: <Icon name="translate" size={26} color="white" />,
-            title: "Language",
-            navigate: "",
-            data: null
-        },
-        {
-            id: 2,
             icon: <Icon name="theme-light-dark" size={26} color="white" />,
             title: "Theme",
             navigate: "",
-            data: null
+            data: <DarkMode />
+        },
+        {
+            id: 2,
+            icon: <Icon name="help-box" size={26} color="white" />,
+            title: "Help and Contact",
+            navigate: "",
+            data: <Contact
+              closeModal={closeModal}/>
         },
         {
             id: 3,
@@ -88,16 +134,9 @@ export const SettingsMain = () => {
             title: "Delete History",
             navigate: "",
             data: <AreYouSureContainer
-                text={"Are you sure to delete your History?"}
-                action={deleteHistory}
-                closeModalAction={closeModal} />
-        },
-        {
-            id: 4,
-            icon: <Icon name="help-box" size={26} color="white" />,
-            title: "Help and Contact",
-            navigate: "",
-            data: <Contact />
+              text={"Are you sure to delete your History?"}
+              action={deleteHistory}
+              closeModalAction={closeModal} />
         },
     ]
     let other = [
@@ -106,7 +145,13 @@ export const SettingsMain = () => {
             icon: <Icon name="help-circle" size={26} color="white" />,
             title: "Features in Future",
             navigate: "",
-            data: null
+            data: <FeaturesInFuture
+              setData={setData}
+              contactScreen={
+                  <Contact
+                    closeModal={closeModal}/>
+              }
+          />
         },
         {
             id: 2,
@@ -157,7 +202,7 @@ export const SettingsMain = () => {
             list: about,
         }
     ]
-
+//options={{ headerBackground: darkmode.primary }}
 
     const buttonPress = useCallback(() => {
 
@@ -165,38 +210,40 @@ export const SettingsMain = () => {
 
     // @ts-ignore
     return (
-        <ScrollView
-            contentContainerStyle={{ flexGrow: 1, backgroundColor: 'rgb(255,255,255)', paddingVertical: 50}}
-            showsVerticalScrollIndicator={false}>
-            <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: darkmode.primary}}
+        showsVerticalScrollIndicator={false}>
+          <View style={[styles.container, {backgroundColor: "transparent",}]}>
 
-                <PlusAdContainer />
+              <PlusAdContainer />
 
-                {lists.map((item, index) => (
-                    <SmallFlatLoop
-                        key={item.id}
-                        openModal={openModal}
-                        headingText={item.heading}
-                        list={item.list}
-                        setData={setData}  />
-
-                    ))}
-
-                <BottomImage />
-
-                <SwipeModal
-                    animation={true}
-                    modalVisible={visible}
-                    closeModal={closeModal}
-                    setAnimation={setAnimation}
-                    Content={
-                        data
-                    }
+              {lists.map((item, index) => (
+                <SmallFlatLoop
+                  key={item.id}
+                  openModal={openModal}
+                  headingText={item.heading}
+                  list={item.list}
+                  setData={setData}
+                  share={share}
                 />
+              ))}
 
+              <BottomImage />
 
-            </View>
-        </ScrollView>
+              <SwipeModal
+                animation={true}
+                modalVisible={visible}
+                closeModal={closeModal}
+                Content={
+                    loading? (
+                      <ActivityIndicator size={"large"}  />
+                    ):(
+                      data
+                    )
+                }
+              />
+          </View>
+      </ScrollView>
     )
 }
 
@@ -205,6 +252,10 @@ export const SettingsMain = () => {
 
 
 /*
+): success? (
+                    <LottieView />
+                  ): error? (
+                    <LottieView />
     useEffect(() => {
         const interval = setInterval(() => {
             let newTopIndex = topIndex + 1;

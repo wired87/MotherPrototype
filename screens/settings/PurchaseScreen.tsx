@@ -9,13 +9,16 @@ import ToggleButton from '../../components/buttons/ToggleButton';
 import {themeColors} from "../../colors/theme";
 import {settingStyles as styles} from "./settingStyles";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {useSelector} from "react-redux";
+import {LinearGradient} from "expo-linear-gradient";
+import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 // str
 const continuePurchaseText = "Continue";
-const headingText = "Test Pro for Free";
+const headingText = "Choose your Plan!";
 
 // lists
 let optionsData = [
@@ -50,12 +53,14 @@ const buttonText = [
         text: "$39.99/Year"
     }
 ]
-
+// darkmode.navigatorColor
 
 export const PurchaseScreen = () => {
-
+    // @ts-ignore
+    const darkmode = useSelector(state => state.darkmode.value);
     const [selected, setSelected] = useState(1);
-
+    // @ts-ignore
+    const colors = useSelector(state => state.colors.value);
     // @ts-ignore
     const icon = useSelector(state => state.icon.value)
 
@@ -70,57 +75,53 @@ export const PurchaseScreen = () => {
     }
 
     return (
-        <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center", marginTop: 20, padding: 0 }}
-            // @ts-ignore
-                      contentContainerStyle={{
-                          flex: 1,
-                          justifyContent: "center",
-                          alignItems: "center"}}>
-            <ScrollView showsVerticalScrollIndicator={false} style={{marginTop: 40}}>
-                <View style={{ paddingHorizontal: 10 }}>
-                    <HeadingText extraStyles={styles.Heading} text={headingText}/>
-                    <Text style={styles.SubHeading}>GET ACCESS TO</Text>
-                </View>
+      <SafeAreaView
+        style={{flex: 1, justifyContent: "center", alignItems: "center", marginTop: 20, padding: 0, backgroundColor: darkmode.primary }}
 
-                {/* Good stuff */}
-                <View style={{width: windowWidth, justifyContent: "center", alignItems: "center", flex: 1}}>
-                    <FlatList
-                        style={styles.Box}
-                        data={optionsData}
-                        renderItem={({ item }) => (
-                            <SingleProContainer text={item.text} />
-                        )}
-                    />
-                </View>
+        // @ts-ignore
+                    contentContainerStyle={{
+                        flex: 1,
+                        backgroundColor: darkmode.primary,
+                        justifyContent: "center",
+                        alignItems: "center"}}>
+          <ScrollView
+            contentContainerStyle={{
+              flex: 1,
+              backgroundColor: darkmode.primary,
+              justifyContent: "center",
+              alignItems: "center"}}
+            showsVerticalScrollIndicator={false}
+            style={{marginTop: 40, backgroundColor: darkmode.primary}}>
 
-                <View style={styles.ButtonSection}>
-                    <FlatList
-                        data={buttonText}
-                        renderItem={({ item }) => (
-                            <ToggleButton select={selected === item.id} setSelect={() => handleOptionSelect(item.id)} title={item.text} />
-                        )}
-                    />
-                    <View style={styles.BottomTextCont}>
-                        <Icon name="lock" size={20} color="#9b9e9b" />
-                        <Text style={styles.BottomText}>
-                            Safe Payment Process with Google Play. {"\n"}
-                            Week-/Monthly Plans can be cancelled at any time
-                        </Text>
-                    </View>
+              <View style={{ paddingHorizontal: 10 }}>
+                  <HeadingText extraStyles={styles.Heading} text={headingText}/>
+                  <Text style={styles.SubHeading}>GET ACCESS TO</Text>
+              </View>
+              {/* Good stuff  style={{ width: windowWidth, flex: 1, backgroundColor: darkmode.secondaryContainerBackground}}*/}
+              <PlusAdContainer />
+              <View style={styles.ButtonSection}>
+                  {buttonText.map((item, index) => (
+                    <ToggleButton key={index} select={selected === item.id} setSelect={() => handleOptionSelect(item.id)} title={item.text} />
+                  ))}
+                  <View style={styles.BottomTextCont}>
+                      <Icon name="lock" size={20} color="#9b9e9b" />
+                      <Text style={styles.BottomText}>
+                          Safe Payment Process with Google Play. {"\n"}
+                          Week-/Monthly Plans can be cancelled at any time
+                      </Text>
+                  </View>
 
-                    <DefaultButton
-                        extraStyles={styles.BottomLastBtn}
-                        onPressAction={undefined}
-                        indicatorColor={undefined}
-                        indicatorSize={undefined}
-                        text={continuePurchaseText} // <Text style={[styles.BottomLastBtnText, { flex: 1 }]}></Text>
-                        secondIcon={
-                            <MaterialCommunityIcons name={icon.arrow} size={30} color={"rgba(255,255,255, .6)"} />
-                        }
-                    />
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                  <DefaultButton
+                    extraStyles={styles.BottomLastBtn}
+                    onPressAction={undefined}
+                    text={continuePurchaseText} // <Text style={[styles.BottomLastBtnText, { flex: 1 }]}></Text>
+                    secondIcon={
+                        <MaterialCommunityIcons name={icon.arrow} size={30} color={"rgba(255,255,255, .6)"} />
+                    }
+                  />
+              </View>
+          </ScrollView>
+      </SafeAreaView>
     );
 }
 

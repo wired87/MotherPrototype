@@ -9,50 +9,63 @@ const Tab = createMaterialBottomTabNavigator();
 
 const windowWidth = Dimensions.get('window').width;
 
+import {useSelector} from "react-redux";
+import {themeColors} from "../../colors/theme";
+import useNavigation from "react";
+import {useRoute} from "@react-navigation/native";
 
 
 export default function NavigationMain() {
     const theme = useTheme();
-    theme.colors.secondaryContainer = "transparent";
 
-    return (
+    theme.colors.secondaryContainer = "transparent"; // set the focus shadow of the tab bar to transüarent
+
+    // @ts-ignore
+    const darkmode = useSelector(state => state.darkmode.value);
+
+  // @ts-ignore
+  return (
         <Tab.Navigator
             shifting={false}
             labeled={false}
             initialRouteName="Chat"
-            activeColor={'#01152a'}
-            inactiveColor={"rgb(0, 0, 0)"}
+            activeColor={themeColors.sexyBlue} //
+            inactiveColor={themeColors.sexyBlue}
+            backBehavior={"firstRoute"}
             barStyle={{
-                height:58,
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingHorizontal: 0,
-                paddingVertical: 0,
-                backgroundColor: "#f6f6f6",
+              height:60,
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              paddingHorizontal: 0,
+              paddingVertical: 0,
+              backgroundColor: darkmode.navigatorColor,
             }}>
             <Tab.Screen
-                name="Chat"
-                component={ChatNavigation} // if the Screen Component contains any props just pass them at the bottom
-                options={{
-                    // tabBarBadge: 0, take it to show new messages
-                    tabBarColor: "transparent",
-                    // @ts-ignore
-                    headerShown: false,
-                    tabBarIconStyle: { display: "none"},
-                    // tabBarOnPress: animations for tabPress
-                    tabBarIcon: ({ color, focused }) => (
-                        <MaterialCommunityIcons  name={focused ? "comment-multiple" : "comment-multiple-outline"} color={color} size={26} />
-                    ),
-                }}
+              name="Chat"
+              component={ChatNavigation} // if the Screen Component contains any props just pass them at the bottom
+              options={{
+                  // tabBarBadge: 0, take it to show new messages
+                  tabBarColor: darkmode.navigatorColor ,
+                  // @ts-ignore
+                  headerShown: false,
+                  tabBarIconStyle: { display: "none"},
+                  // tabBarOnPress: animations for tabPress
+
+                  tabBarIcon: ({ color, focused }) => (
+                      <MaterialCommunityIcons style={{top: 0, position: "relative"}} name={focused ? "comment-multiple" : "comment-multiple-outline"} color={color} size={29} />
+                  ),
+              }}
             />
             <Tab.Screen
+
                 name="Settings"
                 component={SettingNavigation} // if the Screen Component contains any props just pass them at the bottom
                 options={{
-                    tabBarIcon: ({ color, focused }) => (// @ts-ignore
-                        <MaterialCommunityIcons name={focused ? "cog" : "cog-outline"} iconColor={color} size={26} />
-                    ),
-                }}
+
+                  tabBarIcon: ({ color, focused }) => (// @ts-ignore
+                      <MaterialCommunityIcons name={focused ? "cog" : "cog-outline"} color={color} size={29} />
+                  ),
+              }}
             />
         </Tab.Navigator>
     );

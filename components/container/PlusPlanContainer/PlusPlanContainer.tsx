@@ -1,13 +1,14 @@
-import {Animated, FlatList, Text, View} from "react-native";
+import {Animated, Dimensions, FlatList, Text, View} from "react-native";
 import React, {useCallback, useEffect, useState} from "react";
 import {LinearGradient} from "expo-linear-gradient";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import Chroma from 'chroma-js';
 import {styles} from "../../styles";
+import {settingStyles} from "../../../screens/settings/settingStyles";
 import MIcon from "react-native-vector-icons/MaterialIcons";
 import {DefaultButton} from "../../buttons/DefaultButton";
 import {SingleProContainer} from "./SingleProContainer";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 
@@ -19,12 +20,27 @@ const BOTTOM_COLORS_SPECTRUM = Chroma.scale(BOTTOM_COLORS).colors(GRADIENT_COLOR
 const INTERVAL = 2;
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+const windowWidth = Dimensions.get('window').width;
+
+let optionsData = [
+    {
+        text: "Unlimited Access and Messages"
+    },
+    {
+        text: "Access to GPT-4V"
+    },
+    {
+        text: "No Ads anymore!"
+    },
+]
 
 export const PlusAdContainer = () => {
+
     const [topIndex, setTopIndex] = useState(0);
     const [bottomIndex, setBottomIndex] = useState(0);
     const [colorTop, setColorTop] = useState(TOP_COLORS_SPECTRUM[0]);
     const [colorBottom, setColorBottom] = useState(BOTTOM_COLORS_SPECTRUM[0]);
+    const route = useRoute();
 
     // @ts-ignore
     const text = useSelector(state => state.text.value)
@@ -54,31 +70,43 @@ export const PlusAdContainer = () => {
     }, [topIndex, bottomIndex]);
 
     const navigation = useNavigation();
+    const dispatch = useDispatch()
 
+    // @ts-ignore
     const onExplore = useCallback(() => {
+        console.log("route: ", route)
+        if (route.name === "AccountMain") {
+            console.log("PURCHASEACCESS")
+            dispatch({
+                type: 'PURCHASEACCESS',
+                payload: true
+            });
+        }
         // @ts-ignore
-        navigation.navigate(screens.plusPlanInfo);
+        navigation.navigate("Settings", {
+            screen: screens.purchaseScreen
+        });
     }, []);
 
-
-
     return(
-        <LinearGradient style={styles.topBtn} colors={[colorTop, colorBottom]}>
-            <View style={styles.header}>
-                <Text style={{ color: 'white', fontSize: 28, }}>Upgrade To Pro</Text>
-            </View>
-            <View style={{flexDirection: "column"}}>
-                <SingleProContainer text={"No Ads anymore!"} />
-                <SingleProContainer text={"Unlimited Messages!"} />
-                <SingleProContainer text={"Access to \n GPT-4V!"} />
-            </View>
-            <DefaultButton
-                extraStyles={styles.btnContainer}
+        <LinearGradient style={settingStyles.topBtn} colors={[colorTop, colorBottom]} >
+                <View style={styles.header}>
+                    <Text style={{ color: 'white', fontSize: 20, fontWeight: "bold", marginBottom: 5}}>Upgrade To Pro</Text>
+                </View>
+            {optionsData.map((item, index) => (
+              <SingleProContainer key={index} text={item.text} />
+            ))}
+            {!(route.name === "PurchaseScreen")? (
+              <DefaultButton
+                extraStyles={[
+                    styles.btnContainer,
+                    {width: windowWidth * .8, flexDirection: "row",
+                        justifyContent: "center", alignItems: "center", textAlign: "center"}]}
                 onPressAction={onExplore}
-                indicatorColor={undefined}
-                indicatorSize={text.indicatorSizeSmall}
                 text={text.plusPlanButton}
-                secondIcon={<MaterialCommunityIcons name={icon.arrow} size={20} color="#40434f" />} />
+                secondIcon={<MaterialCommunityIcons name={icon.arrow} size={28} color="rgba(255,255,255,.8)" />} />
+            ):null}
+
         </LinearGradient>
     );
 }

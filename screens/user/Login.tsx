@@ -10,13 +10,10 @@ import {
     getAuth,
     GoogleAuthProvider,
     signInWithCredential,
+  onAuthStateChanged,
     signInWithEmailAndPassword,
-    updatePassword
 } from "firebase/auth";
 
-// @ts-ignore
-import errorImg from "../../assets/images/errorImg.png";
-// @ts-ignore
 import * as Google from "expo-auth-session/providers/google";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../components/input/DefaultInput";
@@ -24,12 +21,9 @@ import {HeadingText} from "../../components/text/HeadingText";
 import {useDispatch, useSelector} from "react-redux";
 import {themeColors} from "../../colors/theme";
 // @ts-ignore
-import successAuth from "../../assets/images/successAuth";
 import {userStyles} from "./userStyles";
 import {AlertBox} from "../../components/modals/errorBox";
-import failLottie from "../../assets/animations/failLottie.json";
-import successLottie from "../../assets/animations/successLottie.json";
-import {styles} from "../../components/modals/styles";
+
 
 
 
@@ -44,8 +38,6 @@ export default function Login({navigation}) {
     const [modalVisible, setVisibility] = useState(false);
 
     const auth = getAuth();
-    const user = auth.currentUser;
-
     // @ts-ignore
     const text = useSelector(state => state.text.value)
     // @ts-ignore
@@ -57,102 +49,119 @@ export default function Login({navigation}) {
     });
     // declare allways inside component at the top of return
 
-    React.useEffect(() => {
-        if (response?.type === 'success') {
-            const { id_token } = response.params;
-            const credential = GoogleAuthProvider.credential(id_token); //response.params.accessToken
-            signInWithCredential(auth, credential).then(() => console.log("success"));
-        }
+    useEffect(() => {
+      if (response?.type === 'success') {
+        const { id_token } = response.params;
+        const credential = GoogleAuthProvider.credential(id_token); //response.params.accessToken
+        signInWithCredential(auth, credential).then(() => console.log("success"));
+      }
     }, [response])
 
-    // Memisierte funktion
+
     // useCallback to not load your function every time the user visits the webspagfe.
     // this increase the performence of the mobileapp
     const onChangeEmail = useCallback((text: React.SetStateAction<string>) => setEmail(text), []);
     const onChangePassword = useCallback((text: React.SetStateAction<string>) => setPassword(text), []);
+
     const dispatch = useDispatch()
 
-    const onSignIn = useCallback(async () => {
-        try {
-            // @ts-ignore
-            dispatch({
-                type: 'LOADING',
-                payload: true
-            });
-            const manualLoginResponse = await signInWithEmailAndPassword(getAuth(), email, password);
-            setError(text.success);
-            console.log("response:", manualLoginResponse)
-            setVisibility(true);
-        } catch (error) {
-            // @ts-ignore
-            setError(error.message);
-            setVisibility(true);
-            // @ts-ignore
-            console.log("please check your Input and try again. \n" + error.message);
-        } finally {
-            // @ts-ignore
-            dispatch({
-                type: 'LOADING',
-                payload: false
-            });
-        }
-    }, [email, password]);
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigation.navigate("AuthNavigator", {screen: screen.account}); // Use 'replace' to prevent going back to the login screen
+      } else {
+        setError("Could not sign in")
+      }
+    });
+  }, []);
 
-    useEffect(() => {
+
+
+    const onSignIn = async () => {
+      // @ts-ignore
+      dispatch({
+        type: 'LOADING',
+        payload: true
+      });
+      try {
+        await signInWithEmailAndPassword(auth, email, password).then(() => {
+          setError(text.success);
+        })
+      } catch (error) {
         // @ts-ignore
-        if (user.email) {
-            navigation.navigate("AuthNavigator", {screen: "account"});
-        }
-    }, []);
-
-
+        setError(error.message);
+        setVisibility(true);
+        // @ts-ignore
+        console.log("please check your Input and try again. \n" + error.message);
+      } finally {
+        // @ts-ignore
+        dispatch({
+          type: 'LOADING',
+          payload: false
+        });
+      }
+  };
 
     return(
-        <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <View style={userStyles.loginContainer}>
+      <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <View style={userStyles.loginContainer}>
 
-                    <HeadingText text={text.signInText} extraStyles={undefined}/>
+            <HeadingText
+              text={text.signInText}
+              extraStyles={undefined}/>
 
-                    <DefaultInput placeholder={text.defaultEmailPlaceholder} value={email}
-                                  onChangeAction={onChangeEmail}
-                                  secure={false} editable={true}/>
-
-                    <DefaultInput placeholder={text.defaultPasswordPlaceholder} value={password}
-                                  onChangeAction={onChangePassword}
-                                  secure={true} editable={true}/>
-
-                    <DefaultButton text={text.signInText}
-                                   indicatorColor={themeColors.headerText}
-                                   onPressAction={onSignIn}
-                                   indicatorSize={text.indicatorSizeSmall}
-                                   secondIcon={null} extraStyles={undefined}/>
-
-                    <Text style={userStyles.authTextInfo}>
-                        Or
-                    </Text>
-                </View>
-                <View style={userStyles.alternativeAuthMethodContainer}>
-                    <DefaultButton text={text.signInWithGoogle}
-                                   indicatorColor={themeColors.headerText}
-                                   onPressAction={onSignIn}
-                                   indicatorSize={text.indicatorSizeSmall}
-                                   secondIcon={<MaterialCommunityIcons
-                                       style={{marginRight: 5}}
-                                       name={googleIcon}
-                                       color={"#fff"} size={26}/>} extraStyles={undefined}/>
-                </View>
-            </KeyboardAvoidingView>
-            <AlertBox
-                modalVisible={modalVisible}
-                setModalVisible={setVisibility}
-                buttonText={error.includes(text.success) ? text.goHomeText : text.tryAgain}
-                redirectAction={error.includes(text.success) ? navigation.navigate("AuthNavigator", {screen: screen.account}) : null}
-                errorAnimation={
-                undefined
-                }
+            <DefaultInput
+              placeholder={text.defaultEmailPlaceholder}
+              value={email}
+              onChangeAction={onChangeEmail}
+              secure={false}
+              editable={true}
+              keyboardType={"email-address"}
             />
-        </SafeAreaView>
+
+            <DefaultInput
+              placeholder={text.defaultPasswordPlaceholder}
+              value={password}
+              onChangeAction={onChangePassword}
+              secure={true}
+              editable={true}
+              keyboardType={undefined}
+            />
+
+            <DefaultButton
+              text={text.signInText}
+              onPressAction={onSignIn}
+              secondIcon={null}
+              extraStyles={undefined}/>
+
+            <Text style={userStyles.authTextInfo}>
+                Or
+            </Text>
+          </View>
+          <View style={userStyles.alternativeAuthMethodContainer}>
+            <DefaultButton
+              text={text.signInWithGoogle}
+              onPressAction={onSignIn}
+              extraStyles={undefined}
+              secondIcon={
+                <MaterialCommunityIcons
+                  style={{marginRight: 5}}
+                  name={googleIcon}
+                  color={"#fff"} size={26}
+                />
+              }
+            />
+          </View>
+        </KeyboardAvoidingView>
+        {!error.includes(text.success) ?(
+          <AlertBox
+            modalVisible={modalVisible}
+            setModalVisible={setVisibility}
+            buttonText={error.includes(text.success) ? text.goHomeText : text.tryAgain}
+          />
+        ):null}
+      </SafeAreaView>
     );
 }
 

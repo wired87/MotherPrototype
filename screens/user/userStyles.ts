@@ -72,10 +72,11 @@ export const userStyles = StyleSheet.create({
     },
     profileSection: {
         borderWidth: 1,
+        paddingVertical: 20,
         borderColor: themeColors.borderThin,
         paddingHorizontal: 20,
         borderRadius: 20,
-        backgroundColor: "rgba(0, 0, 0, .1)"
+
     },
     inputSection: {
         gap: 10,
@@ -94,7 +95,7 @@ export const userStyles = StyleSheet.create({
     buttonIcon: {
         marginHorizontal: 5,
         color:"white",
-
+        marginVertical: 5,
     },
     changeInfoBtn: {
         borderRadius: 9,

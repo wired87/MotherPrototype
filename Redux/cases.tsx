@@ -24,3 +24,16 @@ export const icon = () => ({
 export const screens = () => ({
     type: "SCREENS"
 })
+
+export const darkmode = () => ({
+    type: "DARKMODE"
+})
+export const colors = () => ({
+    type: "COLORS"
+})
+export const purchaseScreenAccessPointBool = () => ({
+    type: "PURCHASEACCESS"
+})
+export const newLogout = () => ({
+    type: "NEW_LOGOUT"
+})

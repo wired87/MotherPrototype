@@ -1,11 +1,10 @@
 import {Dimensions, StyleSheet} from "react-native";
 import {themeColors} from "../../colors/theme";
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 export const inputStyles = StyleSheet.create({
     defaultInput: {
-        width: windowWidth * .85,
+        width: windowWidth * .9,
         justifyContent: "flex-start",
         textAlign: "justify",
         borderWidth: .5,
@@ -14,10 +13,10 @@ export const inputStyles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 10,
         color: '#000000',
-        backgroundColor: 'white'
-
+        backgroundColor: 'white',
     },
     inputPicker: {
+        fontFamily: "JetBrainsMono",
         width: windowWidth * .8,
         height: 300,
         backgroundColor: themeColors.dotNineWhite

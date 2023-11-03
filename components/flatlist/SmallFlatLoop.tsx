@@ -5,7 +5,7 @@ import {Text, View} from "react-native";
 
 
 // @ts-ignore
-export const SmallFlatLoop = ({ list, headingText, setData, openModal }) => {
+export const SmallFlatLoop = ({ list, headingText, setData, openModal, share }) => {
 
     return (
         <>
@@ -20,8 +20,12 @@ export const SmallFlatLoop = ({ list, headingText, setData, openModal }) => {
                         title={item.title}
                         icon={item.icon}
                         action={() => {
+                          if (item.title === "Share it with your friends") {
+                            share()
+                          } else {
                             setData(item.data)
                             openModal()
+                          }
                         }}
                         isFirstItem={index === 0}
                         isLastItem={index === list.length - 1}

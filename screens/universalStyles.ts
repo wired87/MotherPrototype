@@ -8,8 +8,9 @@ import {Dimensions, StyleSheet} from "react-native";
 
 export const uniStyles = StyleSheet.create({
     headerContainer: {                                                       // Header
-        backgroundColor: "transparent",
+        flexDirection: "row",
         zIndex: 1000,
+
     },
     containerHeader: {
         alignItems: 'center',
@@ -25,7 +26,6 @@ export const uniStyles = StyleSheet.create({
         borderTopRightRadius: 29,
     },
     Modal: {
-        backgroundColor: 'rgba(255, 255, 255, 0.78)',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         justifyContent: 'center',
@@ -107,5 +107,6 @@ export const uniStyles = StyleSheet.create({
     headerNavbarContainer: {
         width: windowWidth * .3333,
         margin: 0,
-    }
+        backgroundColor: "transparent"
+    },
 });

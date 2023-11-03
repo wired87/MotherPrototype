@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
         width: 350,
     },
     buttonText1: {
+        fontFamily: "Roboto",
         fontSize: 17,
         fontWeight: "700",
         color: 'white',
@@ -44,7 +45,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     buttonText: {
-
+        fontFamily: "Roboto",
         fontSize: 20,
         color: "rgb(255,255,255)",
     },
@@ -55,6 +56,7 @@ export const styles = StyleSheet.create({
         backgroundColor: themeColors.sexyBlue,
         marginBottom: 5,
     },
+
     roundBtn: {
         width: 100,
         borderRadius: 20,
@@ -69,6 +71,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     btnTxtProfile :{
+        fontFamily: "Roboto",
         fontSize: 18,
         color: 'white',
         textAlign: 'center',

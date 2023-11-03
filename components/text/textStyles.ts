@@ -3,15 +3,14 @@ import {StyleSheet} from "react-native";
 
 export const textStyles = StyleSheet.create({
 
-    loginContainerHeaderText: {
-        fontSize: 34,
-        color: '#000000',
-        textAlign: 'center',
-        marginBottom: 50,
-        marginHorizontal: "auto",
-    },
-    defaultText: {
-      lineHeight: 25,
-      textAlign: "center",
-    }
+  loginContainerHeaderText: {
+    fontSize: 34,
+    textAlign: 'center',// account profile section header dont need mb!!!!!!!!!!!!!!!!
+    marginHorizontal: "auto",
+    marginVertical: 20
+  },
+  defaultText: {
+    lineHeight: 25,
+    textAlign: "center",
+  }
 })

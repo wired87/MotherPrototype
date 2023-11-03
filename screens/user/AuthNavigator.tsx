@@ -7,17 +7,17 @@ import {Logout} from "./Logout";
 import Login from "./Login";
 import {SignUp} from "./Register";
 import {UserHeader} from "./AuthHeader";
+import {useSelector} from "react-redux";
 
 const AuthStack = createNativeStackNavigator();
 
 export const AuthNavigator = () => {
-    const user = getAuth().currentUser;
-
-    const screens = user ?
+  const user = getAuth().currentUser;
+  const screens = user ?
         [
             {
                 name: "AccountMain",
-                component: AccountMain
+                component: AccountMain,
             },
             {
                 name: "PasswordChange",
@@ -43,27 +43,28 @@ export const AuthNavigator = () => {
             }
         ];
     return (
-        <AuthStack.Navigator
-            initialRouteName={user? "AccountMain" : "Signup"}
-            // @ts-ignore
-            screenOptions={({ route }) => ({
-                header:
-                    (props) =>
-                        // @ts-ignore
-                        <UserHeader
-                            {...props}
-                        />,
-                    }
-                )
-            }>
-            {screens.map((screen, index) => (
-                <AuthStack.Screen
-                    key={index}
-                    name={screen.name}
-                    component={screen.component}
-                />
-            ))}
-        </AuthStack.Navigator>
+      <AuthStack.Navigator
+        initialRouteName={user? "AccountMain" : "Login"}
+        // @ts-ignore
+        screenOptions={({ back }) => ({
+          header:
+            (props) =>
+              // @ts-ignore
+              <UserHeader
+                back={back}
+                {...props}
+              />
+            }
+          )
+        }>
+        {screens.map((screen, index) => (
+          <AuthStack.Screen
+            key={index}
+            name={screen.name}
+            component={screen.component}
+          />
+        ))}
+      </AuthStack.Navigator>
     );
 }
 

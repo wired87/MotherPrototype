@@ -10,29 +10,33 @@ export const settingStyles = StyleSheet.create({
         // backgroundColor: "#2b2a27",
         paddingVertical: 10,
         fontWeight: 'bold',
+        fontFamily: "Roboto",
         fontSize: 16,
         letterSpacing: 2,
         marginHorizontal: 20,
         marginVertical: 10
-
     },
+
     backBtn: {
         paddingVertical: 6,
         paddingHorizontal: 10
     },
     backBtnTxt: {
         fontSize: 16,
+        fontFamily: "Roboto",
         color: 'white',
         fontWeight: '700'
     },
     Heading: {
         fontSize: 29,
+        fontFamily: "Roboto",
         color: 'rgba(0, 0, 0, .85)',
         fontWeight: 'bold',
         paddingHorizontal: 10,
         marginTop: 20,
     },
     SubHeading: {
+        fontFamily: "Roboto",
         fontSize: 17,
         color: 'grey',
         fontWeight: '900',
@@ -40,9 +44,20 @@ export const settingStyles = StyleSheet.create({
         marginTop: 25,
         letterSpacing: 1.5
     },
+    topBtn: {
+        marginTop: 40,
+        marginHorizontal: 10,
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+        borderRadius: 20,
+        gap: 14,
+        justifyContent: "center",
+        alignItems: 'flex-start',
+        flexDirection: "column"
+
+    },
     Box: {
-        justifyContent: 'center',
-        alignItems: "flex-start",
+        fontFamily: "Roboto",
         backgroundColor: '#1b1d1f',
         paddingHorizontal: 25,
         paddingVertical: 15,
@@ -61,6 +76,8 @@ export const settingStyles = StyleSheet.create({
         gap: 10
     },
     BoxHeadText1: {
+        fontFamily: "Roboto",
+
         fontSize: 18,
         color: "rgba(255,255,255, .9)"
     },
@@ -69,11 +86,12 @@ export const settingStyles = StyleSheet.create({
         marginTop: 30,
         flex: 1,
         paddingHorizontal: 0,
-        justifyContent: "center",
         alignItems: "center",
     },
 
     BottomText: {
+        fontFamily: "Roboto",
+
         fontSize: 14,
         fontWeight: "700",
         color: 'black',
@@ -85,7 +103,7 @@ export const settingStyles = StyleSheet.create({
     BottomTextCont: {
         flexDirection: "row",
         paddingHorizontal: 10,
-        alignItems: "center",
+
         gap: 20,
     },
     BottomLastBtn: {
@@ -106,6 +124,7 @@ export const settingStyles = StyleSheet.create({
         marginBottom: 100,
     },
     BottomLastBtnText: {
+        fontFamily: "Roboto",
         fontSize: 22,
         fontWeight: "700",
         color: 'white',

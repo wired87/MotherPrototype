@@ -12,8 +12,8 @@ export const DefaultButton = ({ extraStyles, onPressAction, text, secondIcon }) 
 
     return(
         <TouchableOpacity style={extraStyles ? extraStyles: userStyles.changeInfoBtn} onPress={onPressAction}>
-          <Text style={{color: "#fff", marginHorizontal: 5, fontSize: 16}}>{text}</Text>
-          {secondIcon ? secondIcon : null}
+          <Text style={{color: "#fff", marginHorizontal: 5, fontSize: 16 }}>{text}</Text>
+          {loading ? <ActivityIndicator size={"small"}/> : secondIcon?  secondIcon: null}
         </TouchableOpacity>
     );
 }

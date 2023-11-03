@@ -77,26 +77,22 @@ export const  PasswordChangeComponent = ({navigation}) => {
                               value={currentPassword}
                               onChangeAction={setCurrentPassword}
                               secure={true}
-                              editable={true} />
+                              editable={true} keyboardType={undefined} />
 
                 <DefaultInput placeholder={text.defaultPasswordPlaceholder}
                               value={newPassword}
                               onChangeAction={setNewPassword}
                               secure={true}
-                              editable={true} />
+                              editable={true} keyboardType={undefined} />
 
                 <DefaultButton
                                onPressAction={handleChangePassword}
-                               indicatorColor={undefined}
-                               indicatorSize={text.indicatorSizeSmall}
                                text={text.changePassword}
                                secondIcon={undefined}
                                extraStyles={undefined} />
                 <DefaultButton
                     extraStyles={userStyles.changeInfoBtn}
                     onPressAction={handleChangePassword}
-                    indicatorColor={undefined}
-                    indicatorSize={"small"}
                     text={"Change Password"}
                     secondIcon={undefined} />
             </View>

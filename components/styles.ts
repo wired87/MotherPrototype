@@ -7,20 +7,9 @@ const windowHeight = Dimensions.get('window').height;
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ffffff',
-    },
-    topBtn: {
-        marginTop: 20,
-        marginHorizontal: 10,
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        flexDirection: 'row',
-        borderRadius: 20,
-        gap: 14,
-        justifyContent: 'center',
-        alignItems: 'center',
 
     },
+
 
     box1: {
         marginTop: 20,
@@ -134,6 +123,7 @@ export const styles = StyleSheet.create({
         width: 250,
         borderWidth: .5,
         borderRadius: 9,
+        fontFamily: "Roboto",
         fontSize: 17,
         paddingLeft: 10,
         paddingVertical: 7,
@@ -143,6 +133,7 @@ export const styles = StyleSheet.create({
         marginRight: 10,
         width: 80,
         fontSize: 17,
+        fontFamily: "Roboto",
     },
 
     mainUserInfoContainer: {
@@ -289,6 +280,7 @@ export const styles = StyleSheet.create({
     infoTxt: {
         color: 'black',
         fontSize: 15,
+        fontFamily: "JetBrainsMono",
         marginBottom: 30,
         flexWrap:"wrap",
     },
@@ -303,6 +295,7 @@ export const styles = StyleSheet.create({
         alignItems:"center",
         color:"black",
         fontSize:40,
+        fontFamily: "JetBrainsMono",
         marginBottom: 0,
     },
 
@@ -322,7 +315,9 @@ export const styles = StyleSheet.create({
     },
     optionTxt: {
         color: 'black',
-        fontSize: 16
+        fontSize: 16,
+        fontFamily: "JetBrainsMono",
+
     },
     centered: {
         flex: 1,
@@ -371,6 +366,7 @@ export const styles = StyleSheet.create({
 
     profileHeader: {
         fontSize: 34,
+        fontFamily: "JetBrainsMono",
         color: '#000000',
         textAlign: 'center',
         marginTop: 40,
@@ -379,6 +375,7 @@ export const styles = StyleSheet.create({
 
     mirrorLogo: {
         fontSize: 60,
+        fontFamily: "JetBrainsMono",
         opacity: .5,
         margin: 0,
     },
@@ -388,6 +385,7 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 18,
         fontWeight: 'bold',
+        fontFamily: "JetBrainsMono",
         textAlignVertical: "center",
     },
 
@@ -406,6 +404,7 @@ export const styles = StyleSheet.create({
     textStyle: {
         color: 'white',
         fontWeight: 'bold',
+        fontFamily: "JetBrainsMono",
         textAlign: 'center',
     },
     modalText: {
@@ -423,6 +422,7 @@ export const styles = StyleSheet.create({
         marginRight: 30,
         textAlign: 'left',
         fontSize: 18,
+        fontFamily: "JetBrainsMono",
         color:"rgba(255,255,255,1)"
     },
 
