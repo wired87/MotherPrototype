@@ -5,9 +5,11 @@ import {PasswordChangeComponent} from "./ChangePassword";
 import {EmailChange} from "./ChangeEmail/ChangeEmail";
 import {Logout} from "./Logout";
 import Login from "./Login";
-import {SignUp} from "./Register";
+import {SignUp} from "./SignUp";
 import {UserHeader} from "./AuthHeader";
 import {useSelector} from "react-redux";
+import {EmailConfirmationFP} from "./ForgotPassword/EmailConfirmationFP";
+import {NewPasswordConfirmation} from "./ForgotPassword/NewPasswordConfirmation";
 
 const AuthStack = createNativeStackNavigator();
 
@@ -38,9 +40,18 @@ export const AuthNavigator = () => {
                 component: Login
             },
             {
-                name: "Signup",
+                name: "SignUp",
                 component: SignUp,
-            }
+            },
+          {
+                name: "ForgotPassword",
+                component: EmailConfirmationFP,
+            },
+          {
+                name: "NewPasswordConfirmation",
+                component: NewPasswordConfirmation,
+            },
+
         ];
     return (
       <AuthStack.Navigator

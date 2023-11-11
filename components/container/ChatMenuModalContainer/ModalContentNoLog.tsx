@@ -13,16 +13,20 @@ import {themeColors} from "../../../colors/theme";
 
 
 
-export const ModalContentNoLog = // @ts-ignore
-() => {
+
+export const ModalContentNoLog = (// @ts-ignore
+  {extraAction}
+) => {
     // @ts-ignore
-    const screen = useSelector(state => state.screens.screen)
+    const screen = useSelector(state => state.screens.value)
     const navigation = useNavigation();
 
-    // @ts-ignore
-    const onPressRegister = useCallback(() => navigation.navigate(screen.register), []);
-    // @ts-ignore
-    const onPressLogin = useCallback(() => navigation.navigate(screen.login), []);
+
+  const onPressRegister = useCallback(() => // @ts-ignore
+    navigation.navigate("Chat", {screen: 'AuthNavigator', params: {screen: screen.register}}), []);
+
+  const onPressLogin = useCallback(() => // @ts-ignore
+    navigation.navigate('Chat', {screen: 'AuthNavigator', params: {screen: 'Login'}}),[]);
 
     return(
         <View style={uniStyles.reminderModalContainer}>
@@ -38,12 +42,18 @@ export const ModalContentNoLog = // @ts-ignore
             <View style={uniStyles.reminderModalBtnContainer}>
                 <DefaultPageNavigationBtn text={loginText}
                                           extraTextStyles={uniStyles.reminderModalBtnText}
-                                          onPressAction={onPressLogin}
+                                          onPressAction={() => {
+                                            onPressLogin()
+                                            extraAction()
+                                          }}
                                           extraBtnStyles={undefined}/>
 
                 <DefaultPageNavigationBtn text={registerText}
                                           extraTextStyles={uniStyles.reminderModalBtnText}
-                                          onPressAction={onPressRegister}
+                                          onPressAction={() => {
+                                            onPressRegister()
+                                            extraAction()
+                                          }}
                                           extraBtnStyles={undefined}/>
             </View>
         </View>

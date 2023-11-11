@@ -1,9 +1,6 @@
 // this file define all the possible cases for updating a state
 
-
-export const setNewValue = () => ({
-    type: "UPDATE_OBJECT"
-});
+import {HistorySent} from "./Actions";
 
 export const updateUser = () => ({
     type: "SING_IN"
@@ -11,6 +8,18 @@ export const updateUser = () => ({
 
 export const loading = () => ({
     type: "LOADING"
+})
+
+export const logout = () => ({
+    type: "LOGOUT"
+})
+
+export const user = () => ({
+    type: "USER"
+})
+
+export const historySent= () => ({
+    type: "HistorySent"
 })
 
 export const text = () => ({
@@ -31,9 +40,7 @@ export const darkmode = () => ({
 export const colors = () => ({
     type: "COLORS"
 })
-export const purchaseScreenAccessPointBool = () => ({
-    type: "PURCHASEACCESS"
-})
-export const newLogout = () => ({
-    type: "NEW_LOGOUT"
+
+export const errors = () => ({
+    type: "ERRORS"
 })

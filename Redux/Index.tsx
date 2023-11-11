@@ -1,31 +1,35 @@
 import {combineReducers} from 'redux';
 import {
   AccessPoint,
-  Colors, NewLogout,
+  Colors,
+  Errors,
+  MessageUpdate,
   SetDarkMode,
   SetIcon,
   SetLoading,
   SetScreens,
   SetText,
-  setUser,
-  userObjectUpdate
+  SetLogout,
+  HistorySent, User,
 } from "./Actions";
-import {newLogout} from "./cases";
+
 
 
 
 export const allReducers = combineReducers(
   {
-          userValueUpdate: userObjectUpdate,
-          setUserObject: setUser,
-          loading: SetLoading,
-          text: SetText,
-          icon: SetIcon,
-          screens: SetScreens,
-          darkmode: SetDarkMode,
-          colors: Colors,
-          purchaseAccess: AccessPoint,
-          newLogout: NewLogout,
-  }
+    loading: SetLoading,
+    logout: SetLogout,
+    text: SetText,
+    icon: SetIcon,
+    screens: SetScreens,
+    darkmode: SetDarkMode,
+    colors: Colors,
+    purchaseAccess: AccessPoint,
+    errors: Errors,
+    message: MessageUpdate,
+    historySent: HistorySent,
+    user: User,
+    }
 );
 

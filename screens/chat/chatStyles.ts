@@ -54,5 +54,6 @@ export const chatStyles = StyleSheet.create({
         marginRight: 20,
         paddingTop: 13,
         paddingBottom: 13,
-    }
+    },
+
 })

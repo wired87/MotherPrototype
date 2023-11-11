@@ -5,12 +5,11 @@ export const textStyles = StyleSheet.create({
 
   loginContainerHeaderText: {
     fontSize: 34,
-    textAlign: 'center',// account profile section header dont need mb!!!!!!!!!!!!!!!!
+    textAlign: 'center', // account profile section header dont need mb!!!!!!!!!!!!!!!!
     marginHorizontal: "auto",
-    marginVertical: 20
+    marginVertical: 10
   },
   defaultText: {
     lineHeight: 25,
-    textAlign: "center",
   }
 })

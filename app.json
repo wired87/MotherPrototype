@@ -5,10 +5,10 @@
     "slug": "AiChat501",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo_final.png",
+    "icon": "./assets/images/logo_icon_f.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/logo_final.png",
+      "image": "./assets/images/logo_icon_f.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -16,16 +16,26 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wired87.AiChat501"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo_icon_f.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.wired87.AiChat501"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/logo_icon_f.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5f9f8766-f604-4b83-b922-ace89299d73e"
+      }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-2225753085204049~1255976039"
   }
 }

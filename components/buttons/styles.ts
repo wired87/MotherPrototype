@@ -56,19 +56,14 @@ export const styles = StyleSheet.create({
         backgroundColor: themeColors.sexyBlue,
         marginBottom: 5,
     },
-
     roundBtn: {
-        width: 100,
         borderRadius: 20,
-        padding: 10,
+        paddingVertical: 7,
+        paddingHorizontal: 20,
         marginTop: 10,
-        marginBottom: 30,
-        backgroundColor:"#030824",
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: 15,
-        paddingVertical: 5,
-        paddingHorizontal: 15,
     },
     btnTxtProfile :{
         fontFamily: "Roboto",

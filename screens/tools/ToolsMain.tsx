@@ -5,6 +5,48 @@ import {getAuth} from "firebase/auth";
 
 const windowWidth = Dimensions.get('window').width;
 export default function ToolMain() {
+
+    let adverTools = [
+        {
+            title: "AI based Facebook Ads Manager",
+            url: "https://something.de",
+            company: "Jasper"
+        },
+        {
+            title: "AI based Facebook Ads Manager",
+            url: "https://something.de"
+        },
+        {
+            title: "AI based Facebook Ads Manager",
+            url: "https://something.de"
+        },
+        {
+            title: "AI based Facebook Ads Manager",
+            url: "https://something.de"
+        },
+        {
+            title: "AI based Facebook Ads Manager",
+            url: "https://something.de"
+        }
+    ]
+
+
+    let tools = [
+        {
+            screen: "SpeechToText"
+        },
+        {
+            screen: "TextToSpeech"
+        },
+        {
+            screen: "SpeechToText"
+        },
+        {
+            screen: "SpeechToText"
+        }
+    ]
+
+
     const user = getAuth().currentUser;
 
     return(
@@ -14,34 +56,7 @@ export default function ToolMain() {
                 // @ts-ignore
                 contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
 
-                <View style={styles.headingContainer}>
-                    <Text>{user ? user.email : "HelloWorld"}</Text>
-                </View>
-                <View style={styles.singleActionContainer}>
-                    <Text>Translate</Text>
-                </View>
-                <View style={styles.singleActionContainer}>
-                    <Text>Chat</Text>
-                </View>
-                <View style={styles.singleActionContainer}>
-                    <Text>Speech to Text</Text>
-                </View >
-                <View style={styles.singleActionContainer}>
-                    <Text>Translate</Text>
-                </View>
 
-                <View style={styles.headingContainer}>
-                    <Text>Image Functionality!</Text>
-                </View>
-                <View style={styles.singleActionContainer}>
-                    <Text>Create Images</Text>
-                </View >
-                <View style={styles.singleActionContainer}>
-                    <Text></Text>
-                </View>
-                <View style={styles.headingContainer}>
-                    <Text>BOTTOM ANYTHING</Text>
-                </View>
 
 
             </SafeAreaView>

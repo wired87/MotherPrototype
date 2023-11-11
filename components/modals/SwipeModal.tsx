@@ -14,6 +14,7 @@ import { IconButton } from "react-native-paper";
 import {uniStyles} from "../../screens/universalStyles"
 import {DefaultModal} from "./DefaultModal";
 import {useSelector, useDispatch} from "react-redux";
+import {themeColors} from "../../colors/theme";
 // Strings
 const modalIcon = "transit-connection-horizontal";
 
@@ -51,11 +52,7 @@ export const SwipeModal = (
             onPress={closeModal}
           />
         </TouchableOpacity>
-        loading? (
-          <ActivityIndicator size={"large"}  />
-        ):(
-          Content
-        )
+        {Content}
       </>
       }
       HeaderContent={null}

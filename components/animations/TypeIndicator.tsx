@@ -15,12 +15,12 @@ export const TypeIndicator = () => {
             <Text style={{opacity: .6, fontSize: 13, color: themeColors.sexyBlue}}>{aiName} is typing</Text>
             <TypingAnimation
                 dotColor={"rgba(0, 0, 0, .7)"}
-                dotMargin={6}
-                dotAmplitude={90}
-                dotSpeed={0.15}
+                dotMargin={4}
+                dotAmplitude={3}
+                dotSpeed={0.25}
                 dotRadius={2.5}
-                dotX={15}
-                dotY={100}
+                dotX={10}
+                dotY={10}
             />
         </View>
     );

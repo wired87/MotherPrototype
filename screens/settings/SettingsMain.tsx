@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert, Share
 } from 'react-native'
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import {LinearGradient} from "expo-linear-gradient";
@@ -30,19 +31,28 @@ import {Contact} from "../../components/container/modalContainers/Contact";
 import {FeaturesInFuture} from "../../components/container/modalContainers/FeaturesInFuture";
 import {themeColors} from "../../colors/theme";
 import {DarkMode} from "../../components/container/modalContainers/DarkMode";
+import {PrivacyPolicy} from "./PrivacyPolicy";
+import {getAuth} from "firebase/auth";
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
-
+// @ts-ignore
+import successAuth from "../../assets/images/successAuth.png"
+// @ts-ignore
+import close from "../../assets/images/close.png";
+import { DefaultText } from '../../components/text/DefaultText';
+import {DefaultContainer} from "../../components/container/DefaultContainer";
+import {StatusContainer} from "../../components/container/modalContainers/StatusContainer";
+import { imgStyles } from '../../components/images/imgStyles';
 
 /////////////////////////////////////////////////////////////////////////////////////DATA FOR FAILED AND SUCCESS EINBAUENS
 
-export const  SettingsMain = () => {
+// @ts-ignore
+export const  SettingsMain = ({ user }) => {
     const [visible, setVisible] = useState(false);
     const [animation, setAnimation] = useState(false);
     const [data, setData] = useState(null);
-    const [status, setStatus] = useState(null);
+    const [status, setStatus] = useState(0);
 
     const dispatch = useDispatch()
-
     // @ts-ignore
     const text = useSelector(state => state.text.value)
     // @ts-ignore
@@ -58,11 +68,16 @@ export const  SettingsMain = () => {
             payload: true
         });
         try {
-            const response = await axios.post("http://192.168.178.51:8000/delete-chat-history/")
-            // @ts-ignore
-            setStatus(response.status);
-
-            console.log("response: " + response);
+          const userObject = {
+            user_id: user?.uid
+          }
+          console.log("user id: ", user?.uid)
+          const response = await axios.post("http://192.168.178.51:8000/open/delete-chat-history/",
+            userObject
+          )
+          // @ts-ignore
+          setStatus(response.data.status);
+          console.log("response: ", response.data.messages, "\n response.status:", response.data.status);
         } catch(error) {
             console.log("error: " + error);
         } finally {
@@ -173,26 +188,24 @@ export const  SettingsMain = () => {
             icon: <Icon name="note-text" size={26} color="white" />,
             title: "Terms of use",
             navigate: "",
-            data: null //<Terms />
+            data: null
         },
         {
             id: 2,
             icon: <Icon name="security" size={26} color="white" />,
             title: "Privacy Policy",
             navigate: "",
-            data: null // <PrivacyPolicy />
+            data: <PrivacyPolicy />
         },
 
     ]
 
     const lists = [
         {
-            id: 1,
             heading: "SETTINGS",
             list: settings,
         },
         {
-            id: 2,
             heading: "OTHER",
             list: other,
         },
@@ -209,7 +222,8 @@ export const  SettingsMain = () => {
     }, [])
 
     // @ts-ignore
-    return (
+    // @ts-ignore
+  return (
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, backgroundColor: darkmode.primary}}
         showsVerticalScrollIndicator={false}>
@@ -219,7 +233,7 @@ export const  SettingsMain = () => {
 
               {lists.map((item, index) => (
                 <SmallFlatLoop
-                  key={item.id}
+                  key={index}
                   openModal={openModal}
                   headingText={item.heading}
                   list={item.list}
@@ -236,11 +250,18 @@ export const  SettingsMain = () => {
                 closeModal={closeModal}
                 Content={
                     loading? (
-                      <ActivityIndicator size={"large"}  />
-                    ):(
-                      data
-                    )
-                }
+                      <ActivityIndicator size={10}  />
+                    ):data?(
+                      status === 201 || status === 200 ? (
+                        <StatusContainer source={successAuth} text={"Success"} styles={imgStyles.statusImg}
+                                         extraContainerStyles={{gap: 20}} />
+                      ): status === 400 || status === 401?(
+                        <StatusContainer source={close} text={"Failed! \n Please try again or contact us."}
+                                         styles={imgStyles.statusImg} extraContainerStyles={{gap: 20}} />
+                      ):(
+                        data
+                      )
+                    ):null}
               />
           </View>
       </ScrollView>

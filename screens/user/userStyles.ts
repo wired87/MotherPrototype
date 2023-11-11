@@ -72,15 +72,15 @@ export const userStyles = StyleSheet.create({
     },
     profileSection: {
         borderWidth: 1,
-        paddingVertical: 20,
+        paddingVertical: 10,
         borderColor: themeColors.borderThin,
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         borderRadius: 20,
 
     },
     inputSection: {
         gap: 10,
-        marginVertical: 60,
+        marginVertical: 30,
         fontSize:20,
         justifyContent: 'center',
         alignItems: "center",
@@ -112,7 +112,6 @@ export const userStyles = StyleSheet.create({
     },
     authNavHeaderContainerText: {
         fontSize: 20,
-        color: '#000000',
         textAlign: 'center',
         paddingVertical: 10,
     },

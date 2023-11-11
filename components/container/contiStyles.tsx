@@ -7,6 +7,8 @@ export const styles = StyleSheet.create({
     modalH4: {
         textAlign: "center",
         fontSize: 24,
+        gap: 40,
+        lineHeight: 40,
     },
     featuresContainer: {
         width: windowWidth * .85,
@@ -19,6 +21,16 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 20,
         backgroundColor: "rgba(191,0,0,.2)"
+    },
+    chatMessageInput: {
+        width: windowWidth * .8,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: themeColors.borderThin,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+
+
     }
 })
 

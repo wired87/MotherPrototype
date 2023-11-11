@@ -13,9 +13,13 @@ export const imgStyles = StyleSheet.create({
         fontWeight: 'bold'
     },
     logoBottom: {
-        width: 70,
-        height: 40,
-        resizeMode: 'cover',
+        width: 130,
+        height: 70,
         marginVertical: 10,
+        marginBottom: 20,
     },
+    statusImg: {
+        width: 200,
+        height: 200
+    }
 })

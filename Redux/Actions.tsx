@@ -1,38 +1,22 @@
 import {themeColors} from "../colors/theme";
 
 
-const defaultUserData = {
+const messageData = {
     data: null
 };
 
-export const userObjectUpdate = (state = defaultUserData, action: { type: any; payload: any; }) => {
+export const MessageUpdate = (state = messageData, action: { type: any; payload: any; }) => {
     switch (action.type) {
-        case 'UPDATE_OBJECT':
+        case 'UPDATE_MESSAGE':
             return {
-                ...state,
-                data: action.payload
-            }  // set the payload manualy at dispatch
+                ...state, data: action.payload
+            }
         default:
             return state
     }
 }
 
 
-const User = {
-    data: null
-};
-
-export const setUser = (state = User, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case 'SIGN_IN':
-            return {
-                ...state,
-                data: action.payload
-            };
-        default:
-            return state;
-    }
-}
 
 const loading = {
     value: false
@@ -50,10 +34,36 @@ export const SetLoading = (state = loading, action: { type: any; payload: any; }
     }
 }
 
+const logout = {
+    value: false
+};
 
+export const SetLogout = (state = logout, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "LOGOUT":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state;
+    }
+}
 
-
-
+const historySent = {
+    value: false
+};
+export const HistorySent = (state = historySent, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "HISTORY_SENT":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state;
+    }
+}
 
 
 
@@ -76,7 +86,7 @@ const colors = {
             "#032548",
         ],
         primary_darkLight: [
-            "rgb(230,230,230)",
+            "#f0f3f7",
             "rgb(17,17,17)",
         ],
         navigatorColor: [
@@ -88,18 +98,17 @@ const colors = {
             "rgb(0,0,0)"
         ],
         switchTextColorLD: [
-          themeColors.mediumDarkDark,
-          themeColors.dotNineWhite
+            themeColors.mediumDarkDark,
+            themeColors.dotNineWhite
         ],
         secondaryContainerBackground: [
-          "rgba(24,23,23,1)",
-          "rgba(20,20,20, .8)"
+            "rgba(250,250,250,0.75)",
+            "rgba(20,20,20, .8)"
         ],
         switchedSecondaryContainerBackground: [
-          "rgb(37,38,38)",
-          "rgb(24,24,24)"
+            "rgb(37,38,38)",
+            "rgb(24,24,24)"
         ],
-
     }
 };
 
@@ -127,17 +136,81 @@ export const Colors = (state = colors, action: { type: any; payload: any; }) => 
     }
 }
 
+const user = {
+    value: null
+}
+
+export const User = (state = user, action: { type: any; payload: any; }) => {
+  switch (action.type) {
+    case "USER":
+      return {
+        ...state,
+        value: action.payload
+      };
+    default:
+      return state
+  }
+}
 
 
+const errors = {
+    value: [
+        {
+            code: "invalid-email",
+            helpText: "The added E-Mail Address is not valid. \nPlease try again."
+        },
+        {
+            code: "auth/missing-android-pkg-name",
+            helpText: "The required Packages are nor installed. \n"
+        },
+        {
+            code: "auth/missing-continue-uri",
+            helpText: "No redirect url added from our IT-Team Please contact us and we will fire them"
+        },
+        {
+            code: "auth/missing-ios-bundle-id",
+            helpText: "No IOS Bundle ID found"
+        },
+        {
+            code: "auth/invalid-continue-uri",
+            helpText: "Invalid redirect url"
+        },
+        {
+            code: "auth/unauthorized-continue-uri",
+            helpText: "Potential Danger -> website security is low."
+        },
+        {
+            code: "auth/user-not-found",
+            helpText: "The E-Mail is not registered. \nPlease try it again with another"
+        },
+        {
+            code: "auth/invalid-action-code",
+            helpText: "The code you entered was not correct"
+        },
+        {
+            code: "auth/expired-action-code",
+            helpText: "The code you enteref has expired. \nPlease request a new one."
+        },
+        {
+            code: "auth/user-disabled",
+            helpText: "You dont ahve any trys anymore. \nPlease contact the support Team."
+        },
+        {
+            code: "auth/user-not-found",
+            helpText: "The E-Mail is not registered. \nPlease try it again with another"
+        },
+        {
+            code: "auth/missing-email",
+            helpText: "Please enter a E-Mail"
+        }
+    ]
 
 
-const newLogout = {
-    data: null
 };
 
-export const NewLogout = (state = newLogout, action: { type: any; payload: any; }) => {
+export const Errors = (state = errors, action: { type: any; payload: any; }) => {
     switch (action.type) {
-        case "NEW_LOGOUT":
+        case "ERROR":
             return {
                 ...state,
                 value: action.payload
@@ -219,7 +292,7 @@ const screens = {
         account: "AccountMain",
         purchaseScreen: "PurchaseScreen",
         login: "Login",
-        register: "Signup",
+        register: "SignUp",
         toolsMain: "ToolsMain"
     }
 }

@@ -38,7 +38,7 @@ export const AwaitConfirmationModal = (
                             <ActivityIndicator style={{marginVertical: 30,}} size="small" color="#0000ff" />
                         ):(
                             <LottieView
-                                style={[styles.lottieAnimationView, {flex: 1, justifyContent: "center", alignItems: "center"}]}
+                                style={[{flex: 1, justifyContent: "center", alignItems: "center"}]}
                                 source={lottieSource}
                                 autoPlay
                                 loop

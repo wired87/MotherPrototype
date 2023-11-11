@@ -12,10 +12,9 @@ export const DeleteChatHistory = ({ setStatus, dispatch, closeModal }) => {
       payload: true
     });
     try {
-      const response = await axios.post("http://192.168.178.51:8000/delete-chat-history/")
+      const response = await axios.post("http://192.168.178.51:8000/open/delete-chat-history/")
       // @ts-ignore
       setStatus(response.status);
-
       console.log("response: " + response);
     } catch(error) {
       console.log("error: " + error);

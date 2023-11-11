@@ -5,8 +5,8 @@ import {useEffect, useState} from "react";
 import {getAuth} from "firebase/auth";
 
 export const ToolHeader = (
-    // @ts-ignore
-    {navigation, route, options, back,}
+  // @ts-ignore
+  {navigation, route, options, back,}
 ) => {
     const user = getAuth().currentUser
     const [visible, setVisible] = useState(true);
@@ -17,24 +17,22 @@ export const ToolHeader = (
         console.log("routeName: ", route.name)
     }, []);
 
-
-
     return (
-        // @ts-ignore
-        <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "space-between"}}>
-            <Appbar.Header
-                visible={!(route.name === "Login" || route.name === "Signup" || route.name === "AccountMain")}
-                // @ts-ignore
-                style={[[styles.headerContainer], Platform.OS === "ios" ? "padding" : undefined]}>
-                {!(route.name === "AuthNavigator") ?(
-                    <Appbar.Action  // set here the icon for to action
-                        icon="account-circle"
-                        color={"rgba(255, 255, 255, .8)"}
-                        size={27}
-                        onPress={() => navigation.navigate('AuthNavigator', {screen: user ? "AccountMain" : "Login"})}// change later to modal opener
-                    />
-                ):null}
-            </Appbar.Header>
-        </SafeAreaView>
+      // @ts-ignore
+      <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "space-between"}}>
+          <Appbar.Header
+            visible={!(route.name === "Login" || route.name === "Signup" || route.name === "AccountMain")}
+            // @ts-ignore
+            style={[[styles.headerContainer], Platform.OS === "ios" ? "padding" : undefined]}>
+              {!(route.name === "AuthNavigator") ?(
+                <Appbar.Action  // set here the icon for to action
+                  icon="account-circle"
+                  color={"rgba(255, 255, 255, .8)"}
+                  size={27}
+                  onPress={() => navigation.navigate('AuthNavigator', {screen: user ? "AccountMain" : "Login"})}// change later to modal opener
+                />
+              ):null}
+          </Appbar.Header>
+      </SafeAreaView>
     );
 }

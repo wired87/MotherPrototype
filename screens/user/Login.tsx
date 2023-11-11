@@ -1,8 +1,8 @@
 import {
-    KeyboardAvoidingView, Platform,
-    SafeAreaView,
-    Text,
-    View
+  KeyboardAvoidingView, Platform,
+  SafeAreaView,
+  Text, TouchableOpacity,
+  View
 } from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, {useCallback, useEffect, useState} from "react";
@@ -13,7 +13,6 @@ import {
   onAuthStateChanged,
     signInWithEmailAndPassword,
 } from "firebase/auth";
-
 import * as Google from "expo-auth-session/providers/google";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../components/input/DefaultInput";
@@ -30,6 +29,9 @@ import {AlertBox} from "../../components/modals/errorBox";
 // Text
 const googleIcon = "google"
 
+
+
+
 // @ts-ignore
 export default function Login({navigation}) {
     const [email, setEmail] = useState("");
@@ -38,34 +40,34 @@ export default function Login({navigation}) {
     const [modalVisible, setVisibility] = useState(false);
 
     const auth = getAuth();
+
     // @ts-ignore
     const text = useSelector(state => state.text.value)
-    // @ts-ignore
-    const screen = useSelector(state => state.screens.value)
 
-    const[request, response, promptAsync] = Google.useAuthRequest({
-        iosClientId: '638697637722-kgj3icuat9ggo05qn6uetsjsr7vcug27.apps.googleusercontent.com',
-        androidClientId: '638697637722-n50nno2tho7dob2hpd6fr186mdr48lio.apps.googleusercontent.com',
-    });
-    // declare allways inside component at the top of return
+  // @ts-ignore
+    const screen = useSelector(state => state.screens.value)
+  const[request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: '638697637722-kgj3icuat9ggo05qn6uetsjsr7vcug27.apps.googleusercontent.com',
+    androidClientId: '638697637722-n50nno2tho7dob2hpd6fr186mdr48lio.apps.googleusercontent.com',
+  });
 
     useEffect(() => {
       if (response?.type === 'success') {
         const { id_token } = response.params;
         const credential = GoogleAuthProvider.credential(id_token); //response.params.accessToken
-        signInWithCredential(auth, credential).then(() => console.log("success"));
+        signInWithCredential(getAuth(), credential).then(() => console.log("success"));
       }
     }, [response])
 
-
     // useCallback to not load your function every time the user visits the webspagfe.
     // this increase the performence of the mobileapp
-    const onChangeEmail = useCallback((text: React.SetStateAction<string>) => setEmail(text), []);
-    const onChangePassword = useCallback((text: React.SetStateAction<string>) => setPassword(text), []);
+  const onChangeEmail = useCallback((text: React.SetStateAction<string>) => setEmail(text), []);
+  const onChangePassword = useCallback((text: React.SetStateAction<string>) => setPassword(text), []);
 
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   useEffect(() => {
+    console.log("1111user: ", auth.currentUser)
     onAuthStateChanged(auth, (user) => {
       if (user) {
         navigation.navigate("AuthNavigator", {screen: screen.account}); // Use 'replace' to prevent going back to the login screen
@@ -74,8 +76,6 @@ export default function Login({navigation}) {
       }
     });
   }, []);
-
-
 
     const onSignIn = async () => {
       // @ts-ignore
@@ -102,8 +102,8 @@ export default function Login({navigation}) {
       }
   };
 
-    return(
-      <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+  return(
+      <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: "rgb(2,2,100)"}}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <View style={userStyles.loginContainer}>
 
@@ -118,17 +118,30 @@ export default function Login({navigation}) {
               secure={false}
               editable={true}
               keyboardType={"email-address"}
+              extraStyles={{marginTop: 30}}
             />
 
+
             <DefaultInput
-              placeholder={text.defaultPasswordPlaceholder}
+              placeholder={"Your Password"}
               value={password}
               onChangeAction={onChangePassword}
               secure={true}
               editable={true}
               keyboardType={undefined}
+              extraStyles={{marginVertical: 20}}
             />
-
+            <TouchableOpacity
+              style={{ borderWidth: 1, borderColor: themeColors.borderThin, borderRadius: 14, // @ts-ignore
+                elevation: 20, paddingVertical: 4, paddingHorizontal: 7,
+                marginVertical: 10
+              }}
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
+              <Text style={{color: themeColors.dotNineWhite}}>
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
             <DefaultButton
               text={text.signInText}
               onPressAction={onSignIn}
@@ -142,7 +155,7 @@ export default function Login({navigation}) {
           <View style={userStyles.alternativeAuthMethodContainer}>
             <DefaultButton
               text={text.signInWithGoogle}
-              onPressAction={onSignIn}
+              onPressAction={() => promptAsync()}
               extraStyles={undefined}
               secondIcon={
                 <MaterialCommunityIcons

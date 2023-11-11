@@ -87,8 +87,9 @@ export const SignUp = (
         }
     }
 
+    // @ts-ignore
     return(
-        <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: "rgb(2,2,100)"}}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <View style={userStyles.loginContainer}>
 
@@ -96,16 +97,20 @@ export const SignUp = (
 
                     <DefaultInput placeholder={emailPlaceholder} value={email}
                                   onChangeAction={onChangeEmail}
-                                  secure={false} editable={true}/>
+                                  secure={false}
+                                  editable={true}
+                                  keyboardType={"email-address"}
+                                  extraStyles={{marginVertical: 30}}/>
 
                     <DefaultInput placeholder={passwordPlaceholder} value={password}
                                   onChangeAction={onChangePassword}
-                                  secure={true} editable={true}/>
+                                  secure={true}
+                                  editable={true}
+                                  keyboardType={undefined}
+                                  extraStyles={{marginVertical: 30}}/>
 
                     <DefaultButton text={signUpText}
-                                   indicatorColor={themeColors.headerText}
                                    onPressAction={onSignUp}
-                                   indicatorSize={indicatorSize}
                                    secondIcon={undefined}
                                    extraStyles={undefined} />
 
@@ -115,9 +120,7 @@ export const SignUp = (
                 <View style={userStyles.alternativeAuthMethodContainer}>
                     <DefaultButton
                         text={signUpGoogleText}
-                        indicatorColor={themeColors.headerText}
                         onPressAction={onSignUp}
-                        indicatorSize={indicatorSize}
                         extraStyles={undefined}
                         secondIcon={
                             <MaterialCommunityIcons
@@ -133,15 +136,6 @@ export const SignUp = (
                 modalVisible={modalVisible}
                 setModalVisible={setVisibility}
                 buttonText={inputError.includes(text.success) ? text.goHomeText : text.tryAgain}
-                redirectAction={
-                inputError.includes(text.success) ?
-                    navigation.navigate("AuthNavigator", {screen: screen.account}) : undefined
-                }
-                errorAnimation={
-                    <LottieView
-                        source={inputError.includes(text.success) ? failLottie : successLottie}
-                        style={styles.lottieAnimationViewContainer}/>
-                }
             />
         </SafeAreaView>
     );
