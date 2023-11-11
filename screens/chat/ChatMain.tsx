@@ -104,7 +104,6 @@ export const ChatMain = (
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
-
       {logout? (
         <SwipeModal
           animation={logoutModal}
