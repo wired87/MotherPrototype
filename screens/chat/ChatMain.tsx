@@ -1,14 +1,5 @@
-
 import React, {useCallback, useEffect, useState} from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  View,
-} from "react-native";
-
-import axios from "axios";
+import {FlatList, KeyboardAvoidingView, Platform, SafeAreaView, View,} from "react-native";
 import {getAuth} from "firebase/auth";
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
@@ -18,12 +9,10 @@ import {SwipeModal} from "../../components/modals/SwipeModal";
 import {StatusContainer} from "../../components/container/modalContainers/StatusContainer";
 import {themeColors} from "../../colors/theme";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
-//import {MessageList as PBMessageList,} from "@pubnub/react-native-chat-components";
 import {imgStyles} from "../../components/images/imgStyles";
 
 // @ts-ignore
 import successAuth from "../../assets/images/successAuth.png";
-
 
 export const ChatMain = (
   // @ts-ignore
@@ -32,24 +21,15 @@ export const ChatMain = (
     setSeconds, messages, messageBreakOption, setMessageFinalBreak, sendMessage }
 ) => {
 
-
-
-
-
-
   const [inputHeight, setInputHeight] = useState(54); // main input field
   const dispatch = useDispatch();
-  const user = getAuth().currentUser;
   const [logoutModal, setLogoutModal] = useState(false);
-
   // @ts-ignore
   const darkmode = useSelector(state => state.darkmode.value)
 
   // @ts-ignore
-  const icon = useSelector(state => state.icon.value)
-
-  // @ts-ignore
   const logout = useSelector(state => state.logout.value);
+
 
   useEffect(() => {
     if (typing) {
@@ -91,7 +71,22 @@ export const ChatMain = (
         <KeyboardAvoidingView
           style={{ paddingTop: insets.top, backgroundColor: darkmode.primary , flex: 1,
             marginBottom: Platform.OS === "ios" ? 20 : 0, flexDirection: "column" }}>
-          {/*+++++++++++++++++++++++++++++++++++++++++msgs*/}
+          <FlatList
+            inverted
+            data={[...messages]}
+            contentContainerStyle={{ flexDirection: 'column-reverse' }}
+            keyExtractor={(item, index) => String(index)}
+            renderItem={({ item, index }) => (
+              <SingleMessage
+                text={item.message}
+                item={item}
+                styles={chatStyles}
+                primaryTextStyles={{ textAlign: "justify" }}
+                secondaryTextStyles={{ color: themeColors.borderThin, fontSize: 10 }}
+                timeText={item.timetoken}
+              />
+            )}
+          />
           <View style={{bottom: 20,  flexDirection: "row", justifyContent:"center", alignItems: "center"}}>
             <MessageInputContainer
               valueInput={input}

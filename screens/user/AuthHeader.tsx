@@ -16,7 +16,7 @@ export const UserHeader = (back: { name: boolean}) => {
   const route = useRoute();
   useEffect(() => {
 
-    console.log("routeName:", route.name, "\nback: ", back)
+    console.log("routeName:", route.name)
   }, []);
   const navigation = useNavigation()
   // @ts-ignore

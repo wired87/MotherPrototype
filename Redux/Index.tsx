@@ -10,7 +10,7 @@ import {
   SetScreens,
   SetText,
   SetLogout,
-  HistorySent, User,
+  HistorySent, User, FullScreenAdClass,
 } from "./Actions";
 
 
@@ -30,6 +30,7 @@ export const allReducers = combineReducers(
     message: MessageUpdate,
     historySent: HistorySent,
     user: User,
+    fullScreeAd: FullScreenAdClass
     }
 );
 

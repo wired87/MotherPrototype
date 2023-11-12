@@ -17,11 +17,10 @@ export const MessageInputContainer = ({ valueInput, onChange, typing, messageBre
   // @ts-ignore
   const darkmode = useSelector(state => state.darkmode.value)
 
-  // @ts-ignore
   return(
     <DefaultContainer
       extraStyles={{ marginTop: 20, backgroundColor: "transparent", position: "relative", justifyContent: "center", alignItems: "center",
-        flexDirection: "column"}} >
+        flexDirection: "column", bottom: -5}} >
       <View style={{flexDirection: "row", width: windowWidth, justifyContent: "space-between",
         marginBottom: 7, alignItems: "center"}}>
         {typing ? (

@@ -152,6 +152,22 @@ export const User = (state = user, action: { type: any; payload: any; }) => {
   }
 }
 
+const fullScreenAd = {
+    value: false
+}
+
+export const FullScreenAdClass = (state = fullScreenAd, action: { type: any; payload: any; }) => {
+  switch (action.type) {
+    case "FULL_SCREEN_AD":
+      return {
+        ...state,
+        value: action.payload
+      };
+    default:
+      return state
+  }
+}
+
 
 const errors = {
     value: [

@@ -6,28 +6,25 @@ import * as Google from "expo-auth-session/providers/google";
 
 import PubNub from 'pubnub';
 import { PubNubProvider } from 'pubnub-react';
-import {Chat} from "@pubnub/react-native-chat-components";
+// import {Chat} from "@pubnub/react-native-chat-components";
 import * as DocumentPicker from 'expo-document-picker';
 
 // Redux
 import {store} from "./Redux/store";
 import * as Font from 'expo-font';
 
-
+/*
 const pubnub = new PubNub({
   publishKey: 'myPublishKey',
   subscribeKey: 'mySubscribeKey',
   uuid: 'myUniqueUUID'
 });
-
+*/
 // @ts-ignore
-import {Provider, useDispatch} from "react-redux";
+import {Provider} from "react-redux";
 import NavigationMain from "./components/navigation/Footer";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useFonts} from "expo-font";
-import {getAuth, onAuthStateChanged} from "firebase/auth";
-
-
 
 //!!!!!!!!!!!!!!!!      C:\Users\wired\OneDrive\Desktop\AiChat0333\AiChat501    !!!!!!!!!!!!!!!!!!!!
 // vars
@@ -65,13 +62,13 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <PubNubProvider client={pubnub}>
+      {/*<PubNubProvider client={pubnub}>*/}
         <PaperProvider>
           <NavigationContainer>
             <NavigationMain/>
           </NavigationContainer>
         </PaperProvider>
-      </PubNubProvider>
+      {/*<PubNubProvider client={pubnub}>*/}
     </Provider>
   );
 }

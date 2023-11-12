@@ -8,7 +8,7 @@ export const SingleMessage = ({ item, styles, primaryTextStyles, secondaryTextSt
   return(
     <View key={item.id} style={[styles[item.class],
       item.id % 2 === 0 ? {left: 0} : {right: 0},
-      {marginBottom: 12, justifyContent: "space-between"}]}>
+      {marginTop: 12, bottom: 0, justifyContent: "space-between"}]}>
       <DefaultText text={text} moreStyles={primaryTextStyles}/>
       <DefaultText text={timeText} moreStyles={secondaryTextStyles}/>
     </View>

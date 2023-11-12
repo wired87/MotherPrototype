@@ -60,7 +60,6 @@ export const DefaultModal = (props: {
                     return false;
                 }
                 return gestureState.dy > 22;
-
             },
             onPanResponderGrant: () => {
                 pan.setOffset({

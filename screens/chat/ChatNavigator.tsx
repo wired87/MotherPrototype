@@ -11,26 +11,46 @@ import axios from "axios/index";
 import {ChatMain} from "./ChatMain";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
-import { Dimensions } from "react-native";
+import {Platform} from "react-native";
 import {HeaderView} from "../../components/container/headerContainer";
 import {AuthNavigator} from "../user/AuthNavigator";
 
-const windowWidth = Dimensions.get('window').width;
+import * as SecureStore from 'expo-secure-store';
 
+// Ads
+import {
+  RewardedInterstitialAd,
+  RewardedAdEventType,
+  TestIds,
+} from 'react-native-google-mobile-ads';
+
+const adUnitIdFullScreenAd = __DEV__
+  ? TestIds.REWARDED_INTERSTITIAL
+  : Platform.OS === "ios"
+    ? "ca-app-pub-2225753085204049/3142510997"
+    : "ca-app-pub-2225753085204049/7842257619";
+
+const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitIdFullScreenAd, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing'],
+});
+/////////////////////////////////////////////////
 
 export const ChatNavigation = () => {
+
   // State variables
+  const [adLoaded, setAdLoaded] = useState(false);
   const [text, setText] = useState(null);
-  const [visible, setVisible] = React.useState(false);
-  const [modalVisible, setModalVisible] = React.useState(false);
-  const [animation, setAnimation] = React.useState(false);
+  const [visible, setVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const [typing, setTyping] = useState(false); // typing indicator
   const [messages, setMessages] = useState([]) // all Messages
   const messageIndex = useRef(0) // index for the messages
   const [seconds, setSeconds] = useState(12);
   const [messageBreakOption, setMessageBreakOption] = useState(false);
-  const [messageFinalBreak, setMessageFinalBreak] = useState(false)
+  const [messageFinalBreak, setMessageFinalBreak] = useState(false);
+  const [messagesLeft, setMessagesLeft]= useState("5");
 
   // other Variables
   const ChatStack = createNativeStackNavigator();
@@ -49,18 +69,97 @@ export const ChatNavigation = () => {
   // @ts-ignore
   const historySent = useSelector(state => state.historySent.value)
 
+  async function postMessageInfoData(value: string) {
+    try {
+      await SecureStore.setItemAsync("totalMessages", value);
+      console.log('Saved Data successfull');
+    } catch (e) {
+      console.error('Error at save the Data:', e);
+    }
+  }
+
+  async function getMessageInfoData() {
+    try {
+      console.log("Data request successful")
+      return await SecureStore.getItemAsync("totalMessages")
+    } catch (e) {
+      console.error('Error at requesting the Data: ', e);
+      return false;
+    }
+  }
+
+  const checkUserMessageValue = async (value: string | null) => {
+    if (value !== "0" || value !== null) {
+      console.log("User has", value, "Messages left.")
+      if (value === "1") {
+        await postMessageInfoData("0").then(() => setMessagesLeft("0"))
+      }else if (value === "2"){
+        await postMessageInfoData("1").then(() => setMessagesLeft("1"))
+      }else if (value === "3"){
+        await postMessageInfoData("2").then(() => setMessagesLeft("2"))
+      }else if (value === "4"){
+        await postMessageInfoData("3").then(() => setMessagesLeft("3"))
+      }else if (value === "5") {
+        await postMessageInfoData("4").then(() => setMessagesLeft("4"))
+      }
+      return true;
+    }else {
+      postMessageInfoData("5").then(() => setMessagesLeft("5"))
+      return false;
+    }
+  }
+
+  // GOOGLE MOBILE AD LOGIC
+  useEffect(() => {
+
+    const showAds = async () => {
+      if (messagesLeft === "0") {
+        const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
+          RewardedAdEventType.LOADED,
+          () => {
+            dispatch({
+              type: "FULL_SCREEN_AD",
+              payload: true
+            });
+            rewardedInterstitial.show()
+              .then(
+                () => {
+                  console.log("YEAH ADS!!!")
+                  postMessageInfoData("5").then(() => setMessagesLeft("5"))
+                })
+          },
+        );
+        const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
+          RewardedAdEventType.EARNED_REWARD,
+          reward => {
+            console.log('User earned reward of ', reward);
+          },
+        );
+
+        // Start loading the rewarded interstitial ad straight away
+        rewardedInterstitial.load();
+
+        // Unsubscribe from events on unmount
+        return () => {
+          unsubscribeLoaded();
+          unsubscribeEarned();
+        };
+      }
+    }
+    showAds().then(() => console.log("Ads successfully showed. Refilled the Messages"))
+  }, [messagesLeft]);
+
+
   // @ts-ignore
   const openModal = useCallback(() => {
-      setModalVisible(true);
-      setAnimation(true);
-      setVisible(true);
+    setModalVisible(true);
+    setVisible(true);
   });
 
   // @ts-ignore
   const closeModal = useCallback(() => {
-      setModalVisible(false);
-      setAnimation(false);
-      setVisible(false);
+    setModalVisible(false);
+    setVisible(false);
   });
 
   const createMessageObject = () => {
@@ -131,40 +230,67 @@ export const ChatNavigation = () => {
     }
   }
 
-  const sendMessage = async () => {
-    setTyping(true);
-    // @ts-ignore
-    if (text?.length !== 0) {
-      console.log("User input:", text)
-      const userMessage = createMessageObject();
+  const sendPackage = async (userMessage: any) => {
+    try {
+      console.log("Sending Message Object...")
+      const aiResponse = await sendObject(userMessage);
+      setTyping(false);
       messageIndex.current = messageIndex.current + 1;
-      console.log("Sender Object created: ", userMessage)
+      console.log("Final response Object: ", aiResponse);
+      if (aiResponse === 1) {
+        console.log('Something went wrong in one of the following functions: ' +
+          '\n - "sendMessage", \n- "sendObject", \n- "postMessageObject"')
+      } else {
+        // @ts-ignore
+        setMessages(prevMessages => [...prevMessages, aiResponse]);
+      }
+    } catch (error) {
+      console.log("error while sending a message", error)
+    } finally {
+      console.log("Function end...")
+      setSeconds(12);
+      console.log("USER ID:", user?.uid)
+    }
+  }
 
+  const sendMessageProcess = async () => {
+    const valueMessages = await getMessageInfoData()//.then(() => console.log("Function getMessageInfoData finished"))
+    if (!valueMessages) {
+      const valueMessages = await postMessageInfoData("5").then(async () => {
+        await getMessageInfoData()
+      })
+    }
+
+    console.log("Curent Messages:", valueMessages, "\nCurrent messages State value:", messagesLeft)
+    // @ts-ignore
+    const checkSuccess = await checkUserMessageValue(valueMessages)
+    console.log("Curent Messages UPDATED:", valueMessages, "\nCurrent messages State value UPDATED:", messagesLeft)
+    // @ts-ignore
+    if (checkSuccess) {
+      setTyping(true);
       // @ts-ignore
-      setMessages(prevMessages => [...prevMessages, userMessage]);
-      deleteMessage()
-      try {
-        console.log("Sending Message Object...")
-        const aiResponse = await sendObject(userMessage);
-        setTyping(false);
+      if (text?.length !== 0) {
+        console.log("User input:", text)
+        const userMessage = createMessageObject();
         messageIndex.current = messageIndex.current + 1;
-        console.log("Final response Object: ", aiResponse);
-        if (aiResponse === 1) {
-          console.log('Something went wrong in one of the following functions: ' +
-            '\n - "sendMessage", \n- "sendObject", \n- "postMessageObject"')
-        } else {
-          // @ts-ignore
-          setMessages(prevMessages => [...prevMessages, aiResponse]);
-        }
-      } catch (error) {
-        console.log("error while sending a message", error)
-      } finally {
-        console.log("Function end...")
-        setSeconds(12);
-        console.log("USER ID:", user?.uid)
+        console.log("Sender Object created: ", userMessage)
+        // @ts-ignore
+        setMessages(prevMessages => [...prevMessages, userMessage]);
+        deleteMessage()
+        sendPackage(userMessage).then(() => console.log(""))
+      } else {
+        console.log("0 input try again")
       }
     } else {
-      console.log("0 input try again")
+      console.log("initialize Ad")
+      // logic for display fullscreen ad here
+      rewardedInterstitial.show()
+        .then(
+          async () => {
+            await postMessageInfoData("5").then(() => setMessagesLeft("5"));
+            console.log("Message successfully sent")
+        }).catch(
+          (e) =>  console.log("Ad could not be shown because an error:", e))
     }
   }
 
@@ -176,15 +302,14 @@ export const ChatNavigation = () => {
     console.log("Dispatched History Text.")
   }
 
-
-
-
   const historyMessageSent = async () => {
     closeModal()
-    await sendMessage()
+    await sendMessageProcess()
       .then(() => console.log("Successfully ended function."))
       .catch((e: any) => console.log("Error while sending a message in historyMessageSent:", e))
   }
+
+
   // -> setText + setHistory: true -> useEffect if changes call function history message sent
   useEffect(() => {
     console.log("historySent-State changed to:", historySent)
@@ -194,6 +319,9 @@ export const ChatNavigation = () => {
         .catch(e => console.log("SUCCESS,", e))
     }
   }, [historySent]);
+
+
+
   useEffect(() => {
     console.log("Current Text:", text);
   }, [text]);
@@ -273,7 +401,7 @@ export const ChatNavigation = () => {
             messages={messages}
             messageBreakOption={messageBreakOption}
             setMessageFinalBreak={setMessageFinalBreak}
-            sendMessage={sendMessage}
+            sendMessage={sendMessageProcess}
             {...props}
             input={text}
             setInput={setText} />
@@ -292,6 +420,39 @@ export const ChatNavigation = () => {
 
 
 /*
+
+const sendMessageProcess = async () => {
+    const valueMessages = await getMessageInfoData().then( async () => {
+      // @ts-ignore
+      const checkSuccess = await checkUserMessageValue(valueMessages).then( async () => {
+        // @ts-ignore
+        if (checkSuccess) {
+          setTyping(true);
+          // @ts-ignore
+          if (text?.length !== 0) {
+            console.log("User input:", text)
+            const userMessage = createMessageObject();
+            messageIndex.current = messageIndex.current + 1;
+            console.log("Sender Object created: ", userMessage)
+            // @ts-ignore
+            setMessages(prevMessages => [...prevMessages, userMessage]);
+            deleteMessage()
+            sendPackage(userMessage).then(() => console.log(""))
+          } else {
+            console.log("0 input try again")
+          }
+        } else {
+          console.log("initialize Ad")
+          // logic here
+        }
+      }).catch((e) => {
+        console.log("Success === false in sendMessage, checkMessage -> Error detected in sendMessage: ", e)
+      })}
+    )}
+
+
+
+
 how handle history-Text click?
 - define const text and send in ChatScreens
 - if user clicks on a text we setText to the text the user has clicked on and setSend to true

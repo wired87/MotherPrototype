@@ -11,15 +11,23 @@ const windowWidth = Dimensions.get('window').width;
 
 import {useDispatch, useSelector} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import useNavigation, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 
 import firebase from "firebase/compat";
 import auth = firebase.auth;
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 
-// admob
-// import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+// GOOGLE ADMOB
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+
+const adUnitIdBannerAd = __DEV__
+  ? TestIds.BANNER
+  : Platform.OS === "ios" ?
+  "ca-app-pub-2225753085204049/2862976257" :
+  "ca-app-pub-2225753085204049/8777981057"
+
+///////////////////////////////////
 
 // @ts-ignore
 export default function NavigationMain() {
@@ -52,7 +60,6 @@ export default function NavigationMain() {
 
   // @ts-ignore
   const darkmode = useSelector(state => state.darkmode.value);
-
 
   const storeUserSessionData = async () => {
     try {
@@ -107,7 +114,8 @@ export default function NavigationMain() {
         inactiveColor={themeColors.sexyBlue}
         backBehavior={"firstRoute"}
         barStyle={{
-          height:60,
+          height: 50,
+          marginTop: 0,
           justifyContent: 'center',
           alignItems: 'center',
           paddingHorizontal: 0,
@@ -121,6 +129,7 @@ export default function NavigationMain() {
           options={{
             // tabBarBadge: 0, take it to show new messages
             tabBarColor: darkmode.navigatorColor ,
+
             // @ts-ignore
             headerShown: false,
             tabBarIconStyle: { display: "none"},
@@ -140,6 +149,13 @@ export default function NavigationMain() {
           }}
         />
       </Tab.Navigator>
+      <BannerAd
+        unitId={adUnitIdBannerAd}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      />
     </>
   );
 }
@@ -149,17 +165,7 @@ export default function NavigationMain() {
 
 /* later
 
-<BannerAd
-        unitId={
-        Platform.OS === "ios" ?
-          "ca-app-pub-2225753085204049~6800780901" :
-          "ca-app-pub-2225753085204049/2862976257"
-        }
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        requestOptions={{
-          requestNonPersonalizedAdsOnly: true,
-        }}
-      />
+
 
 
 

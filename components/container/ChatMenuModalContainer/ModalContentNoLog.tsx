@@ -40,21 +40,23 @@ export const ModalContentNoLog = (// @ts-ignore
             </View>
 
             <View style={uniStyles.reminderModalBtnContainer}>
-                <DefaultPageNavigationBtn text={loginText}
-                                          extraTextStyles={uniStyles.reminderModalBtnText}
-                                          onPressAction={() => {
-                                            onPressLogin()
-                                            extraAction()
-                                          }}
-                                          extraBtnStyles={undefined}/>
+                <DefaultPageNavigationBtn
+                  text={loginText}
+                  extraTextStyles={uniStyles.reminderModalBtnText}
+                  onPressAction={() => {
+                    onPressLogin()
+                    extraAction()
+                  }}
+                  extraBtnStyles={undefined}/>
 
-                <DefaultPageNavigationBtn text={registerText}
-                                          extraTextStyles={uniStyles.reminderModalBtnText}
-                                          onPressAction={() => {
-                                            onPressRegister()
-                                            extraAction()
-                                          }}
-                                          extraBtnStyles={undefined}/>
+                <DefaultPageNavigationBtn
+                  text={registerText}
+                  extraTextStyles={uniStyles.reminderModalBtnText}
+                  onPressAction={() => {
+                    onPressRegister()
+                    extraAction()
+                  }}
+                  extraBtnStyles={undefined}/>
             </View>
         </View>
     );

@@ -17,6 +17,9 @@ export const logout = () => ({
 export const user = () => ({
     type: "USER"
 })
+export const fullScreenAd = () => ({
+    type: "FULL_SCREEN_AD"
+})
 
 export const historySent= () => ({
     type: "HistorySent"
