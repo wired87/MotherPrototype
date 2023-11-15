@@ -85,6 +85,7 @@ const colors = {
             themeColors.sexyBlue,
             "#032548",
         ],
+
         primary_darkLight: [
             "#f0f3f7",
             "rgb(17,17,17)",
@@ -109,6 +110,10 @@ const colors = {
             "rgb(37,38,38)",
             "rgb(24,24,24)"
         ],
+        borderColor: [
+          "rgb(37,38,38)",
+            "rgb(241,236,236)"
+        ]
     }
 };
 
@@ -121,6 +126,7 @@ const darkmode = {
         switchTextColorLD: colors.value.switchTextColorLD[0],
         secondaryContainerBackground: colors.value.secondaryContainerBackground[0],
         switchedSecondaryContainerBackground: colors.value.switchedSecondaryContainerBackground[0],
+        borderColor: colors.value.borderColor[0],
     }
 };
 

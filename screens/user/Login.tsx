@@ -82,10 +82,11 @@ export default function Login({navigation}) {
       dispatch({
         type: 'LOADING',
         payload: true
-      });
+      });// @ts-ignore
       try {
-        await signInWithEmailAndPassword(auth, email, password).then(() => {
-          setError(text.success);
+        await signInWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            setError(text.success);
         })
       } catch (error) {
         // @ts-ignore

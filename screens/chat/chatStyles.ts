@@ -52,8 +52,19 @@ export const chatStyles = StyleSheet.create({
         borderBottomWidth: .5,
         borderColor: "rgba(0, 0, 0, .1)",
         marginRight: 20,
-        paddingTop: 13,
-        paddingBottom: 13,
+        paddingVertical: 13
     },
 
+    voiceMessage: {
+        height: 37,
+        borderRadius: 14,
+        width: "auto",
+        marginHorizontal: 20,
+        backgroundColor: themeColors.sexyBlue,
+        borderWidth: 1,
+        paddingVertical: 13,
+        position: "relative",
+        justifyContent: "space-between",
+        alignItems: "center"
+    }
 })

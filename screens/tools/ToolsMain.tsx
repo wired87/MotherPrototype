@@ -46,21 +46,23 @@ export default function ToolMain() {
         }
     ]
 
+  const request = () => {
 
+  }
     const user = getAuth().currentUser;
 
     return(
-        <ScrollView style={styles.main_container}
-                    contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
-            <SafeAreaView style={styles.safeFullViewContainer}
-                // @ts-ignore
-                contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+      <ScrollView style={styles.main_container}
+                  contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+          <SafeAreaView style={styles.safeFullViewContainer}
+            // @ts-ignore
+                        contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
 
 
 
 
-            </SafeAreaView>
-        </ScrollView>
+          </SafeAreaView>
+      </ScrollView>
     );
 }
 

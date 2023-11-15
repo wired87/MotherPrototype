@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {FlatList, KeyboardAvoidingView, Platform, SafeAreaView, View,} from "react-native";
+import {Button, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, View,} from "react-native";
 import {getAuth} from "firebase/auth";
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
@@ -9,24 +9,27 @@ import {SwipeModal} from "../../components/modals/SwipeModal";
 import {StatusContainer} from "../../components/container/modalContainers/StatusContainer";
 import {themeColors} from "../../colors/theme";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
+import { Audio } from 'expo-av';
+
 import {imgStyles} from "../../components/images/imgStyles";
 
 // @ts-ignore
 import successAuth from "../../assets/images/successAuth.png";
 
+
 export const ChatMain = (
   // @ts-ignore
   { seconds, input, setInput, typing, setMessageBreakOption,
     // @ts-ignore
-    setSeconds, messages, messageBreakOption, setMessageFinalBreak, sendMessage }
+    setSeconds, messages, messageBreakOption, setMessageFinalBreak, sendMessage, setMessages, messageIndex, getCurrentTime }
 ) => {
 
   const [inputHeight, setInputHeight] = useState(54); // main input field
   const dispatch = useDispatch();
   const [logoutModal, setLogoutModal] = useState(false);
+
   // @ts-ignore
   const darkmode = useSelector(state => state.darkmode.value)
-
   // @ts-ignore
   const logout = useSelector(state => state.logout.value);
 
@@ -77,24 +80,40 @@ export const ChatMain = (
             contentContainerStyle={{ flexDirection: 'column-reverse' }}
             keyExtractor={(item, index) => String(index)}
             renderItem={({ item, index }) => (
-              <SingleMessage
-                text={item.message}
-                item={item}
-                styles={chatStyles}
-                primaryTextStyles={{ textAlign: "justify" }}
-                secondaryTextStyles={{ color: themeColors.borderThin, fontSize: 10 }}
-                timeText={item.timetoken}
-              />
+              item.type === "text" ? (
+                <SingleMessage
+                  key={index}
+                  text={item.message}
+                  item={item}
+                  styles={chatStyles}
+                  primaryTextStyles={{ textAlign: "justify" }}
+                  secondaryTextStyles={{ color: themeColors.borderThin, fontSize: 10 }}
+                  timeText={item.timetoken}
+                />
+                ):(
+                <SingleMessage
+                  key={index}
+                  text={item.message}
+                  item={item}
+                  styles={chatStyles}
+                  primaryTextStyles={{ textAlign: "justify" }}
+                  secondaryTextStyles={{ color: themeColors.borderThin, fontSize: 10 }}
+                  timeText={""}
+                />
+              )
             )}
           />
           <View style={{bottom: 20,  flexDirection: "row", justifyContent:"center", alignItems: "center"}}>
             <MessageInputContainer
+              messageIndex={messageIndex}
               valueInput={input}
               onChange={setInput}
               typing={typing}
               messageBreakOption={messageBreakOption}
               setMessageFinalBreak={setMessageFinalBreak}
               sendMessage={sendMessage}
+              setMessages={setMessages}
+              getCurrentTime={getCurrentTime}
             />
           </View>
         </KeyboardAvoidingView>

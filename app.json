@@ -7,6 +7,14 @@
     "orientation": "portrait",
     "icon": "./assets/images/logo_icon_f.png",
     "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow AIX to access your microphone."
+        }
+      ]
+    ],
     "splash": {
       "image": "./assets/images/logo_icon_f.png",
       "resizeMode": "contain",

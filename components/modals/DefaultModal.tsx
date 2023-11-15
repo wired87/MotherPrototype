@@ -9,15 +9,17 @@ import {
     PanResponder,
     TouchableWithoutFeedback,
     Easing,
-    ImageBackground,
     Keyboard,
     NativeSyntheticEvent,
+  ImageBackground,
 } from "react-native";
 
 const {height} = Dimensions.get("window");
 
 // @ ts-ignore
 export const DefaultModal = (props: {
+    ImageBackgroundModal: any;
+    ImageBackgroundModalStyle: any;
     duration: any;
     DisableHandAnimation: any;
     onClose: () => void;
@@ -30,8 +32,6 @@ export const DefaultModal = (props: {
     MainContainerModal: any;
     fade: any;
     onRequestClose: ((event: NativeSyntheticEvent<any>) => void) | undefined;
-    ImageBackgroundModal: any;
-    ImageBackgroundModalStyle: any;
     ContentModal: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined;
     HeaderContent: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }) => {
 
@@ -43,7 +43,7 @@ export const DefaultModal = (props: {
     const pan = useRef(new Animated.ValueXY()).current;
 
     let [isAnimating, setIsAnimating] = useState(
-        !!props.DisableHandAnimation
+      !!props.DisableHandAnimation
     );
 
     let animatedValueX = 0;
@@ -51,75 +51,75 @@ export const DefaultModal = (props: {
     let animatedValueY = 0;
 
     const panResponder = useRef(
-        PanResponder.create({
-            // Ask to be the responder:
-            onStartShouldSetPanResponder: () => false,
-            onStartShouldSetPanResponderCapture: () => false,
-            onMoveShouldSetPanResponder: (evt, gestureState) => {
-                if (isAnimating) {
-                    return false;
-                }
-                return gestureState.dy > 22;
-            },
-            onPanResponderGrant: () => {
-                pan.setOffset({
-                    x: animatedValueX,
-                    y: animatedValueY,
-                });
-                pan.setValue({ x: 0, y: 0 }); // Initial value
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                if (gestureState.dy > 0) {
-                    pan.setValue({ x: 0, y: gestureState.dy });
-                }
-            },
-            onPanResponderRelease: (evt, gestureState) => {
-                // The user has released all touches while this view is the
-                // responder. This typically means a gesture has succeeded
-                // Flatten the offset so it resets the default positioning
-                if (gestureState.dy > 0 && gestureState.vy > 0) {
-                    if (gestureState.vy <= -0.7 || gestureState.dy <= -100) {
-                        setIsAnimating(true);
-                        Animated.timing(pan, {
-                            toValue: { x: 0, y: -height },
-                            ...TIMING_CONFIG,
-                            useNativeDriver: false,
-                        }).start(() => {
-                            setIsAnimating(false);
-                            props.onClose();
-                        });
-                    } else if (gestureState.vy >= 0.5 || gestureState.dy >= 100) {
-                        setIsAnimating(true);
-                        Animated.timing(pan, {
-                            toValue: { x: 0, y: height },
-                            ...TIMING_CONFIG,
-                            useNativeDriver: false,
-                        }).start(() => {
-                            setIsAnimating(false);
-                            props.onClose();
-                        });
-                    } else {
-                        setIsAnimating(true);
-                        Animated.spring(pan, {
-                            toValue: 0,
-                            useNativeDriver: false,
-                        }).start(() => {
-                            setIsAnimating(false);
-                            // props.onClose();
-                        });
-                    }
-                } else {
-                    setIsAnimating(true);
-                    Animated.spring(pan, {
-                        toValue: 0,
-                        useNativeDriver: false,
-                    }).start(() => {
-                        setIsAnimating(false);
-                        // props.onClose();
-                    });
-                }
-            },
-        })
+      PanResponder.create({
+          // Ask to be the responder:
+          onStartShouldSetPanResponder: () => false,
+          onStartShouldSetPanResponderCapture: () => false,
+          onMoveShouldSetPanResponder: (evt, gestureState) => {
+              if (isAnimating) {
+                  return false;
+              }
+              return gestureState.dy > 22;
+          },
+          onPanResponderGrant: () => {
+              pan.setOffset({
+                  x: animatedValueX,
+                  y: animatedValueY,
+              });
+              pan.setValue({ x: 0, y: 0 }); // Initial value
+          },
+          onPanResponderMove: (evt, gestureState) => {
+              if (gestureState.dy > 0) {
+                  pan.setValue({ x: 0, y: gestureState.dy });
+              }
+          },
+          onPanResponderRelease: (evt, gestureState) => {
+              // The user has released all touches while this view is the
+              // responder. This typically means a gesture has succeeded
+              // Flatten the offset so it resets the default positioning
+              if (gestureState.dy > 0 && gestureState.vy > 0) {
+                  if (gestureState.vy <= -0.7 || gestureState.dy <= -100) {
+                      setIsAnimating(true);
+                      Animated.timing(pan, {
+                          toValue: { x: 0, y: -height },
+                          ...TIMING_CONFIG,
+                          useNativeDriver: false,
+                      }).start(() => {
+                          setIsAnimating(false);
+                          props.onClose();
+                      });
+                  } else if (gestureState.vy >= 0.5 || gestureState.dy >= 100) {
+                      setIsAnimating(true);
+                      Animated.timing(pan, {
+                          toValue: { x: 0, y: height },
+                          ...TIMING_CONFIG,
+                          useNativeDriver: false,
+                      }).start(() => {
+                          setIsAnimating(false);
+                          props.onClose();
+                      });
+                  } else {
+                      setIsAnimating(true);
+                      Animated.spring(pan, {
+                          toValue: 0,
+                          useNativeDriver: false,
+                      }).start(() => {
+                          setIsAnimating(false);
+                          // props.onClose();
+                      });
+                  }
+              } else {
+                  setIsAnimating(true);
+                  Animated.spring(pan, {
+                      toValue: 0,
+                      useNativeDriver: false,
+                  }).start(() => {
+                      setIsAnimating(false);
+                      // props.onClose();
+                  });
+              }
+          },
+      })
     ).current;
 
     useEffect(() => {
@@ -200,54 +200,62 @@ export const DefaultModal = (props: {
 
 
     return (
-        <Modal
-            animationType="none"
-            transparent={true}
-            // @ts-ignore
-            visible={props.modalVisible}
-            onShow={() => {
-                setIsAnimating(true);
-                Animated.timing(pan, {
-                    ...TIMING_CONFIG,
-                    toValue: { x: 0, y: 0 },
-                    useNativeDriver: false,
-                }).start(() => {
-                    setIsAnimating(false);
-                });
-            }}
-            onRequestClose={props.onRequestClose}
-        >
-            <Animated.View style={handleMainBodyStyle(interpolateBackgroundOpacity)}>
-                <Animated.View
-                    style={handleGetStyleBody(interpolateBackgroundOpacity)}
-                    {...panResponder.panHandlers}
-                >
-                    <TouchableWithoutFeedback
-                        onPress={() => Keyboard.dismiss()}
-                        style={styles.TouchWithoutFeedBack}
-                    >
+      <Modal
+        animationType="none"
+        transparent={true}
+        // @ts-ignore
+        visible={props.modalVisible}
+        onShow={() => {
+            setIsAnimating(true);
+            Animated.timing(pan, {
+                ...TIMING_CONFIG,
+                toValue: { x: 0, y: 0 },
+                useNativeDriver: false,
+            }).start(() => {
+                setIsAnimating(false);
+            });
+        }}
+        onRequestClose={props.onRequestClose}
+      >
+          <Animated.View style={handleMainBodyStyle(interpolateBackgroundOpacity)}>
+              <Animated.View
+                style={handleGetStyleBody(interpolateBackgroundOpacity)}
+                {...panResponder.panHandlers}
+              >
+                  <TouchableWithoutFeedback
+                    onPress={() => Keyboard.dismiss()}
+                    style={styles.TouchWithoutFeedBack}
+                  >
+                    <>
+                      {(props.ImageBackgroundModal && props.ImageBackgroundModalStyle)? (
                         <ImageBackground
-                            source={props.ImageBackgroundModal && props.ImageBackgroundModal}
-                            style={styles.ImageBackground}
-                            imageStyle={
-                                props.ImageBackgroundModalStyle &&
-                                props.ImageBackgroundModalStyle
-                            }
+                          source={props.ImageBackgroundModal && props.ImageBackgroundModal}
+                          style={styles.ImageBackground}
+                          imageStyle={
+                            props.ImageBackgroundModalStyle &&
+                            props.ImageBackgroundModalStyle
+                          }
                         >
                             {props.ContentModal}
                         </ImageBackground>
-                    </TouchableWithoutFeedback>
-                </Animated.View>
-                <Animated.View
-                    style={handleGetStyle(interpolateBackgroundOpacity)}
-                    {...panResponder.panHandlers}
-                >
-                    <TouchableWithoutFeedback>
-                        {props.HeaderContent ? props.HeaderContent : <View />}
-                    </TouchableWithoutFeedback>
-                </Animated.View>
-            </Animated.View>
-        </Modal>
+                      ):(
+                        <View style={styles.ImageBackground}>
+                          {props.ContentModal}
+                        </View>
+                      )}
+                    </>
+                  </TouchableWithoutFeedback>
+              </Animated.View>
+              <Animated.View
+                style={handleGetStyle(interpolateBackgroundOpacity)}
+                {...panResponder.panHandlers}
+              >
+                  <TouchableWithoutFeedback>
+                      {props.HeaderContent ? props.HeaderContent : <View />}
+                  </TouchableWithoutFeedback>
+              </Animated.View>
+          </Animated.View>
+      </Modal>
     );
 };
 
@@ -269,3 +277,6 @@ const styles = StyleSheet.create({
     },
     TouchWithoutFeedBack: { flex: 1 },
 });
+/*
+
+ */

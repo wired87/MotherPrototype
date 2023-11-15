@@ -14,7 +14,6 @@ import {useNavigation} from "@react-navigation/native";
 import {Platform} from "react-native";
 import {HeaderView} from "../../components/container/headerContainer";
 import {AuthNavigator} from "../user/AuthNavigator";
-
 import * as SecureStore from 'expo-secure-store';
 
 // Ads
@@ -34,6 +33,7 @@ const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitIdF
   requestNonPersonalizedAdsOnly: true,
   keywords: ['fashion', 'clothing'],
 });
+
 /////////////////////////////////////////////////
 
 export const ChatNavigation = () => {
@@ -51,7 +51,7 @@ export const ChatNavigation = () => {
   const [messageBreakOption, setMessageBreakOption] = useState(false);
   const [messageFinalBreak, setMessageFinalBreak] = useState(false);
   const [messagesLeft, setMessagesLeft]= useState("5");
-
+  const [streamMessage, setStreamMessage] = useState("");
   // other Variables
   const ChatStack = createNativeStackNavigator();
 
@@ -104,14 +104,26 @@ export const ChatNavigation = () => {
       }
       return true;
     }else {
-      postMessageInfoData("5").then(() => setMessagesLeft("5"))
       return false;
     }
   }
 
+  const set = async () => {
+    await postMessageInfoData("5")
+      .then(
+        () => {
+          setMessagesLeft("5")
+          console.log("UPDATED999999999")
+      })
+  }
+
+
+  useEffect(() => {
+    set().then(() =>  console.log("HelloAds"))
+  }, []);
+
   // GOOGLE MOBILE AD LOGIC
   useEffect(() => {
-
     const showAds = async () => {
       if (messagesLeft === "0") {
         const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
@@ -123,10 +135,11 @@ export const ChatNavigation = () => {
             });
             rewardedInterstitial.show()
               .then(
-                () => {
+                async () => {
                   console.log("YEAH ADS!!!")
-                  postMessageInfoData("5").then(() => setMessagesLeft("5"))
-                })
+                  await postMessageInfoData("5").then(() => setMessagesLeft("5"))
+                }
+              )
           },
         );
         const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
@@ -162,19 +175,20 @@ export const ChatNavigation = () => {
     setVisible(false);
   });
 
-  const createMessageObject = () => {
+  const createMessageObject = useCallback((input: any, type: string) => {
     console.log("SenderInput:", text);
     return(
       {
         "id": messageIndex.current,
-        "message": text,
+        "message": input,
         "timetoken": getCurrentTime(),
         "publisher": "USER",
         "class": "userMessageContainer",
         "user_id": user ? user.uid : "1",
+        "type": type
       }
     );
-  }
+  }, []);
 
   const deleteMessage = () => {
     setText(null)
@@ -191,6 +205,34 @@ export const ChatNavigation = () => {
     }
     return(timeHoursNow + ":" + timeMinutesNow);
   }
+
+/*
+  const postStreamMessage = (text: string, aiResponse: any) => {
+    const words = text.split(" ");
+    let completeMessage = "";
+
+    words.forEach((word: string, index: number) => {
+      setTimeout(() => {
+        completeMessage += word + " ";
+        if (index === words.length - 1) {
+          // Fügen Sie die komplette Nachricht hinzu, wenn das letzte Wort erreicht ist
+          setMessages(prevMessages => [
+            ...prevMessages,
+            {
+              "id": aiResponse.id,
+              "message": completeMessage.trim(),
+              "timetoken": aiResponse.timetoken,
+              "publisher": aiResponse.publisher,
+              "class": aiResponse.class
+            }
+          ]);
+        }
+      }, 100 * index);
+    });
+  }
+
+
+*/
 
   const postMessageObject = async (senderObject: any) => {
     if (!messageFinalBreak) {
@@ -210,12 +252,14 @@ export const ChatNavigation = () => {
     }
   }
 
+
+
+
   const sendObject = async (senderObject: any) => {
     try {
       const response = await postMessageObject(senderObject);
-      console.log("response", response)
+      console.log("Response", response)
       setMessageBreakOption(false);
-
       return ({
         "id": messageIndex.current,
         // @ts-ignore
@@ -231,18 +275,22 @@ export const ChatNavigation = () => {
   }
 
   const sendPackage = async (userMessage: any) => {
+    setStreamMessage("")
     try {
       console.log("Sending Message Object...")
       const aiResponse = await sendObject(userMessage);
       setTyping(false);
       messageIndex.current = messageIndex.current + 1;
       console.log("Final response Object: ", aiResponse);
+
       if (aiResponse === 1) {
         console.log('Something went wrong in one of the following functions: ' +
           '\n - "sendMessage", \n- "sendObject", \n- "postMessageObject"')
       } else {
-        // @ts-ignore
-        setMessages(prevMessages => [...prevMessages, aiResponse]);
+
+        setMessages( // @ts-ignore
+          prevMessages => [...prevMessages, aiResponse]
+        );
       }
     } catch (error) {
       console.log("error while sending a message", error)
@@ -271,7 +319,7 @@ export const ChatNavigation = () => {
       // @ts-ignore
       if (text?.length !== 0) {
         console.log("User input:", text)
-        const userMessage = createMessageObject();
+        const userMessage = createMessageObject(text, "text");
         messageIndex.current = messageIndex.current + 1;
         console.log("Sender Object created: ", userMessage)
         // @ts-ignore
@@ -309,7 +357,6 @@ export const ChatNavigation = () => {
       .catch((e: any) => console.log("Error while sending a message in historyMessageSent:", e))
   }
 
-
   // -> setText + setHistory: true -> useEffect if changes call function history message sent
   useEffect(() => {
     console.log("historySent-State changed to:", historySent)
@@ -319,8 +366,6 @@ export const ChatNavigation = () => {
         .catch(e => console.log("SUCCESS,", e))
     }
   }, [historySent]);
-
-
 
   useEffect(() => {
     console.log("Current Text:", text);
@@ -394,6 +439,9 @@ export const ChatNavigation = () => {
       <ChatStack.Screen  name="ChatMain">
         {(props) =>
           <ChatMain
+            getCurrentTime={getCurrentTime}
+            messageIndex={messageIndex}
+            setMessages={setMessages}
             seconds={seconds}
             typing={typing}
             setMessageBreakOption={setMessageBreakOption}
@@ -458,6 +506,63 @@ how handle history-Text click?
 - if user clicks on a text we setText to the text the user has clicked on and setSend to true
 - also set up in useEffect in "ChatMain" a if statement "if send: run the function to send text.
 - after thaA    t set terxt to "" and send to false
+
+
+
+
+
+
+
+
+
+
+
+
+ const sendObject = async (senderObject: any) => {
+    try {
+      const response = await postMessageObject(senderObject);
+      console.log("Response", response)
+      setMessageBreakOption(false);
+      return ({
+        "id": messageIndex.current,
+        // @ts-ignore
+        "message": response.data.message,
+        "timetoken": getCurrentTime(),
+        "publisher": "AI",
+        "class": "aiMessageContainer",
+      });
+    } catch(e) {
+      console.log('Error in "sendObject":', e)
+      return 1;
+    }
+  }
+
+  const sendPackage = async (userMessage: any) => {
+    try {
+      console.log("Sending Message Object...")
+      const aiResponse = await sendObject(userMessage);
+      setTyping(false);
+      messageIndex.current = messageIndex.current + 1;
+      console.log("Final response Object: ", aiResponse);
+      if (aiResponse === 1) {
+        console.log('Something went wrong in one of the following functions: ' +
+          '\n - "sendMessage", \n- "sendObject", \n- "postMessageObject"')
+      } else {
+        const reader
+        // @ts-ignore
+        setMessages(
+          prevMessages
+            => [...prevMessages, aiResponse[]]
+        );
+      }
+    } catch (error) {
+      console.log("error while sending a message", error)
+    } finally {
+      console.log("Function end...")
+      setSeconds(12);
+      console.log("USER ID:", user?.uid)
+    }
+  }
  */
 
 
