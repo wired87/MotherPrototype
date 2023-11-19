@@ -72,8 +72,8 @@ export const MessageInputContainer = (
 
   function getDurationFormatted(milliseconds: any) {
     const minutes = milliseconds / 1000 / 60;
-    const seconds = Math.round((minutes - Math.floor(minutes)) * 60);
-    return seconds < 10 ? `${Math.floor(minutes)}:0${seconds}` : `${Math.floor(minutes)}:${seconds}`
+    const sec = Math.round((minutes - Math.floor(minutes)) * 60);
+    return sec < 10 ? `${Math.floor(minutes)}:0${sec}` : `${Math.floor(minutes)}:${sec}`
   }
 
   async function startRecording() {

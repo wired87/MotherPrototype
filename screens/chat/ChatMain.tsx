@@ -34,19 +34,6 @@ export const ChatMain = (
 
   const windowWidth = Dimensions.get('window').width;
 
-  useEffect(() => {
-    if (typing) {
-      console.log("seconds: ", seconds)
-      if (seconds <= 0) {
-        setMessageBreakOption(true);
-      }
-      const interval = setInterval(() => {
-        setSeconds(seconds - 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, []);
-
   const dismissNewLogoutBox = useCallback(() => {
     dispatch({
       type: "LOGOUT",
@@ -59,7 +46,6 @@ export const ChatMain = (
 
   useEffect(() => {
     if (logout) {
-      console.log("seconds:", seconds, "\nnewLogout: ", logout)
       setLogoutModal(true)
       dispatch({
         type: "LOGOUT",
