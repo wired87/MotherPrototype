@@ -47,3 +47,7 @@ export const colors = () => ({
 export const errors = () => ({
     type: "ERRORS"
 })
+
+export const sent = () => ({
+    type: "SENT"
+})

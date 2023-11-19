@@ -83,20 +83,33 @@ const colors = {
     value: {
         secondary_darkLight: [
             themeColors.sexyBlue,
-            "#032548",
+            "#d6d9da",
         ],
-
+        view: [
+            "#dfe3e8",
+            "rgba(20,20,20,.1)",
+        ],
+        messageContainer:
+          [
+              "#e1e4e7",
+              "rgba(105,103,103,0.4)",
+          ],
         primary_darkLight: [
             "#f0f3f7",
-            "rgb(17,17,17)",
+            "rgb(24,24,24)",
         ],
+        text:
+          [
+            "#000000",
+            "rgb(255,255,255)",
+          ],
         navigatorColor: [
-            "rgb(230,230,230)",
-            "rgb(45,45,43)"
+            "#f0f3f7",
+            "rgb(224,221,221)"
         ],
         headerIconColors:[
             "rgb(255,255,255)",
-            "rgb(0,0,0)"
+            "rgb(3,4,21)"
         ],
         switchTextColorLD: [
             themeColors.mediumDarkDark,
@@ -104,29 +117,33 @@ const colors = {
         ],
         secondaryContainerBackground: [
             "rgba(250,250,250,0.75)",
-            "rgba(20,20,20, .8)"
+            "rgba(255,255,255,0.2)"
         ],
         switchedSecondaryContainerBackground: [
             "rgb(37,38,38)",
             "rgb(24,24,24)"
         ],
         borderColor: [
-          "rgb(37,38,38)",
-            "rgb(241,236,236)"
+            "rgba(37,38,38,0.76)",
+            "rgba(241,236,236,0.75)"
         ]
     }
 };
 
 const darkmode = {
     value: {
+        bool: false,
         primary: colors.value.primary_darkLight[0],
         secondary: colors.value.secondary_darkLight[0],
         navigatorColor: colors.value.navigatorColor[0],
+        messageContainer: colors.value.messageContainer[0],
         headerIconColors: "rgb(0,0,0)",
+        view: colors.value.view[0],
         switchTextColorLD: colors.value.switchTextColorLD[0],
         secondaryContainerBackground: colors.value.secondaryContainerBackground[0],
         switchedSecondaryContainerBackground: colors.value.switchedSecondaryContainerBackground[0],
         borderColor: colors.value.borderColor[0],
+        text: colors.value.text[0],
     }
 };
 
@@ -147,15 +164,15 @@ const user = {
 }
 
 export const User = (state = user, action: { type: any; payload: any; }) => {
-  switch (action.type) {
-    case "USER":
-      return {
-        ...state,
-        value: action.payload
-      };
-    default:
-      return state
-  }
+    switch (action.type) {
+        case "USER":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state
+    }
 }
 
 const fullScreenAd = {
@@ -163,15 +180,15 @@ const fullScreenAd = {
 }
 
 export const FullScreenAdClass = (state = fullScreenAd, action: { type: any; payload: any; }) => {
-  switch (action.type) {
-    case "FULL_SCREEN_AD":
-      return {
-        ...state,
-        value: action.payload
-      };
-    default:
-      return state
-  }
+    switch (action.type) {
+        case "FULL_SCREEN_AD":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state
+    }
 }
 
 
@@ -332,15 +349,6 @@ export const SetScreens = (state = screens, action: { type: any; payload: any; }
 }
 
 
-
-
-
-
-
-
-
-
-
 const text = {
     value: {
         tryAgain: "Try again",
@@ -370,7 +378,7 @@ const text = {
         plusPlanButton: "Explore all Features",
         featuresInFuture: "Features in Future",
         notHere: "Dont see your preferred feature?",
-        contactFeatureText: "Please fill out the Contact Form with your wishes. \nWe will contact you ASAP."
+        contactFeatureText: "Please fill out the Contact Form with your wishes. \nWe will contact you ASAP.",
     }
 };
 
@@ -386,13 +394,31 @@ export const SetText = (state = text, action: { type: any; payload: any; }) => {
     }
 }
 
+const sent = {
+    value: {
+        typing: false,
+        messages: {},
+        messageBreakOption: false,
+        setMessageFinalBreak: false,
+        messagesLeft: "5",
+    }
+}
 
 
-
-
-
-
-
+export const Sent = (state = sent, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "SEND":
+            return {
+                ...state,
+                value: {
+                    ...state.value,
+                    ...action.payload
+                }
+            };
+        default:
+            return state;
+    }
+}
 
 
 

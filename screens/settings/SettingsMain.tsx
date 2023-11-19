@@ -88,7 +88,6 @@ export const  SettingsMain = ({ user }) => {
         }
     }, [])
 
-
     const closeModal = useCallback(() => {
         setVisible(false);
         setAnimation(false);
@@ -103,8 +102,8 @@ export const  SettingsMain = ({ user }) => {
       try {
         const result = await Share.share({
           title: "Share AIX",
-          message: "Your AI https://pornhub.de",
-          url: "https://pornhub.de",
+          message: "Your AI https://pornhub.de", ///////////////////////////////////////////////////////////////////////
+          url: "https://pornhub.de", ///////////////////////////////////////////////////////////////////////////////////
         },
         {
           dialogTitle: "Look at this cool new App!",

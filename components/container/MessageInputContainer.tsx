@@ -3,8 +3,8 @@ import {Dimensions, TextInput, TouchableOpacity, View} from "react-native";
 import {styles} from "./contiStyles";
 import {IconButton} from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React from "react";
-import { useSelector } from "react-redux";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {themeColors} from "../../colors/theme";
 import {TypeIndicator} from "../animations/TypeIndicator";
 import {BreakButton} from "../buttons/BreakButton";
@@ -14,12 +14,19 @@ const windowWidth = Dimensions.get('window').width;
 import * as FileSystem from 'expo-file-system';
 import {StyleSheet} from "react-native";
 import {getAuth} from "firebase/auth";
+import {createMessageObject, getCurrentTime} from "../../screens/chat/functions/SendProcess";
 
 const styles2 = StyleSheet.create({
   container: {
+    right: 0,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    borderTopRightRadius: 14,
+    paddingTop: 5
+
   },
   row: {
     flexDirection: 'row',
@@ -37,27 +44,37 @@ const styles2 = StyleSheet.create({
 const apiEndpoint = "http://192.168.178.51:8000/open/audio-chat-request/"
 
 
-
-
-
+interface ExtraData {
+  id: string;
+  timeToken: string;
+  publisher: string;
+  class: string;
+  file_id: string;
+  user_id: string;
+  soundAudio: any; // oder ersetzen Sie `any` durch den passenden Typ, falls bekannt
+  type: string;
+  duration: string;
+}
+// UNBEDINGT HIER NOCH KURZ SECURE STORE UPDATES EINBAUEN
 export const MessageInputContainer = (
   // @ts-ignore
-  { valueInput, onChange, typing, messageBreakOption, setMessageFinalBreak, sendMessage, setMessages, messageIndex,
-    // @ts-ignore
-    getCurrentTime }
+  { valueInput, onChange, messageBreakOption, setMessageFinalBreak, sendMessage, setMessages, messageIndex }
 ) => {
   const [userRecording, setUserRecording] = React.useState();
   const [allRecordings, setAllRecordings] = React.useState([]);
+  const [typing, setTyping] = React.useState(false);
+
   // @ts-ignore
   const darkmode = useSelector(state => state.darkmode.value)
 
+
+  const dispatch = useDispatch()
 
   function getDurationFormatted(milliseconds: any) {
     const minutes = milliseconds / 1000 / 60;
     const seconds = Math.round((minutes - Math.floor(minutes)) * 60);
     return seconds < 10 ? `${Math.floor(minutes)}:0${seconds}` : `${Math.floor(minutes)}:${seconds}`
   }
-
 
   async function startRecording() {
     try {
@@ -83,10 +100,10 @@ export const MessageInputContainer = (
   }
 
   async function stopRecording() {
+    setTyping(true);
     console.log('Stopping recording..');
 
     if (userRecording) {
-
       // @ts-ignore recording stopps
       await userRecording.stopAndUnloadAsync();
       await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
@@ -95,8 +112,8 @@ export const MessageInputContainer = (
       const uri = userRecording.getURI();
 
       // @ts-ignore get the duration
-      const { status } = await userRecording.createNewLoadedSoundAsync();
-      const messageLength = getDurationFormatted(status.durationMillis)
+      const { sound, status } = await userRecording.createNewLoadedSoundAsync();
+
       console.log('Recording stopped and stored at', uri);
       setUserRecording(undefined);
 
@@ -109,29 +126,38 @@ export const MessageInputContainer = (
         // @ts-ignore set all necessary vars for the sender object
         const user_id = getAuth().currentUser? getAuth().currentUser.uid : "1";
         console.log("User in messageinput:", user_id);
+
         const index = messageIndex.current
         console.log("messageIndex:", index);
+
         const fileUri = uri;
         const fileName = `recording-${Date.now()}.m4a`;
         console.log("fileName:", fileName);
+
         const fileType = 'audio/m4a';
+
         // sender object
-        let extraData = {
+        let extraData: ExtraData = {
           "id": messageIndex.current.toString(),
-          "message": "Voice Message",
-          //"timetoken": getCurrentTime().toString(),
+          "timeToken": getCurrentTime().toString(),
           "publisher": "USER",
           "class": "voiceMessage",
           "file_id": fileName,
           "user_id": user_id.toString(),
-          "type": "speech"
+          "soundAudio": sound,
+          "type": "speech",
+          "duration": getDurationFormatted(status.durationMillis),
         }
+
+        const { soundAudio, ...extraDataWithoutSound } = extraData;
+        console.log("extraData:", extraData)
 
         setMessages((prevMessages: any) => [...prevMessages, extraData])
         messageIndex.current = messageIndex.current + 1;
 
         const currentTime = getCurrentTime()
         console.log("current Time:", currentTime);
+
         try {
           const response = await FileSystem.uploadAsync(
             apiEndpoint,
@@ -143,48 +169,73 @@ export const MessageInputContainer = (
               httpMethod: 'POST',
               // @ts-ignore
               mimeType: fileType,
-              parameters: extraData,
+              parameters: extraDataWithoutSound,
               sessionType: undefined,
               uploadType: FileSystem.FileSystemUploadType.MULTIPART, // or BINARY_CONTENT
               fieldName: "file"
             }
           )
 
-          // @ts-ignore
-          // need to parse it because return object is raw json otherwise you can not iterate to all the fields
+          // @ts-ignore parse it because return object is raw json otherwise you can not iterate to all the fields
           const responseBody = JSON.parse(response.body);
           console.log("responseBodyMessage:", responseBody.message);
 
-          const aiResponse = {
-            "id": messageIndex.current,
-            "message": responseBody.message,
-            "timetoken": getCurrentTime,
-            "publisher": "AI",
-            "class": "aiMessageContainer",
-          }
-          // @ts-ignore
-          setMessages(prevMessages => [...prevMessages, aiResponse]);
+          const aiResponse = createMessageObject(
+            responseBody.message,
+            "text",
+            messageIndex,
+            getAuth().currentUser,
+            "AI",
+            "aiMessageContainer",
+        )
+
+          setMessages((prevMessages: any) => [...prevMessages, aiResponse]);
           messageIndex.current = messageIndex.current + 1;
+
         } catch(e) {
           console.error("Error while sending the request:", e)
-          const aiResponse = {
-            "id": messageIndex.current,
-            // @ts-ignore
-            "message": "Sorry i could not listening to you text message. " +
+
+          const aiResponse = createMessageObject(
+            "Sorry i could not listening to you text message. " +
               "\nIf that error comes not alone please contact the support",
-            "timetoken": getCurrentTime().toString(),
-            "publisher": "AI",
-            "class": "aiMessageContainer",
-          }
+            "text",
+            messageIndex,
+            getAuth().currentUser,
+            "AI",
+            "aiMessageContainer",
+          )
+
           // @ts-ignore
           setMessages(prevMessages => [...prevMessages, aiResponse]);
           messageIndex.current = messageIndex.current + 1;
         }
+
       } catch(e) {
         console.error("Request was not successfully:", e);
+        const aiResponse = createMessageObject(
+          "Sorry i could not listening to you text message. " +
+            "\nIf that error comes not alone please contact the support of this beautiful Application",
+          "text",
+          messageIndex,
+          getAuth().currentUser,
+          "AI",
+          "aiMessageContainer"
+        )
+
+        // @ts-ignore
+        setMessages(prevMessages => [...prevMessages, aiResponse]);
+        messageIndex.current = messageIndex.current + 1;
+
+      } finally {
+        setTyping(false);
       }
     }
   }
+
+  useEffect(() => {
+    console.log("MessageInput darkmode:", darkmode)
+    console.log("typingMessageInput:", typing)
+  }, []);
 
   function clearRecordings() {
     setAllRecordings([])
@@ -192,8 +243,10 @@ export const MessageInputContainer = (
 
   return(
     <DefaultContainer
-      extraStyles={{ marginTop: 20, backgroundColor: "transparent", position: "relative", justifyContent: "center", alignItems: "center",
-        flexDirection: "column", bottom: -5}} >
+      extraStyles={{ marginTop: 20, backgroundColor: "transparent", position: "relative",
+        justifyContent: "center", alignItems: "center",
+        flexDirection: "column", bottom: -5, padding: 0}} >
+
       <View style={{flexDirection: "row", width: windowWidth, justifyContent: "space-between",
         marginBottom: 7, alignItems: "center"}}>
         {typing ? (
@@ -202,6 +255,7 @@ export const MessageInputContainer = (
             <TypeIndicator />
           </View>
         ) : null}
+
         {messageBreakOption? (
           <View style={{ width: windowWidth * .5, justifyContent: "center", alignItems: "center"}}>
             <BreakButton
@@ -211,15 +265,20 @@ export const MessageInputContainer = (
           </View>
         ):null}
       </View>
-      <View style={{flexDirection: "row"}}>
+      <View style={{flexDirection: "row", justifyContent: "space-between", paddingLeft: 12, }}>
         <TextInput style={[styles.chatMessageInput,
-          {backgroundColor: darkmode? "rgba(255,255,255,.7)" : themeColors.dotNineWhite}]}
+          {backgroundColor: darkmode.bool? darkmode.navigatorColor : themeColors.dotNineWhite,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            borderBottomRightRadius: darkmode.bool? 0 : 20,
+            borderBottomLeftRadius: darkmode.bool? 0 : 20,
+            borderWidth: darkmode.bool? 0 : 1,
+          }]}
                    placeholder={"Ask something!"}
                    value={valueInput}
                    onChangeText={(val) => onChange(val)}
                    multiline={true}
         />
-
         {valueInput?.trim().length > 0? (
           <>
             <TouchableOpacity
@@ -240,8 +299,11 @@ export const MessageInputContainer = (
             />
           </>
         ):(
+
           <View style={styles2.container}>
-            <IconButton icon={"microphone-outline"} iconColor={userRecording ? "red" : "black"} onPress={typing ? undefined : userRecording ? stopRecording : startRecording}  />
+            <IconButton icon={"microphone-outline"}
+                        iconColor={userRecording ? "red" : darkmode.headerIconColors}
+                        onPress={typing ? undefined : userRecording ? stopRecording : startRecording}  />
           </View>
         )}
       </View>

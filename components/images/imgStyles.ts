@@ -8,7 +8,6 @@ export const imgStyles = StyleSheet.create({
     },
     poweredTxt: {
         fontSize: 20,
-        color: "black",
         fontFamily: "JetBrainsMono",
         fontWeight: 'bold'
     },

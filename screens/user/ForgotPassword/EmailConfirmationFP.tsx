@@ -21,8 +21,8 @@ export const EmailConfirmationFP = () => {
   const loading = useSelector(state => state.loading.value)
   // @ts-ignore
   const errors = useSelector(state => state.errors.value)
-
-
+  // @ts-ignore
+  const darkmode = useSelector(state => state.darkmode.value)
 
   const navigation = useNavigation()
   const auth = getAuth();
@@ -62,7 +62,7 @@ export const EmailConfirmationFP = () => {
 
   return (
     <DefaultContainer
-      extraStyles={{flexDirection: "column", elevation: 20}}>
+      extraStyles={{flexDirection: "column", elevation: 20, backgroundColor: darkmode.primary}}>
 
       {loading ? (
         <ActivityIndicator size={"large"}/>
@@ -79,10 +79,11 @@ export const EmailConfirmationFP = () => {
             secure={false}
             editable={true}
             keyboardType={"email-address"}
+            extraStyles={undefined}
           />
           <DefaultText
             text={"We will send you a confirmation Mail"}
-            moreStyles={undefined}/>
+            moreStyles={{color: darkmode.text}}/>
           <DefaultButton
             extraStyles={undefined} // @ts-ignore
             onPressAction={() => sendOTP(email)}

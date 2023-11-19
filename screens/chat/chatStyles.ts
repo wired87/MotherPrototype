@@ -56,14 +56,20 @@ export const chatStyles = StyleSheet.create({
     },
 
     voiceMessage: {
-        height: 37,
+        height: 44,
         borderRadius: 14,
         width: "auto",
         marginHorizontal: 20,
-        backgroundColor: themeColors.sexyBlue,
-        borderWidth: 1,
         paddingVertical: 13,
         position: "relative",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+    },
+    audioInfoBox: {
+        flexDirection: "row",
+        paddingVertical: 0,
+        backgroundColor: "transparent",
         justifyContent: "space-between",
         alignItems: "center"
     }

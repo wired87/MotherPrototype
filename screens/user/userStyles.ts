@@ -8,11 +8,12 @@ export const userStyles = StyleSheet.create({
         paddingTop: 45,
         paddingHorizontal: 30,
         marginVertical: 50,
-        borderBottomColor: themeColors.borderThin,
         borderBottomWidth: 1,
+
     },
     authTextInfo: {
         marginTop: 20,
+        marginBottom: 10
     },
     alternativeAuthMethodContainer: {
         flexDirection: 'row',
@@ -21,6 +22,7 @@ export const userStyles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 10,
     },
+
     changeBtn: {
         borderRadius: 9,
         flexDirection: "row",
@@ -100,8 +102,7 @@ export const userStyles = StyleSheet.create({
     changeInfoBtn: {
         borderRadius: 9,
         flexDirection: "row",
-        backgroundColor: '#01152a',
-        color: '#fff',
+
         paddingVertical: 10,
         paddingHorizontal: 0,
         width: 350,

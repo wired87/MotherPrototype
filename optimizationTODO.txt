@@ -1,0 +1,4 @@
+- send functions together in messageinput (just the needet higher inn tree)
+- better structure comps (not that many components)
+- sign up und sign in zsm
+- cvhange modal src (something better supported)

@@ -31,7 +31,9 @@ export const UserHeader = (back: { name: boolean}) => {
         {route.name === "Login" || route.name === "SignUp" ? (
           <>
             <View
-              style={{justifyContent: "flex-start", alignItems: "flex-end", width: windowWidth * .5, height: "100%"}}>
+              style={{justifyContent: "flex-start", alignItems: "flex-end", width: windowWidth * .5, height: "100%",
+                backgroundColor: darkmode.primary //////////////////
+            }}>
               <Appbar.Action
                 icon="less-than"
                 style={{left: 5, position: "absolute", zIndex: 900000}}
@@ -46,12 +48,14 @@ export const UserHeader = (back: { name: boolean}) => {
                 text={"Sign in"}
                 // @ts-ignore
                 onPressAction={() => navigation.navigate("Login")}
-                extraTextStyles={// @ts-ignore
+                extraTextStyles=
+                {// @ts-ignore
                   {
-                    color: route.name === "Login" ? "rgb(0,0,0)" : "rgb(255,255,255)",
+                    color: route.name === "Login" ? darkmode.bool? "white" : "rgb(0,0,0)" : "rgb(255,255,255)",
                     fontSize: 16,
                     textAlign: "center"
-                  }}
+                  }
+                }
                 extraBtnStyles={[{
                   backgroundColor: route.name === "Login" ? "transparent" : themeColors.sexyBlue
                 }]}/>
@@ -65,7 +69,7 @@ export const UserHeader = (back: { name: boolean}) => {
                 extraTextStyles={
                   // @ts-ignore
                   {
-                    color: route.name === "SignUp" ? "rgb(0,0,0)" : "rgb(255,255,255)",
+                    color: route.name === "SignUp" ? darkmode.bool? "white" : "rgb(0,0,0)" : "rgb(255,255,255)",
                     fontSize: 16,
                     textAlign: "center"
                   }}

@@ -120,7 +120,7 @@ export default function NavigationMain() {
           alignItems: 'center',
           paddingHorizontal: 0,
           paddingVertical: 0,
-          backgroundColor:  darkmode.primary, //"transparent"//
+          backgroundColor:  darkmode.navigatorColor, //"transparent"//
         }}
       >
         <Tab.Screen
@@ -135,7 +135,10 @@ export default function NavigationMain() {
             tabBarIconStyle: { display: "none"},
             // tabBarOnPress: animations for tabPress
             tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons style={{top: 0, position: "relative"}} name={focused ? "comment-multiple" : "comment-multiple-outline"} color={color} size={29} />
+              <MaterialCommunityIcons
+                style={{top: 0, position: "relative"}}
+                name={focused ? "comment-multiple" : "comment-multiple-outline"}
+                color={color} size={29} />
             ),
           }}
         />

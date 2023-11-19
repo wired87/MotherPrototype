@@ -25,7 +25,12 @@ export const DarkMode = () => {
         headerIconColors: colors.headerIconColors[0] === darkmode.headerIconColors ? colors.headerIconColors[1] : colors.headerIconColors[0],
         switchTextColorLD: colors.switchTextColorLD[0] === darkmode.switchTextColorLD ? colors.switchTextColorLD[1] : colors.switchTextColorLD[0],
         secondaryContainerBackground: colors.secondaryContainerBackground[0] === darkmode.secondaryContainerBackground ? colors.secondaryContainerBackground[1] : colors.switchTextColorLD[0],
+        view: colors.view[0] === darkmode.view ? colors.view[1] : colors.view[0],
         switchedSecondaryContainerBackground: colors.switchedSecondaryContainerBackground[0] === darkmode.switchedSecondaryContainerBackground ? colors.switchedSecondaryContainerBackground[1] : colors.switchTextColorLD[0],
+        bool: !darkmode.bool,
+        messageContainer: colors.messageContainer[0] === darkmode.messageContainer ? colors.messageContainer[1] : colors.messageContainer.view[0],
+        text: colors.text[0] === darkmode.text ? colors.text[1] : colors.text[0],
+        borderColor: colors.borderColor[0] === darkmode.borderColor ? colors.borderColor[1] : darkmode.borderColor[0]
       }
     });
   };

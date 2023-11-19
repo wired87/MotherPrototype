@@ -11,6 +11,99 @@ import {SingleProContainer} from "./SingleProContainer";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {DefaultText} from "../../text/DefaultText";
+import {DefaultLinearGradient} from "../DefaultLinearGradient";
+
+
+
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+const windowWidth = Dimensions.get('window').width;
+
+let optionsData = [
+    {
+        text: "Unlimited Access and Messages"
+    },
+    {
+        text: "Access to GPT-4V"
+    },
+    {
+        text: "No Ads anymore!"
+    },
+]
+
+export const PlusAdContainer = () => {
+  const route = useRoute();
+
+  // @ts-ignore
+  const text = useSelector(state => state.text.value)
+  // @ts-ignore
+  const icon = useSelector(state => state.icon.value)
+  // @ts-ignore
+  const screens = useSelector(state => state.screens.value)
+
+
+  const navigation = useNavigation();
+  const dispatch = useDispatch()
+
+  // @ts-ignore
+  const onExplore = useCallback(() => {
+      console.log("route: ", route)
+      if (route.name === "AccountMain") {
+          console.log("PURCHASEACCESS")
+          dispatch({
+              type: 'PURCHASEACCESS',
+              payload: true
+          });
+      }
+      // @ts-ignore
+      navigation.navigate("Settings", {
+          screen: screens.purchaseScreen
+      });
+  }, []);
+
+  return(
+    <DefaultLinearGradient
+      linearViewStyles={settingStyles.topBtn}
+      customTopColor={undefined}
+      customBottonColor={undefined} >
+      <View style={styles.header}>
+          <Text style={{ color: 'white', fontSize: 20, fontWeight: "bold", marginBottom: 5}}>Upgrade To Pro</Text>
+      </View>
+      {optionsData.map((item, index) => (
+        <SingleProContainer key={index} text={item.text} />
+      ))}
+      {!(route.name === "PurchaseScreen")? (
+        <TouchableOpacity
+          style={[
+              styles.btnContainer,
+              {width: windowWidth * .8, flexDirection: "row",
+                  justifyContent: "center", alignItems: "center"}]}
+          onPress={onExplore}>
+          <DefaultText text={text.plusPlanButton} moreStyles={{fontSize: 18, fontWeight: "bold", color: "white"}}/>
+          <MaterialCommunityIcons name={icon.arrow} size={28} color="rgba(255,255,255,.8)" />
+        </TouchableOpacity>
+      ):null}
+
+    </DefaultLinearGradient>
+  );
+}
+
+
+
+/*
+import {Animated, Dimensions, FlatList, Text, TouchableOpacity, View} from "react-native";
+import React, {useCallback, useEffect, useState} from "react";
+import {LinearGradient} from "expo-linear-gradient";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import Chroma from 'chroma-js';
+import {styles} from "../../styles";
+import {settingStyles} from "../../../screens/settings/settingStyles";
+import MIcon from "react-native-vector-icons/MaterialIcons";
+import {DefaultButton} from "../../buttons/DefaultButton";
+import {SingleProContainer} from "./SingleProContainer";
+import {useDispatch, useSelector} from "react-redux";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {DefaultText} from "../../text/DefaultText";
+import {DefaultLinearGradient} from "../DefaultLinearGradient";
 
 
 const TOP_COLORS =  ['#9c0582', '#0e198c', '#1d155e', '#2A3BEF', '#662250', '#6b0e5e'];
@@ -90,7 +183,7 @@ export const PlusAdContainer = () => {
   }, []);
 
   return(
-    <LinearGradient style={settingStyles.topBtn} colors={[colorTop, colorBottom]} >
+    <DefaultLinearGradient linearViewStyles={settingStyles.topBtn} linearGradientColors={undefined} >
       <View style={styles.header}>
           <Text style={{ color: 'white', fontSize: 20, fontWeight: "bold", marginBottom: 5}}>Upgrade To Pro</Text>
       </View>
@@ -109,6 +202,8 @@ export const PlusAdContainer = () => {
         </TouchableOpacity>
       ):null}
 
-    </LinearGradient>
+    </DefaultLinearGradient>
   );
 }
+
+ */

@@ -94,7 +94,10 @@ export const DefaultHeader = (
   }, [shouldNavigate, navigation]);
 
   return (
-    <SafeAreaView style={[extraStyles? extraStyles : null, {flex: 1, justifyContent: "flex-start", alignItems: "flex-end", backgroundColor: "transparent"}]}>
+    <SafeAreaView style={[extraStyles? extraStyles : null,
+      {flex: 1, justifyContent: "flex-start", alignItems: "flex-end",
+      backgroundColor: darkmode.primary_darkLight/*"transparent"*/}]}>
+
       <Appbar.Header
         style={[[uniStyles.headerContainer], { paddingVertical: Platform.OS === "ios" ? 20 : 0,
           backgroundColor: "transparent"}]}>

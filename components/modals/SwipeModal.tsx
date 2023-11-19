@@ -41,19 +41,19 @@ export const SwipeModal = (
       fade={true}
       onRequestClose={closeModal}
       ContentModal={
-      <>
-        <TouchableOpacity style={uniStyles.containerHeader} onPress={closeModal}>
-          <IconButton
-            icon={modalIcon}
-            size={28}
-            iconColor={darkmode.headerIconColors}
-            onPress={closeModal}
-          />
-        </TouchableOpacity>
-        {Content}
-      </>
+        <>
+          <TouchableOpacity style={uniStyles.containerHeader} onPress={closeModal}>
+            <IconButton
+              icon={modalIcon}
+              size={28}
+              iconColor={darkmode.headerIconColors}
+              onPress={closeModal}
+            />
+          </TouchableOpacity>
+          {Content}
+        </>
       }
       HeaderContent={null}
-    />
+      ImageBackgroundModal={undefined}/>
   );
 }

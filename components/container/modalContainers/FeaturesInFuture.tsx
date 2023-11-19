@@ -18,6 +18,10 @@ export const FeaturesInFuture = ({ setData, contactScreen }) => {
   let features = [
     "Speech to Text",
     "Text to Speech",
+    "Website scanner(Pro)",
+    "Cook assistant",
+    "Translator(the best)",
+    "Partnerships(Contact me)",
   ]
 
   // @ts-ignore
@@ -42,7 +46,6 @@ export const FeaturesInFuture = ({ setData, contactScreen }) => {
               <DefaultText
                 text={item}
                 moreStyles={{fontSize: 18}} />
-
             </View>
           );
         })}
