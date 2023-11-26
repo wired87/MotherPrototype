@@ -3,11 +3,10 @@ import {Dimensions, TextInput, TouchableOpacity, View} from "react-native";
 import {styles} from "./contiStyles";
 import {IconButton} from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {themeColors} from "../../colors/theme";
 import {TypeIndicator} from "../animations/TypeIndicator";
-import {BreakButton} from "../buttons/BreakButton";
 import {Audio} from "expo-av";
 
 const windowWidth = Dimensions.get('window').width;
@@ -15,6 +14,8 @@ import * as FileSystem from 'expo-file-system';
 import {StyleSheet} from "react-native";
 import {getAuth} from "firebase/auth";
 import {createMessageObject, getCurrentTime} from "../../screens/chat/functions/SendProcess";
+import {showAds} from "../../screens/chat/functions/AdLogic";
+import {InputContext, PrimaryContext} from "../../screens/Context";
 
 const styles2 = StyleSheet.create({
   container: {
@@ -43,7 +44,6 @@ const styles2 = StyleSheet.create({
 
 const apiEndpoint = "http://192.168.178.51:8000/open/audio-chat-request/"
 
-
 interface ExtraData {
   id: string;
   timeToken: string;
@@ -56,17 +56,30 @@ interface ExtraData {
   duration: string;
 }
 // UNBEDINGT HIER NOCH KURZ SECURE STORE UPDATES EINBAUEN
+// @ts-ignore
+
+
+
+
+
 export const MessageInputContainer = (
   // @ts-ignore
-  { valueInput, onChange, messageBreakOption, setMessageFinalBreak, sendMessage, setMessages, messageIndex }
+  {sendMessageProcess}
 ) => {
   const [userRecording, setUserRecording] = React.useState();
   const [allRecordings, setAllRecordings] = React.useState([]);
   const [typing, setTyping] = React.useState(false);
 
-  // @ts-ignore
-  const darkmode = useSelector(state => state.darkmode.value)
+  const {darkmode} = useContext(PrimaryContext);
 
+  // @ts-ignore
+  const colors = useSelector(state => state.colors.value);
+
+  const {
+    messageIndex, setMessages,
+    input, setInput, messagesLeft,
+    setMessagesLeft, setMessageIndex
+  } = useContext(InputContext);
 
   const dispatch = useDispatch()
 
@@ -106,13 +119,13 @@ export const MessageInputContainer = (
     if (userRecording) {
       // @ts-ignore recording stopps
       await userRecording.stopAndUnloadAsync();
-      await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
+      await Audio.setAudioModeAsync({allowsRecordingIOS: false});
 
       // @ts-ignore get the final uri form local storage
       const uri = userRecording.getURI();
 
       // @ts-ignore get the duration
-      const { sound, status } = await userRecording.createNewLoadedSoundAsync();
+      const {sound, status} = await userRecording.createNewLoadedSoundAsync();
 
       console.log('Recording stopped and stored at', uri);
       setUserRecording(undefined);
@@ -124,10 +137,10 @@ export const MessageInputContainer = (
         }
 
         // @ts-ignore set all necessary vars for the sender object
-        const user_id = getAuth().currentUser? getAuth().currentUser.uid : "1";
+        const user_id = getAuth().currentUser ? getAuth().currentUser.uid : "1";
         console.log("User in messageinput:", user_id);
 
-        const index = messageIndex.current
+        const index = messageIndex;
         console.log("messageIndex:", index);
 
         const fileUri = uri;
@@ -138,7 +151,7 @@ export const MessageInputContainer = (
 
         // sender object
         let extraData: ExtraData = {
-          "id": messageIndex.current.toString(),
+          "id": index.toString(),
           "timeToken": getCurrentTime().toString(),
           "publisher": "USER",
           "class": "voiceMessage",
@@ -149,11 +162,12 @@ export const MessageInputContainer = (
           "duration": getDurationFormatted(status.durationMillis),
         }
 
-        const { soundAudio, ...extraDataWithoutSound } = extraData;
+        const {soundAudio, ...extraDataWithoutSound} = extraData;
         console.log("extraData:", extraData)
 
         setMessages((prevMessages: any) => [...prevMessages, extraData])
-        messageIndex.current = messageIndex.current + 1;
+        setMessageIndex((state: number) => state +1)
+
 
         const currentTime = getCurrentTime()
         console.log("current Time:", currentTime);
@@ -187,17 +201,17 @@ export const MessageInputContainer = (
             getAuth().currentUser,
             "AI",
             "aiMessageContainer",
-        )
+          )
 
           setMessages((prevMessages: any) => [...prevMessages, aiResponse]);
-          messageIndex.current = messageIndex.current + 1;
+          setMessageIndex((state: number) => state +1)
 
-        } catch(e) {
+        } catch (e) {
           console.error("Error while sending the request:", e)
 
           const aiResponse = createMessageObject(
             "Sorry i could not listening to you text message. " +
-              "\nIf that error comes not alone please contact the support",
+            "\nIf that error comes not alone please contact the support",
             "text",
             messageIndex,
             getAuth().currentUser,
@@ -207,14 +221,14 @@ export const MessageInputContainer = (
 
           // @ts-ignore
           setMessages(prevMessages => [...prevMessages, aiResponse]);
-          messageIndex.current = messageIndex.current + 1;
+          setMessageIndex((state: number) => state +1)
         }
 
-      } catch(e) {
+      } catch (e) {
         console.error("Request was not successfully:", e);
         const aiResponse = createMessageObject(
           "Sorry i could not listening to you text message. " +
-            "\nIf that error comes not alone please contact the support of this beautiful Application",
+          "\nIf that error comes not alone please contact the support of this beautiful Application",
           "text",
           messageIndex,
           getAuth().currentUser,
@@ -224,7 +238,7 @@ export const MessageInputContainer = (
 
         // @ts-ignore
         setMessages(prevMessages => [...prevMessages, aiResponse]);
-        messageIndex.current = messageIndex.current + 1;
+        setMessageIndex((state: number) => state +1)
 
       } finally {
         setTyping(false);
@@ -241,69 +255,102 @@ export const MessageInputContainer = (
     setAllRecordings([])
   }
 
-  return(
+  return (
     <DefaultContainer
-      extraStyles={{ marginTop: 20, backgroundColor: "transparent", position: "relative",
+      extraStyles={{
+        marginTop: 20, backgroundColor: "transparent", position: "relative",
         justifyContent: "center", alignItems: "center",
-        flexDirection: "column", bottom: -5, padding: 0}} >
+        flexDirection: "column", bottom: -5, padding: 0
+      }}>
 
-      <View style={{flexDirection: "row", width: windowWidth, justifyContent: "space-between",
-        marginBottom: 7, alignItems: "center"}}>
+      <View style={{
+        flexDirection: "row", width: windowWidth, justifyContent: "space-between",
+        marginBottom: 7, alignItems: "center"
+      }}>
         {typing ? (
-          <View style={{ justifyContent: "flex-start",
-            alignItems: "flex-start", width: windowWidth * .5, paddingLeft: 20 }}>
-            <TypeIndicator />
+          <View style={{
+            justifyContent: "flex-start",
+            alignItems: "flex-start", width: windowWidth * .5, paddingLeft: 20
+          }}>
+            <TypeIndicator/>
           </View>
         ) : null}
-
-        {messageBreakOption? (
-          <View style={{ width: windowWidth * .5, justifyContent: "center", alignItems: "center"}}>
-            <BreakButton
-              extraStyles={{justifyContent: "center", alignItems: "center"}}
-              onPress={() => {setMessageFinalBreak(true)}}
-            />
-          </View>
-        ):null}
       </View>
-      <View style={{flexDirection: "row", justifyContent: "space-between", paddingLeft: 12, }}>
+
+      <View style={{flexDirection: "row", justifyContent: "space-between", paddingLeft: 12,}}>
         <TextInput style={[styles.chatMessageInput,
-          {backgroundColor: darkmode.bool? darkmode.navigatorColor : themeColors.dotNineWhite,
+          {
+            backgroundColor: darkmode? colors.navigatorColor : themeColors.dotNineWhite,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
-            borderBottomRightRadius: darkmode.bool? 0 : 20,
-            borderBottomLeftRadius: darkmode.bool? 0 : 20,
-            borderWidth: darkmode.bool? 0 : 1,
+            borderBottomRightRadius: darkmode ? 0 : 20,
+            borderBottomLeftRadius: darkmode ? 0 : 20,
+            borderWidth: darkmode ? 0 : 1,
           }]}
                    placeholder={"Ask something!"}
-                   value={valueInput}
-                   onChangeText={(val) => onChange(val)}
+                   value={input}
+                   onChangeText={(val) => setInput(val)}
                    multiline={true}
         />
-        {valueInput?.trim().length > 0? (
+        {input?.trim().length > 0 ? (
           <>
             <TouchableOpacity
-              onPress={() => onChange(null)}
-              style={{position: "absolute", top: 6, zIndex: 90,  right: 35, borderWidth: 1, borderRadius: 50, borderColor: themeColors.borderThin,
-                paddingVertical: 0, paddingHorizontal: 0,
+              onPress={() => setInput("")}
+              style={{
+                position: "absolute",
+                top: 6,
+                zIndex: 90,
+                right: 35,
+                borderWidth: 1,
+                borderRadius: 50,
+                borderColor: themeColors.borderThin,
+                paddingVertical: 0,
+                paddingHorizontal: 0,
               }}>
               <MaterialCommunityIcons name={"close"} size={17}/>
             </TouchableOpacity>
             <MaterialCommunityIcons
               name={"atlassian"} size={25}
-              onPress={() => {
-                !typing && valueInput?.length >= 1 && valueInput.trim().length > 0 ?
-                  sendMessage().then(() => console.log("Successfully sent Message")) :
+              onPress={async () => {
+                if(!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
+
+                  await sendMessageProcess()
+                    .then(() => console.log("MessageProcess finished successfully"))
+
+                } else if (messagesLeft === "0") {
+                  console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
+                  await showAds(dispatch, messagesLeft, setMessagesLeft).then(() => {
+                    console.log("Ads successfully initialized..")
+                  })
+                } else {
                   console.log("Already Sent Message, length === 0 or just whitespace")
+                }
               }}
-              style={{ marginRight: 5, color:darkmode.headerIconColors, transform: [{ rotate: '90deg'}]}}
+              style={{marginRight: 5, color: colors.headerIconColors[darkmode? 1 : 0], transform: [{rotate: '90deg'}]}}
             />
           </>
-        ):(
+        ) : (
 
-          <View style={styles2.container}>
-            <IconButton icon={"microphone-outline"}
-                        iconColor={userRecording ? "red" : darkmode.headerIconColors}
-                        onPress={typing ? undefined : userRecording ? stopRecording : startRecording}  />
+          <View style={[styles2.container, {borderColor: colors.borderColor[darkmode? 1 : 0]}]}>
+            <IconButton
+              icon={"microphone-outline"}
+              iconColor={userRecording ? "red" : colors.headerIconColors[darkmode? 1 : 0]}
+              onPress={
+              async () => {
+                if(messagesLeft === "0") {
+                  await showAds(dispatch, messagesLeft, setMessagesLeft)
+                } else if (typing) {
+                  undefined
+                } else {
+                  if (userRecording) {
+                    await stopRecording()
+                  } else if(!userRecording) {
+                    await startRecording()
+                  }
+                }
+              }
+            }
+          />
           </View>
         )}
       </View>

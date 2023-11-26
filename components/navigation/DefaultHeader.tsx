@@ -1,11 +1,100 @@
-import {Platform, SafeAreaView, View} from "react-native";
+import {Platform, SafeAreaView} from "react-native";
 import { Appbar } from "react-native-paper";
-import {CommonActions , useNavigation, useRoute} from "@react-navigation/native";
-import React, {useEffect, useState} from "react";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import React, {useContext, useEffect, useState} from "react";
 import {uniStyles} from "../../screens/universalStyles";
 import {HeaderView} from "../container/headerContainer";
 import {useDispatch, useSelector} from "react-redux";
+import {PrimaryContext} from "../../screens/Context";
 
+
+
+export const DefaultHeader = (
+    // @ts-ignore
+    { children, extraStyles, back }
+
+) => {
+  const dispatch = useDispatch()
+  // @ts-ignore
+  const colors = useSelector(state => state.colors.value);
+
+  // @ts-ignore
+  const purchaseAccess = useSelector(state => state.purchaseAccess.value)
+
+  const [shouldNavigate, setShouldNavigate] = useState(false);
+
+  const navigation = useNavigation()
+  const r = useRoute()
+  const { darkmode } = useContext(PrimaryContext);
+  const navigateBack = () => {
+
+    console.log("purchaseAccess", purchaseAccess)
+    if (r.name === "PurchaseScreen" && purchaseAccess) {
+      // @ts-ignore
+      navigation.goBack();
+      setShouldNavigate(true);
+      dispatch({
+        type: 'PURCHASEACCESS',
+        payload: false
+      });
+    } else if (r.name === "PurchaseScreen" && !purchaseAccess) {
+      // @ts-ignore
+      navigation.navigate("SettingsMain");
+    } else {
+      navigation.goBack();
+    }
+
+  };
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      // @ts-ignore
+      navigation.navigate('Chat', {
+        screen: 'AuthNavigator',
+        params: {
+          screen: 'AccountMain',
+        }
+      });
+      setShouldNavigate(false);
+    }
+  }, [shouldNavigate, navigation]);
+
+  return (
+    <SafeAreaView style={[extraStyles? extraStyles : null,
+      {flex: 1, justifyContent: "flex-start", alignItems: "flex-end",
+      backgroundColor: colors.primary[darkmode? 1 : 0]}]}>
+
+      <Appbar.Header
+        style={[[uniStyles.headerContainer], { paddingVertical: Platform.OS === "ios" ? 20 : 0,
+          backgroundColor: "transparent"}]}>
+        {(back || r.name === "PurchaseScreen" || r.name === "AccountMain" )? (
+          <>
+            <HeaderView extraStyles={{alignItems: "flex-start", justifyContent: "flex-start", height: "100%"}}>
+              <Appbar.Action
+                icon="less-than"
+                style={{left: 5, position: "absolute", zIndex: 900000}}
+                color={"rgba(0, 0, 0, .8)"}
+                size={27}
+                iconColor={colors.headerIconColors[darkmode? 1 : 0 ]}
+                // @ts-ignore
+                onPress={() => {navigateBack()}}
+              />
+            </HeaderView>
+            <HeaderView extraStyles={undefined}>
+
+            </HeaderView>
+            <HeaderView extraStyles={undefined}>
+
+            </HeaderView>
+          </>
+        ):null}
+        {children ? (
+            children
+        ):null}
+      </Appbar.Header>
+    </SafeAreaView>
+  );
+}
 
 //  ALL PROPS FROM NAVIGATOR
 /*
@@ -43,89 +132,3 @@ import {useDispatch, useSelector} from "react-redux";
 */
 
 
-
-
-export const DefaultHeader = (
-    // @ts-ignore
-    { visible, children, extraStyles, statement, back, route }
-
-) => {
-  const dispatch = useDispatch()
-  // @ts-ignore
-  const darkmode = useSelector(state => state.darkmode.value);
-  // @ts-ignore
-  const purchaseAccess = useSelector(state => state.purchaseAccess.value)
-  const [shouldNavigate, setShouldNavigate] = useState(false);
-
-  const navigation = useNavigation()
-  const r = useRoute()
-
-  const navigateBack = () => {
-
-    console.log("purchaseAccess", purchaseAccess)
-    if (r.name === "PurchaseScreen" && purchaseAccess) {
-      // @ts-ignore
-      navigation.goBack();
-      setShouldNavigate(true);
-      dispatch({
-        type: 'PURCHASEACCESS',
-        payload: false
-      });
-    } else if (r.name === "PurchaseScreen" && !purchaseAccess) {
-      // @ts-ignore
-      navigation.navigate("SettingsMain");
-    } else {
-      navigation.goBack();
-    }
-
-  };
-
-  useEffect(() => {
-    if (shouldNavigate) {
-      // @ts-ignore
-      navigation.navigate('Chat', {
-        screen: 'AuthNavigator',
-        params: {
-          screen: 'AccountMain',
-        }
-      });
-      setShouldNavigate(false);
-    }
-  }, [shouldNavigate, navigation]);
-
-  return (
-    <SafeAreaView style={[extraStyles? extraStyles : null,
-      {flex: 1, justifyContent: "flex-start", alignItems: "flex-end",
-      backgroundColor: darkmode.primary_darkLight/*"transparent"*/}]}>
-
-      <Appbar.Header
-        style={[[uniStyles.headerContainer], { paddingVertical: Platform.OS === "ios" ? 20 : 0,
-          backgroundColor: "transparent"}]}>
-        {(back || r.name === "PurchaseScreen" || r.name === "AccountMain" )? (
-          <>
-            <HeaderView extraStyles={{alignItems: "flex-start", justifyContent: "flex-start", height: "100%"}}>
-              <Appbar.Action
-                icon="less-than"
-                style={{left: 5, position: "absolute", zIndex: 900000}}
-                color={"rgba(0, 0, 0, .8)"}
-                size={27}
-                iconColor={darkmode.headerIconColors}
-                // @ts-ignore
-                onPress={() => {navigateBack()}}
-              />
-            </HeaderView>
-            <HeaderView extraStyles={undefined}>
-
-            </HeaderView>
-            <HeaderView extraStyles={undefined}>
-
-            </HeaderView>
-          </>
-        ):null}
-        {children ? (
-            children
-        ):null}
-      </Appbar.Header>
-    </SafeAreaView>
-  );
-}

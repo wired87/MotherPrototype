@@ -1,7 +1,6 @@
 // @ts-ignore
 import {TouchableOpacity, Text, View} from "react-native";
 import MIcon from 'react-native-vector-icons/MaterialIcons';
-import {themeColors} from "../../colors/theme";
 import {styles} from "./styles";
 
 // @ts-ignore

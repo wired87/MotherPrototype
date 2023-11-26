@@ -79,9 +79,9 @@ export const SetDarkMode = (state = darkmode, action: { type: any; payload: any;
     }
 }
 
-const colors = {
+export const colors = {
     value: {
-        secondary_darkLight: [
+        secondary: [
             themeColors.sexyBlue,
             "#d6d9da",
         ],
@@ -94,7 +94,7 @@ const colors = {
               "#e1e4e7",
               "rgba(105,103,103,0.4)",
           ],
-        primary_darkLight: [
+        primary: [
             "#f0f3f7",
             "rgb(24,24,24)",
         ],
@@ -108,8 +108,8 @@ const colors = {
             "rgb(224,221,221)"
         ],
         headerIconColors:[
-            "rgb(255,255,255)",
-            "rgb(3,4,21)"
+            "rgb(3,4,21)",
+            "rgb(255,255,255)"
         ],
         switchTextColorLD: [
             themeColors.mediumDarkDark,
@@ -126,19 +126,24 @@ const colors = {
         borderColor: [
             "rgba(37,38,38,0.76)",
             "rgba(241,236,236,0.75)"
+        ],
+        modalColor: [
+            "rgba(241,236,236,0.75)",
+            "rgba(37,38,38,0.76)"
         ]
     }
 };
 
-const darkmode = {
+export const darkmode = {
     value: {
         bool: false,
-        primary: colors.value.primary_darkLight[0],
-        secondary: colors.value.secondary_darkLight[0],
+        primary: colors.value.primary[0],
+        secondary: colors.value.secondary[0],
         navigatorColor: colors.value.navigatorColor[0],
         messageContainer: colors.value.messageContainer[0],
         headerIconColors: "rgb(0,0,0)",
         view: colors.value.view[0],
+        modalColor: colors.value.modalColor[0],
         switchTextColorLD: colors.value.switchTextColorLD[0],
         secondaryContainerBackground: colors.value.secondaryContainerBackground[0],
         switchedSecondaryContainerBackground: colors.value.switchedSecondaryContainerBackground[0],

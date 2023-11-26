@@ -11,7 +11,7 @@ export const DefaultInput = ({ placeholder, value, onChangeAction, secure, edita
       multiline={false}
       maxLength={100}
       style={[inputStyles.defaultInput, extraStyles? extraStyles : null,
-        {height: 50, marginBottom: 0, minWidth: 250, marginHorizontal: 5} //->account no mb!!!<-
+        {height: 50, marginBottom: 0, minWidth: 250, marginHorizontal: 5, marginTop: 10} //->account no mb!!!<-
       ]}
       placeholder={placeholder}
       placeholderTextColor={themeColors.mediumDark}

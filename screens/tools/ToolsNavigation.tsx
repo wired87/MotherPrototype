@@ -1,14 +1,21 @@
 import {getHeaderTitle} from "@react-navigation/elements";
 import {Platform, SafeAreaView} from "react-native";
 import {Appbar, Menu} from "react-native-paper";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {getAuth} from "firebase/auth";
+import {PrimaryContext} from "../Context";
+import {useNavigation, useRoute} from "@react-navigation/native";
 
-export const ToolHeader = (
+export const ToolsNavigation = (
   // @ts-ignore
-  {navigation, route, options, back,}
+  { options, back }
 ) => {
-    const user = getAuth().currentUser
+
+    const route = useRoute();
+    const navigation = useNavigation();
+
+    const {user} = useContext(PrimaryContext);
+
     const [visible, setVisible] = useState(true);
     const closeMenu = () => setVisible(false);
 
@@ -21,7 +28,6 @@ export const ToolHeader = (
       // @ts-ignore
       <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "space-between"}}>
           <Appbar.Header
-            visible={!(route.name === "Login" || route.name === "Signup" || route.name === "AccountMain")}
             // @ts-ignore
             style={[[styles.headerContainer], Platform.OS === "ios" ? "padding" : undefined]}>
               {!(route.name === "AuthNavigator") ?(

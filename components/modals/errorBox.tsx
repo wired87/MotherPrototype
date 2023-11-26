@@ -1,12 +1,9 @@
 import React from 'react';
 import { Modal, StyleSheet, Text, Pressable, View} from 'react-native';
-// @ts-ignore
-export const AlertBox = ({ modalVisible, setModalVisible, buttonText}) => {
-
-  const onPress = () => {
-    setModalVisible(!modalVisible)
-
-  }
+export const AlertBox = ({ // @ts-ignore
+   modalVisible, setModalVisible, // @ts-ignore
+   buttonText, redirectAction, errorAnimation
+}) => {
 
   return (
     <View style={styles.centeredView}>
@@ -22,10 +19,12 @@ export const AlertBox = ({ modalVisible, setModalVisible, buttonText}) => {
         }>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
+              {errorAnimation}
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
                   setModalVisible(!modalVisible)
+                  redirectAction()
                 }}>
                   <Text style={styles.textStyle}>{buttonText}</Text>
               </Pressable>

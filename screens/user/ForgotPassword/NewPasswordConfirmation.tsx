@@ -1,58 +1,15 @@
-import React, {useEffect, useState} from "react";
-import { View } from "react-native";
+import React from "react";
 import { DefaultContainer } from "../../../components/container/DefaultContainer";
 import { HeadingText } from "../../../components/text/HeadingText";
-import { DefaultInput } from "../../../components/input/DefaultInput";
 import { DefaultText } from "../../../components/text/DefaultText";
 import { DefaultButton } from "../../../components/buttons/DefaultButton";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { themeColors } from "../../../colors/theme";
 import {pwResetStyles as styles} from "./forgotpwstyles"
-import { PinInput } from '@pakenfit/react-native-pin-input';
-import {getAuth, verifyPasswordResetCode} from "firebase/auth";
-import {useSelector} from "react-redux";
+
 
 export const NewPasswordConfirmation = () => {
-  const [pin, setPin] = useState("");
-  const [correct, setCorrect] = useState(false); // This should likely be a state if its value is supposed to change
-  const [error, setError] = useState("");
-  const [totalTrys, setTotalTrys] = useState(5);
   const navigation = useNavigation();
-
-  // @ts-ignore
-  const errors = useSelector(state => state.errors.value)
-  const setPinFunction = (enteredPin: React.SetStateAction<string>) => {
-    setPin(enteredPin); // You should simply set the pin without spreading it
-  };
-
-  const confirmPin = () => {
-    // Logic for confirming the pin
-  };
-
-  const checkPin = async (otp: string) => {
-    try {
-      await verifyPasswordResetCode(getAuth(), otp)
-      setCorrect(true)
-    } catch(e) {
-      // @ts-ignore
-      setError(e.message)
-      setTotalTrys(prevTrys => prevTrys - 1);
-    }
-  };
-
-  useEffect(() => {
-    if (totalTrys === 0) {
-      //  lock the screen
-    }
-  }, [totalTrys]);
-
-
-
-
-  // If other functions like `confirmPin` or `checkPin` change the state of `correct`, then you would also display the success message or error accordingly.
-
-  // @ts-ignore
 
   return (
     <DefaultContainer extraStyles={{marginTop: 150}}>

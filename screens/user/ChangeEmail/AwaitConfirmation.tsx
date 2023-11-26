@@ -3,9 +3,13 @@ import {useEffect} from "react";
 import {getAuth, sendEmailVerification, updateEmail } from "firebase/auth";
 import {userStyles} from "../userStyles";
 import {textStyles} from "../../../components/text/textStyles";
+import {useNavigation} from "@react-navigation/native";
 
 // @ts-ignore
-export const WatchYourEmails = ({navigation}) => {
+export const WatchYourEmails = () => {
+
+    const navigation = useNavigation();
+
     const sendMail = async () => {
         const auth = getAuth();
         // @ts-ignore
@@ -32,7 +36,8 @@ export const WatchYourEmails = ({navigation}) => {
                     We have send you a confirmation to your given E-Mail Address. {"\n"}
                     Please check your E-Mails and confirm.
                 </Text>
-                <TouchableOpacity onPress={() => {navigation.navigate("ToolsMain")}} style={userStyles.btn} >
+                <TouchableOpacity onPress={() => { // @ts-ignore
+                    navigation.navigate("ToolsMain")}} style={userStyles.btn} >
                     <Text style={userStyles.btnTxt}>
                         Go Home
                     </Text>

@@ -1,3 +1,5 @@
+
+
 import React, { useState, useRef, useEffect } from "react";
 
 import {
@@ -277,6 +279,3 @@ const styles = StyleSheet.create({
     },
     TouchWithoutFeedBack: { flex: 1 },
 });
-/*
-
- */

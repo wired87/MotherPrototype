@@ -4,25 +4,29 @@ import {DefaultText} from "../../../components/text/DefaultText";
 import {useDispatch, useSelector} from "react-redux";
 import {HeadingText} from "../../../components/text/HeadingText";
 import {DefaultInput} from "../../../components/input/DefaultInput";
-import {Key, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {DefaultButton} from "../../../components/buttons/DefaultButton";
 import {themeColors} from "../../../colors/theme";
-import {confirmPasswordReset, checkActionCode, getAuth, sendPasswordResetEmail} from "firebase/auth";
+import {getAuth, sendPasswordResetEmail} from "firebase/auth";
 import {useNavigation} from "@react-navigation/native";
+import {AuthContext, PrimaryContext} from "../../Context";
 
 
 export const EmailConfirmationFP = () => {
-  const [email, setEmail] = useState(undefined)
-  const [password, setPassword] = useState(undefined)
-  const [errorMessage, setError] = useState<{ code: string; helpText: string } | null>(null);
-  const [finalError, setFinalError] = useState<{ code: string; helpText: string } | null>(null);
+
+  const {email, setEmail} = useContext(AuthContext);
+  const {darkmode} = useContext(PrimaryContext);
+
+  const [errorMessage, setError] =
+    useState<{ code: string; helpText: string } | null>(null);
+  const [finalError, setFinalError] =
+    useState<{ code: string; helpText: string } | null>(null);
 
   // @ts-ignore
   const loading = useSelector(state => state.loading.value)
+
   // @ts-ignore
-  const errors = useSelector(state => state.errors.value)
-  // @ts-ignore
-  const darkmode = useSelector(state => state.darkmode.value)
+  const colors = useSelector(state => state.colors.value)
 
   const navigation = useNavigation()
   const auth = getAuth();
@@ -62,7 +66,7 @@ export const EmailConfirmationFP = () => {
 
   return (
     <DefaultContainer
-      extraStyles={{flexDirection: "column", elevation: 20, backgroundColor: darkmode.primary}}>
+      extraStyles={{flexDirection: "column", elevation: 20, backgroundColor: colors.primary[darkmode? 1: 0]}}>
 
       {loading ? (
         <ActivityIndicator size={"large"}/>
@@ -83,7 +87,7 @@ export const EmailConfirmationFP = () => {
           />
           <DefaultText
             text={"We will send you a confirmation Mail"}
-            moreStyles={{color: darkmode.text}}/>
+            moreStyles={{color: colors.text[darkmode? 1: 0]}}/>
           <DefaultButton
             extraStyles={undefined} // @ts-ignore
             onPressAction={() => sendOTP(email)}

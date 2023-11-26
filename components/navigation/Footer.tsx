@@ -3,15 +3,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useTheme} from 'react-native-paper';
 
 import {SettingNavigation} from "../../screens/settings/SettingsNavigator";
-import {Dimensions, Platform, View} from "react-native";
+import {Platform} from "react-native";
 import {ChatNavigation} from "../../screens/chat/ChatNavigator";
 const Tab = createMaterialBottomTabNavigator();
 
-const windowWidth = Dimensions.get('window').width;
-
 import {useDispatch, useSelector} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import {useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 
 import firebase from "firebase/compat";
 import auth = firebase.auth;
@@ -20,6 +18,12 @@ import {getAuth, onAuthStateChanged} from "firebase/auth";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import {SwipeModal} from "../modals/SwipeModal";
+import {ChatMenuModalContent} from "../container/ChatMenuModalContainer/ChatMenuModalContent";
+
+import {PrimaryContext, InputContext} from "../../screens/Context";
+
+
 
 const adUnitIdBannerAd = __DEV__
   ? TestIds.BANNER
@@ -27,15 +31,41 @@ const adUnitIdBannerAd = __DEV__
   "ca-app-pub-2225753085204049/2862976257" :
   "ca-app-pub-2225753085204049/8777981057"
 
-///////////////////////////////////
-
 // @ts-ignore
 export default function NavigationMain() {
 
-  const [user, setUser] = useState(getAuth().currentUser)
+  const [user, setUser] = useState(getAuth().currentUser);
 
-  const dispatch = useDispatch()
 
+  const { bottomSheetRef} = useContext(PrimaryContext);
+  //const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [input, setInput] = useState("");
+  const [messagesLeft, setMessagesLeft] = useState("");
+  const [messages, setMessages] = useState<any[]>([]);
+
+  const [messageBreakOption, setMessageBreakOption] = useState(false);
+  const [typing, setTyping] = useState(false); // typing indicator
+
+  const {darkmode, setDarkmode} = useContext(PrimaryContext);
+
+  // make Active Tabbar Shadow color transparent
+  const theme = useTheme();
+  theme.colors.secondaryContainer = "transperent"
+
+  // @ts-ignore
+  const colors = useSelector(state => state.colors.value)
+
+  const dispatch = useDispatch();
+
+  const updateModalIndex = useCallback((number: number, bottomSheetRef: { current: { snapToIndex: (arg0: number) => void; }; }) => {
+    bottomSheetRef.current?.snapToIndex(number);
+  }, []);
+
+  const closeModal = () => {
+    bottomSheetRef.current?.close();
+  }
   useEffect(() => {
     onAuthStateChanged(getAuth(), (user) => {
       if (user) {
@@ -55,11 +85,6 @@ export default function NavigationMain() {
     });
   }, []);
 
-  const theme = useTheme();
-  theme.colors.secondaryContainer = "transparent";
-
-  // @ts-ignore
-  const darkmode = useSelector(state => state.darkmode.value);
 
   const storeUserSessionData = async () => {
     try {
@@ -99,17 +124,26 @@ export default function NavigationMain() {
         console.log('User ID:', user?.uid);
       }
     };
+
     signInAnonymously()
       .then(() => console.log("User is authenticated"))
       .catch(() => console.log("Fail in footer while try set the user"))
   }, []);
 
+  const dispatchHistorySent = (value: boolean) => {
+    dispatch({
+      type: "HISTORY_SENT",
+      payload: value
+    })
+    console.log("Dispatched History Text.")
+  }
   return (
     <>
       <Tab.Navigator
         shifting={false}
         labeled={false}
-        initialRouteName="Chat"
+
+        initialRouteName="Settings"
         activeColor={themeColors.sexyBlue}
         inactiveColor={themeColors.sexyBlue}
         backBehavior={"firstRoute"}
@@ -120,31 +154,59 @@ export default function NavigationMain() {
           alignItems: 'center',
           paddingHorizontal: 0,
           paddingVertical: 0,
-          backgroundColor:  darkmode.navigatorColor, //"transparent"//
-        }}
-      >
+          backgroundColor:  colors.navigatorColor[darkmode?  1 : 0]  //"transparent"//
+        }}>
+          <Tab.Screen
+            name="Chat"
+             // if the Screen Component contains any props just pass them at the bottom
+            children={
+              () =>
+                <InputContext.Provider
+                  value={{
+                    input, setInput,
+                    messagesLeft, setMessagesLeft,
+                    messages, setMessages,
+                    messageIndex,
+                    setMessageIndex,
+                    messageBreakOption,
+                    setMessageBreakOption,
+                    typing, setTyping,
+                    }
+                  }>
+                  <ChatNavigation
+                    updateModalIndex={updateModalIndex}
+                    dispatchHistorySent={dispatchHistorySent}
+                  />
+                </InputContext.Provider>
+              }
+            options={{
+              // tabBarBadge: 0, take it to show new messages
+              tabBarColor: colors.navigatorColor[darkmode? 1 : 0] ,
+              // @ts-ignore
+              headerShown: false,
+              tabBarIconStyle: { display: "none"},
+              // tabBarOnPress: animations for tabPress
+              tabBarIcon: ({ color, focused }) => (
+                <MaterialCommunityIcons
+                  style={{top: 0, position: "relative"}}
+                  name={focused ? "comment-multiple" : "comment-multiple-outline"}
+                  color={color} size={29}
+                />
+              ),
+            }}
+          />
         <Tab.Screen
-          name="Chat"
-          component={ChatNavigation} // if the Screen Component contains any props just pass them at the bottom
+          name="Tools"
+          component={ToolsNavigation}
           options={{
-            // tabBarBadge: 0, take it to show new messages
-            tabBarColor: darkmode.navigatorColor ,
-
-            // @ts-ignore
-            headerShown: false,
-            tabBarIconStyle: { display: "none"},
-            // tabBarOnPress: animations for tabPress
-            tabBarIcon: ({ color, focused }) => (
-              <MaterialCommunityIcons
-                style={{top: 0, position: "relative"}}
-                name={focused ? "comment-multiple" : "comment-multiple-outline"}
-                color={color} size={29} />
+            tabBarIcon: ({ color, focused }) => (// @ts-ignore
+              <MaterialCommunityIcons name={focused ? "cog" : "cog-outline"} color={color} size={29} />
             ),
           }}
         />
         <Tab.Screen
           name="Settings"
-          component={SettingNavigation} // if the Screen Component contains any props just pass them at the bottom
+          component={SettingNavigation}
           options={{
             tabBarIcon: ({ color, focused }) => (// @ts-ignore
                 <MaterialCommunityIcons name={focused ? "cog" : "cog-outline"} color={color} size={29} />
@@ -152,6 +214,17 @@ export default function NavigationMain() {
           }}
         />
       </Tab.Navigator>
+      <SwipeModal
+        animation={true}
+        Content={
+          <ChatMenuModalContent
+            changeText={setInput}
+            dispatchHistorySent={dispatchHistorySent}
+          />
+        }
+       bottomSheetRef={bottomSheetRef}
+        modalIndex={-1}
+      />
       <BannerAd
         unitId={adUnitIdBannerAd}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}

@@ -1,40 +1,13 @@
 import {DefaultContainer} from "./DefaultContainer";
-import React, {useCallback} from "react";
-import axios from "axios";
+import React from "react";
 import {AreYouSureContainer} from "./AreYouSureContainer";
 
 // @ts-ignore
-export const DeleteChatHistory = ({ setStatus, dispatch, closeModal }) => {
-
-  const deleteHistory = useCallback(async() => {
-    dispatch({
-      type: 'LOADING',
-      payload: true
-    });
-    try {
-      const response = await axios.post("http://192.168.178.51:8000/open/delete-chat-history/")
-      // @ts-ignore
-      setStatus(response.status);
-      console.log("response: " + response);
-    } catch(error) {
-      console.log("error: " + error);
-    } finally {
-      dispatch({
-        type: 'LOADING',
-        payload: false
-      });
-    }
-  }, [])
-
-
+export const DeleteChatHistory = () => {
   return(
     <DefaultContainer
       extraStyles={undefined}>
-      <AreYouSureContainer
-        text={"Are you sure to delete your History?"}
-        action={deleteHistory}
-        closeModalAction={closeModal} />
-
+      <AreYouSureContainer />
     </DefaultContainer>
   );
 }

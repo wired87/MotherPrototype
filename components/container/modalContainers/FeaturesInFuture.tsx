@@ -3,17 +3,13 @@ import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
 import {View} from "react-native";
 import {DefaultButton} from "../../buttons/DefaultButton";
-import {useNavigation} from "@react-navigation/native";
-import {Contact} from "./Contact";
-import {useDispatch, useSelector} from "react-redux";
-import {DefaultFlatList} from "../../flatlist/DefaultFlatList";
-import {SingleMessage} from "../chat/SingleMessage";
-import {chatStyles} from "../../../screens/chat/chatStyles";
-import React from "react";
+import {useSelector} from "react-redux";
+
+import React, {memo} from "react";
 import {styles} from "../contiStyles";
 
 // @ts-ignore
-export const FeaturesInFuture = ({ setData, contactScreen }) => {
+const FeaturesInFuture = () => {
 
   let features = [
     "Speech to Text",
@@ -26,10 +22,6 @@ export const FeaturesInFuture = ({ setData, contactScreen }) => {
 
   // @ts-ignore
   const text = useSelector(state => state.text.value)
-
-  const redirect = () => {
-    setData(contactScreen)
-  }
 
   return(
     <DefaultContainer
@@ -59,7 +51,7 @@ export const FeaturesInFuture = ({ setData, contactScreen }) => {
           moreStyles={undefined}/>
         <DefaultButton
           extraStyles={undefined}
-          onPressAction={redirect}
+          onPressAction={undefined}
           text={text.contact}
           secondIcon={undefined}
         />
@@ -68,3 +60,4 @@ export const FeaturesInFuture = ({ setData, contactScreen }) => {
 
   );
 }
+export default memo(FeaturesInFuture)

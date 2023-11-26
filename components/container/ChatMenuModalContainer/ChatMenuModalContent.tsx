@@ -20,7 +20,7 @@ const registerText = "Register";
 
 export const ChatMenuModalContent = (
     // @ts-ignore
-    {  changeText, dispatchHistorySent, extraAction }
+    {  changeText, dispatchHistorySent, /*extraAction*/ }
 ) => {
   // @ts-ignore
   const historySent = useSelector(state => state.historySent.value)
@@ -65,15 +65,18 @@ export const ChatMenuModalContent = (
   return(
     <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
 
-      <View style={{
-      justifyContent: "flex-start",
-      flex: 1,
-      ...StyleSheet.absoluteFillObject,
-      alignItems: "center",
-      paddingBottom: 5,
-      borderBottomWidth: 1,
-      borderBottomColor: themeColors.borderThin,
-      marginTop: 40,}}>
+      <View
+        style={{
+          justifyContent: "flex-start",
+          flex: 1,
+          ...StyleSheet.absoluteFillObject,
+          alignItems: "center",
+          paddingBottom: 5,
+          borderBottomWidth: 1,
+          borderBottomColor: themeColors.borderThin,
+          marginTop: 40
+        }}
+      >
       <HeadingText text={historyText} extraStyles={undefined}/>
       </View>
       <View>
@@ -110,8 +113,7 @@ export const ChatMenuModalContent = (
             )
           )
         ):(
-          <ModalContentNoLog
-            extraAction={extraAction}/>
+          <ModalContentNoLog />
         )}
       </View>
     </View>

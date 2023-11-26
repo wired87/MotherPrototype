@@ -1,59 +1,92 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
-} from "react-native";
+import React, {useCallback, useContext, useMemo, useState} from "react";
+import BottomSheet, { BottomSheetBackdrop, BottomSheetHandle } from '@gorhom/bottom-sheet';
+import {PrimaryContext} from "../../screens/Context";
 
-import React, {useCallback} from "react";
+/*
+***IMPORTANT***
+* react native reanimated need changes on teh babel file:
+module.exports = function(api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      'react-native-reanimated/plugin',
+    ],
+  };
+};
+*/
 
-import { IconButton } from "react-native-paper";
-import {uniStyles} from "../../screens/universalStyles"
-import {DefaultModal} from "./DefaultModal";
-import {useSelector, useDispatch} from "react-redux";
-import {themeColors} from "../../colors/theme";
-// Strings
-const modalIcon = "transit-connection-horizontal";
+interface SwipeModalProps {
+  animation?: any; // Ersetze 'any' durch einen spezifischen Typ, falls verfügbar
+  Content: React.ReactNode;
+  modalIndex: number;
+  bottomSheetRef: React.Ref<BottomSheet>
+}
 
-
-
-export const SwipeModal = (
+export const SwipeModal: React.FC<SwipeModalProps> = (
     // @ts-ignore
-    { animation, modalVisible, closeModal, Content }
+    {
+      Content,
+      modalIndex,
+    }
 ) => {
-  // @ts-ignore
-  const darkmode = useSelector(state => state.darkmode.value)
+  const {bottomSheetRef} = useContext(PrimaryContext);
+  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+
+  const defaultSnapPoints = useMemo(() => ['25%', '50%', "75%", "90%"], []);
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
   return(
-    <DefaultModal
-      modalVisible={modalVisible}
-      PressToanimate={animation}
-      onClose={closeModal}
-      HeaderStyle={uniStyles.headerContent}
-      ContentModalStyle={[uniStyles.Modal, {backgroundColor: darkmode.secondaryContainerBackground}]}
-      DisableHandAnimation={false}
-      MainContainerModal={undefined}
-      OpenModalDirection={"down"}
-      PressToanimateDirection={"down"}
-      duration={300}
-      fade={true}
-      onRequestClose={closeModal}
-      ContentModal={
-        <>
-          <TouchableOpacity style={uniStyles.containerHeader} onPress={closeModal}>
-            <IconButton
-              icon={modalIcon}
-              size={28}
-              iconColor={darkmode.headerIconColors}
-              onPress={closeModal}
-            />
-          </TouchableOpacity>
-          {Content}
-        </>
-      }
-      HeaderContent={null}
-      ImageBackgroundModal={undefined}/>
+    <BottomSheet
+       ref={bottomSheetRef}
+       index={modalIndex || -1} // initial snap index
+       snapPoints={defaultSnapPoints}
+      // bottom to top
+       overDragResistanceFactor={2.5} // how violently(heftig) the modal has to be stopped at pull up
+       detached={false} // setup if the bottomSheet is attached to the bottom
+       enableContentPanningGesture={true} // Enable content panning gesture interaction.
+       enableHandlePanningGesture={true} // Enable handle panning gesture interaction.
+       enableOverDrag={true} // activate the overdraw effect (like you are at the bottom at a webapge and scrol more)
+       enablePanDownToClose={true} // able to wish the bs down so it closes
+       enableDynamicSizing={false} // universal size
+       animateOnMount={true} //
+
+       backgroundStyle={undefined}
+       handleStyle={undefined}
+       handleIndicatorStyle={undefined}
+
+      // Layout Configuration
+       handleHeight={24} //
+
+      // keyboard configuration
+       keyboardBehavior={"interactive"} // extend (extend the bs till max point,
+      // fillParent (fill out parrent objects),
+      // interactive(offset the sheet for keyboardsize)
+       keyboardBlurBehavior={"none"} // none
+      // restore
+       android_keyboardInputMode={"adjustPan"} // !android only --- adjustResize
+       activeOffsetX={undefined} // how far the user has been to swipe Horizontal before bottomsheet detect it
+       activeOffsetY={undefined} //how far the user has been to swipe Vertical before bottomsheet detect it
+       failOffsetX={undefined} // value if a user swipe too much Horizontal the action will be break
+       failOffsetY={undefined} // value if a user swipe too much Horizontal the action will be break
+
+      // Callbacks
+       onChange={handleSheetChanges} // called when the sheet positio changed
+       onAnimate={undefined} // called before bottomsheet starts his movement
+
+      // Components
+      handleComponent={BottomSheetHandle} // header with the icon to close or swipe up
+      backdropComponent={BottomSheetBackdrop} // for the background of the sheet default null. BottomSheetBackdrop
+       footerComponent={undefined} // component for the footer
+      // styles
+       style={{
+         backgroundColor: "transparent",
+       }}>
+      {Content}
+    </BottomSheet>
   );
 }
+

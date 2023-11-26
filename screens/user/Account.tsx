@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import { View, ScrollView } from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {getAuth} from "firebase/auth";
@@ -15,17 +15,18 @@ import {HeadingText} from "../../components/text/HeadingText";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
 import { userStyles } from './userStyles';
 import {themeColors} from "../../colors/theme";
+import {AuthContext, PrimaryContext} from "../Context";
 
 
 export const AccountMain = () => {
   const auth = getAuth();
-  const [user, setUser] = useState(auth.currentUser)
-  const [error, setError] = useState(false);
-  const dispatch = useDispatch();
+  const {darkmode, user, setUser} = useContext(PrimaryContext);
+  const {setError} = useContext(AuthContext);
+
+   const dispatch = useDispatch();
+
   const navigation = useNavigation();
 
-  // @ts-ignore
-  const darkmode = useSelector(state => state.darkmode.value)
   // @ts-ignore
   const loading = useSelector(state => state.loading.value);
   // @ts-ignore
@@ -77,23 +78,25 @@ export const AccountMain = () => {
       payload: true
     });
     console.log("successfully dispatched", "\n loading:", loading)
+
     try {
       await auth.signOut().then(() => {
         console.log("User is successfully logged out")
         setUser(null);
       });
-      setError(false)
+      setError("false")
       console.log("user:", user)
+
     } catch (error) {
-      setError(true); // @ts-ignore
+      setError("true"); // @ts-ignore
       console.log("There was an error while logging the user out: \n" + error.message);
+
     } finally {
       dispatch({
         type: 'LOADING',
         payload: false
       });
       console.log("Data dispatched. newLogout: ", newLogout, "\n loading:", loading)
-
       // @ts-ignore
       navigation.navigate("ChatMain");
     }
@@ -101,7 +104,7 @@ export const AccountMain = () => {
 
   // @ts-ignore
   return (
-    <ScrollView contentContainerStyle={{justifyContent: "center", alignItems: "center", backgroundColor: darkmode.primary}} style={{paddingTop: 50}}>
+    <ScrollView contentContainerStyle={{justifyContent: "center", alignItems: "center", backgroundColor: colors.primary[darkmode? 1: 0]}} style={{paddingTop: 50}}>
       <View style={userStyles.adContainer}>
         <PlusAdContainer />
       </View>
@@ -169,14 +172,16 @@ export const AccountMain = () => {
           }
         />
         <DefaultButton
-          onPressAction={() => {deleteUser()}}
+          onPressAction={() => {deleteUser().then(() => console.log("User successfully deleted"))}}
           extraStyles={undefined}
           text={text.deleteAccount}
           secondIcon={
             <MaterialCommunityIcons
               name={icon.trashIcon}
               size={20} color={"rgb(255,255,255)"}
-              style={userStyles.buttonIcon} />}
+              style={userStyles.buttonIcon}
+            />
+          }
         />
       </View>
       <BottomImage />

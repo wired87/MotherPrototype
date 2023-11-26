@@ -44,6 +44,9 @@ export const PlusAdContainer = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch()
 
+  const navigateTools = () => { navigation.navigate("Tools",  {screen: 'ToolsMain') }
+
+
   // @ts-ignore
   const onExplore = useCallback(() => {
       console.log("route: ", route)
@@ -77,7 +80,7 @@ export const PlusAdContainer = () => {
               styles.btnContainer,
               {width: windowWidth * .8, flexDirection: "row",
                   justifyContent: "center", alignItems: "center"}]}
-          onPress={onExplore}>
+          onPress={navigateTools/*onExplore*/}>
           <DefaultText text={text.plusPlanButton} moreStyles={{fontSize: 18, fontWeight: "bold", color: "white"}}/>
           <MaterialCommunityIcons name={icon.arrow} size={28} color="rgba(255,255,255,.8)" />
         </TouchableOpacity>

@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 import {DefaultHeader} from "../../components/navigation/DefaultHeader";
 import {Appbar, Menu} from "react-native-paper";
 import {ChatMenuModalContent} from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
@@ -14,10 +14,15 @@ import {Platform} from "react-native";
 import {HeaderView} from "../../components/container/headerContainer";
 import {AuthNavigator} from "../user/AuthNavigator";
 
+// Context
+import {InputContext, PrimaryContext, AuthContext} from "../Context";
+
+
 // Ads
-import {RewardedAdEventType, RewardedInterstitialAd, TestIds,} from 'react-native-google-mobile-ads';
-import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, set} from "./functions/AdLogic";
+import {RewardedInterstitialAd, TestIds,} from 'react-native-google-mobile-ads';
+import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, showAds} from "./functions/AdLogic";
 import {createMessageObject, getCurrentTime, postMessageObject} from "./functions/SendProcess";
+import {DefaultText} from "../../components/text/DefaultText";
 
 // Ad config
 const adUnitIdFullScreenAd = __DEV__
@@ -33,114 +38,84 @@ const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitIdF
 
 /////////////////////////////////////////////////
 
-export const ChatNavigation = () => {
-
-  // State variables
-  const [adLoaded, setAdLoaded] = useState(false);
-  const [text, setText] = useState(null);
-  const [visible, setVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+export const ChatNavigation = (
+  // @ts-ignore
+  { updateModalIndex, dispatchHistorySent }
+) => {
+  // Essentials
   const navigation = useNavigation();
-  const [typing, setTyping] = useState(false); // typing indicator
-  const [messages, setMessages] = useState([]) // all Messages
-  const messageIndex = useRef(0) // index for the messages
-  const [seconds, setSeconds] = useState(12);
-  const [messageBreakOption, setMessageBreakOption] = useState(false);
+  const dispatch = useDispatch();
+
+  const [seconds, setSeconds] = useState(20);
+
   const [messageFinalBreak, setMessageFinalBreak] = useState(false);
-  const [messagesLeft, setMessagesLeft]= useState("5");
-  const [streamMessage, setStreamMessage] = useState("");
+  const [visible, setVisible] = useState(true);
+
+  // Auth Provider
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [password, setPassword] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // Context
+  const {
+    messagesLeft, setMessagesLeft,
+    setMessageBreakOption,
+    setInput, input,
+    messageIndex,
+    setTyping, typing,
+    messages, setMessages,
+    setMessageIndex }  = useContext(InputContext);
+
+  const {user} = useContext(PrimaryContext);
 
   // other Variables
   const ChatStack = createNativeStackNavigator();
-
-  const dispatch = useDispatch()
-
-  // @ts-ignore
-  const user = useSelector(state => state.user.value)
 
   // @ts-ignore
   const screen = useSelector(state => state.screens.value)
 
   // @ts-ignore
-  const darkmode = useSelector(state => state.darkmode.value)
-
-  // @ts-ignore
   const historySent = useSelector(state => state.historySent.value)
 
-
-
-  useEffect(() => {
-    set(setMessagesLeft).then(() =>  console.log("HelloAds"))
-  }, []);
-
-  const showAds = async () => {
-    if (messagesLeft === "0") {
-      const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
-        RewardedAdEventType.LOADED,
-        () => {
-          dispatch({
-            type: "FULL_SCREEN_AD",
-            payload: true
-          });
-          rewardedInterstitial.show()
-            .then(
-              async () => {
-                console.log("Full screen ad is showing right now..")
-                await postMessageInfoData("5")
-                  .then(() => setMessagesLeft("5"))
-                  .catch(() => setMessagesLeft("5"))
-              }
-            )
-        },
-      );
-      const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
-        RewardedAdEventType.EARNED_REWARD,
-        reward => {
-          console.log('User earned reward of ', reward);
-        },
-      );
-
-      // Start loading the rewarded interstitial ad straight away
-      rewardedInterstitial.load();
-
-      // Unsubscribe from events on unmount
-      return () => {
-        unsubscribeLoaded();
-        unsubscribeEarned();
-      };
-    }
-  }
+  // @ts-ignore colors
+  const colors = useSelector(state => state.colors.value)
 
   // GOOGLE MOBILE AD LOGIC
   useEffect(() => {
-    console.log("Messages Left value changed:", messagesLeft)
-    showAds().then(() => console.log("Ads successfully showed. Refilled the Messages"))
+    console.log("Real Messages Left:", messagesLeft)
+    showAds(dispatch, messagesLeft, setMessagesLeft).then(() => console.log("Ads successfully showed. Refilled the Messages"))
   }, [messagesLeft]);
 
-  // @ts-ignore
-  const openModal = useCallback(() => {
-    setModalVisible(true);
-    setVisible(true);
-  });
-
-  // @ts-ignore
-  const closeModal = useCallback(() => {
-    setModalVisible(false);
-    setVisible(false);
-  });
+  useEffect(() => {
+    showAds(dispatch, messagesLeft, setMessagesLeft).then(() => console.log("check for messages left.."))
+  }, []);
 
   const deleteMessage = () => {
-    setText(null)
+    setInput("");
   }
 
   const sendObject = async (senderObject: any) => {
     try {
-      const response = await postMessageObject(senderObject, messageFinalBreak);
-      console.log("Response", response)
-      setMessageBreakOption(false); //////////////////////////////////////////////////////////////////////////////
+      const res = await postMessageObject(senderObject, {timeout: 20000});
+      console.log("res", res);
+      let response;
+      // @ts-ignore
+      if (res instanceof Error && res.name === "AbortError") {
+        response = {
+           message: "Ups that request is taking too much time." +
+           "\nIf that issue is coming up again feel free to contact the support to fix it.",
+           status: 200,
+          }
+      } else {
+        // @ts-ignore
+        response = await res.json();
+      }
+      console.log("Response", response);
+      setMessageBreakOption(false);
       return createMessageObject(
         // @ts-ignore
-        response.data.message,
+        response.message,
         "text",
         messageIndex,
         user,
@@ -153,13 +128,16 @@ export const ChatNavigation = () => {
     }
   }
 
+  useEffect(() => {
+    console.log("finalBreak changed", messageFinalBreak);
+  }, [messageFinalBreak]);
+
   const sendPackage = async (userMessage: any) => {
-    setStreamMessage("") /////////////////////////////////////////////////////////////////////////////
     try {
       console.log("Sending Message Object...")
       const aiResponse = await sendObject(userMessage);
       setTyping(false);
-      messageIndex.current = messageIndex.current + 1;
+      setMessageIndex((state: number) => state +1)
       console.log("Final response Object: ", aiResponse);
 
       if (aiResponse === 1) {
@@ -181,30 +159,34 @@ export const ChatNavigation = () => {
   }
 
 
-  const sendMessageProcess = async () => {
+  const sendMessageProcess = useCallback(async() => {
     const valueMessages = await getMessageInfoData()
+    console.log("Try to get the user Messages Left Value", valueMessages)
     if (!valueMessages) {
-      const valueMessages = await postMessageInfoData("5").then(async () => {
-        await getMessageInfoData()
+      await postMessageInfoData("5").then(async () => {
+        const message = await getMessageInfoData()
+        setMessagesLeft("5")
       })
+    } else {
+      setMessagesLeft(valueMessages)
     }
+
     // @ts-ignore
     const checkSuccess = await checkUserMessageValue(valueMessages, setMessagesLeft);
 
     console.log(
-      "Current Messages:", valueMessages,
-      "\nCurrent messages State value UPDATED:", messagesLeft
+      "\nCurrent Messages:", messagesLeft
     )
 
     // @ts-ignore
     if (checkSuccess) {
       setTyping(true);
       // @ts-ignore
-      if (text?.length !== 0) {
-        console.log("User input:", text)
+      if (input?.length !== 0) {
+        console.log("User input:", input)
         console.log("typing", typing)
         const userMessage = createMessageObject(
-          text,
+          input,
           "text",
           messageIndex,
           user,
@@ -212,11 +194,11 @@ export const ChatNavigation = () => {
           "userMessageContainer"
         );
 
-        messageIndex.current = messageIndex.current + 1;
+        setMessageIndex((state: number) => state +1)
         console.log("Sender Object created: ", userMessage)
 
         // @ts-ignore
-        setMessages(prevMessages => [...prevMessages, userMessage]); /////////////////////////////////////////////////////////////////////////////
+        setMessages(prevMessages => [...prevMessages, userMessage]);
         deleteMessage()
         sendPackage(userMessage).then(() => console.log("Payload successfully sent.."))
 
@@ -230,29 +212,16 @@ export const ChatNavigation = () => {
       rewardedInterstitial.show()
         .then(
           async () => {
-            await postMessageInfoData("5").then(() => setMessagesLeft("5")); /////////////////////////////////////////////////////////////////////////////
+            await postMessageInfoData("5")
+              .then(() => setMessagesLeft("5"));
             console.log("Message successfully sent")
         }).catch(
           (e) =>  console.log("Ad could not be shown because an error:", e))
     }
-  }
-
-
-
-////////////////
-
-
-
-  const dispatchHistorySent = (value: boolean) => {
-    dispatch({
-      type: "HISTORY_SENT",
-      payload: value
-    })
-    console.log("Dispatched History Text.")
-  }
+  }, [])
 
   const historyMessageSent = async () => {
-    closeModal()
+
     setTyping(true);
     await sendMessageProcess()
       .then(() => console.log("Successfully ended function."))
@@ -271,24 +240,14 @@ export const ChatNavigation = () => {
   }, [historySent]);
 
   useEffect(() => {
-    console.log("Current Text:", text);
-  }, [text]);
+    console.log("Current Text:", input);
+  }, [input]);
 
-
-  /*
-  ws wird heir benötigt:
-  setText,
-  dispatchHistorySent
-  closeModal
-  openModal
-  visible
-  modalVisible
-   */
 
   useEffect(() => {
     if (typing) {
       console.log("seconds: ", seconds)
-      if (seconds <= 0) {
+      if (seconds === 0) {
         setMessageBreakOption(true);
       }
       const interval = setInterval(() => {
@@ -320,8 +279,8 @@ export const ChatNavigation = () => {
                         anchor={
                           <Appbar.Action
                             icon="menu"
-                            color={darkmode.headerIconColors}
-                            onPress={openModal}
+                            color={colors.headerIconColors}
+                            onPress={() => updateModalIndex(3)}
                             size={30}
                           />
                         }
@@ -337,9 +296,9 @@ export const ChatNavigation = () => {
                         anchor={
                           <Appbar.Action
                             icon="account-circle-outline"
-                            color={darkmode.headerIconColors}
+                            color={colors.headerIconColors}
                             // @ts-ignore
-                            onPress={() => navigation.navigate( "AuthNavigator", {screen: user? screen.account : screen.login})}
+                            onPress={() => navigation.navigate("AuthNavigator", {screen: user? screen.account : screen.login})}
                             size={30}
                           />
                         }
@@ -348,49 +307,72 @@ export const ChatNavigation = () => {
                       />
                     }
                   />
-                  <SwipeModal
-                    animation={true}
-                    modalVisible={modalVisible}
-                    closeModal={closeModal}
-                    Content={
-                      <ChatMenuModalContent
-                        changeText={setText}
-                        dispatchHistorySent={dispatchHistorySent}
-                        extraAction={closeModal}
-                      />
-                    }
-                  />
                 </>
               }
             />
           }}
         >
-      <ChatStack.Screen  name="ChatMain">
-        {(props) =>
-          <ChatMain
-            setMessageBreakOption={setMessageBreakOption}
-            messageIndex={messageIndex}
-            setMessages={setMessages}
-            seconds={seconds}
-            setSeconds={setSeconds}
-            messages={messages}
-            messageBreakOption={messageBreakOption}
-            setMessageFinalBreak={setMessageFinalBreak}
-            sendMessage={sendMessageProcess}
-            {...props}
-            input={text}
-            setInput={setText}
-          />
-        }
-      </ChatStack.Screen>
       <ChatStack.Screen
-        name={"AuthNavigator"}
-        component={AuthNavigator}
-        options={{
+        name="ChatMain"
+         children={
+           () =>
+            <ChatMain
+              sendMessageProcess={sendMessageProcess}/>
+            }
+        />
+      <ChatStack.Screen
+          name={"AuthNavigator"}
+          children={
+            () =>
+              <AuthContext.Provider value={{password, setPassword, email, setEmail, error, setError, modalVisible, setModalVisible}}>
+                <AuthNavigator />
+              </AuthContext.Provider>
+            }
+          options={{
             headerShown: false
-        }}
-      />
+          }}
+        />
+
     </ChatStack.Navigator>
-    );
+  );
 }
 
+// Axios cancel request process (does not work)
+/*
+/////////////////////////////////
+  const [controller, setController] = useState<AbortController | null>(null)
+  const [signal, setSignal] = useState<AbortSignal | null>(null);
+
+  useEffect(() => {
+    const newController = new AbortController()
+    const signal = newController.signal
+    setSignal(signal);
+    setController(newController);
+    console.log("New controller created", newController)
+  }, [messageBreakOption]);
+
+
+  useEffect(() => {
+    console.log("Controller main", controller)
+  }, []);
+
+  const breakRequest = useCallback(()=> {
+    if (controller) {
+      controller.abort();
+      console.log("Message break in action..")
+    }
+  }, [controller])
+  for MessageInputContainer:
+  {messageBreakOption ? (
+          <View style={{width: windowWidth * .5, justifyContent: "center", alignItems: "center"}}>
+            <BreakButton
+              extraStyles={{justifyContent: "center", alignItems: "center"}}
+              onPress={() => {
+                console.log("Break message request initialized..")
+                breakRequest()
+              }}
+            />
+          </View>
+        ) : null}
+  //////////////////////////////////////////////////
+*/

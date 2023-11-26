@@ -1,10 +1,13 @@
 import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
-import React from "react";
+import React, {useContext} from "react";
 
 import {getAuth} from "firebase/auth";
+import {PrimaryContext} from "../Context";
 
 const windowWidth = Dimensions.get('window').width;
 export default function ToolMain() {
+
+    const {darkmode, user} = useContext(PrimaryContext);
 
     let adverTools = [
         {
@@ -49,7 +52,7 @@ export default function ToolMain() {
   const request = () => {
 
   }
-    const user = getAuth().currentUser;
+
 
     return(
       <ScrollView style={styles.main_container}
@@ -58,7 +61,10 @@ export default function ToolMain() {
             // @ts-ignore
                         contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
 
+        <View style={[styles.singleProductContainer, {borderColor: darkmode? "white" : "black",
+        }]}>
 
+        </View>
 
 
           </SafeAreaView>
@@ -104,5 +110,13 @@ const styles = StyleSheet.create({
         marginLeft: "auto",
         marginBottom: 20,
     },
+    singleProductContainer: {
+        width:178,
+        height:178,
+        borderRadius: 14,
+        borderWidth: .5,
+        elevation: 10,
+
+    }
 });
 

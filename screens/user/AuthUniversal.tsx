@@ -5,7 +5,7 @@ import {
   View
 } from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect } from "react";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -24,6 +24,7 @@ import {AlertBox} from "../../components/modals/errorBox";
 import {useRoute} from "@react-navigation/native";
 import {DefaultText} from "../../components/text/DefaultText";
 import {FIREBASE_AUTH} from "../../firebase.config";
+import {AuthContext, PrimaryContext} from "../Context";
 
 
 
@@ -53,11 +54,19 @@ export const AuthUniversal = ({ // @ts-ignore
   navigation, googleAuthButtonAction,
 
 }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [modalVisible, setVisibility] = useState(false);
   const route = useRoute()
+
+  const { darkmode, user } = useContext(PrimaryContext);
+
+  const { email,
+    setEmail,
+    password,
+    setPassword,
+    error,
+    setError } = useContext(AuthContext);
+
+  // @ts-ignore
+  const colors = useSelector(state => state.colors.value);
 
   const auth = getAuth();
   const firebaseAuth = FIREBASE_AUTH;
@@ -85,8 +94,6 @@ export const AuthUniversal = ({ // @ts-ignore
   // @ts-ignore
   const text = useSelector(state => state.text.value)
   // @ts-ignore
-  const darkmode = useSelector(state => state.darkmode.value);
-  // @ts-ignore
   const screen = useSelector(state => state.screens.value)
 
 
@@ -110,7 +117,7 @@ export const AuthUniversal = ({ // @ts-ignore
 
 
   useEffect(() => {
-    console.log("user ", auth.currentUser)
+    console.log("user ", user)
     onAuthStateChanged(auth, (user) => {
       if (user) {
         navigation.navigate("AuthNavigator", {screen: screen.account}); // Use 'replace' to prevent going back to the login screen
@@ -144,7 +151,6 @@ export const AuthUniversal = ({ // @ts-ignore
     } catch (error) {
       // @ts-ignore
       setError(error.message);
-      setVisibility(true);
       // @ts-ignore
       console.log("please check your Input and try again. \n" + error.message);
     } finally {
@@ -153,6 +159,8 @@ export const AuthUniversal = ({ // @ts-ignore
         type: 'LOADING',
         payload: false
       });
+      setPassword("");
+      setEmail("");
     }
   };
 
@@ -168,10 +176,9 @@ export const AuthUniversal = ({ // @ts-ignore
       };
       dispatch(action);
       // @ts-ignore
-      const user = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+      const user_response = await createUserWithEmailAndPassword(firebaseAuth, email, password);
       setError(success);
-      console.log("user: ", user);
-      setVisibility(true)
+      console.log("user: ", user_response);
       // @ts-ignore
 
     } catch (error) {
@@ -180,8 +187,6 @@ export const AuthUniversal = ({ // @ts-ignore
 
       // @ts-ignore
       console.log("Error in signUp function while try to register the user: ", error.message);
-
-      setVisibility(true);
 
       // @ts-ignore
       console.log("There was an error while signing you up: ", error.message);
@@ -192,16 +197,21 @@ export const AuthUniversal = ({ // @ts-ignore
         payload: false
       };
       dispatch(action);
+      setPassword("");
+      setEmail("");
     }
   }
 
   return(
     <SafeAreaView style={{
-      flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: darkmode.primary
+      flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.primary[darkmode? 1 : 0]
     }}>
-      <KeyboardAvoidingView style={{backgroundColor: darkmode.primary}}
+      <KeyboardAvoidingView style={{backgroundColor: colors.primary[darkmode? 1 : 0]}}
                             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View style={[userStyles.loginContainer, {backgroundColor: darkmode.primary, borderColor: darkmode.borderColor}]}>
+        <View
+          style={[userStyles.loginContainer,
+            {backgroundColor: colors.primary[darkmode? 1 : 0]
+          , borderColor: colors.borderColor[darkmode? 1 : 0]}]}>
 
           <HeadingText
             text={text.signInText}
@@ -233,7 +243,7 @@ export const AuthUniversal = ({ // @ts-ignore
 
           {login? (
             <TouchableOpacity
-              style={{ borderWidth: 1, borderColor: themeColors.borderThin, borderRadius: 14, // @ts-ignore
+              style={{ borderWidth: 1, borderColor: colors.borderColor[darkmode? 1 : 0] /*themeColors.borderThin*/, borderRadius: 14, // @ts-ignore
                 elevation: 20, paddingVertical: 4, paddingHorizontal: 7,
                 marginVertical: 10
               }}
@@ -250,7 +260,7 @@ export const AuthUniversal = ({ // @ts-ignore
             secondIcon={null}
             extraStyles={undefined}/>
 
-          <Text style={[userStyles.authTextInfo, {color: darkmode.text}]}>
+          <Text style={[userStyles.authTextInfo, {color: colors.text[darkmode? 1 : 0]}]}>
             Or
           </Text>
 

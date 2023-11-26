@@ -9,18 +9,14 @@ const historyReminder = "To see your Chat History, \n you must be logged in.";
 const loginText = "Login";
 const registerText = "Register";
 import {useSelector} from "react-redux";
-import {themeColors} from "../../../colors/theme";
-
-
 
 
 export const ModalContentNoLog = (// @ts-ignore
-  {extraAction}
+
 ) => {
     // @ts-ignore
     const screen = useSelector(state => state.screens.value)
     const navigation = useNavigation();
-
 
   const onPressRegister = useCallback(() => // @ts-ignore
     navigation.navigate("Chat", {screen: 'AuthNavigator', params: {screen: screen.register}}), []);
@@ -45,7 +41,7 @@ export const ModalContentNoLog = (// @ts-ignore
                   extraTextStyles={uniStyles.reminderModalBtnText}
                   onPressAction={() => {
                     onPressLogin()
-                    extraAction()
+                    //extraAction()?
                   }}
                   extraBtnStyles={undefined}/>
 
@@ -54,7 +50,7 @@ export const ModalContentNoLog = (// @ts-ignore
                   extraTextStyles={uniStyles.reminderModalBtnText}
                   onPressAction={() => {
                     onPressRegister()
-                    extraAction()
+                    //extraAction()?
                   }}
                   extraBtnStyles={undefined}/>
             </View>

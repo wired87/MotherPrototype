@@ -1,30 +1,7 @@
-import {
-  KeyboardAvoidingView, Platform,
-  SafeAreaView,
-  Text, TouchableOpacity,
-  View
-} from "react-native";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import React, {useCallback, useEffect, useState} from "react";
-import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithCredential,
-  onAuthStateChanged,
-    signInWithEmailAndPassword,
-} from "firebase/auth";
-import * as Google from "expo-auth-session/providers/google";
-import {DefaultButton} from "../../components/buttons/DefaultButton";
-import {DefaultInput} from "../../components/input/DefaultInput";
-import {HeadingText} from "../../components/text/HeadingText";
-import {useDispatch, useSelector} from "react-redux";
-import {themeColors} from "../../colors/theme";
-// @ts-ignore
-import {userStyles} from "./userStyles";
-import {AlertBox} from "../../components/modals/errorBox";
+
+import React from "react";
+
 import {AuthUniversal} from "./AuthUniversal";
-
-
 
 
 // Text
