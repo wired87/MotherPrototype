@@ -19,6 +19,7 @@ export const imgStyles = StyleSheet.create({
     },
     statusImg: {
         width: 200,
-        height: 200
+        height: 200,
+        gap: 20
     }
 })

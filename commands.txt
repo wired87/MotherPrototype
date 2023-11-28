@@ -4,3 +4,6 @@ npx expo install --fix
 
 # check deps
 npx expo install --check
+
+# build
+npx eas-cli build --profile development

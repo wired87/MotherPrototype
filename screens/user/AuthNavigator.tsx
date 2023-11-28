@@ -5,11 +5,11 @@ import {EmailChange} from "./ChangeEmail/ChangeEmail";
 import {Logout} from "./Logout";
 import Login from "./Login";
 import {SignUp} from "./SignUp";
-import {UserHeader} from "./AuthHeader";
 import {EmailConfirmationFP} from "./ForgotPassword/EmailConfirmationFP";
 import {NewPasswordConfirmation} from "./ForgotPassword/NewPasswordConfirmation";
 import {PrimaryContext} from "../Context";
-import {useContext, useMemo} from "react";
+import React, {useContext, useMemo} from "react";
+import {AuthHeader} from "./AuthHeader";
 
 const AuthStack = createNativeStackNavigator();
 
@@ -55,18 +55,16 @@ export const AuthNavigator = () => {
     ]
   ), [user]);
 
-    return (
+  // route.name === "Login" || route.name === "SignUp" ? (     ) : null}
+
+return (
       <AuthStack.Navigator
         initialRouteName={user? "AccountMain" : "Login"}
         // @ts-ignore
         screenOptions={({ back }) => ({
           header:
-            (props) =>
-              // @ts-ignore
-              <UserHeader
-                back={back}
-                {...props}
-              />
+            (...props) =>
+              <AuthHeader name={back}/>
             }
           )
         }>
@@ -81,3 +79,37 @@ export const AuthNavigator = () => {
     );
 }
 
+/*
+ <UserHeader
+                name={false} back={back}
+                {...props}
+
+
+                 <>
+                    <View
+                      style={{
+                        justifyContent: "flex-start", alignItems: "flex-end", width: windowWidth * .5, height: "100%",
+                        backgroundColor: customTheme.primary
+                      }}>
+                      <Appbar.Action
+                        icon="less-than"
+                        style={{left: 5, position: "absolute", zIndex: 900000}}
+                        color={"rgba(0, 0, 0, .8)"}
+                        size={27}
+                        iconColor={customTheme.headerIconColors}
+                        // @ts-ignore
+                        onPress={() => {
+                          navigation.goBack();
+                        }}/>
+
+                    </View>
+                    <View
+                      style={{
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start",
+                        width: windowWidth * .5,
+                        height: "100%"
+                      }}>
+
+                    </View>
+ */

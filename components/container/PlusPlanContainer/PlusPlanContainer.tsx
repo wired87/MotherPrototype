@@ -1,12 +1,9 @@
-import {Animated, Dimensions, FlatList, Text, TouchableOpacity, View} from "react-native";
+import {Animated, Dimensions, Pressable, Text, View} from "react-native";
 import React, {useCallback, useEffect, useState} from "react";
 import {LinearGradient} from "expo-linear-gradient";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import Chroma from 'chroma-js';
 import {styles} from "../../styles";
 import {settingStyles} from "../../../screens/settings/settingStyles";
-import MIcon from "react-native-vector-icons/MaterialIcons";
-import {DefaultButton} from "../../buttons/DefaultButton";
 import {SingleProContainer} from "./SingleProContainer";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -44,7 +41,7 @@ export const PlusAdContainer = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch()
 
-  const navigateTools = () => { navigation.navigate("Tools",  {screen: 'ToolsMain') }
+  //const navigateTools = () => { navigation.navigate("Tools",  {screen: 'ToolsMain') }
 
 
   // @ts-ignore
@@ -75,15 +72,15 @@ export const PlusAdContainer = () => {
         <SingleProContainer key={index} text={item.text} />
       ))}
       {!(route.name === "PurchaseScreen")? (
-        <TouchableOpacity
+        <Pressable
           style={[
               styles.btnContainer,
               {width: windowWidth * .8, flexDirection: "row",
                   justifyContent: "center", alignItems: "center"}]}
-          onPress={navigateTools/*onExplore*/}>
+          onPress={onExplore}>
           <DefaultText text={text.plusPlanButton} moreStyles={{fontSize: 18, fontWeight: "bold", color: "white"}}/>
           <MaterialCommunityIcons name={icon.arrow} size={28} color="rgba(255,255,255,.8)" />
-        </TouchableOpacity>
+        </Pressable>
       ):null}
 
     </DefaultLinearGradient>

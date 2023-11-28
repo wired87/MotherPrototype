@@ -1,13 +1,14 @@
 import {Text} from "react-native";
-import React from "react";
+import React, {useContext} from "react";
 import {textStyles} from "./textStyles";
 import { useSelector } from "react-redux";
+import {ThemeContext} from "../../screens/Context";
 // @ts-ignore
 export const HeadingText = ({ text, extraStyles }) => {
-    // @ts-ignore
-    const darkmode = useSelector(state => state.darkmode.value)
+
+    const { customTheme } = useContext(ThemeContext)
     return(
-        <Text style={[extraStyles? extraStyles : textStyles.loginContainerHeaderText, {color: darkmode.switchTextColorLD}]}>
+        <Text style={[extraStyles? extraStyles : textStyles.loginContainerHeaderText, {color: customTheme.text}]}>
             {text}
         </Text>
     );

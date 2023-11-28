@@ -7,9 +7,9 @@ import {Platform} from "react-native";
 import {ChatNavigation} from "../../screens/chat/ChatNavigator";
 const Tab = createMaterialBottomTabNavigator();
 
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 
 import firebase from "firebase/compat";
 import auth = firebase.auth;
@@ -21,7 +21,9 @@ import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import {SwipeModal} from "../modals/SwipeModal";
 import {ChatMenuModalContent} from "../container/ChatMenuModalContainer/ChatMenuModalContent";
 
-import {PrimaryContext, InputContext} from "../../screens/Context";
+import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context";
+import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 
 
@@ -33,58 +35,56 @@ const adUnitIdBannerAd = __DEV__
 
 // @ts-ignore
 export default function NavigationMain() {
+  //const bottomSheetRef = React.createRef<BottomSheetMethods>();
 
-  const [user, setUser] = useState(getAuth().currentUser);
+  const bottomSheetRef = useRef<BottomSheet>(null);
 
-
-  const { bottomSheetRef} = useContext(PrimaryContext);
-  //const bottomSheetRef = useRef<BottomSheet>(null);
-
+  // InputContext definitions
   const [messageIndex, setMessageIndex] = useState(0);
   const [input, setInput] = useState("");
   const [messagesLeft, setMessagesLeft] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
-
   const [messageBreakOption, setMessageBreakOption] = useState(false);
   const [typing, setTyping] = useState(false); // typing indicator
 
-  const {darkmode, setDarkmode} = useContext(PrimaryContext);
+  const {
+    user,
+    setUser,
+    } = useContext(PrimaryContext);
+
+  const {customTheme} = useContext(ThemeContext)
+  const {darkmode} = useContext(PrimaryContext);
 
   // make Active Tabbar Shadow color transparent
   const theme = useTheme();
   theme.colors.secondaryContainer = "transperent"
 
-  // @ts-ignore
-  const colors = useSelector(state => state.colors.value)
-
   const dispatch = useDispatch();
 
-  const updateModalIndex = useCallback((number: number, bottomSheetRef: { current: { snapToIndex: (arg0: number) => void; }; }) => {
+  const updateModalIndex = useCallback((number: number) => {
     bottomSheetRef.current?.snapToIndex(number);
   }, []);
 
+  /*
+  const updateModalIndex = useCallback((index: number, bottomSheetRef: { current: { snapToIndex: (arg0: number) => void; }; })) => {
+    bottomSheetRef.current?.snapToIndex(index);
+  }, []);
+  */
   const closeModal = () => {
     bottomSheetRef.current?.close();
   }
+
   useEffect(() => {
     onAuthStateChanged(getAuth(), (user) => {
       if (user) {
-        setUser(user);
+        setUser((user as firebase.User));
         console.log("User in Footer: ", user)
-        dispatch({
-          type: "USER",
-          payload: {
-            email: user.email,
-            uid: user.uid,
-          }
-        })
       } else {
-        console.log("User could not be set")
+        console.log("User could not be set in Footer")
       }
       console.log("user:", user)
     });
   }, []);
-
 
   const storeUserSessionData = async () => {
     try {
@@ -102,18 +102,6 @@ export default function NavigationMain() {
       // error reading value
     }
   };
-
-  async function retrieveUserSession() {
-    try { // check if the user is already stored
-      const data = await getUserSessionData();
-      if (data !== undefined || true) {
-        storeUserSessionData()
-          .then(() => console.log("User session successfully saved ..."))
-      }
-    } catch (error) {
-      console.log("There was an error save the user session ...")
-    }
-  }
 
   useEffect(() => {
     // Anmelden mit Firebase Anonymous Auth
@@ -137,13 +125,19 @@ export default function NavigationMain() {
     })
     console.log("Dispatched History Text.")
   }
+
+  useEffect(() => {
+    console.log("darkmodeChatMain", darkmode)
+  }, []);
+
+
+
   return (
     <>
       <Tab.Navigator
         shifting={false}
         labeled={false}
-
-        initialRouteName="Settings"
+        initialRouteName="Chat"
         activeColor={themeColors.sexyBlue}
         inactiveColor={themeColors.sexyBlue}
         backBehavior={"firstRoute"}
@@ -154,7 +148,7 @@ export default function NavigationMain() {
           alignItems: 'center',
           paddingHorizontal: 0,
           paddingVertical: 0,
-          backgroundColor:  colors.navigatorColor[darkmode?  1 : 0]  //"transparent"//
+          backgroundColor:  customTheme.navigatorColor
         }}>
           <Tab.Screen
             name="Chat"
@@ -170,18 +164,18 @@ export default function NavigationMain() {
                     setMessageIndex,
                     messageBreakOption,
                     setMessageBreakOption,
-                    typing, setTyping,
-                    }
+                    typing, setTyping
+                  }
                   }>
                   <ChatNavigation
-                    updateModalIndex={updateModalIndex}
+                    bottomSheetRef={bottomSheetRef}
                     dispatchHistorySent={dispatchHistorySent}
                   />
                 </InputContext.Provider>
               }
             options={{
               // tabBarBadge: 0, take it to show new messages
-              tabBarColor: colors.navigatorColor[darkmode? 1 : 0] ,
+              tabBarColor: customTheme.navigatorColor,
               // @ts-ignore
               headerShown: false,
               tabBarIconStyle: { display: "none"},
@@ -196,15 +190,6 @@ export default function NavigationMain() {
             }}
           />
         <Tab.Screen
-          name="Tools"
-          component={ToolsNavigation}
-          options={{
-            tabBarIcon: ({ color, focused }) => (// @ts-ignore
-              <MaterialCommunityIcons name={focused ? "cog" : "cog-outline"} color={color} size={29} />
-            ),
-          }}
-        />
-        <Tab.Screen
           name="Settings"
           component={SettingNavigation}
           options={{
@@ -215,15 +200,15 @@ export default function NavigationMain() {
         />
       </Tab.Navigator>
       <SwipeModal
-        animation={true}
+        bottomSheetRef={bottomSheetRef}
+        modalIndex={-1}
         Content={
           <ChatMenuModalContent
             changeText={setInput}
             dispatchHistorySent={dispatchHistorySent}
           />
         }
-       bottomSheetRef={bottomSheetRef}
-        modalIndex={-1}
+
       />
       <BannerAd
         unitId={adUnitIdBannerAd}
@@ -240,7 +225,28 @@ export default function NavigationMain() {
 
 
 /* later
+  async function retrieveUserSession() {
+    try { // check if the user is already stored
+      const data = await getUserSessionData();
+      if (data !== undefined || true) {
+        storeUserSessionData()
+          .then(() => console.log("User session successfully saved ..."))
+      }
+    } catch (error) {
+      console.log("There was an error save the user session ...")
+    }
+  }
 
+
+ <Tab.Screen
+          name="Tools"
+          component={ToolsNavigation}
+          options={{
+            tabBarIcon: ({ color, focused }) => (// @ts-ignore
+              <MaterialCommunityIcons name={focused ? "cog" : "cog-outline"} color={color} size={29} />
+            ),
+          }}
+        />
 
 
 

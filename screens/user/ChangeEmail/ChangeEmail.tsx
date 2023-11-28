@@ -4,7 +4,6 @@ import {
     getAuth,
     EmailAuthProvider,
     reauthenticateWithCredential,
-    updateEmail,
     verifyBeforeUpdateEmail
 } from 'firebase/auth';
 
@@ -107,28 +106,31 @@ export const EmailChange =() => {
         <SafeAreaView style={[userStyles.main_container, {flex:1, justifyContent: "center", alignItems: "center"}]}>
             <KeyboardAvoidingView style={userStyles.infoContainer}>
                 <HeadingText text={text.changeEmail} extraStyles={undefined} ></HeadingText>
-                {/*@ts-ignore*/}
-                <DefaultText text={"current E-Mail: "+ user.email} moreStyles={undefined}></DefaultText>
+                <DefaultText text={"current E-Mail: "+ user?.email} moreStyles={undefined}></DefaultText>
                 <DefaultInput
-                    placeholder={"New E-Mail Address"}
-                    value={newEmail}
-                    onChangeAction={setNewEmail}
-                    secure={false}
-                    editable={true} />
-
+                  placeholder={"New E-Mail Address"}
+                  value={newEmail}
+                  onChangeAction={setNewEmail}
+                  secure={false}
+                  editable={true}
+                  keyboardType={undefined}
+                  extraStyles={undefined}
+                />
                 <DefaultInput
-                    placeholder={"Confirm with your Password"}
-                    value={currentPassword}
-                    onChangeAction={setCurrentPassword}
-                    secure={true}
-                    editable={true} />
+                  placeholder={"Confirm with your Password"}
+                  value={currentPassword}
+                  onChangeAction={setCurrentPassword}
+                  secure={true}
+                  editable={true}
+                  keyboardType={undefined}
+                  extraStyles={undefined}
+                />
                 <DefaultButton
                     extraStyles={[userStyles.changeBtn, {marginTop: 30}]}
                     onPressAction={handleChangeEmail}
-                    indicatorColor={undefined}
-                    indicatorSize={"small"}
                     text={"Confirm"}
-                    secondIcon={undefined} />
+                    secondIcon={undefined}
+                />
             </KeyboardAvoidingView>
             <AwaitConfirmationModal
                 action={
@@ -143,7 +145,7 @@ export const EmailChange =() => {
                     ): success? (
                         <DefaultText
                             text={"Your E-Mail Address " + newEmail + " has been successfully confirmed."}
-                            moreStyles={undefined} /> // before: styles.errorText
+                            moreStyles={undefined} />
                     ): error.includes("auth/missing-password")? (
                         <DefaultText
                             text={"No password was entered. \n Please try again."}

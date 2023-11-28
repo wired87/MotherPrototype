@@ -6,7 +6,6 @@ import React from "react";
 
 // interface SettingsNavigator
 
-// @ts-ignore
 export const SettingNavigation = () => {
   const SettingStack = createNativeStackNavigator();
   return(
@@ -18,10 +17,12 @@ export const SettingNavigation = () => {
             <DefaultHeader
               {...props}
               extraStyles={undefined}
-              children={
+              childrenMiddle={
                 undefined
-              }/>
-            }}>
+              }
+              childrenRight={undefined}
+            />
+          }}>
       <SettingStack.Screen
         name="PurchaseScreen"
         component={PurchaseScreen}

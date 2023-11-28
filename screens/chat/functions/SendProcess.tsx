@@ -13,7 +13,7 @@ export const getCurrentTime = () => {
   return(timeHoursNow + ":" + timeMinutesNow);
 }
 
-export const postMessageObject = async (
+export const postMessageObject = (
   senderObject: any,
   options: any
 ) => {
@@ -21,26 +21,27 @@ export const postMessageObject = async (
   const { timeout = 8000 } = options
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-
+  console.log("JSON.stringify(senderObject)", JSON.stringify(senderObject))
   try {
-    const response = await fetch("http://127.0.0.1:8080/open/chat-request/", //192.168.178.51:8000/open/chat-request/"
-      {
-        method: "POST",
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin,
-        // same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        headers: {
-          "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: JSON.stringify(senderObject), // body data type must match "Content-Type" header
-        ...options,
-        signal: controller.signal
+    const response = fetch("http://192.168.178.51:8080/open/chat-request/", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(senderObject),
+      ...options,
+      signal: controller.signal
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
       });
+
     clearTimeout(id);
+    console.log("Chat Request response", response);
     return response
   } catch(e) {
     return e
@@ -76,3 +77,24 @@ export const createMessageObject = (
     }
   );
 }
+
+
+/*
+Fetch request props
+const response = await fetch("http://192.168.178.51:8080/open/chat-request/", //192.168.178.51:8000/open/chat-request/"
+  {
+    method: "POST",
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin", // include, *same-origin, omit
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin,
+    // same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify(senderObject), // body data type must match "Content-Type" header
+
+  });
+ */

@@ -1,22 +1,19 @@
 import {Platform, SafeAreaView} from "react-native";
 import { Appbar } from "react-native-paper";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import React, {useContext, useEffect, useState} from "react";
+import React, {memo, useContext, useEffect, useState} from "react";
 import {uniStyles} from "../../screens/universalStyles";
 import {HeaderView} from "../container/headerContainer";
 import {useDispatch, useSelector} from "react-redux";
-import {PrimaryContext} from "../../screens/Context";
-
-
+import {PrimaryContext, ThemeContext} from "../../screens/Context";
 
 export const DefaultHeader = (
     // @ts-ignore
-    { children, extraStyles, back }
-
+    { childrenMiddle, childrenRight, extraStyles, back }
 ) => {
   const dispatch = useDispatch()
-  // @ts-ignore
-  const colors = useSelector(state => state.colors.value);
+
+  const {customTheme} = useContext(ThemeContext);
 
   // @ts-ignore
   const purchaseAccess = useSelector(state => state.purchaseAccess.value)
@@ -25,9 +22,8 @@ export const DefaultHeader = (
 
   const navigation = useNavigation()
   const r = useRoute()
-  const { darkmode } = useContext(PrimaryContext);
-  const navigateBack = () => {
 
+  const navigateBack = () => {
     console.log("purchaseAccess", purchaseAccess)
     if (r.name === "PurchaseScreen" && purchaseAccess) {
       // @ts-ignore
@@ -43,7 +39,6 @@ export const DefaultHeader = (
     } else {
       navigation.goBack();
     }
-
   };
 
   useEffect(() => {
@@ -59,10 +54,102 @@ export const DefaultHeader = (
     }
   }, [shouldNavigate, navigation]);
 
+
   return (
     <SafeAreaView style={[extraStyles? extraStyles : null,
-      {flex: 1, justifyContent: "flex-start", alignItems: "flex-end",
-      backgroundColor: colors.primary[darkmode? 1 : 0]}]}>
+      {justifyContent: "flex-start", alignItems: "flex-end",
+        backgroundColor: customTheme.primary}]}>
+
+      <Appbar.Header
+        style={[[uniStyles.headerContainer], { paddingVertical: Platform.OS === "ios" ? 20 : 0,
+          backgroundColor: "transparent"}]}>
+
+        <HeaderView extraStyles={{alignItems: "flex-start", justifyContent: "flex-start", height: "100%"}}>
+          {(back || r.name === "PurchaseScreen" || r.name === "AccountMain" )? (
+            <Appbar.Action
+              icon="less-than"
+              style={{left: 5, position: "absolute", zIndex: 900000}}
+              color={"rgba(0, 0, 0, .8)"}
+              size={27}
+              iconColor={customTheme.headerIconColors}
+              // @ts-ignore
+              onPress={() => {navigateBack()}}
+            />
+          ):null}
+        </HeaderView>
+
+        <HeaderView extraStyles={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+          {childrenMiddle}
+        </HeaderView>
+
+        <HeaderView extraStyles={{justifyContent: "center", alignItems: "flex-end"}}>
+          {childrenRight}
+        </HeaderView>
+
+      </Appbar.Header>
+    </SafeAreaView>
+  );
+}
+
+
+//  ALL PROPS FROM NAVIGATOR
+/*
+     <Appbar.Action
+            icon={rightIcon}
+            style={[{left: 5, position: "absolute", zIndex: 900000}]}
+            color={"rgba(0, 0, 0, .8)"}
+            size={27}
+            iconColor={customTheme.headerIconColors}
+            // @ts-ignore
+            onPress={() => {navigateBack()}}
+          />
+      <Appbar.Action
+            icon={middleIcon}
+            style={{left: 5, position: "absolute", zIndex: 900000}}
+            color={"rgba(0, 0, 0, .8)"}
+            size={27}
+            iconColor={customTheme.headerIconColors}
+            // @ts-ignore
+            onPress={() => {navigateBack()}}
+          />
+<HeaderView
+                  extraStyles={{justifyContent: "center", alignItems: "center", left: 3, backgroundColor: "blue"}}>
+  return (
+    <SafeAreaView style={[extraStyles? extraStyles : null,
+      {justifyContent: "flex-start", alignItems: "flex-end",
+      backgroundColor: customTheme.primary}]}>
+
+      <Appbar.Header
+        style={[[uniStyles.headerContainer], { paddingVertical: Platform.OS === "ios" ? 20 : 0,
+          backgroundColor: "transparent", borderWidth: 10, borderColor: "red",}]}>
+          <>
+            <HeaderView extraStyles={{alignItems: "flex-start", justifyContent: "flex-start", height: "100%"}}>
+              {(back || r.name === "PurchaseScreen" || r.name === "AccountMain" )? (
+              <Appbar.Action
+                icon="less-than"
+                style={{left: 5, position: "absolute", zIndex: 900000}}
+                color={"rgba(0, 0, 0, .8)"}
+                size={27}
+                iconColor={customTheme.headerIconColors}
+                // @ts-ignore
+                onPress={() => {navigateBack()}}
+              />
+                ):null}
+            </HeaderView>
+            <HeaderView extraStyles={undefined}>
+              {childrenMiddle}
+            </HeaderView>
+            <HeaderView extraStyles={undefined}>
+              {childrenRight}
+            </HeaderView>
+          </>
+      </Appbar.Header>
+    </SafeAreaView>
+  );
+  return (
+    <SafeAreaView style={[extraStyles? extraStyles : null,
+      {justifyContent: "flex-start", alignItems: "flex-end", borderWidth: 10, borderColor: "red",
+      backgroundColor: customTheme.primary}]}>
 
       <Appbar.Header
         style={[[uniStyles.headerContainer], { paddingVertical: Platform.OS === "ios" ? 20 : 0,
@@ -75,7 +162,7 @@ export const DefaultHeader = (
                 style={{left: 5, position: "absolute", zIndex: 900000}}
                 color={"rgba(0, 0, 0, .8)"}
                 size={27}
-                iconColor={colors.headerIconColors[darkmode? 1 : 0 ]}
+                iconColor={customTheme.headerIconColors}
                 // @ts-ignore
                 onPress={() => {navigateBack()}}
               />
@@ -96,8 +183,6 @@ export const DefaultHeader = (
   );
 }
 
-//  ALL PROPS FROM NAVIGATOR
-/*
 "back": Object {
     "title": "ChatMain",
   },

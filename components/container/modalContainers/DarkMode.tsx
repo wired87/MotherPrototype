@@ -1,5 +1,5 @@
 
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useContext, memo} from 'react';
 
 import {HeadingText} from "../../text/HeadingText";
 import {View} from "react-native";
@@ -38,6 +38,11 @@ const DarkMode = () => {
     console.log("---", darkmode)
   }, [darkmode]);
 
+  const setDarkModeAction = async () => {
+    //await postNewColorValues(!darkmode);
+    setDarkmode(!darkmode);
+  }
+
   return(
     <View style={{justifyContent: "flex-start", alignItems: "center", flex: 1, paddingVertical: 30, paddingHorizontal: 20}}>
       <HeadingText
@@ -45,9 +50,10 @@ const DarkMode = () => {
         extraStyles={undefined} />
         <DefaultButton
           extraStyles={undefined}
-          onPressAction={() => setDarkmode(!darkmode)}
+          onPressAction={setDarkModeAction}
           text={"on/off"}
-          secondIcon={undefined} />
+          secondIcon={undefined}
+        />
     </View>
   );
 }

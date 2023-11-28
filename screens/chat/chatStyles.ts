@@ -72,5 +72,15 @@ export const chatStyles = StyleSheet.create({
         backgroundColor: "transparent",
         justifyContent: "space-between",
         alignItems: "center"
+    },
+    chatBackground: {
+        zIndex: 0,
+        position: "absolute",
+        alignItems: "center",
+        justifyContent: "center",
+        width: windowWidth * .9,
+        height: "80%",
+        marginVertical: "50%",
+        borderRadius: 14
     }
 })

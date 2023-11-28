@@ -7,7 +7,7 @@ const windowHeight = Dimensions.get('window').height;
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-
+        backgroundColor: "transparent"
     },
 
 
@@ -30,6 +30,9 @@ export const styles = StyleSheet.create({
         backgroundColor: "#2b2a27",
         borderRadius: 10,
         padding: 4,
+    },
+    middleText: {
+        textAlign: "center"
     },
 
 

@@ -1,7 +1,7 @@
 import {View} from "react-native";
 import {DefaultText} from "../../text/DefaultText";
 import {DefaultPageNavigationBtn} from "../../buttons/DefaultPageNavigationBtn";
-import React, {useCallback} from "react";
+import React, {useCallback, useContext} from "react";
 import {uniStyles} from "../../../screens/universalStyles"
 import {useNavigation} from "@react-navigation/native";
 // Strings
@@ -9,11 +9,15 @@ const historyReminder = "To see your Chat History, \n you must be logged in.";
 const loginText = "Login";
 const registerText = "Register";
 import {useSelector} from "react-redux";
+import {ThemeContext} from "../../../screens/Context";
 
 
 export const ModalContentNoLog = (// @ts-ignore
 
 ) => {
+
+  const { customTheme } = useContext(ThemeContext);
+
     // @ts-ignore
     const screen = useSelector(state => state.screens.value)
     const navigation = useNavigation();
@@ -32,7 +36,7 @@ export const ModalContentNoLog = (// @ts-ignore
                 justifyContent: "center",
                 alignItems: "center",
                 }}>
-                <DefaultText text={historyReminder} moreStyles={uniStyles.reminderModalText}/>
+                <DefaultText text={historyReminder} moreStyles={[uniStyles.reminderModalText, {color: customTheme.text}]}/>
             </View>
 
             <View style={uniStyles.reminderModalBtnContainer}>

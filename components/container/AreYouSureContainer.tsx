@@ -1,4 +1,3 @@
-import {DefaultContainer} from "./DefaultContainer";
 import {DefaultText} from "../text/DefaultText";
 import {styles} from "./contiStyles";
 import {DefaultPageNavigationBtn} from "../buttons/DefaultPageNavigationBtn";
@@ -11,9 +10,9 @@ import axios from "axios";
 import {PrimaryContext} from "../../screens/Context";
 
 // @ts-ignore
-const AreYouSureContainer = () => {
+const AreYouSureContainer = ({ bottomSheetRef }) => {
 
-  const { user,bottomSheetRef } = useContext(PrimaryContext)
+  const { user } = useContext(PrimaryContext)
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
@@ -96,4 +95,4 @@ const AreYouSureContainer = () => {
       </View>
     );
 }
-export default AreYouSureContainer;
+export default memo(AreYouSureContainer);

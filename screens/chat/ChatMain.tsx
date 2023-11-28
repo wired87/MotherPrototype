@@ -12,7 +12,7 @@ import {imgStyles} from "../../components/images/imgStyles";
 // @ts-ignore
 import successAuth from "../../assets/images/successAuth.png";
 import {SingleAudio} from "../../components/container/chat/SingleAudio";
-import {InputContext, PrimaryContext} from "../Context";
+import {InputContext, ThemeContext} from "../Context";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 export const ChatMain = (
@@ -23,25 +23,12 @@ export const ChatMain = (
   const [logoutModal, setLogoutModal] = useState(false);
 
   const { messages } = useContext(InputContext);
-  const { darkmode } = useContext(PrimaryContext);
-  // @ts-ignore
-  const colors = useSelector(state => state.colors.value)
+  const { customTheme } = useContext(ThemeContext);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   // @ts-ignore
   const logout = useSelector(state => state.logout.value);
-
-
-  const windowWidth = Dimensions.get('window').width;
-
-  const dismissNewLogoutBox = useCallback(() => {
-    dispatch({
-      type: "LOGOUT",
-      payload: false
-    })
-    console.log("newLogout: ", logout)
-  }, []);
 
   const insets = useSafeAreaInsets();
 
@@ -55,21 +42,24 @@ export const ChatMain = (
     }
   }, [logout]);
 
-
   return(
     <>
-      <SafeAreaView style={{ backgroundColor: colors.primary[darkmode? 1 : 0], flex: 1, paddingTop: insets.top }}>
+      <SafeAreaView style={{ backgroundColor: customTheme.primary, flex: 1, paddingTop: insets.top }}>
         <KeyboardAvoidingView
-          style={{ paddingTop: insets.top, backgroundColor: colors.primary[darkmode? 1 : 0], flex: 1,
+          style={{ paddingTop: insets.top, backgroundColor: customTheme.primary, flex: 1,
             marginBottom: Platform.OS === "ios" ? 20 : 0, flexDirection: "column" }}>
 
           <View style={{justifyContent: "center", alignItems: "center", flex: 1,}}>
-            <View style={{backgroundColor: colors.view[darkmode? 1 : 0], zIndex: 0,
-              borderColor: colors.borderColor[darkmode? 1 : 0], position: "absolute", alignItems: "center",
-              justifyContent: "center", width: windowWidth * .9, height: "80%",
-              marginVertical: "50%", borderRadius: 14}} >
-
-              <Text style={{gap: 20, fontSize: 30, color: darkmode? "rgba(255,255,255,.2)" : "rgba(0,0,0,.2)"}}>
+            <View style={
+              [
+                chatStyles.chatBackground,
+                {
+                  borderColor: customTheme.borderColor,
+                  backgroundColor: customTheme.view
+                }
+              ]
+            } >
+              <Text style={{gap: 20, fontSize: 30, color: customTheme.text}}>
                 AIX
               </Text>
 
@@ -87,8 +77,8 @@ export const ChatMain = (
                       key={index}
                       item={item}
                       styles={chatStyles}
-                      primaryTextStyles={{textAlign: "justify", color: colors.text[darkmode? 1 : 0]}}
-                      secondaryTextStyles={{color: colors.text, fontSize: 10, }}
+                      primaryTextStyles={{textAlign: "justify", color: customTheme.text}}
+                      secondaryTextStyles={{color: customTheme.text, fontSize: 10, }}
                     />
                   </>
                 ):(
@@ -124,3 +114,13 @@ export const ChatMain = (
     </>
   )
 }
+/*
+
+  const dismissNewLogoutBox = useCallback(() => {
+    dispatch({
+      type: "LOGOUT",
+      payload: false
+    })
+    console.log("newLogout: ", logout)
+  }, []);
+ */

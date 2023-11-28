@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useState} from 'react';
-import { TextInput, View, Text, TouchableOpacity } from 'react-native';
-import { getAuth, EmailAuthProvider, updatePassword, reauthenticateWithCredential } from 'firebase/auth';
+import { View } from 'react-native';
+import { EmailAuthProvider, updatePassword, reauthenticateWithCredential } from 'firebase/auth';
 
 
 // @ts-ignore

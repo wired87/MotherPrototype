@@ -5,7 +5,7 @@ import {getAuth} from "firebase/auth";
 import {PrimaryContext} from "../Context";
 
 const windowWidth = Dimensions.get('window').width;
-export default function ToolMain() {
+export default function ToolsMain() {
 
     const {darkmode, user} = useContext(PrimaryContext);
 

@@ -1,14 +1,9 @@
-import {useCallback, useEffect, useState} from "react";
-import {useNavigation, useRoute} from "@react-navigation/native";
-import {useDispatch, useSelector} from "react-redux";
-import {settingStyles} from "../../screens/settings/settingStyles";
+import {useEffect, useState} from "react";
+
 import Chroma from "chroma-js";
 import {LinearGradient} from "expo-linear-gradient";
 
-
-
 const INTERVAL = 2;
-
 
 // @ts-ignore
 export const DefaultLinearGradient = ({ children, linearViewStyles, customTopColor, customBottonColor }) => {
@@ -23,14 +18,6 @@ export const DefaultLinearGradient = ({ children, linearViewStyles, customTopCol
   const [bottomIndex, setBottomIndex] = useState(0);
   const [colorTop, setColorTop] = useState(TOP_COLORS_SPECTRUM[0]);
   const [colorBottom, setColorBottom] = useState(BOTTOM_COLORS_SPECTRUM[0]);
-  const route = useRoute();
-
-  // @ts-ignore
-  const text = useSelector(state => state.text.value)
-  // @ts-ignore
-  const icon = useSelector(state => state.icon.value)
-  // @ts-ignore
-  const screens = useSelector(state => state.screens.value)
 
   useEffect(() => {
     const interval = setInterval(() => {

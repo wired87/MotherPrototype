@@ -24,7 +24,7 @@ import {AlertBox} from "../../components/modals/errorBox";
 import {useRoute} from "@react-navigation/native";
 import {DefaultText} from "../../components/text/DefaultText";
 import {FIREBASE_AUTH} from "../../firebase.config";
-import {AuthContext, PrimaryContext} from "../Context";
+import {AuthContext, PrimaryContext, ThemeContext} from "../Context";
 
 
 
@@ -65,9 +65,6 @@ export const AuthUniversal = ({ // @ts-ignore
     error,
     setError } = useContext(AuthContext);
 
-  // @ts-ignore
-  const colors = useSelector(state => state.colors.value);
-
   const auth = getAuth();
   const firebaseAuth = FIREBASE_AUTH;
   const login = route.name === "Login"
@@ -85,21 +82,10 @@ export const AuthUniversal = ({ // @ts-ignore
     }
   }, [response])
 
-
-
-
-
-
-
   // @ts-ignore
   const text = useSelector(state => state.text.value)
   // @ts-ignore
   const screen = useSelector(state => state.screens.value)
-
-
-  //const onSignUp = useCallback(() => signUp(), [email, password]);
-
-
 
   useEffect(() => {
     if (response?.type === 'success') {
@@ -112,9 +98,9 @@ export const AuthUniversal = ({ // @ts-ignore
   const onChangeEmail = useCallback((text: React.SetStateAction<string>) => setEmail(text), []);
   const onChangePassword = useCallback((text: React.SetStateAction<string>) => setPassword(text), []);
 
+  const {customTheme} = useContext(ThemeContext);
 
   const dispatch = useDispatch()
-
 
   useEffect(() => {
     console.log("user ", user)
@@ -124,7 +110,6 @@ export const AuthUniversal = ({ // @ts-ignore
       }
     });
   }, []);
-
 
   useEffect(() => {
     console.log("email", email.length, email)
@@ -179,8 +164,6 @@ export const AuthUniversal = ({ // @ts-ignore
       const user_response = await createUserWithEmailAndPassword(firebaseAuth, email, password);
       setError(success);
       console.log("user: ", user_response);
-      // @ts-ignore
-
     } catch (error) {
       // @ts-ignore
       setError(error.message);
@@ -204,14 +187,14 @@ export const AuthUniversal = ({ // @ts-ignore
 
   return(
     <SafeAreaView style={{
-      flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.primary[darkmode? 1 : 0]
+      flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: customTheme.primary
     }}>
-      <KeyboardAvoidingView style={{backgroundColor: colors.primary[darkmode? 1 : 0]}}
+      <KeyboardAvoidingView style={{backgroundColor: customTheme.primary}}
                             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View
           style={[userStyles.loginContainer,
-            {backgroundColor: colors.primary[darkmode? 1 : 0]
-          , borderColor: colors.borderColor[darkmode? 1 : 0]}]}>
+            {backgroundColor: customTheme.primary
+          , borderColor: customTheme.borderColor}]}>
 
           <HeadingText
             text={text.signInText}
@@ -243,7 +226,7 @@ export const AuthUniversal = ({ // @ts-ignore
 
           {login? (
             <TouchableOpacity
-              style={{ borderWidth: 1, borderColor: colors.borderColor[darkmode? 1 : 0] /*themeColors.borderThin*/, borderRadius: 14, // @ts-ignore
+              style={{ borderWidth: 1, borderColor: customTheme.borderColor, borderRadius: 14, // @ts-ignore
                 elevation: 20, paddingVertical: 4, paddingHorizontal: 7,
                 marginVertical: 10
               }}
@@ -260,10 +243,9 @@ export const AuthUniversal = ({ // @ts-ignore
             secondIcon={null}
             extraStyles={undefined}/>
 
-          <Text style={[userStyles.authTextInfo, {color: colors.text[darkmode? 1 : 0]}]}>
+          <Text style={[userStyles.authTextInfo, {color: customTheme.text}]}>
             Or
           </Text>
-
         </View>
         <View style={userStyles.alternativeAuthMethodContainer}>
           <DefaultButton

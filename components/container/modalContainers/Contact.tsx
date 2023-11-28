@@ -13,7 +13,7 @@ import {MultilineInput} from "../../input/MultilineTextField";
 import {useDispatch, useSelector} from "react-redux";
 import {themeColors} from "../../../colors/theme";
 import LottieView from "lottie-react-native";
-import {AuthContext, PrimaryContext} from "../../../screens/Context";
+import {AuthContext} from "../../../screens/Context";
 
 
 const options = [
@@ -44,11 +44,10 @@ const inputOptions = [
 
 
 // @ts-ignore
-const Contact = () => {
+const Contact = ({ bottomSheetRef }) => {
   const [submit, setSubmit] = useState(false);
   const [seconds, setSeconds] = useState(5);
   const [status, setStatus] = useState(null);
-  const {bottomSheetRef } = useContext(PrimaryContext);
 
   const [form, setForm] = useState({
       option: "security"

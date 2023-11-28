@@ -11,8 +11,6 @@ const colorTop = ['rgba(83,106,155,0.98)', '#2e357c', '#1d155e', '#182173', '#66
 const colorBottom = ['#181e5d', '#6a6783', '#0f2742', '#453654', '#0e198c']
 
 
-
-
 // @ts-ignore
 export const SingleAudio = ({ item, styles, secondaryTextStyles }) => {
   const [isSharingAvailable, setIsSharingAvailable] = useState(false);

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, StyleSheet, Text, Pressable, View, TouchableOpacity} from 'react-native';
+import {Modal, Text, Pressable, View} from 'react-native';
 import {ActivityIndicator} from "react-native-paper";
 import {useNavigation} from "@react-navigation/native";
 import LottieView from "lottie-react-native";
@@ -55,11 +55,11 @@ export const AwaitConfirmationModal = (
                         </Pressable>
                         {success ? (
                             // @ts-ignore
-                            <TouchableOpacity onPress={() => {navigation.navigate(screen.toolsMain)}}>
+                            <Pressable onPress={() => {navigation.navigate(screen.toolsMain)}}>
                                 <Text style={{color: '#fff', fontSize: 15, }}>
                                     Go Home
                                 </Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         ):null}
                     </View>
                 </View>

@@ -4,66 +4,77 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Provider as ReduxProvider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
-import merge from 'deepmerge';
 
-import { PrimaryContext } from "./screens/Context";
+import {PrimaryContext, Theme, ThemeContext, lightModeTheme, darkModeTheme} from "./screens/Context";
 import { store } from "./Redux/store";
 import NavigationMain from "./components/navigation/Footer";
 import { getDarkmode } from "./components/container/modalContainers/DarkMode";
 import * as SecureStore from "expo-secure-store";
 import firebase from "firebase/compat";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
 
+//  const bottomSheetRef = React.createRef<BottomSheetMethods>();
 export default function App() {
+
+  // PrimaryContext definitions
   const [darkmode, setDarkmode] = useState(false);
   const [user, setUser] = useState<firebase.User | null>(null);
+  const [customTheme, setCustomTheme] = useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
 
-  const bottomSheetRef = React.createRef<BottomSheetMethods>();
-
-  useEffect(() => {
-    const updateDarkMode = async () => {
-      try {
-        await SecureStore.setItemAsync("darkmode", String(darkmode));
-        console.log("darkmode value set sdecurestore");
-      } catch (e) {
-        console.error('Error updating dark mode', e);
-      }
-    };
-    updateDarkMode().then(r => console.log("1"));
-  }, [darkmode]);
-
+  // init DarkMode
   const toggleTheme = () => setDarkmode(!darkmode);
 
   useEffect(() => {
-    const loadPreferences = async () => {
+    const loadDarkMode = async () => {
       try {
         const storedThemePreference = await getDarkmode();
+        console.log("storedThemePreference", storedThemePreference, typeof storedThemePreference)
         if (storedThemePreference !== null) {
-          setDarkmode(storedThemePreference === 'true');
+          setDarkmode(storedThemePreference === "true")
         }
       } catch (e) {
         console.error('Failed to load theme preference', e);
       }
     };
-    loadPreferences().then(r => console.log("Deine m´nutten moútter"));
+    loadDarkMode().then(r => console.log("Preferences successfully load"));
   }, []);
 
-  // Removed redundant font loading logic
+
+
+  useEffect(() => {
+    console.log("darkmodeAPP.tsx", darkmode)
+    console.log("customTheme", customTheme);
+    const updateDarkMode = async () => {
+      try {
+        await SecureStore.setItemAsync("darkmode", String(darkmode));
+        console.log("DarkMode changed in main darkMode func to", darkmode);
+      } catch (e) {
+        console.error('Error updating dark mode', e);
+      }
+    };
+    updateDarkMode()
+      .then(() => {
+        console.log("Successfully finished darkMode function..");
+        // update the colors here
+        setCustomTheme(darkmode? darkModeTheme : lightModeTheme)
+      });
+  }, [darkmode]);
 
   return (
     <ReduxProvider store={store}>
-      <PrimaryContext.Provider value={{ darkmode, toggleTheme, setDarkmode, user, setUser, bottomSheetRef }}>
-        <PaperProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <BottomSheetModalProvider>
-              <NavigationContainer>
-                <NavigationMain />
-              </NavigationContainer>
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
-        </PaperProvider>
-      </PrimaryContext.Provider>
+      <ThemeContext.Provider value={{customTheme}}>
+        <PrimaryContext.Provider value={{ darkmode, toggleTheme, setDarkmode, user, setUser }}>
+          <PaperProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <BottomSheetModalProvider>
+                <NavigationContainer>
+                  <NavigationMain />
+                </NavigationContainer>
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
+          </PaperProvider>
+        </PrimaryContext.Provider>
+      </ThemeContext.Provider>
     </ReduxProvider>
   );
 }

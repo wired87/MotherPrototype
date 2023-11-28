@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useMemo, useState} from "react";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetHandle } from '@gorhom/bottom-sheet';
-import {PrimaryContext} from "../../screens/Context";
-
+import {ThemeContext} from "../../screens/Context";
+import { StyleSheet } from "react-native";
 /*
 ***IMPORTANT***
 * react native reanimated need changes on teh babel file:
@@ -17,21 +17,30 @@ module.exports = function(api) {
 */
 
 interface SwipeModalProps {
-  animation?: any; // Ersetze 'any' durch einen spezifischen Typ, falls verfügbar
   Content: React.ReactNode;
   modalIndex: number;
   bottomSheetRef: React.Ref<BottomSheet>
 }
+
+const modalStyle = StyleSheet.create(
+  {
+    bottomSheetStyles: {
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14
+    }
+  }
+)
+
 
 export const SwipeModal: React.FC<SwipeModalProps> = (
     // @ts-ignore
     {
       Content,
       modalIndex,
+      bottomSheetRef
     }
 ) => {
-  const {bottomSheetRef} = useContext(PrimaryContext);
-  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+  const { customTheme } = useContext(ThemeContext);
 
   const defaultSnapPoints = useMemo(() => ['25%', '50%', "75%", "90%"], []);
 
@@ -54,7 +63,7 @@ export const SwipeModal: React.FC<SwipeModalProps> = (
        enableDynamicSizing={false} // universal size
        animateOnMount={true} //
 
-       backgroundStyle={undefined}
+       backgroundStyle={{backgroundColor: "transparent"}}
        handleStyle={undefined}
        handleIndicatorStyle={undefined}
 
@@ -82,9 +91,14 @@ export const SwipeModal: React.FC<SwipeModalProps> = (
       backdropComponent={BottomSheetBackdrop} // for the background of the sheet default null. BottomSheetBackdrop
        footerComponent={undefined} // component for the footer
       // styles
-       style={{
-         backgroundColor: "transparent",
-       }}>
+       style={
+         [
+           modalStyle.bottomSheetStyles,
+           {
+             backgroundColor: customTheme.bottomSheetBg
+           }
+        ]
+       }>
       {Content}
     </BottomSheet>
   );

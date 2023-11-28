@@ -1,20 +1,15 @@
-import React, { useState } from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, ScrollView, SafeAreaView, Dimensions, FlatList} from 'react-native';
+import React, {useContext, useState} from 'react';
+import { Text, View, ScrollView, SafeAreaView, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {SingleProContainer} from "../../components/container/PlusPlanContainer/SingleProContainer";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import { HeadingText } from '../../components/text/HeadingText';
 import ToggleButton from '../../components/buttons/ToggleButton';
-import {themeColors} from "../../colors/theme";
 import {settingStyles as styles} from "./settingStyles";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useSelector} from "react-redux";
-import {LinearGradient} from "expo-linear-gradient";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import {ThemeContext} from "../Context";
 
 // str
 const continuePurchaseText = "Continue";
@@ -53,14 +48,12 @@ const buttonText = [
         text: "$39.99/Year"
     }
 ]
-// darkmode.navigatorColor
 
 export const PurchaseScreen = () => {
-    // @ts-ignore
-    const darkmode = useSelector(state => state.darkmode.value);
+
+    const { customTheme } = useContext(ThemeContext)
     const [selected, setSelected] = useState(1);
-    // @ts-ignore
-    const colors = useSelector(state => state.colors.value);
+
     // @ts-ignore
     const icon = useSelector(state => state.icon.value)
 
@@ -76,29 +69,30 @@ export const PurchaseScreen = () => {
 
     return (
       <SafeAreaView
-        style={{flex: 1, justifyContent: "center", alignItems: "center", marginTop: 20, padding: 0, backgroundColor: darkmode.primary }}
+        style={{flex: 1, justifyContent: "center", alignItems: "center", marginTop: 20, padding: 0, backgroundColor: customTheme.primary }}
 
         // @ts-ignore
                     contentContainerStyle={{
                         flex: 1,
-                        backgroundColor: darkmode.primary,
+                        backgroundColor: customTheme.primary,
                         justifyContent: "center",
                         alignItems: "center"}}>
           <ScrollView
             contentContainerStyle={{
               flex: 1,
-              backgroundColor: darkmode.primary,
+              backgroundColor: customTheme.primary,
               justifyContent: "center",
               alignItems: "center"}}
             showsVerticalScrollIndicator={false}
-            style={{marginTop: 40, backgroundColor: darkmode.primary}}>
+            style={{marginTop: 40, backgroundColor: customTheme.primary}}>
 
               <View style={{ paddingHorizontal: 10 }}>
                   <HeadingText extraStyles={styles.Heading} text={headingText}/>
                   <Text style={styles.SubHeading}>GET ACCESS TO</Text>
               </View>
-              {/* Good stuff  style={{ width: windowWidth, flex: 1, backgroundColor: darkmode.secondaryContainerBackground}}*/}
+
               <PlusAdContainer />
+
               <View style={styles.ButtonSection}>
                   {buttonText.map((item, index) => (
                     <ToggleButton key={index} select={selected === item.id} setSelect={() => handleOptionSelect(item.id)} title={item.text} />

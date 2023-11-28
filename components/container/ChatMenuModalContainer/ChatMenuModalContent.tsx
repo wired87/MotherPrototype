@@ -1,34 +1,32 @@
-import {FlatList, StyleSheet, TouchableOpacity, View} from "react-native";
+import {FlatList, Pressable, StyleSheet, View} from "react-native";
 import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
 import {ModalContentNoLog} from "./ModalContentNoLog";
 import {getAuth} from "firebase/auth";
 // @ts-ignore
-import React, {useCallback, useEffect, useNavigation, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { ActivityIndicator } from "react-native-paper";
 import {themeColors} from "../../../colors/theme";
 import {uniStyles} from "../../../screens/universalStyles"
 import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
+import {PrimaryContext} from "../../../screens/Context";
 // Strings
 const indicatorSize = "medium";
 const historyText = "History";
 const noHistoryText = "Could not find any history . . .";
-const historyReminder = "To see your Chat History, you must be {\"\\n\"} logged in.";
-const loginText = "Login";
-const registerText = "Register";
+
 
 export const ChatMenuModalContent = (
     // @ts-ignore
-    {  changeText, dispatchHistorySent, /*extraAction*/ }
+    {  changeText, dispatchHistorySent,}
 ) => {
-  // @ts-ignore
-  const historySent = useSelector(state => state.historySent.value)
+
   // @ts-ignore
   const loading = useSelector(state => state.loading.value)
   const [history, setHistory] = useState([])
-  const user = getAuth().currentUser
   const dispatch = useDispatch()
+  const { user } = useContext(PrimaryContext);
 
   const dispatchUserData = async () => {
     dispatch({
@@ -92,18 +90,17 @@ export const ChatMenuModalContent = (
             history?.length > 0? (
               <View style={uniStyles.reminderModalContainer}>
                 <FlatList
-                  // @ts-ignore
                   data={history}
                   style={uniStyles.historyList}
                   renderItem={({ item }) => (
-                    <TouchableOpacity
+                    <Pressable
                       style={uniStyles.historyItem}
                       onPress={() => {
                         changeText(item)
                         dispatchHistorySent(true)
                       }}>
                      <DefaultText text={item} moreStyles={undefined} />
-                    </TouchableOpacity>
+                    </Pressable>
                   )}
                   keyExtractor={(_item, index) => index.toString()}
                 />

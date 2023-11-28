@@ -6,7 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import React, {useContext, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import {TypeIndicator} from "../animations/TypeIndicator";
+import TypeIndicator from "../animations/TypeIndicator";
 import {Audio} from "expo-av";
 
 const windowWidth = Dimensions.get('window').width;
@@ -15,7 +15,7 @@ import {StyleSheet} from "react-native";
 import {getAuth} from "firebase/auth";
 import {createMessageObject, getCurrentTime} from "../../screens/chat/functions/SendProcess";
 import {showAds} from "../../screens/chat/functions/AdLogic";
-import {InputContext, PrimaryContext} from "../../screens/Context";
+import {InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 
 const styles2 = StyleSheet.create({
   container: {
@@ -68,17 +68,14 @@ export const MessageInputContainer = (
 ) => {
   const [userRecording, setUserRecording] = React.useState();
   const [allRecordings, setAllRecordings] = React.useState([]);
-  const [typing, setTyping] = React.useState(false);
 
   const {darkmode} = useContext(PrimaryContext);
-
-  // @ts-ignore
-  const colors = useSelector(state => state.colors.value);
-
+  const { customTheme } = useContext(ThemeContext);
   const {
     messageIndex, setMessages,
     input, setInput, messagesLeft,
-    setMessagesLeft, setMessageIndex
+    setMessagesLeft, setMessageIndex,
+    typing, setTyping
   } = useContext(InputContext);
 
   const dispatch = useDispatch()
@@ -255,6 +252,23 @@ export const MessageInputContainer = (
     setAllRecordings([])
   }
 
+  const send = async () => {
+    if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
+      await sendMessageProcess()
+        .then(() => {
+            console.log("MessageProcess finished..");
+          }
+        )
+    } else if (messagesLeft === "0") {
+      console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
+      await showAds(dispatch, messagesLeft, setMessagesLeft).then(() => {
+        console.log("Ads successfully initialized..")
+      })
+    } else {
+      console.log("Already Sent Message, length === 0 or just whitespace")
+    }
+  }
+
   return (
     <DefaultContainer
       extraStyles={{
@@ -280,7 +294,7 @@ export const MessageInputContainer = (
       <View style={{flexDirection: "row", justifyContent: "space-between", paddingLeft: 12,}}>
         <TextInput style={[styles.chatMessageInput,
           {
-            backgroundColor: darkmode? colors.navigatorColor : themeColors.dotNineWhite,
+            backgroundColor:  customTheme.navigatorColor,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             borderBottomRightRadius: darkmode ? 0 : 20,
@@ -296,45 +310,21 @@ export const MessageInputContainer = (
           <>
             <TouchableOpacity
               onPress={() => setInput("")}
-              style={{
-                position: "absolute",
-                top: 6,
-                zIndex: 90,
-                right: 35,
-                borderWidth: 1,
-                borderRadius: 50,
-                borderColor: themeColors.borderThin,
-                paddingVertical: 0,
-                paddingHorizontal: 0,
-              }}>
+              style={localStyles.clearInputFiledBtn}>
               <MaterialCommunityIcons name={"close"} size={17}/>
             </TouchableOpacity>
             <MaterialCommunityIcons
               name={"atlassian"} size={25}
-              onPress={async () => {
-                if(!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
-
-                  await sendMessageProcess()
-                    .then(() => console.log("MessageProcess finished successfully"))
-
-                } else if (messagesLeft === "0") {
-                  console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
-                  await showAds(dispatch, messagesLeft, setMessagesLeft).then(() => {
-                    console.log("Ads successfully initialized..")
-                  })
-                } else {
-                  console.log("Already Sent Message, length === 0 or just whitespace")
-                }
-              }}
-              style={{marginRight: 5, color: colors.headerIconColors[darkmode? 1 : 0], transform: [{rotate: '90deg'}]}}
+              onPress={send}
+              style={{marginRight: 5, color: customTheme.headerIconColors, transform: [{rotate: '90deg'}]}}
             />
           </>
         ) : (
 
-          <View style={[styles2.container, {borderColor: colors.borderColor[darkmode? 1 : 0]}]}>
+          <View style={[styles2.container, {borderColor: customTheme.borderColor}]}>
             <IconButton
               icon={"microphone-outline"}
-              iconColor={userRecording ? "red" : colors.headerIconColors[darkmode? 1 : 0]}
+              iconColor={userRecording ? "red" : customTheme.headerIconColors}
               onPress={
               async () => {
                 if(messagesLeft === "0") {
@@ -358,24 +348,28 @@ export const MessageInputContainer = (
   );
 }
 
-
+const localStyles = StyleSheet.create(
+  {
+    clearInputFiledBtn: {
+      position: "absolute",
+      top: 6,
+      zIndex: 90,
+      right: 35,
+      borderWidth: 1,
+      borderRadius: 50,
+      borderColor: themeColors.borderThin,
+      paddingVertical: 0,
+      paddingHorizontal: 0,
+    }
+  }
+)
 
 /*
-
-
-
-
-
-
 
 wait Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
       await recording.startAsync()
-
-
-
-
 
 
   //RNFetchBlob.fs.readFile(fileUri, 'base64').then((base64Data) => {
@@ -384,12 +378,6 @@ wait Audio.Recording.createAsync(
 
   // const blob = await RNFetchBlob.fs.readFile(fileUri, 'base64');
   //formData.append('audioFile', blob, fileName);
-
-
-
-
-
-
 
 
 async function startRecording() {

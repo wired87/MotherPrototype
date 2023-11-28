@@ -27,7 +27,7 @@ export async function postMessageInfoData(value: string) {
 
 export async function getMessageInfoData() {
   try {
-    console.log("Success at getting the userMesssages Left")
+    console.log("Success at getting the userMessages Left")
     return await SecureStore.getItemAsync("totalMessages")
   } catch (e) {
     console.error('Error at requesting the Data: ', e);

@@ -1,23 +1,15 @@
-import React, {createContext, Dispatch, MutableRefObject, SetStateAction} from "react";
+import {createContext, Dispatch, SetStateAction} from "react";
 import firebase from "firebase/compat";
 import User = firebase.User;
-import {colors as c, darkmode as d} from "../Redux/Actions";
-import {RefreshControlBase} from "react-native";
-import BottomSheet from "@gorhom/bottom-sheet";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-
-const darkMode = d.value;
-const colors = c.value;
-
-
+import {themeColors} from "../colors/theme";
 
 // Interface
 interface PrimaryContextType {
 
   toggleTheme: () => void;
   darkmode: boolean;
-  setUser: (value: (((prevState: (firebase.User | null)) => (firebase.User | null)) | firebase.User | null)) => void;
-  user: firebase.User | null;
+  setUser: (value: User | null) => void;
+  user: User | firebase.User | null;
   setDarkmode: (value: (((prevState: boolean) => boolean) | boolean)) => void
 
 }
@@ -36,7 +28,7 @@ interface InputContextType {
 }
 
 
-export const PrimaryContext= createContext(
+export const PrimaryContext = createContext(
   {
     darkmode: false,
     setDarkmode: (() => {}) as Dispatch<SetStateAction<boolean>>,
@@ -45,8 +37,6 @@ export const PrimaryContext= createContext(
 
     user: null as User | null,
     setUser: (() => {}) as Dispatch<SetStateAction<User | null>>,
-
-    bottomSheetRef: React.createRef<BottomSheetMethods>(),
 
   });
 
@@ -96,8 +86,79 @@ export const SettingsContext = createContext({
 
 });
 
+////////////////// THEME
+
+
+export interface Theme {
+  primary: string;
+  secondary: string;
+  borderColor: string;
+  text: string;
+  navigatorColor: string;
+  modalColor: string;
+  secondaryContainerBackground: string;
+  switchedSecondaryContainerBackground: string;
+  headerIconColors: string;
+  messageContainer: string;
+  view: string;
+  bottomSheetBg: string;
+}
+
+export const lightModeTheme: Theme = {
+  primary: "#f0f3f7",
+  secondary: themeColors.sexyBlue,
+  borderColor: "rgba(37,38,38,0.76)",
+  text: "#000000",
+  navigatorColor: "#f0f3f7",
+  modalColor: "rgba(241,236,236,0.75)",
+  secondaryContainerBackground: "rgba(250,250,250,0.75)",
+  switchedSecondaryContainerBackground: "rgb(37,38,38)",
+  headerIconColors: "rgb(3,4,21)",
+  messageContainer: "#e1e4e7",
+  view: "#dfe3e8",
+  bottomSheetBg: "#c2c3c5",
+}
+
+export const darkModeTheme: Theme = {
+  primary: "rgb(24,24,24)",
+  secondary: "#d6d9da",
+  borderColor: "rgba(241,236,236,0.75)",
+  text: "rgb(255,255,255)",
+  navigatorColor: "rgb(224,221,221)",
+  modalColor: "rgba(37,38,38,0.76)",
+  secondaryContainerBackground: "rgba(255,255,255,0.2)",
+  switchedSecondaryContainerBackground: "rgb(24,24,24)",
+  headerIconColors: "rgb(255,255,255)",
+  messageContainer: "rgba(105,103,103,0.4)",
+  view: "rgba(20,20,20,.1)",
+  bottomSheetBg: "#38393a",
+
+}
+export interface ThemeContextType {
+  customTheme: Theme
+}
+
+export const ThemeContext = createContext<ThemeContextType>({
+  customTheme: lightModeTheme
+});
+
+
+
+
+
 /*
 {
+primary: "#f0f3f7",
+    secondary: themeColors.sexyBlue,
+    borderColor: "rgba(37,38,38,0.76)",
+    text: "#000000",
+    navigatorColor: "#f0f3f7",
+    modalColor: "rgba(241,236,236,0.75)",
+    secondaryContainerBackground: "rgba(250,250,250,0.75)",
+    switchedSecondaryContainerBackground: "rgb(37,38,38)",
+    headerIconColors: "rgb(3,4,21)",
+    messageContainer: "#e1e4e7",
+    view: "#dfe3e8",
     primary: colors.primary_darkLight[darkMode.primary ? 1 : 0],
     secondary: colors.secondary_darkLight[darkMode.secondary ? 1 : 0],
     navigatorColor: colors.navigatorColor[darkMode.navigatorColor ? 1 : 0],

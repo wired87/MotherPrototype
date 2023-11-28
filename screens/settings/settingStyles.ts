@@ -130,5 +130,13 @@ export const settingStyles = StyleSheet.create({
         color: 'white',
         textAlign: 'center'
     },
+    imprintView: {
+        justifyContent: "flex-start",
+        alignItems: "center",
+        flex: 1,
+        marginTop: 50,
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+    }
 });
 

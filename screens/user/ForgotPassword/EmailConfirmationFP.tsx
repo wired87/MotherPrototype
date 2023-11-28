@@ -9,19 +9,18 @@ import {DefaultButton} from "../../../components/buttons/DefaultButton";
 import {themeColors} from "../../../colors/theme";
 import {getAuth, sendPasswordResetEmail} from "firebase/auth";
 import {useNavigation} from "@react-navigation/native";
-import {AuthContext, PrimaryContext} from "../../Context";
+import {AuthContext, PrimaryContext, ThemeContext} from "../../Context";
 
 
 export const EmailConfirmationFP = () => {
 
   const {email, setEmail} = useContext(AuthContext);
-  const {darkmode} = useContext(PrimaryContext);
 
   const [errorMessage, setError] =
     useState<{ code: string; helpText: string } | null>(null);
   const [finalError, setFinalError] =
     useState<{ code: string; helpText: string } | null>(null);
-
+  const { customTheme } = useContext(ThemeContext);
   // @ts-ignore
   const loading = useSelector(state => state.loading.value)
 
@@ -66,7 +65,7 @@ export const EmailConfirmationFP = () => {
 
   return (
     <DefaultContainer
-      extraStyles={{flexDirection: "column", elevation: 20, backgroundColor: colors.primary[darkmode? 1: 0]}}>
+      extraStyles={{flexDirection: "column", elevation: 20, backgroundColor: customTheme.primary}}>
 
       {loading ? (
         <ActivityIndicator size={"large"}/>
@@ -87,7 +86,7 @@ export const EmailConfirmationFP = () => {
           />
           <DefaultText
             text={"We will send you a confirmation Mail"}
-            moreStyles={{color: colors.text[darkmode? 1: 0]}}/>
+            moreStyles={{color: customTheme.text}}/>
           <DefaultButton
             extraStyles={undefined} // @ts-ignore
             onPressAction={() => sendOTP(email)}

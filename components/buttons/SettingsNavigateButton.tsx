@@ -1,12 +1,11 @@
-// @ts-ignore
-import {TouchableOpacity, Text, View} from "react-native";
+import {Pressable, Text, View} from "react-native";
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import {styles} from "./styles";
 
 // @ts-ignore
 export const SettingsNavigateButton = ({ title, icon, isLastItem, isFirstItem, action }) => {
     return (
-        <TouchableOpacity
+        <Pressable
             style={[styles.settingsButton,
                 isLastItem ? { borderBottomLeftRadius: 20, borderBottomRightRadius: 20 } :
                 { borderBottomWidth: 0.3, borderColor: 'gray'},
@@ -19,6 +18,6 @@ export const SettingsNavigateButton = ({ title, icon, isLastItem, isFirstItem, a
                 <Text style={styles.buttonText}>{title}</Text>
             </View>
             <MIcon name="arrow-forward-ios" size={16} color="#40434f" />
-        </TouchableOpacity>
+        </Pressable>
     )
 }

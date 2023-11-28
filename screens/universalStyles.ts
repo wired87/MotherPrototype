@@ -45,7 +45,6 @@ export const uniStyles = StyleSheet.create({
     },
     reminderModalText: {
         fontSize: 16,
-        color: "rgba(1,21,42, .8)",
         marginTop: 30,
         textAlign: 'center',
         lineHeight: 30,
@@ -106,6 +105,7 @@ export const uniStyles = StyleSheet.create({
     },
     headerNavbarContainer: {
         width: windowWidth * .3333,
+
         margin: 0,
         backgroundColor: "transparent"
     },

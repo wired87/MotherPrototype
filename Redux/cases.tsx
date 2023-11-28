@@ -1,11 +1,4 @@
 // this file define all the possible cases for updating a state
-
-import {HistorySent} from "./Actions";
-
-export const updateUser = () => ({
-    type: "SING_IN"
-})
-
 export const loading = () => ({
     type: "LOADING"
 })
@@ -16,13 +9,6 @@ export const logout = () => ({
 
 export const user = () => ({
     type: "USER"
-})
-export const fullScreenAd = () => ({
-    type: "FULL_SCREEN_AD"
-})
-
-export const historySent= () => ({
-    type: "HistorySent"
 })
 
 export const text = () => ({

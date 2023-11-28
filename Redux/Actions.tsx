@@ -1,21 +1,3 @@
-import {themeColors} from "../colors/theme";
-
-
-const messageData = {
-    data: null
-};
-
-export const MessageUpdate = (state = messageData, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case 'UPDATE_MESSAGE':
-            return {
-                ...state, data: action.payload
-            }
-        default:
-            return state
-    }
-}
-
 
 
 const loading = {
@@ -62,121 +44,6 @@ export const HistorySent = (state = historySent, action: { type: any; payload: a
             };
         default:
             return state;
-    }
-}
-
-
-
-export const SetDarkMode = (state = darkmode, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case "DARKMODE":
-            return {
-                ...state,
-                value: action.payload
-            };
-        default:
-            return state
-    }
-}
-
-export const colors = {
-    value: {
-        secondary: [
-            themeColors.sexyBlue,
-            "#d6d9da",
-        ],
-        view: [
-            "#dfe3e8",
-            "rgba(20,20,20,.1)",
-        ],
-        messageContainer:
-          [
-              "#e1e4e7",
-              "rgba(105,103,103,0.4)",
-          ],
-        primary: [
-            "#f0f3f7",
-            "rgb(24,24,24)",
-        ],
-        text:
-          [
-            "#000000",
-            "rgb(255,255,255)",
-          ],
-        navigatorColor: [
-            "#f0f3f7",
-            "rgb(224,221,221)"
-        ],
-        headerIconColors:[
-            "rgb(3,4,21)",
-            "rgb(255,255,255)"
-        ],
-        switchTextColorLD: [
-            themeColors.mediumDarkDark,
-            themeColors.dotNineWhite
-        ],
-        secondaryContainerBackground: [
-            "rgba(250,250,250,0.75)",
-            "rgba(255,255,255,0.2)"
-        ],
-        switchedSecondaryContainerBackground: [
-            "rgb(37,38,38)",
-            "rgb(24,24,24)"
-        ],
-        borderColor: [
-            "rgba(37,38,38,0.76)",
-            "rgba(241,236,236,0.75)"
-        ],
-        modalColor: [
-            "rgba(241,236,236,0.75)",
-            "rgba(37,38,38,0.76)"
-        ]
-    }
-};
-
-export const darkmode = {
-    value: {
-        bool: false,
-        primary: colors.value.primary[0],
-        secondary: colors.value.secondary[0],
-        navigatorColor: colors.value.navigatorColor[0],
-        messageContainer: colors.value.messageContainer[0],
-        headerIconColors: "rgb(0,0,0)",
-        view: colors.value.view[0],
-        modalColor: colors.value.modalColor[0],
-        switchTextColorLD: colors.value.switchTextColorLD[0],
-        secondaryContainerBackground: colors.value.secondaryContainerBackground[0],
-        switchedSecondaryContainerBackground: colors.value.switchedSecondaryContainerBackground[0],
-        borderColor: colors.value.borderColor[0],
-        text: colors.value.text[0],
-    }
-};
-
-export const Colors = (state = colors, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case "COLORS":
-            return {
-                ...state,
-                value: action.payload
-            };
-        default:
-            return state
-    }
-}
-
-const user = {
-    value: null
-}
-
-export const User = (state = user, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case "USER":
-            return {
-                ...state,
-                value: action.payload
-            };
-        default:
-            return state
     }
 }
 
@@ -265,13 +132,6 @@ export const Errors = (state = errors, action: { type: any; payload: any; }) => 
 }
 
 
-
-
-
-
-
-
-
 const purchaseAccess = {
     value: false
 };
@@ -287,22 +147,6 @@ export const AccessPoint = (state = purchaseAccess, action: { type: any; payload
             return state
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const icon = {
     value: {
@@ -352,6 +196,42 @@ export const SetScreens = (state = screens, action: { type: any; payload: any; }
             return state;
     }
 }
+/*
+interface TextState {
+    text:  {
+      value: {
+        tryAgain: string,
+        changeEmail: string,
+        changePassword: string,
+        chooseNewPassword: string,
+        currentPasswordText: string,
+        goHomeText: string,
+        navigateToolsMain: string
+        defaultPasswordPlaceholder:string,
+        defaultEmailPlaceholder: string,
+        success: string,
+        indicatorSizeSmall: string,
+        indicatorSizeMedium: string,
+        signInText: string,
+        contact: string,
+        signInWithGoogle: string,
+        navigatePasswordChange: string,
+        profileHeading: string,
+        password: string,
+        deleteAccount: string,
+        navigateSettingsMain: string,
+        settings: string,
+        signOut: string,
+        logoutIcon: string,
+        logoutButtonText: string,
+        plusPlanButton: string,
+        featuresInFuture: string,
+        notHere: string,
+        contactFeatureText: string
+      };
+    }
+}
+*/
 
 
 const text = {
@@ -471,5 +351,101 @@ So could a sign in function look like if you store the suer local in runtime:
     }
   }
 
+export const SetDarkMode = (state = darkmode, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "DARKMODE":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state
+    }
+}
+
+export const colors = {
+    value: {
+        secondary: [
+            themeColors.sexyBlue,
+            "#d6d9da",
+        ],
+        view: [
+            "#dfe3e8",
+            "rgba(20,20,20,.1)",
+        ],
+        messageContainer:
+          [
+              "#e1e4e7",
+              "rgba(105,103,103,0.4)",
+          ],
+        primary: [
+            "#f0f3f7",
+            "rgb(24,24,24)",
+        ],
+        text:
+          [
+            "#000000",
+            "rgb(255,255,255)",
+          ],
+        navigatorColor: [
+            "#f0f3f7",
+            "rgb(224,221,221)"
+        ],
+        headerIconColors:[
+            "rgb(3,4,21)",
+            "rgb(255,255,255)"
+        ],
+        switchTextColorLD: [
+            themeColors.mediumDarkDark,
+            themeColors.dotNineWhite
+        ],
+        secondaryContainerBackground: [
+            "rgba(250,250,250,0.75)",
+            "rgba(255,255,255,0.2)"
+        ],
+        switchedSecondaryContainerBackground: [
+            "rgb(37,38,38)",
+            "rgb(24,24,24)"
+        ],
+        borderColor: [
+            "rgba(37,38,38,0.76)",
+            "rgba(241,236,236,0.75)"
+        ],
+        modalColor: [
+            "rgba(241,236,236,0.75)",
+            "rgba(37,38,38,0.76)"
+        ]
+    }
+};
+
+export const darkmode = {
+    value: {
+        bool: false,
+        primary: colors.value.primary[0],
+        secondary: colors.value.secondary[0],
+        navigatorColor: colors.value.navigatorColor[0],
+        messageContainer: colors.value.messageContainer[0],
+        headerIconColors: "rgb(0,0,0)",
+        view: colors.value.view[0],
+        modalColor: colors.value.modalColor[0],
+        switchTextColorLD: colors.value.switchTextColorLD[0],
+        secondaryContainerBackground: colors.value.secondaryContainerBackground[0],
+        switchedSecondaryContainerBackground: colors.value.switchedSecondaryContainerBackground[0],
+        borderColor: colors.value.borderColor[0],
+        text: colors.value.text[0],
+    }
+};
+
+export const Colors = (state = colors, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "COLORS":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state
+    }
+}
 
  */

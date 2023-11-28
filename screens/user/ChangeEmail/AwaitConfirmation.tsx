@@ -1,4 +1,4 @@
-import {SafeAreaView, Text, TouchableOpacity, View} from "react-native";
+import {Pressable, SafeAreaView, Text, View} from "react-native";
 import {useEffect} from "react";
 import {getAuth, sendEmailVerification, updateEmail } from "firebase/auth";
 import {userStyles} from "../userStyles";
@@ -36,12 +36,12 @@ export const WatchYourEmails = () => {
                     We have send you a confirmation to your given E-Mail Address. {"\n"}
                     Please check your E-Mails and confirm.
                 </Text>
-                <TouchableOpacity onPress={() => { // @ts-ignore
+                <Pressable onPress={() => { // @ts-ignore
                     navigation.navigate("ToolsMain")}} style={userStyles.btn} >
                     <Text style={userStyles.btnTxt}>
                         Go Home
                     </Text>
-                </TouchableOpacity>
+                </Pressable>
                 <Text style={userStyles.btnTxt}>
                     No E-Mail received? You can click <Text onPress={sendMail}>here</Text> to resend a E-Mail
                     or to report a Bug click<Text onPress={sendMail}>here</Text>
