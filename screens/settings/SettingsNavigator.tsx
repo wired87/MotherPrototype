@@ -1,7 +1,7 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {PurchaseScreen} from "./PurchaseScreen"
 import { SettingsMain } from "./SettingsMain";
-import {DefaultHeader} from "../../components/navigation/DefaultHeader";
+import DefaultHeader from "../../components/navigation/DefaultHeader";
 import React from "react";
 
 // interface SettingsNavigator

@@ -61,6 +61,7 @@ export const InputContext = createContext({
   typing: false,
   setTyping: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
+
 });
 
 export const AuthContext = createContext({
@@ -76,7 +77,17 @@ export const AuthContext = createContext({
   modalVisible: false,
   setModalVisible: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
+
 });
+
+export const FunctionContext = createContext(
+  {
+    sendMessageProcess: async () => {}
+  }
+);
+
+
+
 export const SettingsContext = createContext({
   status: 0,
   setStatus: (() => {}) as Dispatch<SetStateAction<number>>,
@@ -94,6 +105,7 @@ export interface Theme {
   secondary: string;
   borderColor: string;
   text: string;
+  placeholder: string
   navigatorColor: string;
   modalColor: string;
   secondaryContainerBackground: string;
@@ -102,6 +114,7 @@ export interface Theme {
   messageContainer: string;
   view: string;
   bottomSheetBg: string;
+  primaryButton: string;
 }
 
 export const lightModeTheme: Theme = {
@@ -117,6 +130,9 @@ export const lightModeTheme: Theme = {
   messageContainer: "#e1e4e7",
   view: "#dfe3e8",
   bottomSheetBg: "#c2c3c5",
+  placeholder: "rgba(0, 0, 0, .6)",
+  primaryButton: "#01152a"
+
 }
 
 export const darkModeTheme: Theme = {
@@ -124,14 +140,16 @@ export const darkModeTheme: Theme = {
   secondary: "#d6d9da",
   borderColor: "rgba(241,236,236,0.75)",
   text: "rgb(255,255,255)",
-  navigatorColor: "rgb(224,221,221)",
+  navigatorColor: "rgb(91,91,91)",
   modalColor: "rgba(37,38,38,0.76)",
   secondaryContainerBackground: "rgba(255,255,255,0.2)",
   switchedSecondaryContainerBackground: "rgb(24,24,24)",
   headerIconColors: "rgb(255,255,255)",
   messageContainer: "rgba(105,103,103,0.4)",
-  view: "rgba(20,20,20,.1)",
+  view: "rgba(66,66,66,0.1)",
   bottomSheetBg: "#38393a",
+  placeholder: "rgba(255, 255, 255, .6)",
+  primaryButton: "#232f44"
 
 }
 export interface ThemeContextType {

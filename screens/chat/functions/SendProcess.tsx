@@ -13,6 +13,41 @@ export const getCurrentTime = () => {
   return(timeHoursNow + ":" + timeMinutesNow);
 }
 
+
+export const postMessageObject = async (
+  senderObject: any,
+  options: any
+): Promise<any> => {
+
+  const { timeout = 20000 } = options;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch("http://192.168.178.51:8080/open/chat-request/", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(senderObject),
+      ...options,
+      signal: controller.signal
+    });
+
+    const data = await response.json();
+    console.log('Success:', data);
+    clearTimeout(id);
+    return data;
+
+  } catch (e: any) {
+    clearTimeout(id);
+    console.log("Error in postMessageObject:", e);
+    return e
+  }
+}
+
+
+/*
 export const postMessageObject = (
   senderObject: any,
   options: any
@@ -43,20 +78,24 @@ export const postMessageObject = (
     clearTimeout(id);
     console.log("Chat Request response", response);
     return response
-  } catch(e) {
-    return e
-    // @ts-ignore
-    //console.log("Timeout limit reached or error occurred ", e)
-    //return {
-    //  data: {
-    //   message: "Ups that request is taking too much time." +
-    //     "\nIf that issue is coming up again feel free to contact the support to fix it."
-    // },
-    //  status: 200,
-    //  }
+  } catch(e: any) {
+    console.log("error in postMessageObject- method:", e)
+    if (e.name == "AbortError") {
+      console.error("Timeout Limit reached or Error occurred in postMessageObject while post the senderObject", e)
+    }else if (e.name === "TypeError") {
+
+    }
   }
 }
 
+return {
+        data: {
+          message: "Ups that request is taking too much time." +
+            "\nIf that issue is coming up again feel free to contact the support to fix it."
+        },
+        status: 200,
+      }
+ */
 export const createMessageObject = (
   input: any,
   type: string,

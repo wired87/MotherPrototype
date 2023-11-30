@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from "react";
-import {DefaultHeader} from "../../components/navigation/DefaultHeader";
+import DefaultHeader from "../../components/navigation/DefaultHeader";
 import {DefaultPageNavigationBtn} from "../../components/buttons/DefaultPageNavigationBtn";
 import {themeColors} from "../../colors/theme";
 import {useNavigation, useRoute} from "@react-navigation/native";

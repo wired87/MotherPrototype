@@ -1,5 +1,5 @@
-import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
-import { Dimensions, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, Text, View } from "react-native";
+import React, {useContext, useEffect, useRef, useState} from "react";
+import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, Text, View } from "react-native";
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
 import {useDispatch, useSelector} from "react-redux";
@@ -16,8 +16,6 @@ import {InputContext, ThemeContext} from "../Context";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 export const ChatMain = (
-  // @ts-ignore
-  {sendMessageProcess}
 ) => {
   const dispatch = useDispatch();
   const [logoutModal, setLogoutModal] = useState(false);
@@ -59,7 +57,7 @@ export const ChatMain = (
                 }
               ]
             } >
-              <Text style={{gap: 20, fontSize: 30, color: customTheme.text}}>
+              <Text style={{gap: 20, fontSize: 30, color: "rgba(0, 0, 0, .4)"}}>
                 AIX
               </Text>
 
@@ -87,14 +85,15 @@ export const ChatMain = (
                       key={index}
                       item={item}
                       styles={chatStyles}
-                      secondaryTextStyles={{color: "white", fontSize: 12}}/>
+                      secondaryTextStyles={{color: "white", fontSize: 12}}
+                    />
                   </>
                 ))}
             />
           </View>
 
           <View style={{bottom: 20,  flexDirection: "row", justifyContent:"center", alignItems: "center"}}>
-            <MessageInputContainer sendMessageProcess={sendMessageProcess}/>
+            <MessageInputContainer/>
           </View>
 
         </KeyboardAvoidingView>

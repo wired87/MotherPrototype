@@ -105,7 +105,6 @@ export const uniStyles = StyleSheet.create({
     },
     headerNavbarContainer: {
         width: windowWidth * .3333,
-
         margin: 0,
         backgroundColor: "transparent"
     },

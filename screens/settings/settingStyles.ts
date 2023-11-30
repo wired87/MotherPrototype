@@ -4,7 +4,6 @@ import {themeColors} from "../../colors/theme";
 export const settingStyles = StyleSheet.create({
     box2: {
         marginHorizontal: 10,
-
     },
     btnHeading: {
         // backgroundColor: "#2b2a27",

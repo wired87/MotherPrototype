@@ -1,25 +1,23 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import React, {useCallback, useContext, useEffect, useState} from "react";
-import {DefaultHeader} from "../../components/navigation/DefaultHeader";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
+import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 // @ts-ignore
 import {ChatMain} from "./ChatMain";
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigation, useRoute} from "@react-navigation/native";
-import {Platform, Pressable, StyleSheet, View} from "react-native";
-import {HeaderView} from "../../components/container/headerContainer";
+import {useNavigation} from "@react-navigation/native";
+import {Platform, StyleSheet} from "react-native";
 import {AuthNavigator} from "../user/AuthNavigator";
 
 // Context
-import {InputContext, PrimaryContext, AuthContext, ThemeContext} from "../Context";
+import {InputContext, PrimaryContext, AuthContext, ThemeContext, FunctionContext} from "../Context";
 
 // Ads
 import {RewardedInterstitialAd, TestIds,} from 'react-native-google-mobile-ads';
 import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, showAds} from "./functions/AdLogic";
 import {createMessageObject, postMessageObject} from "./functions/SendProcess";
-import BottomSheet from "@gorhom/bottom-sheet";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-import {DefaultText} from "../../components/text/DefaultText";
+
 import {IconButton} from "react-native-paper";
 
 // Ad config
@@ -48,7 +46,8 @@ const iconStyles = StyleSheet.create(
   }
 )
 
-
+// STACK DEFINITIONS ///////////////////////
+const ChatStack = createNativeStackNavigator();
 
 export const ChatNavigation: React.FC<ChatNavigationTypes> = (
   { bottomSheetRef, dispatchHistorySent }
@@ -57,10 +56,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const [seconds, setSeconds] = useState(20);
-
   const [messageFinalBreak, setMessageFinalBreak] = useState(false);
-  const [visible, setVisible] = useState(true);
 
   // Auth Provider
   const [email, setEmail] = useState("");
@@ -68,38 +64,42 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
   const [password, setPassword] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Context
+  // Context //////////////////////////
   const {
     messagesLeft, setMessagesLeft,
     setMessageBreakOption,
     setInput, input,
     messageIndex,
     setTyping, typing,
-    messages, setMessages,
-    setMessageIndex }  = useContext(InputContext);
-
+    setMessages,
+    setMessageIndex
+  }  = useContext(InputContext);
+  const { customTheme } = useContext(ThemeContext);
   const {user} = useContext(PrimaryContext);
 
-  // other Variables
-  const ChatStack = createNativeStackNavigator();
+  const inputRef = useRef(input);
+  useEffect(() => {
+    inputRef.current = input;
+  }, [input]);
 
+
+  // SELECTORS ////////////////////////
   // @ts-ignore
   const screen = useSelector(state => state.screens.value)
-
   // @ts-ignore
   const historySent = useSelector(state => state.historySent.value)
 
-  const { customTheme } = useContext(ThemeContext);
 
-  // GOOGLE MOBILE AD LOGIC
+  // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {
     console.log("Real Messages Left:", messagesLeft)
-    showAds(dispatch, messagesLeft, setMessagesLeft).then(() => console.log("Ads successfully showed. Refilled the Messages"))
+    showAds(dispatch, messagesLeft, setMessagesLeft).then(() => console.log("Ads successfully showed. Refilled the Messages"));
   }, [messagesLeft]);
 
   useEffect(() => {
-    showAds(dispatch, messagesLeft, setMessagesLeft).then(() => console.log("check for messages left.."))
+    showAds(dispatch, messagesLeft, setMessagesLeft).then(() => console.log("check for messages left.."));
   }, []);
+
 
   const deleteInput = () => setInput("");
 
@@ -117,23 +117,26 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
                   timeout: 20000
                 }
               );
+
       console.log("res", res);
+
       let response;
-      // @ts-ignore
-      if (res instanceof Error && res.name === "AbortError") {
+      if (res instanceof Error || res.name ) {
+        console.log("sendObject res === error")
         response = {
            message: "Ups that request is taking too much time." +
            "\nIf that issue is coming up again feel free to contact the support to fix it.",
            status: 200,
           }
       } else {
-        // @ts-ignore
         response = await res.json();
+        console.log("sendObject res ===", response)
       }
+
       console.log("Response", response);
       setMessageBreakOption(false);
+
       return createMessageObject(
-        // @ts-ignore
         response.message,
         "text",
         messageIndex,
@@ -141,6 +144,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
         "AI",
         "aiMessageContainer",
       )
+
     } catch(e) {
       console.log('Error in "sendObject":', e)
       return 1;
@@ -173,14 +177,12 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     } finally {
       setTyping(false);
       console.log("Function end...")
-      setSeconds(20);
+      //setSeconds(20);
       console.log("USER ID:", user?.uid)
     }
   }
 
-
   const sendMessageProcess = useCallback(async() => {
-
     // check here for the user messages left
     const valueMessages = await getMessageInfoData()
     console.log("Try to get the user Messages Left Value", valueMessages)
@@ -198,16 +200,17 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     console.log(
       "\nCurrent Messages:", messagesLeft
     )
-    // @ts-ignore
     if (checkSuccess) {
       setTyping(true);
-      console.log("input len", input.length)
+      console.log("input len", inputRef.current.length)
       // @ts-ignore
-      if (input?.trim().length !== 0) { // input?.length !== 0
-        console.log("User input:", input)
+      if (inputRef.current?.trim().length !== 0) {
+
+        console.log("User input:", inputRef.current)
         console.log("typing", typing)
+
         const userMessage = createMessageObject(
-          input,
+          inputRef.current,
           "text",
           messageIndex,
           user,
@@ -220,14 +223,18 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
 
         console.log("Updating the messageList..")
         setMessages(prevMessages => [...prevMessages, userMessage]);
+
         deleteInput()
+
         sendPackage(userMessage)
           .then(() => console.log("Payload successfully sent.."))
-          .catch(e => console.log("Error while try send the message"))
+          .catch(e => console.log("Error while try send the message", e))
           .finally(() => setTyping(false))
+
       } else {
         console.log("0 input try again")
       }
+
     } else {
       console.log("initialize Ad")
       // logic for display fullscreen ad here
@@ -240,7 +247,8 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
         }).catch(
           (e) =>  console.log("Ad could not be shown because an error:", e))
     }
-  }, [input])
+  }, [])
+
 
   const historyMessageSent = async () => {
     setTyping(true);
@@ -260,24 +268,12 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     }
   }, [historySent]);
 
+
   useEffect(() => {
     console.log("Current Text:", input);
 
   }, [input]);
 
-
-  useEffect(() => {
-    if (typing) {
-      console.log("seconds: ", seconds)
-      if (seconds === 0) {
-        setMessageBreakOption(true);
-      }
-      const interval = setInterval(() => {
-        setSeconds(prevSeconds => prevSeconds - 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [seconds, typing]);
 
   // "AuthNavigator" user? screen.account : screen.login
 
@@ -314,7 +310,12 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
         >
       <ChatStack.Screen
         name="ChatMain"
-        children={() => <ChatMain sendMessageProcess={sendMessageProcess} />}/>
+        children={
+        () =>
+          <FunctionContext.Provider value={{sendMessageProcess}}>
+            <ChatMain />
+          </FunctionContext.Provider>
+        }/>
       <ChatStack.Screen
         name={"AuthNavigator"}
         children={
@@ -324,7 +325,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
                 password, setPassword,
                 email, setEmail,
                 error, setError,
-                modalVisible, setModalVisible
+                modalVisible, setModalVisible,
               }}>
               <AuthNavigator />
             </AuthContext.Provider>
@@ -338,6 +339,23 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
 }
 
 /*
+20 sec Timer ////////////////////////////////
+  useEffect(() => {
+    if (typing) {
+      console.log("seconds: ", seconds)
+      if (seconds === 0) {
+        setMessageBreakOption(true);
+      }
+      const interval = setInterval(() => {
+        setSeconds(prevSeconds => prevSeconds - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [seconds, typing]);
+////////////////////////////////////////////////////
+
+
+
 <Menu
                     children={undefined}
                     visible={true}

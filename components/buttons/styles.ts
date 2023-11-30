@@ -53,7 +53,6 @@ export const styles = StyleSheet.create({
         padding: 15,
         flexDirection: "row",
         alignItems: 'center',
-        backgroundColor: themeColors.sexyBlue,
         marginBottom: 5,
     },
     roundBtn: {

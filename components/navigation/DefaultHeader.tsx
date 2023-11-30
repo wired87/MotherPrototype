@@ -5,16 +5,16 @@ import React, {memo, useContext, useEffect, useState} from "react";
 import {uniStyles} from "../../screens/universalStyles";
 import {HeaderView} from "../container/headerContainer";
 import {useDispatch, useSelector} from "react-redux";
-import {PrimaryContext, ThemeContext} from "../../screens/Context";
+import {ThemeContext} from "../../screens/Context";
 
-export const DefaultHeader = (
+const DefaultHeader = (
     // @ts-ignore
     { childrenMiddle, childrenRight, extraStyles, back }
 ) => {
   const dispatch = useDispatch()
 
   const {customTheme} = useContext(ThemeContext);
-
+  const route = useRoute();
   // @ts-ignore
   const purchaseAccess = useSelector(state => state.purchaseAccess.value)
 
@@ -59,10 +59,11 @@ export const DefaultHeader = (
     <SafeAreaView style={[extraStyles? extraStyles : null,
       {justifyContent: "flex-start", alignItems: "flex-end",
         backgroundColor: customTheme.primary}]}>
-
+      {
+        route.name !== "SettingsMain" ? (
       <Appbar.Header
         style={[[uniStyles.headerContainer], { paddingVertical: Platform.OS === "ios" ? 20 : 0,
-          backgroundColor: "transparent"}]}>
+          backgroundColor: "transparent"}]} >
 
         <HeaderView extraStyles={{alignItems: "flex-start", justifyContent: "flex-start", height: "100%"}}>
           {(back || r.name === "PurchaseScreen" || r.name === "AccountMain" )? (
@@ -79,18 +80,31 @@ export const DefaultHeader = (
         </HeaderView>
 
         <HeaderView extraStyles={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-          {childrenMiddle}
+          {route.name !== "PasswordChange" &&
+          route.name !== "EmailChange" &&
+          route.name !== "ForgotPassword" &&
+          route.name !== "NewPasswordConfirmation" &&
+          route.name !== "AccountMain" ?(
+          childrenMiddle
+          ):null}
         </HeaderView>
 
         <HeaderView extraStyles={{justifyContent: "center", alignItems: "flex-end"}}>
-          {childrenRight}
+          {route.name !== "PasswordChange" &&
+          route.name !== "EmailChange" &&
+          route.name !== "ForgotPassword" &&
+          route.name !== "NewPasswordConfirmation" &&
+          route.name !== "AccountMain" ?(
+            childrenRight
+          ):null}
         </HeaderView>
 
       </Appbar.Header>
+      ):null}
     </SafeAreaView>
   );
 }
-
+export default memo(DefaultHeader);
 
 //  ALL PROPS FROM NAVIGATOR
 /*

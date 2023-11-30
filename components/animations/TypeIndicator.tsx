@@ -1,20 +1,20 @@
 import {Text, View} from "react-native";
 import {TypingAnimation} from "react-native-typing-animation";
 import {StyleSheet} from "react-native";
-import {themeColors} from "../../colors/theme";
-import {memo} from "react";
+import {useContext} from "react";
+import {ThemeContext} from "../../screens/Context";
 
 const aiNameList = ["C-3PO", "Computer", "R2D2", "Optimus Prime", "SkyNet", "JARVIS", "Morpheus"]
 const aiName = aiNameList[Math.floor(Math.random() * aiNameList.length)];
 
-const TypeIndicator = () => {
-
+export const TypeIndicator = () => {
+  const { customTheme } = useContext(ThemeContext);
   return (
     <View
       style={styles.dots}>
-      <Text style={styles.typeIndicatorText}>{aiName} is typing</Text>
+      <Text style={[styles.typeIndicatorText, {color: customTheme.text}]}>{aiName} is typing</Text>
       <TypingAnimation
-        dotColor={"rgba(0, 0, 0, .7)"}
+        dotColor={customTheme.text}
         dotMargin={4}
         dotAmplitude={3}
         dotSpeed={0.25}
@@ -25,7 +25,6 @@ const TypeIndicator = () => {
     </View>
   );
 }
-export default memo(TypeIndicator);
 
 const styles = StyleSheet.create({
   dotContainer: {
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
   typeIndicatorText: {
     opacity: .6,
     fontSize: 13,
-    color: themeColors.sexyBlue
+
   }
 }
 )

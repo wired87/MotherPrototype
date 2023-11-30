@@ -1,5 +1,5 @@
 import {DefaultContainer} from "../../../components/container/DefaultContainer";
-import {ActivityIndicator} from "react-native";
+import {ActivityIndicator, View, StyleSheet} from "react-native";
 import {DefaultText} from "../../../components/text/DefaultText";
 import {useDispatch, useSelector} from "react-redux";
 import {HeadingText} from "../../../components/text/HeadingText";
@@ -11,7 +11,18 @@ import {getAuth, sendPasswordResetEmail} from "firebase/auth";
 import {useNavigation} from "@react-navigation/native";
 import {AuthContext, PrimaryContext, ThemeContext} from "../../Context";
 
-
+const localStyles = StyleSheet.create(
+  {
+    main: {
+      flex: 1,
+      justifyContent: "flex-start",
+      alignItems: "center",
+      flexDirection: "column",
+      elevation: 20,
+      paddingVertical: 50,
+    }
+  }
+)
 export const EmailConfirmationFP = () => {
 
   const {email, setEmail} = useContext(AuthContext);
@@ -24,8 +35,6 @@ export const EmailConfirmationFP = () => {
   // @ts-ignore
   const loading = useSelector(state => state.loading.value)
 
-  // @ts-ignore
-  const colors = useSelector(state => state.colors.value)
 
   const navigation = useNavigation()
   const auth = getAuth();
@@ -64,13 +73,17 @@ export const EmailConfirmationFP = () => {
   }, []);
 
   return (
-    <DefaultContainer
-      extraStyles={{flexDirection: "column", elevation: 20, backgroundColor: customTheme.primary}}>
+    <View
+      style={[localStyles.main, {backgroundColor: customTheme.primary}]}>
 
       {loading ? (
         <ActivityIndicator size={"large"}/>
       ) : (
         <>
+          <HeadingText
+            text={"Password reset"}
+            extraStyles={undefined}/>
+
           <HeadingText
             text={"E-Mail confirmation"}
             extraStyles={undefined}/>
@@ -101,6 +114,6 @@ export const EmailConfirmationFP = () => {
           ):null}
         </>
       )}
-    </DefaultContainer>
+    </View>
   );
 }

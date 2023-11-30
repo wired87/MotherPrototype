@@ -11,7 +11,7 @@ import {LinearGradient} from "expo-linear-gradient";
 import {useSelector} from "react-redux";
 import {styles} from "../../components/styles"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {SmallFlatLoop} from "../../components/flatlist/SmallFlatLoop";
+import SmallFlatLoop from "../../components/flatlist/SmallFlatLoop";
 import { SwipeModal } from '../../components/modals/SwipeModal';
 import AreYouSureContainer from "../../components/container/AreYouSureContainer";
 import Contact from "../../components/container/modalContainers/Contact";
@@ -27,7 +27,7 @@ import close from "../../assets/images/close.png";
 
 import {StatusContainer} from "../../components/container/modalContainers/StatusContainer";
 import { imgStyles } from '../../components/images/imgStyles';
-import {PrimaryContext, ThemeContext} from "../Context";
+import {ThemeContext} from "../Context";
 import {Imprint} from "./Imprint";
 import BottomSheet from "@gorhom/bottom-sheet";
 

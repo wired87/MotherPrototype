@@ -1,5 +1,5 @@
-import React, {useCallback, useContext} from 'react';
-import { View, ScrollView } from 'react-native';
+import React, {useCallback, useContext, useMemo} from 'react';
+import {View, ScrollView, SectionList} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 import {getAuth} from "firebase/auth";
 
@@ -14,6 +14,11 @@ import {PlusAdContainer} from "../../components/container/PlusPlanContainer/Plus
 import { userStyles } from './userStyles';
 import {themeColors} from "../../colors/theme";
 import {AuthContext, PrimaryContext, ThemeContext} from "../Context";
+import SmallFlatLoop from "../../components/flatlist/SmallFlatLoop";
+import {settingStyles} from "../settings/settingStyles";
+import RoundedButton from "../../components/buttons/RoundedButton";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import ProfileContainer from "../../components/container/ProfileContainer";
 
 export const AccountMain = () => {
 
@@ -100,61 +105,80 @@ export const AccountMain = () => {
     }
   };
 
-  // @ts-ignore
-  return (
-    <ScrollView contentContainerStyle={{
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: customTheme.primary
-    }} style={{paddingTop: 50}}>
-      <View style={userStyles.adContainer}>
-        <PlusAdContainer/>
-      </View>
-      <View style={[userStyles.profileSection, {
-        backgroundColor: "transparent",
-        borderBottomWidth: 1, borderBottomColor: themeColors.borderThin, marginVertical: 10
-      }]}>
-        <HeadingText text={text.profileHeading} extraStyles={undefined}/>
-        <View style={userStyles.inputSection}>
-          <DefaultInput
-            placeholder={undefined}
-            // @ts-ignore
-            value={user ? user.email : null}
-            onChangeAction={null}
-            secure={false}
-            editable={false}
-            keyboardType={undefined}
-            extraStyles={undefined}
-          />
-          <DefaultButton
-            text={text.changeEmail}
-            onPressAction={moveToScreen(screens.emailChangeScreen)}
-            extraStyles={{marginBottom: 15}}
-            secondIcon={undefined}/>
-          <DefaultInput
-            placeholder={null}
-            value={text.password}
-            onChangeAction={null}
-            secure={true}
-            editable={false}
-            keyboardType={undefined}
-            extraStyles={undefined}/>
-          <DefaultButton
-            text={text.changePassword}
-            onPressAction={moveToScreen(screens.passwordChangeScreen)} extraStyles={undefined}
-            secondIcon={undefined}
-          />
-        </View>
-      </View>
+  const accountActions = useMemo(() => {
+    return [
+      {
+        id: 1,
+        data: [
+          {
+            action:moveToScreen("Settings", { screen: screens.settingsScreen }),
+            icon: <Icon name={icon.settingsIcon} size={26} color="white" />,
+            text: "Settings"
+          }
+        ]
+      },
+      {
+        id: 2,
+        data: [
+          {
+            action:  async () => await userLogout().then(() => console.log("user successfully logged out..")),
+            icon: <Icon name={icon.logoutIcon} size={26} color="white" />,
+            text: "Logout"
+          }
+        ]
+      },
+      {
+        id: 3,
+        data: [
+          {
+            action: async () => await deleteUser().then(() => console.log("User successfully deleted")),
+            icon: <Icon name={icon.trashIcon} size={26} color="white" />,
+            text: "Delete Account"
+          }
+        ]
+      }
+    ];
+  }, []);
 
-      <View style={userStyles.mainContainerProfile}>
-        <DefaultButton
-          onPressAction={moveToScreen("Settings", {screen: screens.settingsScreen})}
+  return (
+    <View style={[userStyles.mainContainerProfile, {backgroundColor: customTheme.primary}]}>
+      <SectionList
+        ListHeaderComponent={
+          <>
+            <View style={userStyles.adContainer}>
+              <PlusAdContainer/>
+            </View>
+            <ProfileContainer moveToScreen={moveToScreen} />
+          </>
+        }
+        ListFooterComponent={
+          <BottomImage/>
+        }
+        sections={accountActions}
+        style={settingStyles.box2}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item, index) => item + index.toString()}
+        renderItem={({ item, index }) => (
+          <RoundedButton
+            item={item}
+            action={item.action}
+            index={index}
+            list={accountActions}
+          />
+        )}
+       />
+    </View>
+  );
+}
+
+/*
+   <DefaultButton
+          onPressAction={}
           extraStyles={undefined}
-          text={text.settings}
+          text={}
           secondIcon={
             <MaterialCommunityIcons
-              name={icon.settingsIcon}
+              name={}
               size={20} color={"rgb(255,255,255)"}
               style={userStyles.buttonIcon}
             />
@@ -162,13 +186,13 @@ export const AccountMain = () => {
         />
         <DefaultButton
           onPressAction={
-            userLogout
+
           }
           extraStyles={undefined}
-          text={text.logoutButtonText}
+          text={}
           secondIcon={
             <MaterialCommunityIcons
-              name={text.logoutIcon}
+              name={}
               size={20}
               color={"rgb(255,255,255)"}
               style={userStyles.buttonIcon}
@@ -176,21 +200,16 @@ export const AccountMain = () => {
           }
         />
         <DefaultButton
-          onPressAction={() => {
-            deleteUser().then(() => console.log("User successfully deleted"))
+          onPressAction={
           }}
           extraStyles={undefined}
-          text={text.deleteAccount}
+          text={}
           secondIcon={
             <MaterialCommunityIcons
-              name={icon.trashIcon}
+              name={}
               size={20} color={"rgb(255,255,255)"}
               style={userStyles.buttonIcon}
             />
           }
         />
-      </View>
-      <BottomImage/>
-    </ScrollView>
-  );
-}
+ */

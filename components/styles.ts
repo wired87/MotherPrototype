@@ -9,8 +9,6 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "transparent"
     },
-
-
     box1: {
         marginTop: 20,
         backgroundColor: "black",

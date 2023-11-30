@@ -67,6 +67,7 @@ export const chatStyles = StyleSheet.create({
         flexDirection: "row",
     },
     audioInfoBox: {
+        position: "absolute",
         flexDirection: "row",
         paddingVertical: 0,
         backgroundColor: "transparent",

@@ -41,14 +41,14 @@ export const SingleAudio = ({ item, styles, secondaryTextStyles }) => {
       item.id % 2 === 0 ? {left: 0} : {right: 0},
       {marginTop: 12, bottom: 0, justifyContent: "space-between", zIndex: 100}]} customTopColor={colorTop}
                            customBottonColor={colorBottom}                           >
-      <View style={[styles.audioInfoBox, {position: "absolute", left: 0}]}>
+      <View style={[styles.audioInfoBox, {left: 0}]}>
         <IconButton iconColor={"white"} icon={play? "pause" : "play"} onPress={() => {
           checkAudioStatus()
           }}
         />
         <DefaultText text={item.duration} moreStyles={secondaryTextStyles}/>
       </View>
-      <View style={[styles.audioInfoBox, {position: "absolute", right: -8, bottom: -12}]}>
+      <View style={[styles.audioInfoBox, {right: -8, bottom: -12}]}>
         <DefaultText text={item.timeToken} moreStyles={secondaryTextStyles}/>
         {isSharingAvailable? (
           <IconButton

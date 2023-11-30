@@ -1,11 +1,12 @@
 
-import React, {useCallback} from "react";
-import { Pressable, SectionList, Share, Text, View } from "react-native";
+import React, {useContext, memo} from "react";
+import { SectionList, Share, Text } from "react-native";
 import { settingStyles } from "../../screens/settings/settingStyles";
 import {themeColors} from "../../colors/theme";
-import {styles} from "../buttons/styles";
 import {PlusAdContainer} from "../container/PlusPlanContainer/PlusPlanContainer";
 import {BottomImage} from "../images/BottomImage";
+import {ThemeContext} from "../../screens/Context";
+import RoundedButton from "../buttons/RoundedButton";
 
 // Typdefinitionen (als Beispiel, passen Sie diese entsprechend an)
 type Item = {
@@ -21,11 +22,12 @@ interface SmallFlatLoopProps {
   openModal: (number: number) => void;
 }
 
-export const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
+const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
   { list, setData, openModal }
   ) => {
-
+  const { customTheme } = useContext(ThemeContext);
   const share = async () => {
+
     try {
       const result = await Share.share({
           title: "Share this App",
@@ -75,28 +77,24 @@ export const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
         sections={list}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item, index }) => (
-          <Pressable
-            onPress={() => handleAction(item)}
-            style={[styles.settingsButton,
-           (index === list.length - 1) ? { borderBottomLeftRadius: 20, borderBottomRightRadius: 20 } :
-             { borderBottomWidth: 0.3, borderColor: 'gray'},
-           (index === 0) ? {borderTopLeftRadius: 20, borderTopRightRadius: 20} : null]}
-          >
-            <View style={styles.TouchableView}>
-              <View style={styles.box2Icon}>
-                {item.icon}
-              </View>
-              <Text style={styles.buttonText}>{item.title}</Text>
-            </View>
-          </Pressable>
+          <RoundedButton
+            item={item}
+            action={() => handleAction(item)}
+            index={index}
+            list={list}
+          />
         )}
         renderSectionHeader={({ section: { title } }) => (
-          <Text style={settingStyles.btnHeading}>{title}</Text>
+          <Text style={[settingStyles.btnHeading, {color: customTheme.text}]}>{title}</Text>
         )}
       />
     </>
   );
 }
+
+export default memo(SmallFlatLoop);
+
+
 /*
   return (
     <>

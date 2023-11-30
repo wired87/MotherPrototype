@@ -1,5 +1,8 @@
 import {themeColors} from "../../colors/theme";
-import {StyleSheet} from "react-native";
+import {Dimensions, StyleSheet} from "react-native";
+
+const windowWidth = Dimensions.get('window').width;
+
 export const userStyles = StyleSheet.create({
     loginContainer: {
         flexDirection: 'column',
@@ -70,15 +73,16 @@ export const userStyles = StyleSheet.create({
     adContainer: {
         justifyContent: 'center',
         alignItems: "center",
-        marginVertical: 30,
+        marginBottom: 30,
     },
     profileSection: {
         borderWidth: 1,
         paddingVertical: 10,
         borderColor: themeColors.borderThin,
-        paddingHorizontal: 10,
         borderRadius: 20,
-
+        backgroundColor: "transparent",
+        borderBottomWidth: 1,
+        marginVertical: 10
     },
     inputSection: {
         gap: 10,
@@ -89,8 +93,8 @@ export const userStyles = StyleSheet.create({
     },
     mainContainerProfile: {
         flex: 1,
-        paddingHorizontal: 20,
-        paddingTop: 30,
+        width: windowWidth,
+        paddingTop: 5,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -102,7 +106,6 @@ export const userStyles = StyleSheet.create({
     changeInfoBtn: {
         borderRadius: 9,
         flexDirection: "row",
-
         paddingVertical: 10,
         paddingHorizontal: 0,
         width: 350,

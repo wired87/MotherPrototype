@@ -1,12 +1,12 @@
 import {DefaultContainer} from "./DefaultContainer";
-import {Dimensions, TextInput, TouchableOpacity, View} from "react-native";
+import {Dimensions, TextInput, TouchableOpacity, View, Vibration, Pressable} from "react-native";
 import {styles} from "./contiStyles";
 import {IconButton} from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React, {useContext, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useCallback, useContext, useEffect, useState} from "react";
+import {useDispatch} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import TypeIndicator from "../animations/TypeIndicator";
+import {TypeIndicator} from "../animations/TypeIndicator";
 import {Audio} from "expo-av";
 
 const windowWidth = Dimensions.get('window').width;
@@ -15,7 +15,7 @@ import {StyleSheet} from "react-native";
 import {getAuth} from "firebase/auth";
 import {createMessageObject, getCurrentTime} from "../../screens/chat/functions/SendProcess";
 import {showAds} from "../../screens/chat/functions/AdLogic";
-import {InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
+import {FunctionContext, InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 
 const styles2 = StyleSheet.create({
   container: {
@@ -26,8 +26,6 @@ const styles2 = StyleSheet.create({
     borderTopWidth: 1,
     borderRightWidth: 1,
     borderTopRightRadius: 14,
-    paddingTop: 5
-
   },
   row: {
     flexDirection: 'row',
@@ -63,13 +61,13 @@ interface ExtraData {
 
 
 export const MessageInputContainer = (
-  // @ts-ignore
-  {sendMessageProcess}
-) => {
-  const [userRecording, setUserRecording] = React.useState();
-  const [allRecordings, setAllRecordings] = React.useState([]);
 
-  const {darkmode} = useContext(PrimaryContext);
+) => {
+  const [currentRecording, setCurrentRecording] = useState(false);
+  const [userRecording, setUserRecording] = useState();
+  const [allRecordings, setAllRecordings] = useState([]);
+
+  const {darkmode, user} = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
   const {
     messageIndex, setMessages,
@@ -78,7 +76,9 @@ export const MessageInputContainer = (
     typing, setTyping
   } = useContext(InputContext);
 
-  const dispatch = useDispatch()
+  const { sendMessageProcess } = useContext(FunctionContext);
+
+  const dispatch = useDispatch();
 
   function getDurationFormatted(milliseconds: any) {
     const minutes = milliseconds / 1000 / 60;
@@ -86,10 +86,13 @@ export const MessageInputContainer = (
     return sec < 10 ? `${Math.floor(minutes)}:0${sec}` : `${Math.floor(minutes)}:${sec}`
   }
 
-  async function startRecording() {
+  const startRecording = useCallback(async() => {
+    setCurrentRecording(true);
+    Vibration.vibrate();
     try {
       console.log('Requesting permissions...');
-      await Audio.requestPermissionsAsync().then(() => console.log("Success requested audio start"));
+      await Audio.requestPermissionsAsync()
+        .then(() => console.log("Success requested audio start"));
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
@@ -107,9 +110,15 @@ export const MessageInputContainer = (
     } catch (err) {
       console.error('Failed to start recording', err);
     }
-  }
+  }, [userRecording])
 
-  async function stopRecording() {
+
+
+
+
+  const stopRecording = useCallback(async() => {
+    setCurrentRecording(false);
+    Vibration.vibrate();
     setTyping(true);
     console.log('Stopping recording..');
 
@@ -135,10 +144,7 @@ export const MessageInputContainer = (
 
         // @ts-ignore set all necessary vars for the sender object
         const user_id = getAuth().currentUser ? getAuth().currentUser.uid : "1";
-        console.log("User in messageinput:", user_id);
-
-        const index = messageIndex;
-        console.log("messageIndex:", index);
+        console.log("User in messageInput:", user_id);
 
         const fileUri = uri;
         const fileName = `recording-${Date.now()}.m4a`;
@@ -148,7 +154,7 @@ export const MessageInputContainer = (
 
         // sender object
         let extraData: ExtraData = {
-          "id": index.toString(),
+          "id": messageIndex.toString(),
           "timeToken": getCurrentTime().toString(),
           "publisher": "USER",
           "class": "voiceMessage",
@@ -162,9 +168,8 @@ export const MessageInputContainer = (
         const {soundAudio, ...extraDataWithoutSound} = extraData;
         console.log("extraData:", extraData)
 
-        setMessages((prevMessages: any) => [...prevMessages, extraData])
-        setMessageIndex((state: number) => state +1)
-
+        setMessages((prevMessages: any) => [...prevMessages, extraData]);
+        setMessageIndex((state: number) => state +1);
 
         const currentTime = getCurrentTime()
         console.log("current Time:", currentTime);
@@ -183,7 +188,7 @@ export const MessageInputContainer = (
               parameters: extraDataWithoutSound,
               sessionType: undefined,
               uploadType: FileSystem.FileSystemUploadType.MULTIPART, // or BINARY_CONTENT
-              fieldName: "file"
+              fieldName: "file",
             }
           )
 
@@ -195,7 +200,7 @@ export const MessageInputContainer = (
             responseBody.message,
             "text",
             messageIndex,
-            getAuth().currentUser,
+            user,
             "AI",
             "aiMessageContainer",
           )
@@ -205,7 +210,6 @@ export const MessageInputContainer = (
 
         } catch (e) {
           console.error("Error while sending the request:", e)
-
           const aiResponse = createMessageObject(
             "Sorry i could not listening to you text message. " +
             "\nIf that error comes not alone please contact the support",
@@ -215,12 +219,9 @@ export const MessageInputContainer = (
             "AI",
             "aiMessageContainer",
           )
-
-          // @ts-ignore
           setMessages(prevMessages => [...prevMessages, aiResponse]);
           setMessageIndex((state: number) => state +1)
         }
-
       } catch (e) {
         console.error("Request was not successfully:", e);
         const aiResponse = createMessageObject(
@@ -235,25 +236,17 @@ export const MessageInputContainer = (
 
         // @ts-ignore
         setMessages(prevMessages => [...prevMessages, aiResponse]);
-        setMessageIndex((state: number) => state +1)
+        setMessageIndex((state: number) => state + 1)
 
       } finally {
         setTyping(false);
       }
     }
-  }
-
-  useEffect(() => {
-    console.log("MessageInput darkmode:", darkmode)
-    console.log("typingMessageInput:", typing)
-  }, []);
-
-  function clearRecordings() {
-    setAllRecordings([])
-  }
+  }, [userRecording, messageIndex])
 
   const send = async () => {
     if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
+      Vibration.vibrate();
       await sendMessageProcess()
         .then(() => {
             console.log("MessageProcess finished..");
@@ -268,6 +261,17 @@ export const MessageInputContainer = (
       console.log("Already Sent Message, length === 0 or just whitespace")
     }
   }
+
+  const recording = async () => {
+    if(messagesLeft === "0") {
+      await showAds(dispatch, messagesLeft, setMessagesLeft)
+    } else if  (userRecording){
+      await stopRecording()
+    } else if(!userRecording) {
+      await startRecording()
+    }
+  }
+
 
   return (
     <DefaultContainer
@@ -294,6 +298,7 @@ export const MessageInputContainer = (
       <View style={{flexDirection: "row", justifyContent: "space-between", paddingLeft: 12,}}>
         <TextInput style={[styles.chatMessageInput,
           {
+            color: customTheme.text,
             backgroundColor:  customTheme.navigatorColor,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
@@ -302,17 +307,19 @@ export const MessageInputContainer = (
             borderWidth: darkmode ? 0 : 1,
           }]}
                    placeholder={"Ask something!"}
+                   placeholderTextColor={customTheme.placeholder}
+                   cursorColor={customTheme.placeholder}
                    value={input}
-                   onChangeText={(val) => setInput(val)}
+                   onChangeText={setInput}
                    multiline={true}
         />
         {input?.trim().length > 0 ? (
           <>
-            <TouchableOpacity
+            <Pressable
               onPress={() => setInput("")}
               style={localStyles.clearInputFiledBtn}>
               <MaterialCommunityIcons name={"close"} size={17}/>
-            </TouchableOpacity>
+            </Pressable>
             <MaterialCommunityIcons
               name={"atlassian"} size={25}
               onPress={send}
@@ -320,26 +327,11 @@ export const MessageInputContainer = (
             />
           </>
         ) : (
-
           <View style={[styles2.container, {borderColor: customTheme.borderColor}]}>
             <IconButton
               icon={"microphone-outline"}
-              iconColor={userRecording ? "red" : customTheme.headerIconColors}
-              onPress={
-              async () => {
-                if(messagesLeft === "0") {
-                  await showAds(dispatch, messagesLeft, setMessagesLeft)
-                } else if (typing) {
-                  undefined
-                } else {
-                  if (userRecording) {
-                    await stopRecording()
-                  } else if(!userRecording) {
-                    await startRecording()
-                  }
-                }
-              }
-            }
+              iconColor={currentRecording ? "red" : customTheme.headerIconColors}
+              onPress={recording}
           />
           </View>
         )}
@@ -363,79 +355,3 @@ const localStyles = StyleSheet.create(
     }
   }
 )
-
-/*
-
-wait Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-      await recording.startAsync()
-
-
-  //RNFetchBlob.fs.readFile(fileUri, 'base64').then((base64Data) => {
-  // const blob = RNFetchBlob.polyfill.Blob.build(base64Data, { type: `${fileType};BASE64` });
-  //formData.append('audioFile', blob, fileName);
-
-  // const blob = await RNFetchBlob.fs.readFile(fileUri, 'base64');
-  //formData.append('audioFile', blob, fileName);
-
-
-async function startRecording() {
-  try {
-    const perm = await Audio.requestPermissionsAsync();
-    if (perm.status === "granted") {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true
-      });
-
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-      // @ts-ignore
-      setRecording(recording);
-    }
-  } catch (e) {
-    console.error("Error while start the audio:", e)
-  }
-}
-
-async function stopRecording() {
-  setRecording(undefined);
-  try {
-    // @ts-ignore
-    await recording.stopAndUnloadAsync();
-    // @ts-ignore
-    let allRecordings = [...allRecordings];
-    // @ts-ignore
-    const { sound, status } = await recording.createNewLoadedSoundAsync();
-    // @ts-ignore
-    allRecordings.push({
-      sound: sound,
-      duration: getDurationFormatted(status.durationMillis),
-      // @ts-ignore
-      file: recording.getURI()
-    });
-    // @ts-ignore
-    setAllRecordings(allRecordings);
-  }catch (e) {
-    console.error("Error while stop the audio:", e)
-  }
-}
-
-
-*/
-/*
-console.log("Dispatch audio data:", formData);
-        const response =
-          await axios.post("http://192.168.178.51:8000/open/audio-chat-request/", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        // 'audioFile', {uri: fileUrl, type: fileType, name: fileName}
-        const blob = await FileSystem.readAsStringAsync(fileUri, { encoding: FileSystem.EncodingType.Base64 });
-        const file = new Blob([blob], { type: fileType });
-        formData.append('audioFile', file, fileName);
- */
-

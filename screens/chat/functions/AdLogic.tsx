@@ -27,7 +27,7 @@ export async function postMessageInfoData(value: string) {
 
 export async function getMessageInfoData() {
   try {
-    console.log("Success at getting the userMessages Left")
+    console.log("Getting messages from SecureStore")
     return await SecureStore.getItemAsync("totalMessages")
   } catch (e) {
     console.error('Error at requesting the Data: ', e);
@@ -89,9 +89,6 @@ export const showAds = async (dispatch: any, messagesLeft: string, setMessagesLe
     };
   }
 }
-
-
-
 
 
 

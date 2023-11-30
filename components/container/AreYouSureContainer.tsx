@@ -1,18 +1,44 @@
 import {DefaultText} from "../text/DefaultText";
 import {styles} from "./contiStyles";
 import {DefaultPageNavigationBtn} from "../buttons/DefaultPageNavigationBtn";
-import {View} from "react-native";
+import {View, StyleSheet} from "react-native";
 import {DefaultButton} from "../buttons/DefaultButton";
 import {memo, useCallback, useContext} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import axios from "axios";
-import {PrimaryContext} from "../../screens/Context";
+import {PrimaryContext, ThemeContext} from "../../screens/Context";
+
+
+const localStyles = StyleSheet.create(
+  {
+    main: {
+      paddingHorizontal: 20,
+      paddingVertical: 50,
+      alignItems: "flex-start",
+      justifyContent: "flex-start"
+    },
+    deleteCheckContainer: {
+      width: "100%",
+      height: 200,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    deleteCheckButtonContainer: {
+      marginVertical: 30,
+      flexDirection: "row"
+    }
+  }
+)
+
 
 // @ts-ignore
 const AreYouSureContainer = ({ bottomSheetRef }) => {
 
   const { user } = useContext(PrimaryContext)
+  const { customTheme } = useContext(ThemeContext);
+
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
@@ -53,13 +79,15 @@ const AreYouSureContainer = ({ bottomSheetRef }) => {
   }, [])
     return(
       <View
-          style={{paddingHorizontal: 20, paddingVertical: 50, alignItems: "flex-start", justifyContent: "flex-start"}}>
+          style={localStyles.main}>
         {user ? (
-          <>
+          <View
+            style={localStyles.deleteCheckContainer} >
             <DefaultText
-                text={"Delete you whole History"}
-                moreStyles={styles.modalH4} />
-            <View style={{flexDirection: "row"}}>
+                text={"Delete your whole History"}
+                moreStyles={[styles.modalH4, {color: customTheme.text}]}
+            />
+            <View style={localStyles.deleteCheckButtonContainer}>
                 <DefaultPageNavigationBtn
                   text={"Skip"}
                   onPressAction={() => bottomSheetRef.current?.close()}
@@ -73,7 +101,7 @@ const AreYouSureContainer = ({ bottomSheetRef }) => {
                   extraBtnStyles={undefined}
                 />
             </View>
-          </>
+          </View>
           ):(
             <View style={{alignItems: "center"}}>
              <DefaultText
@@ -83,13 +111,15 @@ const AreYouSureContainer = ({ bottomSheetRef }) => {
                 extraStyles={undefined}
                 onPressAction={onPressLogin}
                 text={"Login"}
-                secondIcon={undefined} />
+                secondIcon={undefined}
+              />
 
               <DefaultButton
                 extraStyles={undefined}
                 onPressAction={onPressRegister}
                 text={"Register"}
-                secondIcon={undefined} />
+                secondIcon={undefined}
+              />
             </View>
           )}
       </View>
