@@ -48,17 +48,15 @@ const  PasswordChangeComponent = () => {
     const credential = EmailAuthProvider.credential(user?.email, password);
     try {
       // @ts-ignore
-      await reauthenticateWithCredential(user, credential).then(r =>
-        console.log("reauthenticated...")).catch(err => console.log("error: ", err));
+      await reauthenticateWithCredential(user, credential)
       // @ts-ignore
-      await updatePassword(user, newPassword).then(r =>
-        console.log("password changed...")).catch(err => console.log("error: ", err));
-      // @ts-ignore
-      setError(false);
-    } catch (error) {
-      console.log("not able to change password!", error);
-      // @ts-ignore
-      setError(true);
+      await updatePassword(user, newPassword)
+      setError("");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log("not able to change password!", error);
+        setError(error.message);
+      }
       setModalVisible(true);
     } finally {
       /*  action = {

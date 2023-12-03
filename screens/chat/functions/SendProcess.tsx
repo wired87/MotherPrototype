@@ -1,4 +1,3 @@
-import axios from "axios";
 import firebase from "firebase/compat";
 
 
@@ -40,7 +39,7 @@ export const postMessageObject = async (
     clearTimeout(id);
     return data;
 
-  } catch (e: any) {
+  } catch (e: unknown) {
     clearTimeout(id);
     console.log("Error in postMessageObject:", e);
     return e
@@ -145,21 +144,21 @@ return {
       }
  */
 export const createMessageObject = (
-  input: any,
+  input: string,
   type: string,
-  messageIndex: any,
+  messageIndex: string | number,
   user: any,
   publisher: string,
   className: string
 ) => {
   return(
     {
-      "id": messageIndex.current,
+      "id": messageIndex ,
       "message": input,
       "timeToken": getCurrentTime(),
       "publisher": publisher,
       "class": className,
-      "user_id": user ? user.uid : "1",
+      "user_id": user.uid || "1",
       "type": type
     }
   );

@@ -6,28 +6,26 @@ import React from "react";
 
 export const SettingNavigation = () => {
   const SettingStack = createNativeStackNavigator();
+
+  const screenHeaderOptions2 = {
+    header: () => <DefaultHeader />
+  };
+
   return(
     <SettingStack.Navigator
       initialRouteName="SettingsMain"
-      screenOptions={{
-        header:
-          (props: any) =>
-            <DefaultHeader
-              {...props}
-              extraStyles={undefined}
-              childrenMiddle={
-                undefined
-              }
-              childrenRight={undefined}
-            />
-          }}>
+      screenOptions={screenHeaderOptions2} >
+
       <SettingStack.Screen
         name="PurchaseScreen"
         component={PurchaseScreen}
       />
+
       <SettingStack.Screen
         name="SettingsMain"
-        component={SettingsMain} />
+        component={SettingsMain}
+      />
+
     </SettingStack.Navigator>
-    );
+  );
 }

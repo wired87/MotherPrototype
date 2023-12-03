@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 // @ts-ignore
@@ -22,9 +22,7 @@ import {
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
 import {IconButton} from "react-native-paper";
-import {Audio} from "expo-av";
-import * as FileSystem from "expo-file-system";
-import {getAuth} from "firebase/auth";
+
 
 // Ad config
 const adUnitIdFullScreenAd = __DEV__
@@ -44,7 +42,8 @@ interface ChatNavigationTypes {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-////////////////////////////////// INTERFACE
+////////////////////////////////// INTERFACE#
+/*
 interface ExtraData {
   id: string;
   timeToken: string;
@@ -56,6 +55,7 @@ interface ExtraData {
   type: string;
   duration: string;
 }
+*/
 
 //////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// VARIABLES
@@ -93,7 +93,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     messageIndex,
     setTyping, typing,
     setMessages,
-    setMessageIndex,userRecording,
+    setMessageIndex,
   }  = useContext(InputContext);
 
   const { customTheme } = useContext(ThemeContext);

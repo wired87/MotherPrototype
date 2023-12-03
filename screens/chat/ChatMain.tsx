@@ -1,8 +1,7 @@
-import React, {memo, useCallback, useContext, useRef, useState} from "react";
+import React, {memo, useCallback, useContext} from "react";
 import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, Text, View, StyleSheet } from "react-native";
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
-import {useDispatch} from "react-redux";
 import {MessageInputContainer} from "../../components/container/MessageInputContainer";
 
 import {useSafeAreaInsets} from "react-native-safe-area-context";
@@ -10,7 +9,6 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 // @ts-ignore
 import {SingleAudio} from "../../components/container/chat/SingleAudio";
 import {InputContext, ThemeContext} from "../Context";
-import BottomSheet from "@gorhom/bottom-sheet";
 
 
 const localStyles = StyleSheet.create(

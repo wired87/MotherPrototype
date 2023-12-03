@@ -1,4 +1,4 @@
-import {SafeAreaView, Text, View} from "react-native";
+import {SafeAreaView, View} from "react-native";
 import {Text as T} from "galio-framework";
 import {useEffect, useState} from "react";
 import {DefaultText} from "../../components/text/DefaultText";

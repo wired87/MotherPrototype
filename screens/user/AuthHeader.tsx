@@ -1,9 +1,8 @@
-import React, {memo, useCallback, useContext, useEffect, useMemo} from "react";
+import React, {memo, useCallback, useContext, useEffect} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 import DefaultPageNavigationBtn from "../../components/buttons/DefaultPageNavigationBtn";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {PrimaryContext, ThemeContext} from "../Context";
-import {GestureResponderEvent} from "react-native";
 
 const AuthHeader = () => {
 

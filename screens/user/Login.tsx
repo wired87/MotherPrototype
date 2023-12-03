@@ -4,8 +4,6 @@ import React from "react";
 import {AuthUniversal} from "./AuthUniversal";
 
 
-// Text
-const googleIcon = "google"
 
 // @ts-ignore
 export default function Login({navigation}) {

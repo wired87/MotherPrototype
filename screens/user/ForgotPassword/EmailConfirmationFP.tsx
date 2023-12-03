@@ -1,4 +1,3 @@
-import {DefaultContainer} from "../../../components/container/DefaultContainer";
 import {ActivityIndicator, View, StyleSheet} from "react-native";
 import {DefaultText} from "../../../components/text/DefaultText";
 import {useDispatch, useSelector} from "react-redux";
@@ -9,7 +8,7 @@ import {DefaultButton} from "../../../components/buttons/DefaultButton";
 import {themeColors} from "../../../colors/theme";
 import {getAuth, sendPasswordResetEmail} from "firebase/auth";
 import {useNavigation} from "@react-navigation/native";
-import {AuthContext, PrimaryContext, ThemeContext} from "../../Context";
+import {AuthContext, ThemeContext} from "../../Context";
 
 const localStyles = StyleSheet.create(
   {

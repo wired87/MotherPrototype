@@ -123,4 +123,23 @@ export const userStyles = StyleSheet.create({
         textAlign: 'center',
         paddingVertical: 10,
     },
+    extraMargin: {
+        marginVertical: 20,
+    },
+    forgotPasswordButton: {
+        borderWidth: 1,
+        borderRadius: 14,
+        elevation: 20,
+        paddingVertical: 4,
+        addingHorizontal: 7,
+        marginVertical: 10
+    },
+    extraMarginRight: {
+        marginRight: 5
+    },
+    main: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    }
 })

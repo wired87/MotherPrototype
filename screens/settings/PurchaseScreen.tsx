@@ -3,14 +3,12 @@ import { View, StyleSheet } from 'react-native';
 
 import {ThemeContext} from "../Context";
 
-// @ts-ignore
 import underConstruction from "../../assets/animations/underConstruction.json";
 import LottieView from "lottie-react-native";
 
 export const PurchaseScreen = () => {
 
     const { customTheme } = useContext(ThemeContext)
-    //const [selected, setSelected] = useState(1);
     const uniStylesLocal = [localStyles.main, {backgroundColor: customTheme.primary}]
 
     return (

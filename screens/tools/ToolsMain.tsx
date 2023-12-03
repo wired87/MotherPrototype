@@ -1,4 +1,4 @@
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
+/*import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
 import React, {useContext} from "react";
 
 import {getAuth} from "firebase/auth";
@@ -72,12 +72,12 @@ export default function ToolsMain() {
     );
 }
 
-/*
+
 <Button title={"logout"} onPress={() => {FIREBASE_AUTH.signOut().then(r => console.log("successfully logged out"))}}/>
 
 MAYBE UPPER SCROLL SECTION WITH SOME PARTNER PROGRAMS (LINK OTHER APPS TO DOWNLOAD)-> like affiliate with app downloads
 + wenn ganz nnach unten gesprollt dann weiter scrollt zeiht man den boden raus-> iwie impkementieren
-*/
+
 const styles = StyleSheet.create({
     main_container: {
         flex: 1,
@@ -120,3 +120,4 @@ const styles = StyleSheet.create({
     }
 });
 
+*/

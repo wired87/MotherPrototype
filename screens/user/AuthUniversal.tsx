@@ -1,12 +1,14 @@
 import {
   KeyboardAvoidingView, Platform,
   Text,
-  TouchableOpacity,
   View,
-  StyleSheet, Pressable
+  Pressable
 } from "react-native";
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import React, {useCallback, useContext, useEffect } from "react";
+
 import {
   getAuth,
   GoogleAuthProvider,
@@ -17,50 +19,21 @@ import * as Google from "expo-auth-session/providers/google";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../components/input/DefaultInput";
 import {HeadingText} from "../../components/text/HeadingText";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {themeColors} from "../../colors/theme";
+
 // @ts-ignore
-import {userStyles} from "./userStyles";
+import {userStyles as styles} from "./userStyles";
 import {useRoute} from "@react-navigation/native";
 import {DefaultText} from "../../components/text/DefaultText";
 import {FIREBASE_AUTH} from "../../firebase.config";
 import {AuthContext, PrimaryContext, ThemeContext} from "../Context";
 
-
-
-
-const localStyles = StyleSheet.create(
-  {
-    extraMargin: {
-      marginVertical: 20,
-    },
-    forgotPasswordButton: {
-      borderWidth: 1,
-      borderRadius: 14,
-      elevation: 20,
-      paddingVertical: 4,
-      addingHorizontal: 7,
-      marginVertical: 10
-    },
-    extraMarginRight: {
-      marginRight: 5
-    },
-    main: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    }
-  }
-)
-
-
 // Text
-const googleIcon = "google"
-const signUpText = "Sign up";
-const signUpGoogleText = signUpText + " with Google";
-const success = "success";
-const errorTextMessage = "There is something wrong with your input"
-
+const googleIcon: string = "google"
+const success: string = "success";
+const errorTextMessage: string = "There is something wrong with your input"
+const forgotPassword: string = "ForgotPassword"
 
 
 // component values
@@ -70,13 +43,10 @@ const auth = getAuth();
 const firebaseAuth = FIREBASE_AUTH;
 
 const errorText = (text: any) => {
-  return(
-    <DefaultText text={text} moreStyles={{color: themeColors.deleteRed}} />
+  return (
+    <DefaultText text={text} moreStyles={{color: themeColors.deleteRed}}/>
   );
-
 }
-
-
 
 export const AuthUniversal = ({
 // @ts-ignore
@@ -92,9 +62,9 @@ export const AuthUniversal = ({
     error,
     setError } = useContext(AuthContext);
 
-  const login = route.name === "Login";
+  const login: boolean = route.name === "Login";
 
-  const buttonText = login ? "Sign in with Google" : "Sign up with Google";
+  const buttonText: string = login ? "Sign in with Google" : "Sign up with Google";
 
   const[request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: '638697637722-kgj3icuat9ggo05qn6uetsjsr7vcug27.apps.googleusercontent.com',
@@ -186,9 +156,9 @@ export const AuthUniversal = ({
   }, [password, email])
 
   return (
-    <KeyboardAvoidingView style={[localStyles.main, { backgroundColor: customTheme.primary }]}>
+    <KeyboardAvoidingView style={[styles.main, { backgroundColor: customTheme.primary }]}>
       <KeyboardAvoidingView behavior={isIos ? 'padding' : 'height'}>
-        <View style={[userStyles.loginContainer, { backgroundColor: customTheme.primary, borderColor: customTheme.borderColor }]}>
+        <View style={[styles.loginContainer, { backgroundColor: customTheme.primary, borderColor: customTheme.borderColor }]}>
           <HeadingText text={authButtonText} extraStyles={undefined} />
 
           <DefaultInput
@@ -198,7 +168,7 @@ export const AuthUniversal = ({
             secure={false}
             editable={true}
             keyboardType={"email-address"}
-            extraStyles={localStyles.extraMargin}
+            extraStyles={styles.extraMargin}
           />
 
           <DefaultInput
@@ -208,14 +178,14 @@ export const AuthUniversal = ({
             secure={true}
             editable={true}
             keyboardType={undefined}
-            extraStyles={localStyles.extraMargin}
+            extraStyles={styles.extraMargin}
           />
 
           {error.length > 0 && !error.includes(text.success) && errorText(errorTextMessage)}
           {login && (
             <Pressable
-              style={[localStyles.forgotPasswordButton, { borderColor: customTheme.borderColor }]}
-              onPress={() => navigation.navigate("ForgotPassword")}>
+              style={[styles.forgotPasswordButton, { borderColor: customTheme.borderColor }]}
+              onPress={() => navigation.navigate(forgotPassword)}>
               <Text style={{color: customTheme.text}}>Forgot Password?</Text>
             </Pressable>
           )}
@@ -228,12 +198,12 @@ export const AuthUniversal = ({
           <DefaultText text={"Or"} moreStyles={{ color: customTheme.text }} />
 
         </View>
-        <View style={userStyles.alternativeAuthMethodContainer}>
+        <View style={styles.alternativeAuthMethodContainer}>
           <DefaultButton
             text={buttonText}
             onPressAction={googleAuthButtonAction}
             secondIcon={<MaterialCommunityIcons
-              style={localStyles.extraMarginRight}
+              style={styles.extraMarginRight}
               name={googleIcon} color={"#fff"}
               size={iconSize}
             />

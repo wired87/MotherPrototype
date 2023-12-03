@@ -1,4 +1,4 @@
-import {getHeaderTitle} from "@react-navigation/elements";
+/*import {getHeaderTitle} from "@react-navigation/elements";
 import {Platform, SafeAreaView} from "react-native";
 import {Appbar, Menu} from "react-native-paper";
 import {useContext, useEffect, useState} from "react";
@@ -7,7 +7,6 @@ import {PrimaryContext} from "../Context";
 import {useNavigation, useRoute} from "@react-navigation/native";
 
 export const ToolsNavigation = (
-  // @ts-ignore
   { options, back }
 ) => {
 
@@ -42,3 +41,5 @@ export const ToolsNavigation = (
       </SafeAreaView>
     );
 }
+
+*/

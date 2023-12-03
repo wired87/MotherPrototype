@@ -1,12 +1,9 @@
-import React, {lazy, RefObject, useCallback, useContext, useMemo, useRef, useState} from 'react'
+import React, {lazy, useCallback, useContext, useMemo, useRef, useState} from 'react'
 import {
   View,
-  Animated,
   ActivityIndicator, StyleSheet, Text, SectionList, Share,
 } from 'react-native'
 
-import {LinearGradient} from "expo-linear-gradient";
-import {useSelector} from "react-redux";
 import {styles} from "../../components/styles"
 import { SwipeModal } from '../../components/modals/SwipeModal';
 import AreYouSureContainer from "../../components/container/AreYouSureContainer";
@@ -15,7 +12,7 @@ import FeaturesInFuture from "../../components/container/modalContainers/Feature
 import DarkMode from "../../components/container/modalContainers/DarkMode";
 import PrivacyPolicy from "./PrivacyPolicy";
 
-const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+//const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 import successAuth from "../../assets/animations/successLottie.json";
 // @ts-ignore
@@ -32,7 +29,7 @@ import {PlusAdContainer} from "../../components/container/PlusPlanContainer/Plus
 import {BottomImage} from "../../components/images/BottomImage";
 import RoundedButton from "../../components/buttons/RoundedButton";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-
+/*
 interface IconProps {
   name: string,
   size: string | number,
@@ -45,7 +42,7 @@ interface loopDataTypes {
   title: string,
   navigate: string,
 }
-
+*/
 let settingsData = [
   {
     id: 1,

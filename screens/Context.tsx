@@ -2,10 +2,9 @@ import {createContext, Dispatch, SetStateAction} from "react";
 import firebase from "firebase/compat";
 import User = firebase.User;
 import {themeColors} from "../colors/theme";
-import {Audio} from "expo-av";
 import {Recording} from "expo-av/build/Audio/Recording";
 
-// Interface
+/*
 interface PrimaryContextType {
 
   toggleTheme: () => void;
@@ -28,6 +27,7 @@ interface InputContextType {
 
   messageIndex: number
 }
+*/
 
 export const PrimaryContext = createContext(
   {
@@ -94,9 +94,7 @@ export const FunctionContext = createContext(
 
   }
 );
-
-
-
+/*
 export const SettingsContext = createContext({
   status: 0,
   setStatus: (() => {}) as Dispatch<SetStateAction<number>>,
@@ -105,7 +103,7 @@ export const SettingsContext = createContext({
   setStatusError: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
 });
-
+*/
 ////////////////// THEME
 
 

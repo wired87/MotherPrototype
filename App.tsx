@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -37,9 +37,8 @@ export default function App() {
         console.error('Failed to load theme preference', e);
       }
     };
-    loadDarkMode().then(r => console.log("Preferences successfully load"));
+    loadDarkMode().then(() => console.log("Preferences successfully load"));
   }, []);
-
 
 
   useEffect(() => {
