@@ -1,5 +1,5 @@
-import React, {memo, useEffect, useMemo, useState} from 'react';
-import {View, SafeAreaView, KeyboardAvoidingView, StyleSheet} from 'react-native';
+import React, {memo, useContext, useEffect, useMemo, useState} from 'react';
+import {View, SafeAreaView, KeyboardAvoidingView} from 'react-native';
 
 import {
     getAuth,
@@ -9,25 +9,14 @@ import {
 } from 'firebase/auth';
 
 // Lottie animations
-import successLottie from "../../../assets/animations/successLottie.json";
 import {userStyles} from "../userStyles";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {HeadingText} from "../../../components/text/HeadingText";
 import {DefaultText} from "../../../components/text/DefaultText";
 import {DefaultInput} from "../../../components/input/DefaultInput";
 import {DefaultButton} from "../../../components/buttons/DefaultButton";
-import {AwaitConfirmationModal} from "../../../components/modals/AwaitConfirmationModal";
-import {themeColors} from "../../../colors/theme";
+import {PrimaryContext} from "../../Context";
 
-const localStyles = StyleSheet.create(
-  {
-    errormessageStyles: {
-      marginBottom: 30,
-      color: themeColors.deleteRed,
-      fontSize: 17
-    },
-  }
-)
 const errorMessages = [
     {
         error: "auth/missing-password",
@@ -52,7 +41,8 @@ const EmailChange = () => {
   const [awaitConfirmation, setAwaitConfirmation] = useState(false);
   const [reAuth, setReAuth] = useState(false);
 
-  const dispatch = useDispatch()
+  const { setLoading, loading } = useContext(PrimaryContext);
+
   // @ts-ignore
   const text = useSelector(state => state.text.value)
 
@@ -61,17 +51,15 @@ const EmailChange = () => {
 
   const handleChangeEmail = async () => {
       setModalVisible(true);
-      console.log("user1: ", user);
-      console.log("current password: " + currentPassword);
       // @ts-ignore
-      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      const credential = EmailAuthProvider.credential(user?.email, currentPassword);
       if (newEmail.includes("@") && newEmail.length > 0) {
-          let action = {
+          /*let action = {
               type: 'LOADING',
               payload: true
           };
-          dispatch(action); // loading indicator starts
-
+          dispatch(action); loading indicator starts */
+          setLoading(true);
           console.log("new email: ", newEmail);
           try {
               // @ts-ignore
@@ -81,9 +69,8 @@ const EmailChange = () => {
                   // @ts-ignore
                   verifyBeforeUpdateEmail(user, newEmail)
                     .then(() => {  // second aruemnt is a redirect url to rediret after confirmation
-                        // @ts-ignore
-                        user.reload()
-                        console.log("reauth sent. await confirmation...");
+                        user?.reload()
+                        console.log("ReAuth sent. Await confirmation...");
                         setReAuth(false);
                         setAwaitConfirmation(true);
                     }).catch(error => {
@@ -91,37 +78,41 @@ const EmailChange = () => {
                   })
               }).catch(error => {
                   setError(error.message);
-                  console.log("reauth error: ", error.message);
-                  let action = {
+                  console.log("ReAuth error: ", error.message);
+                 /* let action = {
                       type: 'LOADING',
                       payload: false
                   };
-                  dispatch(action); // loading indicator starts
+                  dispatch(action); // loading indicator starts */
+                setLoading(false);
               });
-          } catch (error) {
+          } catch (error: unknown) {
+            if (error instanceof Error) {
               console.log("error: ", error);
-              // @ts-ignore
               setError(error.message);
+            }
           }
       } else {
           setError("Invalid E-Mail format. Please try again.");
       }
   };
+
   useEffect(() => {
-    // @ts-ignore
-    if (user.emailVerified && awaitConfirmation) {
-      let action = {
+    if (user?.emailVerified && awaitConfirmation) {
+      /*let action = {
         type: 'LOADING',
         payload: false
       };
-      dispatch(action);
+      dispatch(action); */
+      setLoading(false);
       setModalVisible(false);
       setSuccess(true);
       setAwaitConfirmation(false);
     }
   }, [])
 
-  const matchedError = errorMessages.find(item => error.includes(item.error));
+  const matchedError =
+    errorMessages.find(item => error.includes(item.error));
 
   const extraContent = useMemo(() => {
     if (reAuth) {
@@ -136,26 +127,22 @@ const EmailChange = () => {
       );
     } else if (success) {
       return <DefaultText
-        text={"Your E-Mail Address  has been successfully confirmed."}
+        text={"Your E-Mail Address has been successfully confirmed."}
         moreStyles={undefined}
       />
     } else if (matchedError) {
       return <DefaultText
         text={matchedError.message}
-        moreStyles={localStyles.errormessageStyles}
+        moreStyles={userStyles.errormessageStyles}
       />
     }
   }, [matchedError, success, awaitConfirmation, reAuth, newEmail])
 
   return (
     <SafeAreaView style={userStyles.main_container}>
-
       <KeyboardAvoidingView style={userStyles.infoContainer}>
-
         <HeadingText text={text.changeEmail} extraStyles={undefined} />
-
         <DefaultText text={"current E-Mail: "+ user?.email} moreStyles={undefined} />
-
         <DefaultInput
           placeholder={"New E-Mail Address"}
           value={newEmail}
@@ -184,13 +171,14 @@ const EmailChange = () => {
           text={"Confirm"}
           secondIcon={undefined}
         />
-
       </KeyboardAvoidingView>
-
     </SafeAreaView>
   );
 }
 export default memo(EmailChange);
+
+
+
 /*
       <AwaitConfirmationModal
         action={

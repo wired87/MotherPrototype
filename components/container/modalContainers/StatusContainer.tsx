@@ -4,6 +4,7 @@ import {DefaultText} from "../../text/DefaultText";
 import {StyleSheet} from "react-native";
 import React, {memo} from "react";
 import LottieView from "lottie-react-native";
+
 const localStyles = StyleSheet.create(
   {
     lottieStyles: {
@@ -21,8 +22,10 @@ interface StatusContainer {
 }
 
 const StatusContainer: React.FC<StatusContainer> = (
+
   { source, text, styles,extraContainerStyles }
 ) => {
+
   return(
     <DefaultContainer
       extraStyles={extraContainerStyles}>

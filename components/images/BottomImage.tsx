@@ -6,8 +6,9 @@ import logo_final1 from "../../assets/images/logo_final1.png";
 import {ThemeContext} from "../../screens/Context";
 
 export const BottomImage = () => {
-  // @ts-ignore
-  const {customTheme} = useContext(ThemeContext)
+
+  const {customTheme} = useContext(ThemeContext);
+
   return(
     <View style={imgStyles.poweredBy}>
       <Text style={[imgStyles.poweredTxt, {color: customTheme.text}]}>Powered By</Text>

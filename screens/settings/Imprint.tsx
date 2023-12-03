@@ -4,6 +4,7 @@ import {settingStyles} from "./settingStyles"
 import {styles} from "../../components/styles"
 import {ThemeContext} from "../Context";
 import {DefaultText} from "../../components/text/DefaultText";
+
 const Imprint = () => {
 
   const { customTheme } = useContext(ThemeContext);
@@ -19,7 +20,7 @@ const Imprint = () => {
           text={"E-Mail: info@sales-detective.live"} />
         <DefaultText
           moreStyles={styles.middleText}
-          text={"Address: Klingestraße 22, 01159 Dresden, Germany"} />
+          text={"Address: Klingestr 22, 01159 Dresden, Germany"} />
         <DefaultText
           moreStyles={styles.middleText}
           text={"If you have any problems please fill out our contact form.\n" +

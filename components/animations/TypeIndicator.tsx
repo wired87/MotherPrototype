@@ -12,7 +12,6 @@ export const TypeIndicator = () => {
     <View
       style={styles.dots}>
       <Text style={[styles.typeIndicatorText, {color: customTheme.text}]}>{aiName} is typing</Text>
-
     </View>
   );
 }

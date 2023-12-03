@@ -3,6 +3,8 @@ import React from "react";
 import {inputStyles} from "./styles";
 import {themeColors} from "../../colors/theme";
 
+
+
 // @ts-ignore
 export const DefaultInput = ({ placeholder, value, onChangeAction, secure, editable, keyboardType, extraStyles }) => {
 
@@ -10,8 +12,7 @@ export const DefaultInput = ({ placeholder, value, onChangeAction, secure, edita
     <TextInput
       multiline={false}
       maxLength={100}
-      style={[inputStyles.defaultInput, extraStyles? extraStyles : null,
-        {height: 50, marginBottom: 0, minWidth: 250, marginHorizontal: 5, marginTop: 10} //->account no mb!!!<-
+      style={[inputStyles.defaultInput, extraStyles? extraStyles : null //->account no mb!!!<-
       ]}
       placeholder={placeholder}
       placeholderTextColor={themeColors.mediumDark}

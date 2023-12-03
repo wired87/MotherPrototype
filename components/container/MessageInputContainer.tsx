@@ -1,45 +1,22 @@
 import {DefaultContainer} from "./DefaultContainer";
-import {Dimensions, TextInput, TouchableOpacity, View, Vibration, Pressable} from "react-native";
+import {Dimensions, TextInput, View, Vibration, Pressable} from "react-native";
 import {styles} from "./contiStyles";
 import {IconButton} from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext} from "react";
 import {useDispatch} from "react-redux";
-import {themeColors} from "../../colors/theme";
 import {TypeIndicator} from "../animations/TypeIndicator";
 import {Audio} from "expo-av";
 
-const audioApiEndpoint = "http://192.168.178.51:8080/open/audio-chat-request/"
+const audioApiEndpoint = "http://192.168.178.51:8080/open/audio-chat-request/";
+
 const windowWidth = Dimensions.get('window').width;
 import * as FileSystem from 'expo-file-system';
-import {StyleSheet} from "react-native";
 import {getAuth} from "firebase/auth";
 import getDurationFormatted, {createMessageObject, getCurrentTime} from "../../screens/chat/functions/SendProcess";
-import {postMessageInfoData, showAds} from "../../screens/chat/functions/AdLogic";
+import {showAds} from "../../screens/chat/functions/AdLogic";
 import {FunctionContext, InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 
-const styles2 = StyleSheet.create({
-  container: {
-    right: 0,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    borderTopRightRadius: 14,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 10,
-    marginRight: 40
-  },
-  fill: {
-    flex: 1,
-    margin: 15
-  }
-});
 
 const apiEndpoint = "http://192.168.178.51:8080/open/audio-chat-request/"
 
@@ -207,19 +184,15 @@ export const MessageInputContainer = (
   const startRecording = useCallback(async() => {
     try {
       console.log('Requesting permissions...');
-      await Audio.requestPermissionsAsync()
-        .then(() => console.log("Success requested audio start"));
+      await Audio.requestPermissionsAsync();
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true})
-        .then(() => console.log("initialize the Audio.."))
       const recording = new Audio.Recording();
       await recording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
       await recording.startAsync();
-
       console.log('Starting recording...');
       setUserRecording(recording);
-      console.log('Recording started');
     } catch (err) {
       console.error('Failed to start recording', err);
     } finally {
@@ -246,15 +219,10 @@ export const MessageInputContainer = (
   const send = async () => {
     if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
       await sendMessageProcess()
-        .then(() => {
-            console.log("MessageProcess finished..");
-          }
-        )
     } else if (messagesLeft === "0") {
       console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
-      await showAds(dispatch, messagesLeft, setMessagesLeft).then(() => {
-        console.log("Ads successfully initialized..")
-      })
+      await showAds(dispatch, messagesLeft, setMessagesLeft)
+
     } else {
       console.log("Already Sent Message, length === 0 or just whitespace")
     }
@@ -262,27 +230,16 @@ export const MessageInputContainer = (
 
   return (
     <DefaultContainer
-      extraStyles={{
-        marginTop: 20, backgroundColor: "transparent", position: "relative",
-        justifyContent: "center", alignItems: "center",
-        flexDirection: "column", bottom: -5, padding: 0
-      }}>
-
-      <View style={{
-        flexDirection: "row", width: windowWidth, justifyContent: "space-between",
-        marginBottom: 7, alignItems: "center"
-      }}>
+      extraStyles={styles.main}>
+      <View style={styles.secondContainer}>
         {typing ? (
-          <View style={{
-            justifyContent: "flex-start",
-            alignItems: "flex-start", width: windowWidth * .5, paddingLeft: 20
-          }}>
+          <View style={styles.indicatorContainer}>
             <TypeIndicator/>
           </View>
-        ) : null}
+        ):null}
       </View>
 
-      <View style={{flexDirection: "row", justifyContent: "space-between", paddingLeft: 12,}}>
+      <View style={styles.inputContainer}>
         <TextInput style={[styles.chatMessageInput,
           {
             color: customTheme.text,
@@ -301,19 +258,19 @@ export const MessageInputContainer = (
            multiline={true}
         />
 
-        <View style={[styles2.container, {borderColor: customTheme.borderColor}]}>
+        <View style={[styles.container, {borderColor: customTheme.borderColor}]}>
           {input?.trim().length > 0 ? (
             <>
               <Pressable
                 onPress={() => setInput("")}
-                style={localStyles.clearInputFiledBtn}>
+                style={styles.clearInputFiledBtn}>
                 <MaterialCommunityIcons color={customTheme.text} name={"close"} size={17}/>
               </Pressable>
               <MaterialCommunityIcons
                 name={"atlassian"}
                 size={25}
                 onPress={send}
-                style={{margin: 10, color: customTheme.headerIconColors, transform: [{rotate: '90deg'}]}}
+                style={[{color: customTheme.headerIconColors}, styles.sendIcon]}
               />
             </>
             ):(
@@ -329,22 +286,7 @@ export const MessageInputContainer = (
   );
 }
 
-const localStyles = StyleSheet.create(
-  {
-    clearInputFiledBtn: {
-      position: "absolute",
-      top: 6,
-      zIndex: 90,
-      right: 45,
-      borderWidth: 1,
-      borderRadius: 50,
-      borderColor: themeColors.borderThin,
-      paddingVertical: 0,
-      paddingHorizontal: 0,
 
-    }
-  }
-)
 /*
 
 

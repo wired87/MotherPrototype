@@ -1,19 +1,10 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import * as Sharing from "expo-sharing";
-import {View, StyleSheet} from "react-native";
+import {View} from "react-native";
 import {IconButton} from "react-native-paper";
 import {themeColors} from "../../../colors/theme";
 import {DefaultText} from "../../text/DefaultText";
 import {ThemeContext} from "../../../screens/Context";
-
-
-const localStyles = StyleSheet.create(
-  {
-    main: {
-
-    }
-  }
-)
 
 
 // @ts-ignore
@@ -42,16 +33,16 @@ export const SingleAudio = ({ item, styles, secondaryTextStyles }) => {
     }
   }, [play]);
 
-  const checkAudioStatus = () => {
+  const checkAudioStatus = useCallback(() => {
     if (play) {setPlay(false)} else {setPlay(true)}
-  }
+  }, [play])
 
   return(
     <View style={[styles[item.class],
       item.id % 2 === 0 ? {left: 0} : {right: 0},
       {backgroundColor: customTheme.primaryButton}]}>
       <View style={[styles.audioInfoBox, {left: 0}]}>
-        <IconButton iconColor={"white"} icon={play? "pause" : "play"} onPress={() => checkAudioStatus()} />
+        <IconButton iconColor={"white"} icon={play? "pause" : "play"} onPress={checkAudioStatus} />
         <DefaultText text={item.duration} moreStyles={secondaryTextStyles}/>
       </View>
       <View style={[styles.audioInfoBox, {right: -8, bottom: -12}]}>

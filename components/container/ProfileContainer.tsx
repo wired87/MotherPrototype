@@ -1,4 +1,4 @@
-import {View} from "react-native";
+import {View, StyleSheet} from "react-native";
 import {userStyles} from "../../screens/user/userStyles";
 import {HeadingText} from "../text/HeadingText";
 import {DefaultInput} from "../input/DefaultInput";
@@ -6,6 +6,14 @@ import {DefaultButton} from "../buttons/DefaultButton";
 import React, {memo, useContext} from "react";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
 import {useSelector} from "react-redux";
+
+const localStyles = StyleSheet.create(
+  {
+    extraMb: {
+      marginBottom: 15
+    }
+  }
+)
 
 const ProfileContainer = (
   {
@@ -19,19 +27,20 @@ const ProfileContainer = (
 
   // @ts-ignore
   const text = useSelector(state => state.text.value);
-
   // @ts-ignore
   const screens = useSelector(state => state.screens.value)
 
   return(
     <View style={[userStyles.profileSection, {
-      borderBottomColor: customTheme.borderColor,}]}>
-      <HeadingText text={text.profileHeading} extraStyles={undefined}/>
+      borderBottomColor: customTheme.borderColor}]}>
+      <HeadingText
+        text={text.profileHeading}
+        extraStyles={undefined}
+      />
       <View style={userStyles.inputSection}>
         <DefaultInput
           placeholder={undefined}
-          // @ts-ignore
-          value={user ? user.email : null}
+          value={user?.email || null}
           onChangeAction={null}
           secure={false}
           editable={false}
@@ -41,8 +50,9 @@ const ProfileContainer = (
         <DefaultButton
           text={text.changeEmail}
           onPressAction={moveToScreen(screens.emailChangeScreen)}
-          extraStyles={{marginBottom: 15}}
-          secondIcon={undefined}/>
+          extraStyles={localStyles.extraMb}
+          secondIcon={undefined}
+        />
         <DefaultInput
           placeholder={null}
           value={text.password}
@@ -50,7 +60,8 @@ const ProfileContainer = (
           secure={true}
           editable={false}
           keyboardType={undefined}
-          extraStyles={undefined}/>
+          extraStyles={undefined}
+        />
         <DefaultButton
           text={text.changePassword}
           onPressAction={moveToScreen(screens.passwordChangeScreen)} extraStyles={undefined}
@@ -60,6 +71,4 @@ const ProfileContainer = (
     </View>
   );
 }
-
-
 export default memo(ProfileContainer);

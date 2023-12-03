@@ -56,4 +56,4 @@ const DarkMode = () => {
     </View>
   );
 }
-export default DarkMode;
+export default memo(DarkMode);

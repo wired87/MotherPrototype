@@ -14,6 +14,11 @@ export const userStyles = StyleSheet.create({
         borderBottomWidth: 1,
 
     },
+    errormessageStyles: {
+        marginBottom: 30,
+        color: themeColors.deleteRed,
+        fontSize: 17
+    },
     authTextInfo: {
         marginTop: 20,
         marginBottom: 10

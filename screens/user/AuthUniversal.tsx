@@ -83,7 +83,7 @@ export const AuthUniversal = ({
   navigation, googleAuthButtonAction
 }) => {
   const route = useRoute()
-  const { user } = useContext(PrimaryContext);
+  const { user, setLoading } = useContext(PrimaryContext);
 
   const { email,
     setEmail,
@@ -93,6 +93,7 @@ export const AuthUniversal = ({
     setError } = useContext(AuthContext);
 
   const login = route.name === "Login";
+
   const buttonText = login ? "Sign in with Google" : "Sign up with Google";
 
   const[request, response, promptAsync] = Google.useAuthRequest({
@@ -110,7 +111,6 @@ export const AuthUniversal = ({
 
   // @ts-ignore
   const text = useSelector(state => state.text.value)
-
   // @ts-ignore
   const screen = useSelector(state => state.screens.value)
 
@@ -127,8 +127,6 @@ export const AuthUniversal = ({
 
   const {customTheme} = useContext(ThemeContext);
 
-  const dispatch = useDispatch();
-
   const authButtonText = login ? text.signInText : "Sign Up";
 
   // redirect after login
@@ -141,7 +139,8 @@ export const AuthUniversal = ({
   }, [user]); // beforre password, email, error
 
   const onSignIn = useCallback(async () => {
-    dispatch({type: 'LOADING', payload: true});
+    setLoading(true);
+    //dispatch({type: 'LOADING', payload: true});
     try {
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
@@ -153,7 +152,8 @@ export const AuthUniversal = ({
         console.log("please check your Input and try again. \n" + error.message);
       }
     } finally {
-      dispatch({type: 'LOADING', payload: false});
+      setLoading(false);
+      //dispatch({type: 'LOADING', payload: false});
       setPassword("");
       setEmail("");
     }
@@ -165,7 +165,8 @@ export const AuthUniversal = ({
       console.log("User Input Password:", password);
     }
     try {
-      dispatch({ type: 'LOADING', payload: true });
+      setLoading(true);
+      //dispatch({ type: 'LOADING', payload: true });
       const user_response = await createUserWithEmailAndPassword(firebaseAuth, email, password);
       setError(success);
       if (process.env.NODE_ENV === 'development') {
@@ -177,7 +178,8 @@ export const AuthUniversal = ({
         console.error("Error in signUp function:", error.message)
       }
     } finally {
-      dispatch({ type: 'LOADING', payload: false });
+      setLoading(false);
+      //dispatch({ type: 'LOADING', payload: false });
       setPassword("");
       setEmail("");
     }

@@ -4,8 +4,6 @@ import { SettingsMain } from "./SettingsMain";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 import React from "react";
 
-// interface SettingsNavigator
-
 export const SettingNavigation = () => {
   const SettingStack = createNativeStackNavigator();
   return(

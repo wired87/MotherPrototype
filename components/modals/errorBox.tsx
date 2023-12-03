@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+
 export const AlertBox = ({ // @ts-ignore
    modalVisible, setModalVisible, // @ts-ignore
    buttonText, redirectAction, errorAnimation

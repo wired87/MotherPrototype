@@ -25,7 +25,7 @@ const StatusContainer =
   lazy(() => import("../../components/container/modalContainers/StatusContainer"));
 
 import { imgStyles } from '../../components/images/imgStyles';
-import {ThemeContext} from "../Context";
+import {PrimaryContext, ThemeContext} from "../Context";
 import Imprint from "./Imprint";
 import {settingStyles} from "./settingStyles";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
@@ -127,8 +127,8 @@ export const  SettingsMain = () => {
 
   const setNewData = useCallback((value: any) => setData(value), []);
 
-  // @ts-ignore
-  const loading = useSelector(state => state.loading.value);
+  const { loading } = useContext(PrimaryContext);
+
   const { customTheme } = useContext(ThemeContext);
 
   const updateModalIndex = useCallback((number: number) => {

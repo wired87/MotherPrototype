@@ -1,9 +1,10 @@
 import React, {memo, useCallback, useContext, useState} from 'react';
 import { View } from 'react-native';
 import { EmailAuthProvider, updatePassword, reauthenticateWithCredential } from 'firebase/auth';
-import {useSelector, useDispatch} from "react-redux";
+import {useSelector} from "react-redux";
 
 import LottieView from 'lottie-react-native';
+
 // animations
 import successLottie from "../../assets/animations/successLottie.json"
 import failLottie from "../../assets/animations/failLottie.json"
@@ -19,104 +20,106 @@ import {useNavigation} from "@react-navigation/native";
 
 const  PasswordChangeComponent = () => {
 
-    const [newPassword, setNewPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
-    const dispatch = useDispatch();
-    const navigation = useNavigation();
-    const { user } = useContext(PrimaryContext);
-    const {
-        password, setPassword,
-        error, setError ,
-        modalVisible, setModalVisible
-    } = useContext(AuthContext);
+  const navigation = useNavigation();
+  const { user, setLoading } = useContext(PrimaryContext);
 
+  const {
+      password, setPassword,
+      error, setError ,
+      modalVisible, setModalVisible
+  } = useContext(AuthContext);
+
+  // @ts-ignore
+  const text = useSelector(state => state.text.value)
+
+  const handleChangePassword = useCallback(async () => {
+    /*  let action = {
+          type: 'LOADING',
+          payload: true
+      };
+      dispatch(action);*/
+    setLoading(false);
+    console.log("user: ", user);
+    console.log("current password: ", password);
+    console.log("new password: ", newPassword);
     // @ts-ignore
-    const text = useSelector(state => state.text.value)
-
-    const handleChangePassword = useCallback(async () => {
-        let action = {
+    const credential = EmailAuthProvider.credential(user?.email, password);
+    try {
+      // @ts-ignore
+      await reauthenticateWithCredential(user, credential).then(r =>
+        console.log("reauthenticated...")).catch(err => console.log("error: ", err));
+      // @ts-ignore
+      await updatePassword(user, newPassword).then(r =>
+        console.log("password changed...")).catch(err => console.log("error: ", err));
+      // @ts-ignore
+      setError(false);
+    } catch (error) {
+      console.log("not able to change password!", error);
+      // @ts-ignore
+      setError(true);
+      setModalVisible(true);
+    } finally {
+      /*  action = {
             type: 'LOADING',
-            payload: true
+            payload: false
         };
-        dispatch(action);
-        console.log("user: ", user);
-        console.log("current password: ", password);
-        console.log("new password: ", newPassword);
-        // @ts-ignore
-        const credential = EmailAuthProvider.credential(user.email, password);
-        try {
-            // @ts-ignore
-            await reauthenticateWithCredential(user, credential).then(r =>
-              console.log("reauthenticated...")).catch(err => console.log("error: ", err));
-            // @ts-ignore
-            await updatePassword(user, newPassword).then(r =>
-              console.log("password changed...")).catch(err => console.log("error: ", err));
-            // @ts-ignore
-            setError(false);
-        } catch (error) {
-            console.log("not able to change password!", error);
-            // @ts-ignore
-            setError(true);
-            setModalVisible(true);
-        } finally {
-            action = {
-                type: 'LOADING',
-                payload: false
-            };
-            dispatch(action);
-        }
-    }, [])
+        dispatch(action);*/
+      setLoading(false);
+    }
+  }, [])
 
   return (
-      <View style={userStyles.main_container}>
-          <View style={userStyles.infoContainer}>
-              <HeadingText text={text.changePassword} extraStyles={undefined} />
+    <View style={userStyles.main_container}>
+      <View style={userStyles.infoContainer}>
+        <HeadingText text={text.changePassword} extraStyles={undefined} />
 
-              <DefaultInput
-                placeholder={text.currentPasswordText}
-                value={password}
-                onChangeAction={setPassword}
-                secure={true}
-                editable={true}
-                keyboardType={undefined}
-                extraStyles={undefined}
-              />
+        <DefaultInput
+          placeholder={text.currentPasswordText}
+          value={password}
+          onChangeAction={setPassword}
+          secure={true}
+          editable={true}
+          keyboardType={undefined}
+          extraStyles={undefined}
+        />
 
-              <DefaultInput
-                placeholder={text.defaultPasswordPlaceholder}
-                value={newPassword}
-                onChangeAction={setNewPassword}
-                secure={true}
-                editable={true} keyboardType={undefined} extraStyles={undefined}
-              />
+        <DefaultInput
+          placeholder={text.defaultPasswordPlaceholder}
+          value={newPassword}
+          onChangeAction={setNewPassword}
+          secure={true}
+          editable={true} keyboardType={undefined} extraStyles={undefined}
+        />
 
-              <DefaultButton
-                onPressAction={handleChangePassword}
-                text={text.changePassword}
-                secondIcon={undefined}
-                extraStyles={undefined}
-              />
+        <DefaultButton
+          onPressAction={handleChangePassword}
+          text={text.changePassword}
+          secondIcon={undefined}
+          extraStyles={undefined}
+        />
 
-              <DefaultButton
-                extraStyles={userStyles.changeInfoBtn}
-                onPressAction={handleChangePassword}
-                text={"Change Password"}
-                secondIcon={undefined}
-              />
+        <DefaultButton
+          extraStyles={userStyles.changeInfoBtn}
+          onPressAction={handleChangePassword}
+          text={"Change Password"}
+          secondIcon={undefined}
+        />
 
-          </View>
-          <AlertBox
-            buttonText={text.goHomeText}
-            // @ts-ignore
-            redirectAction={() => navigation.navigate(text.navigatePasswordChange)}
-            errorAnimation={
-                <LottieView source={error ? failLottie : successLottie} style={styles.lottieAnimationViewContainer} />
-            }
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-          />
       </View>
-    );
+      <AlertBox
+        buttonText={text.goHomeText}
+        // @ts-ignore
+        redirectAction={() => navigation.navigate(text.navigatePasswordChange)}
+        errorAnimation={
+            <LottieView source={error ? failLottie : successLottie} style={styles.lottieAnimationViewContainer} />
+        }
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
+    </View>
+  );
 }
 
 export default memo(PasswordChangeComponent);

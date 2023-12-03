@@ -1,4 +1,4 @@
-import {TouchableOpacity} from "react-native";
+import {Pressable} from "react-native";
 import {themeColors} from "../../colors/theme";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import React from "react";
@@ -7,7 +7,7 @@ import {DefaultText} from "../text/DefaultText";
 // @ts-ignore
 export const BreakButton = ({ onPress, extraStyles }) => {
   return(
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
       style={[{
          borderRadius: 20,
@@ -15,10 +15,9 @@ export const BreakButton = ({ onPress, extraStyles }) => {
         elevationColor: themeColors.deleteRed, width: 150, color: themeColors.mediumDarkDark, flexDirection: "row",
         backgroundColor: "rgba(4,10,49, 1)"
       }, extraStyles? extraStyles : null]}>
-      {/*@ts-ignore*/}
       <DefaultText text={"break request"} moreStyles={{color: "white", marginRight: 5}}/>
       <MaterialCommunityIcons name={"close"} size={15} color={"white"}/>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

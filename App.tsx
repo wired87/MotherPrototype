@@ -20,6 +20,7 @@ export default function App() {
   const [darkmode, setDarkmode] = useState(false);
   const [user, setUser] = useState<firebase.User | null>(null);
   const [customTheme, setCustomTheme] = useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
+  const [loading, setLoading] = useState(false);
 
   // init DarkMode
   const toggleTheme = () => setDarkmode(!darkmode);
@@ -63,7 +64,7 @@ export default function App() {
   return (
     <ReduxProvider store={store}>
       <ThemeContext.Provider value={{customTheme}}>
-        <PrimaryContext.Provider value={{ darkmode, toggleTheme, setDarkmode, user, setUser }}>
+        <PrimaryContext.Provider value={{ darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading }}>
           <PaperProvider>
             <GestureHandlerRootView style={{ flex: 1 }}>
               <BottomSheetModalProvider>

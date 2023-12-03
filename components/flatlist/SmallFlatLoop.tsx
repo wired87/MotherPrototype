@@ -1,4 +1,3 @@
-
 import React, {useContext, memo} from "react";
 import { SectionList, Share, Text } from "react-native";
 import { settingStyles } from "../../screens/settings/settingStyles";
@@ -8,12 +7,11 @@ import {BottomImage} from "../images/BottomImage";
 import {ThemeContext} from "../../screens/Context";
 import RoundedButton from "../buttons/RoundedButton";
 
-// Typdefinitionen (als Beispiel, passen Sie diese entsprechend an)
 type Item = {
   title: string;
   icon: string;
   id: React.Key;
-  data: any; // Definieren Sie einen genaueren Typ, falls möglich
+  data: any;
 };
 
 interface SmallFlatLoopProps {
@@ -26,6 +24,7 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
   { list, setData, openModal }
   ) => {
   const { customTheme } = useContext(ThemeContext);
+
   const share = async () => {
     try {
       const result = await Share.share({
@@ -63,32 +62,32 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
   }
 
   return (
-      <SectionList
-        style={settingStyles.box2}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <PlusAdContainer />
-        }
-        ListFooterComponent={
-          <BottomImage />
-        }
-        sections={list}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item, index }) => (
-          <RoundedButton
-            item={item}
-            action={() => handleAction(item)}
-            list={list}
-          />
-        )}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={[settingStyles.btnHeading, {color: customTheme.text}]}>{title}</Text>
-        )}
-      />
+    <SectionList
+      style={settingStyles.box2}
+      showsVerticalScrollIndicator={false}
+      ListHeaderComponent={
+        <PlusAdContainer />
+      }
+      ListFooterComponent={
+        <BottomImage />
+      }
+      sections={list}
+      keyExtractor={(item, index) => item + index}
+      renderItem={({ item, index }) => (
+        <RoundedButton
+          item={item}
+          action={() => handleAction(item)}
+          list={list}
+        />
+      )}
+      renderSectionHeader={({ section: { title } }) => (
+        <Text style={[settingStyles.btnHeading, {color: customTheme.text}]}>{title}</Text>
+      )}
+    />
   );
 }
 
-export default SmallFlatLoop;
+export default memo(SmallFlatLoop);
 
 
 /*

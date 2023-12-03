@@ -1,22 +1,42 @@
-import React, {useContext, useState} from 'react';
-import { Text, View, ScrollView, SafeAreaView, StyleSheet, Image} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, {useContext} from 'react';
+import { View, StyleSheet } from 'react-native';
 
-import {DefaultButton} from "../../components/buttons/DefaultButton";
-import { HeadingText } from '../../components/text/HeadingText';
-import ToggleButton from '../../components/buttons/ToggleButton';
-import {settingStyles as styles} from "./settingStyles";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {useSelector} from "react-redux";
-import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
 import {ThemeContext} from "../Context";
 
 // @ts-ignore
-import winp from "../../assets/images/winp.png";
+import underConstruction from "../../assets/animations/underConstruction.json";
+import LottieView from "lottie-react-native";
 
-// str
-const continuePurchaseText = "Continue";
-const headingText = "Choose your Plan!";
+export const PurchaseScreen = () => {
+
+    const { customTheme } = useContext(ThemeContext)
+    //const [selected, setSelected] = useState(1);
+    const uniStylesLocal = [localStyles.main, {backgroundColor: customTheme.primary}]
+
+    return (
+      <View style={uniStylesLocal}>
+          <LottieView source={underConstruction} />
+      </View>
+    );
+}
+
+const localStyles = StyleSheet.create(
+  {
+      main: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 20,
+          padding: 0,
+      }
+  }
+)
+
+
+
+
+
+/*
 
 // lists
 let optionsData = [
@@ -51,38 +71,6 @@ const buttonText = [
         text: "$39.99/Year"
     }
 ]
-
-export const PurchaseScreen = () => {
-
-    const { customTheme } = useContext(ThemeContext)
-    const [selected, setSelected] = useState(1);
-    const uniStylesLocal = [localStyles.main, {backgroundColor: customTheme.primary}]
-
-
-    return (
-      <View style={uniStylesLocal}>
-          <Image source={winp} />
-      </View>
-    );
-}
-
-const localStyles = StyleSheet.create(
-  {
-      main: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 20,
-          padding: 0,
-      }
-  }
-)
-
-
-
-
-
-/*
 
 
     // @ts-ignore

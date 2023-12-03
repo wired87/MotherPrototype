@@ -34,7 +34,6 @@ const modalStyle = StyleSheet.create(
 
 
 export const SwipeModal: React.FC<SwipeModalProps> = (
-    // @ts-ignore
     {
       Content,
       modalIndex,
@@ -44,10 +43,6 @@ export const SwipeModal: React.FC<SwipeModalProps> = (
   const { customTheme } = useContext(ThemeContext);
 
   const defaultSnapPoints = useMemo(() => ['25%', '50%', "75%", "90%"], []);
-
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
 
   return(
     <BottomSheet
@@ -84,7 +79,6 @@ export const SwipeModal: React.FC<SwipeModalProps> = (
        failOffsetY={undefined} // value if a user swipe too much Horizontal the action will be break
 
       // Callbacks
-       onChange={handleSheetChanges} // called when the sheet positio changed
        onAnimate={undefined} // called before bottomsheet starts his movement
 
       // Components

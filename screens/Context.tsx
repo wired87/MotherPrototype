@@ -29,7 +29,6 @@ interface InputContextType {
   messageIndex: number
 }
 
-
 export const PrimaryContext = createContext(
   {
     darkmode: false,
@@ -40,6 +39,8 @@ export const PrimaryContext = createContext(
     user: null as User | null,
     setUser: (() => {}) as Dispatch<SetStateAction<User | null>>,
 
+    loading: false,
+    setLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
   });
 
 

@@ -14,6 +14,11 @@ export const inputStyles = StyleSheet.create({
         paddingHorizontal: 10,
         color: '#000000',
         backgroundColor: 'white',
+        height: 50,
+        marginBottom: 0,
+        minWidth: 250,
+        marginHorizontal: 5,
+        marginTop: 10
     },
     inputPicker: {
         fontFamily: "JetBrainsMono",

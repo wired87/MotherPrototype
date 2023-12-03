@@ -1,7 +1,7 @@
 import {TextInput, StyleSheet} from "react-native";
 import {inputStyles as styles} from "./styles";
 import {themeColors} from "../../colors/theme";
-import React, {Dispatch, SetStateAction} from "react";
+import React from "react";
 
 interface Form {
   e_mail: string;
@@ -11,13 +11,11 @@ interface Form {
   last_name: string;
 }
 
-
 interface MultilineInputTypes {
     value?: Form;
     onChangeText: (text: string) => void;
     placeholder: string;
 }
-
 
 const localStyles = StyleSheet.create(
   {
@@ -28,7 +26,6 @@ const localStyles = StyleSheet.create(
     }
   }
 )
-
 
 export const MultilineInput: React.FC<MultilineInputTypes> = ({ value, onChangeText, placeholder }) => {
     return(

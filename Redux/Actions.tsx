@@ -1,5 +1,5 @@
 
-
+/*
 const loading = {
     value: false
 };
@@ -16,25 +16,10 @@ export const SetLoading = (state = loading, action: { type: any; payload: any; }
     }
 }
 
-const logout = {
-    value: false
-};
-
-export const SetLogout = (state = logout, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case "LOGOUT":
-            return {
-                ...state,
-                value: action.payload
-            };
-        default:
-            return state;
-    }
-}
-
 const historySent = {
     value: false
 };
+
 export const HistorySent = (state = historySent, action: { type: any; payload: any; }) => {
     switch (action.type) {
         case "HISTORY_SENT":
@@ -44,90 +29,6 @@ export const HistorySent = (state = historySent, action: { type: any; payload: a
             };
         default:
             return state;
-    }
-}
-
-const fullScreenAd = {
-    value: false
-}
-
-export const FullScreenAdClass = (state = fullScreenAd, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case "FULL_SCREEN_AD":
-            return {
-                ...state,
-                value: action.payload
-            };
-        default:
-            return state
-    }
-}
-
-
-const errors = {
-    value: [
-        {
-            code: "invalid-email",
-            helpText: "The added E-Mail Address is not valid. \nPlease try again."
-        },
-        {
-            code: "auth/missing-android-pkg-name",
-            helpText: "The required Packages are nor installed. \n"
-        },
-        {
-            code: "auth/missing-continue-uri",
-            helpText: "No redirect url added from our IT-Team Please contact us and we will fire them"
-        },
-        {
-            code: "auth/missing-ios-bundle-id",
-            helpText: "No IOS Bundle ID found"
-        },
-        {
-            code: "auth/invalid-continue-uri",
-            helpText: "Invalid redirect url"
-        },
-        {
-            code: "auth/unauthorized-continue-uri",
-            helpText: "Potential Danger -> website security is low."
-        },
-        {
-            code: "auth/user-not-found",
-            helpText: "The E-Mail is not registered. \nPlease try it again with another"
-        },
-        {
-            code: "auth/invalid-action-code",
-            helpText: "The code you entered was not correct"
-        },
-        {
-            code: "auth/expired-action-code",
-            helpText: "The code you enteref has expired. \nPlease request a new one."
-        },
-        {
-            code: "auth/user-disabled",
-            helpText: "You dont ahve any trys anymore. \nPlease contact the support Team."
-        },
-        {
-            code: "auth/user-not-found",
-            helpText: "The E-Mail is not registered. \nPlease try it again with another"
-        },
-        {
-            code: "auth/missing-email",
-            helpText: "Please enter a E-Mail"
-        }
-    ]
-
-
-};
-
-export const Errors = (state = errors, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case "ERROR":
-            return {
-                ...state,
-                value: action.payload
-            };
-        default:
-            return state
     }
 }
 
@@ -147,7 +48,7 @@ export const AccessPoint = (state = purchaseAccess, action: { type: any; payload
             return state
     }
 }
-
+*/
 const icon = {
     value: {
         settingsIcon: "cog-outline",
@@ -169,7 +70,6 @@ export const SetIcon = (state = icon, action: { type: any; payload: any; }) => {
             return state;
     }
 }
-
 
 const screens = {
     value: {
@@ -196,7 +96,69 @@ export const SetScreens = (state = screens, action: { type: any; payload: any; }
             return state;
     }
 }
+
+const text = {
+  value: {
+    tryAgain: "Try again",
+    changeEmail: "Change E-Mail",
+    changePassword: "Change Password",
+    chooseNewPassword: "Choose a new Password . . .",
+    currentPasswordText: "Current Password . . .",
+    goHomeText: "Go Home",
+    navigateToolsMain: "ToolsMain",
+    defaultPasswordPlaceholder: "Create a Password",
+    defaultEmailPlaceholder: "Your Email",
+    success: "success",
+    indicatorSizeSmall: "small",
+    indicatorSizeMedium: "medium",
+    signInText: "Sign in",
+    contact: "Contact",
+    signInWithGoogle: "Sign in with Google",
+    navigatePasswordChange: "PasswordChange",
+    profileHeading: "Profile",
+    password: "Password",
+    deleteAccount: "Delete Account",
+    navigateSettingsMain: "SettingsMain",
+    settings: "Settings",
+    signOut: "Sign out",
+    signUp: "Sign Up",
+    logoutIcon: "logout",
+    logoutButtonText: "Logout",
+    plusPlanButton: "Explore all Features",
+    featuresInFuture: "Features in Future",
+    notHere: "Dont see your preferred feature?",
+    contactFeatureText: "Please fill out the Contact Form with your wishes. \nWe will contact you ASAP.",
+  }
+};
+
+export const SetText = (state = text, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "TEXT":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state;
+    }
+}
+
+
+// so you should send the payload:
 /*
+dispatch({
+  type: 'SIGN_IN',
+  payload: {
+    "email": "",
+    "idToken": "",
+    "emailVerified": "",
+    "uid": "",
+    "id": "",
+    "refreshToken": "",
+  }
+})
+
+
 interface TextState {
     text:  {
       value: {
@@ -231,96 +193,6 @@ interface TextState {
       };
     }
 }
-*/
-
-
-const text = {
-    value: {
-        tryAgain: "Try again",
-        changeEmail: "Change E-Mail",
-        changePassword: "Change Password",
-        chooseNewPassword: "Choose a new Password . . .",
-        currentPasswordText: "Current Password . . .",
-        goHomeText: "Go Home",
-        navigateToolsMain: "ToolsMain",
-        defaultPasswordPlaceholder: "Create a Password",
-        defaultEmailPlaceholder: "Your Email",
-        success: "success",
-        indicatorSizeSmall: "small",
-        indicatorSizeMedium: "medium",
-        signInText: "Sign in",
-        contact: "Contact",
-        signInWithGoogle: "Sign in with Google",
-        navigatePasswordChange: "PasswordChange",
-        profileHeading: "Profile",
-        password: "Password",
-        deleteAccount: "Delete Account",
-        navigateSettingsMain: "SettingsMain",
-        settings: "Settings",
-        signOut: "Sign out",
-        signUp: "Sign Up",
-        logoutIcon: "logout",
-        logoutButtonText: "Logout",
-        plusPlanButton: "Explore all Features",
-        featuresInFuture: "Features in Future",
-        notHere: "Dont see your preferred feature?",
-        contactFeatureText: "Please fill out the Contact Form with your wishes. \nWe will contact you ASAP.",
-    }
-};
-
-export const SetText = (state = text, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case "TEXT":
-            return {
-                ...state,
-                value: action.payload
-            };
-        default:
-            return state;
-    }
-}
-
-const sent = {
-    value: {
-        typing: false,
-        messages: {},
-        messageBreakOption: false,
-        setMessageFinalBreak: false,
-        messagesLeft: "5",
-    }
-}
-
-
-export const Sent = (state = sent, action: { type: any; payload: any; }) => {
-    switch (action.type) {
-        case "SEND":
-            return {
-                ...state,
-                value: {
-                    ...state.value,
-                    ...action.payload
-                }
-            };
-        default:
-            return state;
-    }
-}
-
-
-
-// so you should send the payload:
-/*
-dispatch({
-  type: 'SIGN_IN',
-  payload: {
-    "email": "",
-    "idToken": "",
-    "emailVerified": "",
-    "uid": "",
-    "id": "",
-    "refreshToken": "",
-  }
-})
 
 So could a sign in function look like if you store the suer local in runtime:
  const signIn = async () => {
@@ -446,6 +318,106 @@ export const Colors = (state = colors, action: { type: any; payload: any; }) => 
             };
         default:
             return state
+    }
+}
+
+const errors = {
+    value: [
+        {
+            code: "invalid-email",
+            helpText: "The added E-Mail Address is not valid. \nPlease try again."
+        },
+        {
+            code: "auth/missing-android-pkg-name",
+            helpText: "The required Packages are nor installed. \n"
+        },
+        {
+            code: "auth/missing-continue-uri",
+            helpText: "No redirect url added from our IT-Team Please contact us and we will fire them"
+        },
+        {
+            code: "auth/missing-ios-bundle-id",
+            helpText: "No IOS Bundle ID found"
+        },
+        {
+            code: "auth/invalid-continue-uri",
+            helpText: "Invalid redirect url"
+        },
+        {
+            code: "auth/unauthorized-continue-uri",
+            helpText: "Potential Danger -> website security is low."
+        },
+        {
+            code: "auth/user-not-found",
+            helpText: "The E-Mail is not registered. \nPlease try it again with another"
+        },
+        {
+            code: "auth/invalid-action-code",
+            helpText: "The code you entered was not correct"
+        },
+        {
+            code: "auth/expired-action-code",
+            helpText: "The code you enteref has expired. \nPlease request a new one."
+        },
+        {
+            code: "auth/user-disabled",
+            helpText: "You dont ahve any trys anymore. \nPlease contact the support Team."
+        },
+        {
+            code: "auth/user-not-found",
+            helpText: "The E-Mail is not registered. \nPlease try it again with another"
+        },
+        {
+            code: "auth/missing-email",
+            helpText: "Please enter a E-Mail"
+        }
+    ]
+
+
+};
+
+export const Errors = (state = errors, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "ERROR":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state
+    }
+}
+
+
+const fullScreenAd = {
+    value: false
+}
+
+export const FullScreenAdClass = (state = fullScreenAd, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "FULL_SCREEN_AD":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state
+    }
+}
+
+const logout = {
+    value: false
+};
+
+export const SetLogout = (state = logout, action: { type: any; payload: any; }) => {
+    switch (action.type) {
+        case "LOGOUT":
+            return {
+                ...state,
+                value: action.payload
+            };
+        default:
+            return state;
     }
 }
 

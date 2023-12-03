@@ -9,31 +9,26 @@ const Tab = createMaterialBottomTabNavigator();
 
 import {useDispatch} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import React, {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
 
 import firebase from "firebase/compat";
 import auth = firebase.auth;
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import {SwipeModal} from "../modals/SwipeModal";
-import {ChatMenuModalContent} from "../container/ChatMenuModalContainer/ChatMenuModalContent";
+import ChatMenuModalContent from "../container/ChatMenuModalContainer/ChatMenuModalContent";
 
 import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context";
 import BottomSheet from "@gorhom/bottom-sheet";
 import {Recording} from "expo-av/build/Audio/Recording";
-
-
 
 const adUnitIdBannerAd = __DEV__
   ? TestIds.BANNER
   : Platform.OS === "ios" ?
   "ca-app-pub-2225753085204049/2862976257" :
   "ca-app-pub-2225753085204049/8777981057"
-
-
 
 const localStyles = StyleSheet.create(
   {
@@ -53,9 +48,6 @@ const localStyles = StyleSheet.create(
 )
 
 
-
-
-// @ts-ignore
 export default function NavigationMain(){
   //const bottomSheetRef = React.createRef<BottomSheetMethods>();
 
@@ -70,6 +62,18 @@ export default function NavigationMain(){
   const [typing, setTyping] = useState(false); // typing indicator
   const [currentRecording, setCurrentRecording] = useState(false);
   const [userRecording, setUserRecording] = useState<Recording | null>(null);
+  const elements = {
+    input, setInput,
+    messagesLeft, setMessagesLeft,
+    messages, setMessages,
+    messageIndex,
+    setMessageIndex,
+    messageBreakOption,
+    setMessageBreakOption,
+    typing, setTyping,
+    userRecording, setUserRecording,
+    currentRecording, setCurrentRecording
+  }
   const {
     user,
     setUser,
@@ -84,19 +88,6 @@ export default function NavigationMain(){
 
   const dispatch = useDispatch();
 
-  const updateModalIndex = useCallback((number: number) => {
-    bottomSheetRef.current?.snapToIndex(number);
-  }, []);
-
-  /*
-  const updateModalIndex = useCallback((index: number, bottomSheetRef: { current: { snapToIndex: (arg0: number) => void; }; })) => {
-    bottomSheetRef.current?.snapToIndex(index);
-  }, []);
-  */
-  const closeModal = () => {
-    bottomSheetRef.current?.close();
-  }
-
   useEffect(() => {
     onAuthStateChanged(getAuth(), (user) => {
       if (user) {
@@ -108,23 +99,6 @@ export default function NavigationMain(){
       console.log("user:", user)
     });
   }, []);
-
-  const storeUserSessionData = async () => {
-    try {
-      const jsonValue = JSON.stringify(5);
-      await AsyncStorage.setItem(`user_${user?.uid}`, jsonValue);
-    } catch (e) {
-      console.log("There was an error save the user session ...")    }
-  };
-
-  const getUserSessionData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(`user_${user?.uid}`);
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      // error reading value
-    }
-  };
 
   useEffect(() => {
     // Anmelden mit Firebase Anonymous Auth
@@ -168,19 +142,7 @@ export default function NavigationMain(){
             children={
               () =>
                 <InputContext.Provider
-                  value={{
-                    input, setInput,
-                    messagesLeft, setMessagesLeft,
-                    messages, setMessages,
-                    messageIndex,
-                    setMessageIndex,
-                    messageBreakOption,
-                    setMessageBreakOption,
-                    typing, setTyping,
-                    userRecording, setUserRecording,
-                    currentRecording, setCurrentRecording
-                    }
-                  }>
+                  value={elements}>
                   <ChatNavigation
                     bottomSheetRef={bottomSheetRef}
                     dispatchHistorySent={dispatchHistorySent}
@@ -214,7 +176,6 @@ export default function NavigationMain(){
         Content={
           <ChatMenuModalContent
             changeText={setInput}
-            dispatchHistorySent={dispatchHistorySent}
           />
         }
       />
@@ -278,4 +239,22 @@ export default function NavigationMain(){
             <MaterialCommunityIcons name="account-circle" color={color} size={26} />
           ),
         }}
+
+
+          const storeUserSessionData = async () => {
+    try {
+      const jsonValue = JSON.stringify(5);
+      await AsyncStorage.setItem(`user_${user?.uid}`, jsonValue);
+    } catch (e) {
+      console.log("There was an error save the user session ...")    }
+  };
+
+  const getUserSessionData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(`user_${user?.uid}`);
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      // error reading value
+    }
+  };
  */

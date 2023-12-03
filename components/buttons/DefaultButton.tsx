@@ -1,13 +1,11 @@
 import {ActivityIndicator, Pressable, Text} from "react-native";
 import React, {useContext} from "react";
-import { useSelector } from "react-redux";
 import {userStyles} from "../../screens/user/userStyles";
-import {ThemeContext} from "../../screens/Context";
+import {PrimaryContext, ThemeContext} from "../../screens/Context";
 
 // @ts-ignore
 export const DefaultButton = ({ extraStyles, onPressAction, text, secondIcon }) => {
-  // @ts-ignore
-  const loading = useSelector(state => state.loading.value);
+  const { loading } = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
 
   return(
