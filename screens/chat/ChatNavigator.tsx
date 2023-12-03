@@ -1,12 +1,12 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 // @ts-ignore
 import {ChatMain} from "./ChatMain";
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigation} from "@react-navigation/native";
-import {Platform, StyleSheet} from "react-native";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import {Platform, StyleSheet, Vibration} from "react-native";
 import {AuthNavigator} from "../user/AuthNavigator";
 
 // Context
@@ -15,10 +15,16 @@ import {InputContext, PrimaryContext, AuthContext, ThemeContext, FunctionContext
 // Ads
 import {RewardedInterstitialAd, TestIds,} from 'react-native-google-mobile-ads';
 import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, showAds} from "./functions/AdLogic";
-import {createMessageObject, postMessageObject} from "./functions/SendProcess";
+import {
+  createMessageObject,
+  sendObject
+} from "./functions/SendProcess";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
 import {IconButton} from "react-native-paper";
+import {Audio} from "expo-av";
+import * as FileSystem from "expo-file-system";
+import {getAuth} from "firebase/auth";
 
 // Ad config
 const adUnitIdFullScreenAd = __DEV__
@@ -36,6 +42,23 @@ interface ChatNavigationTypes {
   dispatchHistorySent: (value: boolean) => void,
   bottomSheetRef: React.Ref<BottomSheetMethods>//(number: number) => void;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////// INTERFACE
+interface ExtraData {
+  id: string;
+  timeToken: string;
+  publisher: string;
+  class: string;
+  file_id: string;
+  user_id: string;
+  soundAudio: any;
+  type: string;
+  duration: string;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// VARIABLES
 
 
 const iconStyles = StyleSheet.create(
@@ -56,111 +79,59 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const [messageFinalBreak, setMessageFinalBreak] = useState(false);
-
   // Auth Provider
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const route = useRoute();
 
   // Context //////////////////////////
   const {
     messagesLeft, setMessagesLeft,
-    setMessageBreakOption,
     setInput, input,
     messageIndex,
     setTyping, typing,
     setMessages,
-    setMessageIndex
+    setMessageIndex,userRecording,
   }  = useContext(InputContext);
+
   const { customTheme } = useContext(ThemeContext);
   const {user} = useContext(PrimaryContext);
 
   const inputRef = useRef(input);
   useEffect(() => {
-    inputRef.current = input;
+    if (!(input === "" || input.trim().length === 0))
+      inputRef.current = input;
   }, [input]);
 
-
-  // SELECTORS ////////////////////////
-  // @ts-ignore
+  // @ts-ignore // SELECTORS ////////////////////////
   const screen = useSelector(state => state.screens.value)
   // @ts-ignore
   const historySent = useSelector(state => state.historySent.value)
 
 
+
   // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {
     console.log("Real Messages Left:", messagesLeft)
-    showAds(dispatch, messagesLeft, setMessagesLeft).then(() => console.log("Ads successfully showed. Refilled the Messages"));
+    showAds(dispatch, messagesLeft, setMessagesLeft)
+      .then(() => console.log("Ads successfully showed. Refilled the Messages"));
   }, [messagesLeft]);
-
-  useEffect(() => {
-    showAds(dispatch, messagesLeft, setMessagesLeft).then(() => console.log("check for messages left.."));
-  }, []);
-
-
-  const deleteInput = () => setInput("");
 
 
   const updateModalIndex = () => {
     // @ts-ignore
-    bottomSheetRef.current?.snapToIndex(2);
+    bottomSheetRef?.current?.snapToIndex(2);
   }
 
-  const sendObject = async (senderObject: any) => {
-    try {
-      const res = await postMessageObject(
-        senderObject,
-        {
-                  timeout: 20000
-                }
-              );
-
-      console.log("res", res);
-
-      let response;
-      if (res instanceof Error || res.name ) {
-        console.log("sendObject res === error")
-        response = {
-           message: "Ups that request is taking too much time." +
-           "\nIf that issue is coming up again feel free to contact the support to fix it.",
-           status: 200,
-          }
-      } else {
-        response = await res.json();
-        console.log("sendObject res ===", response)
-      }
-
-      console.log("Response", response);
-      setMessageBreakOption(false);
-
-      return createMessageObject(
-        response.message,
-        "text",
-        messageIndex,
-        user,
-        "AI",
-        "aiMessageContainer",
-      )
-
-    } catch(e) {
-      console.log('Error in "sendObject":', e)
-      return 1;
-    }
-  }
-
-  useEffect(() => {
-    console.log("finalBreak changed", messageFinalBreak);
-  }, [messageFinalBreak]);
 
   const sendPackage = async (userMessage: any) => {
     try {
       console.log("Sending Message Object...")
-      const aiResponse = await sendObject(userMessage);
+      const aiResponse = await sendObject(userMessage, messageIndex, user);
       setTyping(false);
-      setMessageIndex((state: number) => state +1)
+      setMessageIndex((state: number) => state + 1)
       console.log("Final response Object: ", aiResponse);
 
       if (aiResponse === 1) {
@@ -181,34 +152,46 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
       console.log("USER ID:", user?.uid)
     }
   }
+  const checkMessagesLeftProcess = async (): Promise<boolean> => {
+    const valueMessages = await getMessageInfoData();
+    console.log("Try to get the user Messages Left Value", valueMessages);
+    if (!valueMessages) {
+      await postMessageInfoData("3").then(async () => {
+        setMessagesLeft("3");
+      });
+    } else {
+      setMessagesLeft(valueMessages);
+    }
+    return await checkUserMessageValue(valueMessages || "3", setMessagesLeft);
+  };
+
+  useEffect(() => {
+    console.log("routeName", route.name);
+  }, []);
+
+
+
+  ///////////////////////////////////////////////////////////////////////////////////
+  //////////////////////// MESSAGE SENT PROCESS /////////////////////////////////////
+
+  //////////////////////// TEXT SENT START
+  const textMessageStart = useCallback(() => {
+    Vibration.vibrate();
+    setInput("");
+    setTyping(true);
+    }, [])
+
 
   const sendMessageProcess = useCallback(async() => {
-    // check here for the user messages left
-    const valueMessages = await getMessageInfoData()
-    console.log("Try to get the user Messages Left Value", valueMessages)
-    if (!valueMessages) {
-      await postMessageInfoData("5")
-        .then(async () => {
-          const message = await getMessageInfoData()
-          setMessagesLeft("5")
-      })
-    } else {
-      setMessagesLeft(valueMessages)
-    }
-    // @ts-ignore
-    const checkSuccess = await checkUserMessageValue(valueMessages, setMessagesLeft);
-    console.log(
-      "\nCurrent Messages:", messagesLeft
-    )
-    if (checkSuccess) {
-      setTyping(true);
-      console.log("input len", inputRef.current.length)
-      // @ts-ignore
+    textMessageStart()
+    console.log("inputRef.current", inputRef.current)
+    console.log("Input len:", inputRef.current.length)
+    console.log("typing", typing)
+
+    const success = await checkMessagesLeftProcess()
+
+    if (success) {
       if (inputRef.current?.trim().length !== 0) {
-
-        console.log("User input:", inputRef.current)
-        console.log("typing", typing)
-
         const userMessage = createMessageObject(
           inputRef.current,
           "text",
@@ -218,36 +201,40 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
           "userMessageContainer"
         );
 
+        inputRef.current = "";
+
         setMessageIndex((state: number) => state + 1)
         console.log("Sender Object created: ", userMessage)
 
         console.log("Updating the messageList..")
         setMessages(prevMessages => [...prevMessages, userMessage]);
 
-        deleteInput()
-
         sendPackage(userMessage)
           .then(() => console.log("Payload successfully sent.."))
           .catch(e => console.log("Error while try send the message", e))
-          .finally(() => setTyping(false))
+          .finally(
+            () => setTyping(false)
+          )
 
       } else {
         console.log("0 input try again")
+        const response = createMessageObject(
+          "There was no input addet please try again :)",
+          "text",
+          messageIndex,
+          user,
+          "AI",
+          "aiMessageContainer"
+        );
+        setMessages(prevMessages => [...prevMessages, response]);
+        setTyping(false);
       }
-
     } else {
-      console.log("initialize Ad")
-      // logic for display fullscreen ad here
-      rewardedInterstitial.show()
-        .then(
-          async () => {
-            await postMessageInfoData("5")
-              .then(() => setMessagesLeft("5"));
-            console.log("Message successfully sent")
-        }).catch(
-          (e) =>  console.log("Ad could not be shown because an error:", e))
+      // Ads in useEffect above will be showed
+      setTyping(false);
     }
   }, [])
+
 
 
   const historyMessageSent = async () => {
@@ -258,7 +245,6 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
       .finally(() => setTyping(false))
     }
 
-  // -> setText + setHistory: true -> useEffect if changes call function history message sent
   useEffect(() => {
     console.log("historySent-State changed to:", historySent)
     if (historySent) {
@@ -268,14 +254,11 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     }
   }, [historySent]);
 
-
   useEffect(() => {
     console.log("Current Text:", input);
 
   }, [input]);
 
-
-  // "AuthNavigator" user? screen.account : screen.login
 
   return(
     <ChatStack.Navigator
@@ -312,10 +295,15 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
         name="ChatMain"
         children={
         () =>
-          <FunctionContext.Provider value={{sendMessageProcess}}>
+          <FunctionContext.Provider
+            value={{
+              sendMessageProcess,
+              checkMessagesLeftProcess,
+            }}>
             <ChatMain />
           </FunctionContext.Provider>
-        }/>
+        }
+      />
       <ChatStack.Screen
         name={"AuthNavigator"}
         children={
@@ -339,6 +327,105 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
 }
 
 /*
+  const sendProcess = useCallback(async(textMessage: boolean) => {
+    const checkSuccess = await checkMessagesLeftProcess();
+    console.log(
+      "\nCurrent Messages:", messagesLeft
+    )
+    if (checkSuccess) {
+      if (textMessage) {
+        await sendMessageProcess();
+      } else {
+        await startRecording();
+      }
+    } else {
+      setTyping(false);
+      setCurrentRecording(false);
+      console.log("initialize Ad");
+      // display fullscreen ad here
+      rewardedInterstitial.show()
+        .then(
+          async () => {
+            await postMessageInfoData("3")
+              .then(() => setMessagesLeft("3"));
+            console.log("Message successfully sent")
+          }).catch(
+        (e: Error) =>  console.log("Ad could not be shown because an error:", e))
+    }
+  }, [])
+  const sendMessageProcess = useCallback(async() => {
+    //deleteInput();
+    //const checkSuccess = await checkMessagesLeftProcess();
+    //console.log(
+    //  "\nCurrent Messages:", messagesLeft
+    //)
+    //if (checkSuccess) {
+      //setTyping(true);
+    console.log("inputRef.current", inputRef.current)
+    console.log("Input len:", inputRef.current.length)
+    console.log("typing", typing)
+      // @ts-ignore
+      if (inputRef.current?.trim().length !== 0) {
+
+        const userMessage = createMessageObject(
+          inputRef.current,
+          "text",
+          messageIndex,
+          user,
+          "USER",
+          "userMessageContainer"
+        );
+        inputRef.current = "";
+
+        setMessageIndex((state: number) => state + 1)
+        console.log("Sender Object created: ", userMessage)
+
+        console.log("Updating the messageList..")
+        setMessages(prevMessages => [...prevMessages, userMessage]);
+
+        sendPackage(userMessage)
+          .then(() => console.log("Payload successfully sent.."))
+          .catch(e => console.log("Error while try send the message", e))
+          .finally(() => setTyping(false))
+
+      } else {
+        console.log("0 input try again") ///////////////////////////////////////////////////////////////////////////////
+        const response = createMessageObject(
+          "There was no input addet please try again :)",
+          "text",
+          messageIndex,
+          user,
+          "AI",
+          "aiMessageContainer"
+        );
+        setMessages(prevMessages => [...prevMessages, response]);
+        setTyping(false);
+      }
+    } else {
+      console.log("initialize Ad")
+      // logic for display fullscreen ad here
+      rewardedInterstitial.show()
+        .then(
+          async () => {
+            await postMessageInfoData("3")
+              .then(() => setMessagesLeft("3"));
+            console.log("Message successfully sent")
+        }).catch(
+          (e) =>  console.log("Ad could not be shown because an error:", e))
+    }
+}, [])
+
+
+
+
+
+
+
+
+
+
+
+
 20 sec Timer ////////////////////////////////
   useEffect(() => {
     if (typing) {
@@ -354,7 +441,19 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
   }, [seconds, typing]);
 ////////////////////////////////////////////////////
 
-
+  const checkMessagesLeftProcess = async () => {
+    const valueMessages = await getMessageInfoData()
+    console.log("Try to get the user Messages Left Value", valueMessages)
+    if (!valueMessages) {
+      await postMessageInfoData("3")
+        .then(async () => {
+          setMessagesLeft("3")
+        })
+    } else {
+      setMessagesLeft(valueMessages)
+    }
+    return await checkUserMessageValue(valueMessages || "3", setMessagesLeft);
+  }
 
 <Menu
                     children={undefined}

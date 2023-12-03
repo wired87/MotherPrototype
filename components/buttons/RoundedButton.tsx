@@ -1,39 +1,43 @@
-import {GestureResponderEvent, Pressable, Text, View} from "react-native";
+import { Pressable, Text, View } from "react-native";
 import {styles} from "./styles";
-import React, {memo, useContext} from "react";
+import React, {useContext} from "react";
 import {ThemeContext} from "../../screens/Context";
-/*
-item: { icon: string | number | boolean | React.ReactElement<any, string |
-      React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null |
-      undefined; title: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> |
-      Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, list: any[], action:
-    ((event: GestureResponderEvent) => void) | null | undefined, index: number
- */
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const RoundedButton =
+interface RoundedButtonTypes {
+  action?: ((item: any) => void);
+  list: any[];
+  item: object | any;
+}
+
+const RoundedButton: React.FC<RoundedButtonTypes> =
   (
     {
-      // @ts-ignore
-      action, index, list, item
+      action, list, item
     }
   ) => {
+
   const { customTheme } = useContext(ThemeContext);
+
   return(
     <Pressable
-      onPress={action}
+      unstable_pressDelay={0}
+      onPressIn={action}
       style={[styles.settingsButton, {backgroundColor: customTheme.primaryButton},
-        (index === list.length - 1) ? { borderBottomLeftRadius: 20, borderBottomRightRadius: 20 } :
+        (item.id === list.length ) ?
+          { borderBottomLeftRadius: 20, borderBottomRightRadius: 20 } :
           { borderBottomWidth: 0.3, borderColor: 'gray'},
-        (index === 0) ? {borderTopLeftRadius: 20, borderTopRightRadius: 20} : null]}
-    >
+        (item.id === 1) ? {borderTopLeftRadius: 20, borderTopRightRadius: 20} : null]}>
       <View style={styles.TouchableView}>
         <View style={styles.box2Icon}>
-            {item.icon}
+          <Icon name={item.icon} size={26} color="white" />
         </View>
-        <Text style={styles.buttonText}>{item.title}</Text>
+        <Text style={styles.buttonText}>
+          {item.title}
+        </Text>
       </View>
     </Pressable>
   );
 }
 
-export  default memo(RoundedButton);
+export  default RoundedButton;

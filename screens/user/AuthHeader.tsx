@@ -1,54 +1,64 @@
-import React, {useContext, useEffect} from "react";
+import React, {memo, useCallback, useContext, useEffect, useMemo} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
-import {DefaultPageNavigationBtn} from "../../components/buttons/DefaultPageNavigationBtn";
-import {themeColors} from "../../colors/theme";
+import DefaultPageNavigationBtn from "../../components/buttons/DefaultPageNavigationBtn";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {PrimaryContext} from "../Context";
+import {PrimaryContext, ThemeContext} from "../Context";
+import {GestureResponderEvent} from "react-native";
 
-export const AuthHeader = (back: { name: boolean}) => {
+const AuthHeader = () => {
 
   const { darkmode } = useContext(PrimaryContext);
+
   const route = useRoute();
+
+  const { customTheme } = useContext(ThemeContext);
 
   useEffect(() => {
     console.log("routeName:", route.name);
     console.log("darkmode AuthHeader", darkmode);
   }, []);
+
   const navigation = useNavigation()
+
+  const navigateAuth = useCallback((screen: string) => {
+    // @ts-ignore
+    return navigation.navigate(screen);
+  }, []);
+
+  const btnColor = useCallback((screen: string) => {
+    return route.name === screen ? darkmode ? "white" : "rgb(0,0,0)" : "rgb(255,255,255)"
+  }, [])
+
+  const btnBackgroundColor = useCallback((screen: string) => {
+    return route.name === screen ? "transparent" : customTheme.primaryButton
+  }, [])
 
   return (
     <DefaultHeader
-      back={back}
       childrenMiddle={
         <>
           <DefaultPageNavigationBtn
             text={"Sign In"}
-            // @ts-ignore
-            onPressAction={
-              () => {
-              // @ts-ignore
-                navigation.navigate("AuthNavigator", {screen: "Login"})
-              console.log("routeName2", route.name)}}
+            onPressAction={navigateAuth("Login")}
             extraTextStyles={{
-              color: route.name === "Login" ? darkmode ? "white" : "rgb(0,0,0)" : "rgb(255,255,255)",
-              fontSize: 16,
-              textAlign: "center"
-            }}
-            extraBtnStyles={[{
-              backgroundColor: route.name === "Login" ? "transparent" : themeColors.sexyBlue
-            }]}
-          />
-          <DefaultPageNavigationBtn
-            text={"Sign Up"}
-            // @ts-ignore
-            onPressAction={() => navigation.navigate("SignUp")}
-            extraTextStyles={{
-              color: route.name === "SignUp" ? darkmode ? "white" : "rgb(0,0,0)" : "rgb(255,255,255)",
+              color: btnColor("Login"),
               fontSize: 16,
               textAlign: "center"
             }}
             extraBtnStyles={{
-              backgroundColor: route.name === "SignUp" ? "transparent" : themeColors.sexyBlue
+              backgroundColor: btnBackgroundColor("Login")
+            }}
+          />
+          <DefaultPageNavigationBtn
+            text={"Sign Up"}
+            onPressAction={navigateAuth("SignUp")}
+            extraTextStyles={{
+              color: btnColor("SignUp"),
+              fontSize: 16,
+              textAlign: "center"
+            }}
+            extraBtnStyles={{
+              backgroundColor: btnBackgroundColor("SignUp")
             }}
           />
       </>
@@ -58,3 +68,5 @@ export const AuthHeader = (back: { name: boolean}) => {
     />
   );
 }
+
+export default memo(AuthHeader);

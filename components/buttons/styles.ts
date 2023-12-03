@@ -56,7 +56,6 @@ export const styles = StyleSheet.create({
         marginBottom: 5,
     },
     roundBtn: {
-        backgroundColor: themeColors.sexyBlue,
         borderRadius: 20,
         paddingVertical: 7,
         paddingHorizontal: 20,

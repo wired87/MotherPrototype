@@ -27,7 +27,6 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
   ) => {
   const { customTheme } = useContext(ThemeContext);
   const share = async () => {
-
     try {
       const result = await Share.share({
           title: "Share this App",
@@ -64,7 +63,6 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
   }
 
   return (
-    <>
       <SectionList
         style={settingStyles.box2}
         showsVerticalScrollIndicator={false}
@@ -80,7 +78,6 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
           <RoundedButton
             item={item}
             action={() => handleAction(item)}
-            index={index}
             list={list}
           />
         )}
@@ -88,11 +85,10 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
           <Text style={[settingStyles.btnHeading, {color: customTheme.text}]}>{title}</Text>
         )}
       />
-    </>
   );
 }
 
-export default memo(SmallFlatLoop);
+export default SmallFlatLoop;
 
 
 /*

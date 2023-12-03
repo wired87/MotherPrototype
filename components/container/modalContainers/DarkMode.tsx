@@ -39,7 +39,6 @@ const DarkMode = () => {
   }, [darkmode]);
 
   const setDarkModeAction = async () => {
-    //await postNewColorValues(!darkmode);
     setDarkmode(!darkmode);
   }
 

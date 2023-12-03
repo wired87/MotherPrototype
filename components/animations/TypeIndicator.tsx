@@ -1,5 +1,4 @@
 import {Text, View} from "react-native";
-import {TypingAnimation} from "react-native-typing-animation";
 import {StyleSheet} from "react-native";
 import {useContext} from "react";
 import {ThemeContext} from "../../screens/Context";
@@ -13,15 +12,7 @@ export const TypeIndicator = () => {
     <View
       style={styles.dots}>
       <Text style={[styles.typeIndicatorText, {color: customTheme.text}]}>{aiName} is typing</Text>
-      <TypingAnimation
-        dotColor={customTheme.text}
-        dotMargin={4}
-        dotAmplitude={3}
-        dotSpeed={0.25}
-        dotRadius={2.5}
-        dotX={10}
-        dotY={10}
-      />
+
     </View>
   );
 }
@@ -47,3 +38,16 @@ const styles = StyleSheet.create({
   }
 }
 )
+
+/*
+import {TypingAnimation} from "react-native-typing-animation";
+<TypingAnimation
+        dotColor={customTheme.text}
+        dotMargin={4}
+        dotAmplitude={3}
+        dotSpeed={0.25}
+        dotRadius={2.5}
+        dotX={10}
+        dotY={10}
+      />
+ */

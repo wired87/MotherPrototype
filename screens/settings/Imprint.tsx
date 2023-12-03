@@ -1,10 +1,10 @@
-import React, {useContext} from "react";
+import React, {memo, useContext} from "react";
 import {View} from "react-native";
 import {settingStyles} from "./settingStyles"
 import {styles} from "../../components/styles"
 import {ThemeContext} from "../Context";
 import {DefaultText} from "../../components/text/DefaultText";
-export const Imprint = () => {
+const Imprint = () => {
 
   const { customTheme } = useContext(ThemeContext);
 
@@ -28,3 +28,4 @@ export const Imprint = () => {
     </View>
   );
 }
+export default memo(Imprint);

@@ -9,7 +9,6 @@ export const Logout = ({navigation}) => {
     const [seconds, setSeconds] = useState(2);
 
 
-
     useEffect(() => {
         const timer = setInterval(() => {
             setSeconds(seconds => {

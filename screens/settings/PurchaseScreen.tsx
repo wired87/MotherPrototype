@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import { Text, View, ScrollView, SafeAreaView, Dimensions} from 'react-native';
+import { Text, View, ScrollView, SafeAreaView, StyleSheet, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {DefaultButton} from "../../components/buttons/DefaultButton";
@@ -10,6 +10,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import {useSelector} from "react-redux";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
 import {ThemeContext} from "../Context";
+
+// @ts-ignore
+import winp from "../../assets/images/winp.png";
 
 // str
 const continuePurchaseText = "Continue";
@@ -53,6 +56,34 @@ export const PurchaseScreen = () => {
 
     const { customTheme } = useContext(ThemeContext)
     const [selected, setSelected] = useState(1);
+    const uniStylesLocal = [localStyles.main, {backgroundColor: customTheme.primary}]
+
+
+    return (
+      <View style={uniStylesLocal}>
+          <Image source={winp} />
+      </View>
+    );
+}
+
+const localStyles = StyleSheet.create(
+  {
+      main: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: 20,
+          padding: 0,
+      }
+  }
+)
+
+
+
+
+
+/*
+
 
     // @ts-ignore
     const icon = useSelector(state => state.icon.value)
@@ -66,27 +97,10 @@ export const PurchaseScreen = () => {
             setSelected(optionId);
         }
     }
-
-    return (
-      <SafeAreaView
-        style={{flex: 1, justifyContent: "center", alignItems: "center", marginTop: 20, padding: 0, backgroundColor: customTheme.primary }}
-
-        // @ts-ignore
-                    contentContainerStyle={{
-                        flex: 1,
-                        backgroundColor: customTheme.primary,
-                        justifyContent: "center",
-                        alignItems: "center"}}>
-          <ScrollView
-            contentContainerStyle={{
-              flex: 1,
-              backgroundColor: customTheme.primary,
-              justifyContent: "center",
-              alignItems: "center"}}
-            showsVerticalScrollIndicator={false}
-            style={{marginTop: 40, backgroundColor: customTheme.primary}}>
-
-              <View style={{ paddingHorizontal: 10 }}>
+ <ToggleButton select={selected === 1} setSelect={() => handleOptionSelect(1)} title="3 Days for FREE after that $5.99/week" />
+                    <ToggleButton select={selected === 2} setSelect={() => handleOptionSelect(2)} title="$15.47/Month" />
+                    <ToggleButton select={selected === 3} setSelect={() => handleOptionSelect(3)} title="$39.99/Year" />
+<View style={{ paddingHorizontal: 10 }}>
                   <HeadingText extraStyles={styles.Heading} text={headingText}/>
                   <Text style={styles.SubHeading}>GET ACCESS TO</Text>
               </View>
@@ -114,16 +128,4 @@ export const PurchaseScreen = () => {
                     }
                   />
               </View>
-          </ScrollView>
-      </SafeAreaView>
-    );
-}
-
-
-
-/*
- <ToggleButton select={selected === 1} setSelect={() => handleOptionSelect(1)} title="3 Days for FREE after that $5.99/week" />
-                    <ToggleButton select={selected === 2} setSelect={() => handleOptionSelect(2)} title="$15.47/Month" />
-                    <ToggleButton select={selected === 3} setSelect={() => handleOptionSelect(3)} title="$39.99/Year" />
-
  */

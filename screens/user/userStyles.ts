@@ -93,7 +93,6 @@ export const userStyles = StyleSheet.create({
     },
     mainContainerProfile: {
         flex: 1,
-        width: windowWidth,
         paddingTop: 5,
         justifyContent: 'center',
         alignItems: 'center'

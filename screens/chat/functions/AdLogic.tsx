@@ -1,5 +1,4 @@
 import * as SecureStore from "expo-secure-store";
-import {useCallback} from "react";
 import {RewardedAdEventType} from "react-native-google-mobile-ads";
 
 // Ads
@@ -40,17 +39,15 @@ export const checkUserMessageValue = async (value: string | boolean | null, setM
     console.log("User has", value, "Messages left.")
     if (value === "1") {
       await postMessageInfoData("0").then(() => setMessagesLeft("0"));
-    }else if (value === "2"){
+    } else if (value === "2") {
       await postMessageInfoData("1").then(() => setMessagesLeft("1"));
-    }else if (value === "3"){
+    } else if (value === "3") {
       await postMessageInfoData("2").then(() => setMessagesLeft("2"));
-    }else if (value === "4"){
-      await postMessageInfoData("3").then(() => setMessagesLeft("3"));
-    }else if (value === "5") {
-      await postMessageInfoData("4").then(() => setMessagesLeft("4"));
+    } else {
+      await postMessageInfoData("0").then(() => setMessagesLeft("0"));
     }
     return true;
-  }else {
+  } else {
     return false;
   }
 }
@@ -73,9 +70,9 @@ export const showAds = async (dispatch: any, messagesLeft: string, setMessagesLe
       RewardedAdEventType.EARNED_REWARD,
        (reward: any) => {
         console.log("Full screen ad is showing right now..")
-        postMessageInfoData("5")
-          .then(() => setMessagesLeft("5"))
-          .catch(() => setMessagesLeft("5"))
+        postMessageInfoData("3")
+          .then(() => setMessagesLeft("3"))
+          .catch(() => setMessagesLeft("3"))
       console.log('User finished the Ad and earned reward of ', reward);
       },
     );

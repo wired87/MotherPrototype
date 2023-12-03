@@ -1,10 +1,11 @@
-import React, {useCallback, useContext, useMemo, useState} from "react";
+import React, {useCallback, useContext, useMemo} from "react";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetHandle } from '@gorhom/bottom-sheet';
 import {ThemeContext} from "../../screens/Context";
 import { StyleSheet } from "react-native";
+
 /*
 ***IMPORTANT***
-* react native reanimated need changes on teh babel file:
+* react native reanimated need changes on the babel file:
 module.exports = function(api) {
   api.cache(true);
   return {

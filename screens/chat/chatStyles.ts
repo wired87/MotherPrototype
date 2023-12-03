@@ -65,7 +65,12 @@ export const chatStyles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         flexDirection: "row",
+        marginTop: 12,
+        bottom: 0,
+        elevation: 15,
+        zIndex: 100,
     },
+
     audioInfoBox: {
         position: "absolute",
         flexDirection: "row",

@@ -258,6 +258,7 @@ const text = {
         navigateSettingsMain: "SettingsMain",
         settings: "Settings",
         signOut: "Sign out",
+        signUp: "Sign Up",
         logoutIcon: "logout",
         logoutButtonText: "Logout",
         plusPlanButton: "Explore all Features",

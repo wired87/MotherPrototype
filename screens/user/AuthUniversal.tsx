@@ -1,8 +1,9 @@
 import {
   KeyboardAvoidingView, Platform,
-  SafeAreaView,
-  Text, TouchableOpacity,
-  View
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet, Pressable
 } from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, {useCallback, useContext, useEffect } from "react";
@@ -20,7 +21,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {themeColors} from "../../colors/theme";
 // @ts-ignore
 import {userStyles} from "./userStyles";
-import {AlertBox} from "../../components/modals/errorBox";
 import {useRoute} from "@react-navigation/native";
 import {DefaultText} from "../../components/text/DefaultText";
 import {FIREBASE_AUTH} from "../../firebase.config";
@@ -29,18 +29,45 @@ import {AuthContext, PrimaryContext, ThemeContext} from "../Context";
 
 
 
-
+const localStyles = StyleSheet.create(
+  {
+    extraMargin: {
+      marginVertical: 20,
+    },
+    forgotPasswordButton: {
+      borderWidth: 1,
+      borderRadius: 14,
+      elevation: 20,
+      paddingVertical: 4,
+      addingHorizontal: 7,
+      marginVertical: 10
+    },
+    extraMarginRight: {
+      marginRight: 5
+    },
+    main: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    }
+  }
+)
 
 
 // Text
 const googleIcon = "google"
 const signUpText = "Sign up";
 const signUpGoogleText = signUpText + " with Google";
-const indicatorSize = "small";
 const success = "success";
-const emailPlaceholder = "Your Email";
-const passwordPlaceholder = "Create a Password";
 const errorTextMessage = "There is something wrong with your input"
+
+
+
+// component values
+const iconSize: number = 26;
+const isIos = Platform.OS === 'ios';
+const auth = getAuth();
+const firebaseAuth = FIREBASE_AUTH;
 
 const errorText = (text: any) => {
   return(
@@ -50,13 +77,13 @@ const errorText = (text: any) => {
 }
 
 
-export const AuthUniversal = ({ // @ts-ignore
-  navigation, googleAuthButtonAction,
 
+export const AuthUniversal = ({
+// @ts-ignore
+  navigation, googleAuthButtonAction
 }) => {
   const route = useRoute()
-
-  const { darkmode, user } = useContext(PrimaryContext);
+  const { user } = useContext(PrimaryContext);
 
   const { email,
     setEmail,
@@ -65,9 +92,8 @@ export const AuthUniversal = ({ // @ts-ignore
     error,
     setError } = useContext(AuthContext);
 
-  const auth = getAuth();
-  const firebaseAuth = FIREBASE_AUTH;
-  const login = route.name === "Login"
+  const login = route.name === "Login";
+  const buttonText = login ? "Sign in with Google" : "Sign up with Google";
 
   const[request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: '638697637722-kgj3icuat9ggo05qn6uetsjsr7vcug27.apps.googleusercontent.com',
@@ -84,6 +110,7 @@ export const AuthUniversal = ({ // @ts-ignore
 
   // @ts-ignore
   const text = useSelector(state => state.text.value)
+
   // @ts-ignore
   const screen = useSelector(state => state.screens.value)
 
@@ -100,54 +127,125 @@ export const AuthUniversal = ({ // @ts-ignore
 
   const {customTheme} = useContext(ThemeContext);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
+  const authButtonText = login ? text.signInText : "Sign Up";
+
+  // redirect after login
   useEffect(() => {
-    console.log("user ", user)
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigation.navigate("AuthNavigator", {screen: screen.account}); // Use 'replace' to prevent going back to the login screen
+        navigation.navigate("AuthNavigator", {screen: screen.account});
       }
     });
-  }, []);
+  }, [user]); // beforre password, email, error
 
-  useEffect(() => {
-    console.log("email", email.length, email)
-    console.log("password", password.length, password)
-    console.log("error", error.length, error)
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        navigation.navigate("AuthNavigator", {screen: screen.account}); // Use 'replace' to prevent going back to the login screen
-      }
-    });
-  }, [email, password, error]);
-
-  const onSignIn = async () => {
-    // @ts-ignore
-    dispatch({
-      type: 'LOADING',
-      payload: true
-    });
+  const onSignIn = useCallback(async () => {
+    dispatch({type: 'LOADING', payload: true});
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then(() => {
           setError(text.success);
         })
-    } catch (error) {
-      // @ts-ignore
-      setError(error.message);
-      // @ts-ignore
-      console.log("please check your Input and try again. \n" + error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+        console.log("please check your Input and try again. \n" + error.message);
+      }
     } finally {
-      // @ts-ignore
-      dispatch({
-        type: 'LOADING',
-        payload: false
-      });
+      dispatch({type: 'LOADING', payload: false});
       setPassword("");
       setEmail("");
     }
-  };
+  }, [email, password])
+
+  const signUp = useCallback(async () => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log("User Input E-Mail:", email);
+      console.log("User Input Password:", password);
+    }
+    try {
+      dispatch({ type: 'LOADING', payload: true });
+      const user_response = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+      setError(success);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("user: ", user_response);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message)
+        console.error("Error in signUp function:", error.message)
+      }
+    } finally {
+      dispatch({ type: 'LOADING', payload: false });
+      setPassword("");
+      setEmail("");
+    }
+  }, [password, email])
+
+  return (
+    <KeyboardAvoidingView style={[localStyles.main, { backgroundColor: customTheme.primary }]}>
+      <KeyboardAvoidingView behavior={isIos ? 'padding' : 'height'}>
+        <View style={[userStyles.loginContainer, { backgroundColor: customTheme.primary, borderColor: customTheme.borderColor }]}>
+          <HeadingText text={authButtonText} extraStyles={undefined} />
+
+          <DefaultInput
+            placeholder={text.defaultEmailPlaceholder}
+            value={email}
+            onChangeAction={onChangeEmail}
+            secure={false}
+            editable={true}
+            keyboardType={"email-address"}
+            extraStyles={localStyles.extraMargin}
+          />
+
+          <DefaultInput
+            placeholder={"Your Password"}
+            value={password}
+            onChangeAction={onChangePassword}
+            secure={true}
+            editable={true}
+            keyboardType={undefined}
+            extraStyles={localStyles.extraMargin}
+          />
+
+          {error.length > 0 && !error.includes(text.success) && errorText(errorTextMessage)}
+          {login && (
+            <Pressable
+              style={[localStyles.forgotPasswordButton, { borderColor: customTheme.borderColor }]}
+              onPress={() => navigation.navigate("ForgotPassword")}>
+              <Text style={{color: customTheme.text}}>Forgot Password?</Text>
+            </Pressable>
+          )}
+
+          <DefaultButton
+            text={authButtonText}
+            onPressAction={() => login ? onSignIn() : signUp()}
+            extraStyles={undefined} secondIcon={undefined} />
+
+          <DefaultText text={"Or"} moreStyles={{ color: customTheme.text }} />
+
+        </View>
+        <View style={userStyles.alternativeAuthMethodContainer}>
+          <DefaultButton
+            text={buttonText}
+            onPressAction={googleAuthButtonAction}
+            secondIcon={<MaterialCommunityIcons
+              style={localStyles.extraMarginRight}
+              name={googleIcon} color={"#fff"}
+              size={iconSize}
+            />
+          }
+            extraStyles={undefined}
+          />
+        </View>
+      </KeyboardAvoidingView>
+    </KeyboardAvoidingView>
+  );
+}
+
+
+/*
 
 
   const signUp = async () => {
@@ -185,19 +283,28 @@ export const AuthUniversal = ({ // @ts-ignore
     }
   }
 
-  return(
-    <SafeAreaView style={{
-      flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: customTheme.primary
+
+
+
+
+
+
+
+
+
+
+
+ return(
+    <KeyboardAvoidingView style={{
+
     }}>
       <KeyboardAvoidingView style={{backgroundColor: customTheme.primary}}
                             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View
-          style={[userStyles.loginContainer,
-            {backgroundColor: customTheme.primary
-          , borderColor: customTheme.borderColor}]}>
+
 
           <HeadingText
-            text={text.signInText}
+            text={login ? text.signInText : "Sign Up"}
             extraStyles={undefined}/>
 
           <DefaultInput
@@ -226,17 +333,15 @@ export const AuthUniversal = ({ // @ts-ignore
 
           {login? (
             <TouchableOpacity
-              style={{ borderWidth: 1, borderColor: customTheme.borderColor, borderRadius: 14, // @ts-ignore
-                elevation: 20, paddingVertical: 4, paddingHorizontal: 7,
-                marginVertical: 10
-              }}
+              style={}
               onPress={() => navigation.navigate("ForgotPassword")}>
               <Text style={{color: themeColors.dotNineWhite}}>
                 Forgot Password?
               </Text>
             </TouchableOpacity>
           ):null}
-
+{
+              }
           <DefaultButton
             text={text.signInText}
             onPressAction={() => login ? onSignIn() : signUp()}
@@ -263,20 +368,28 @@ export const AuthUniversal = ({ // @ts-ignore
         </View>
       </KeyboardAvoidingView>
 
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
-}
-
-
-
-/*
-
 
   const[request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: '638697637722-kgj3icuat9ggo05qn6uetsjsr7vcug27.apps.googleusercontent.com',
     androidClientId: '638697637722-n50nno2tho7dob2hpd6fr186mdr48lio.apps.googleusercontent.com',
   });
 
+<View style={userStyles.alternativeAuthMethodContainer}>
+  <DefaultButton
+    text={login? text.signInWithGoogle : signUpGoogleText}
+    onPressAction={googleAuthButtonAction}
+    extraStyles={undefined}
+    secondIcon={
+      <MaterialCommunityIcons
+        style={}
+        name={googleIcon}
+        color={"#fff"} size={26}
+      />
+    }
+  />
+</View>
 
 const onSignIn = async () => {
     // @ts-ignore

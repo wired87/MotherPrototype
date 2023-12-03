@@ -4,13 +4,14 @@ import {themeColors} from "../colors/theme";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-import {Dimensions, StyleSheet} from "react-native";
+import {Dimensions, Platform, StyleSheet} from "react-native";
 
 export const uniStyles = StyleSheet.create({
     headerContainer: {                                                       // Header
         flexDirection: "row",
         zIndex: 1000,
-
+        backgroundColor: "transparent",
+        paddingVertical: Platform.OS === "ios" ? 20 : 0
     },
     containerHeader: {
         alignItems: 'center',

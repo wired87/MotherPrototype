@@ -1,32 +1,38 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import * as Sharing from "expo-sharing";
-import {View} from "react-native";
+import {View, StyleSheet} from "react-native";
 import {IconButton} from "react-native-paper";
 import {themeColors} from "../../../colors/theme";
 import {DefaultText} from "../../text/DefaultText";
-import {DefaultLinearGradient} from "../DefaultLinearGradient";
+import {ThemeContext} from "../../../screens/Context";
 
 
-const colorTop = ['rgba(83,106,155,0.98)', '#2e357c', '#1d155e', '#182173', '#662250', '#6b0e5e']
-const colorBottom = ['#181e5d', '#6a6783', '#0f2742', '#453654', '#0e198c']
+const localStyles = StyleSheet.create(
+  {
+    main: {
+
+    }
+  }
+)
 
 
 // @ts-ignore
 export const SingleAudio = ({ item, styles, secondaryTextStyles }) => {
   const [isSharingAvailable, setIsSharingAvailable] = useState(false);
   const [play, setPlay] = useState(false);
+  const { customTheme } = useContext(ThemeContext);
 
   useEffect(() => {
     const checkSharingAvailability = async () => {
       const available = await Sharing.isAvailableAsync();
       setIsSharingAvailable(available);
     };
-    checkSharingAvailability().then(r => console.log("Sharing set to:", isSharingAvailable));
+    checkSharingAvailability()
+      .then(r => console.log("Sharing set to:", isSharingAvailable));
   }, []);
 
-  const checkAudioStatus = () => {
-    if (play) {setPlay(false)} else {setPlay(true)}
-    if (item.soundAudio !== "") {
+  useEffect(() => {
+    if (play && item.soundAudio !== "") {
       item.soundAudio.setOnPlaybackStatusUpdate((playbackStatus: { didJustFinish: any; isLooping: any; }) => {
         if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
           setPlay(false);
@@ -34,18 +40,18 @@ export const SingleAudio = ({ item, styles, secondaryTextStyles }) => {
       });
       item.soundAudio.replayAsync();
     }
+  }, [play]);
+
+  const checkAudioStatus = () => {
+    if (play) {setPlay(false)} else {setPlay(true)}
   }
 
   return(
-    <DefaultLinearGradient linearViewStyles={[styles[item.class],
+    <View style={[styles[item.class],
       item.id % 2 === 0 ? {left: 0} : {right: 0},
-      {marginTop: 12, bottom: 0, justifyContent: "space-between", zIndex: 100}]} customTopColor={colorTop}
-                           customBottonColor={colorBottom}                           >
+      {backgroundColor: customTheme.primaryButton}]}>
       <View style={[styles.audioInfoBox, {left: 0}]}>
-        <IconButton iconColor={"white"} icon={play? "pause" : "play"} onPress={() => {
-          checkAudioStatus()
-          }}
-        />
+        <IconButton iconColor={"white"} icon={play? "pause" : "play"} onPress={() => checkAudioStatus()} />
         <DefaultText text={item.duration} moreStyles={secondaryTextStyles}/>
       </View>
       <View style={[styles.audioInfoBox, {right: -8, bottom: -12}]}>
@@ -63,6 +69,6 @@ export const SingleAudio = ({ item, styles, secondaryTextStyles }) => {
           />
         ):null}
       </View>
-    </DefaultLinearGradient>
+    </View>
   );
 }

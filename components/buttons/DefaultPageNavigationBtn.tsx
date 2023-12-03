@@ -1,14 +1,17 @@
 import {Pressable, Text} from "react-native";
-import React from "react";
+import React, {memo} from "react";
 import {styles} from "./styles";
 
 
-
-// @ts-ignore
-export const DefaultPageNavigationBtn = ({ text, onPressAction, extraTextStyles, extraBtnStyles }) => {
+const DefaultPageNavigationBtn =
+  (// @ts-ignore
+    { text, onPressAction, extraTextStyles, extraBtnStyles
+  }
+) => {
     return(
-        <Pressable style={[styles.roundBtn, extraBtnStyles? extraBtnStyles : null, ]} onPress={onPressAction}>
-            <Text style={[styles.btnTxtProfile, extraTextStyles ? extraTextStyles : null]}>{text}</Text>
-        </Pressable>
-    );
+    <Pressable style={[styles.roundBtn, extraBtnStyles]} onPress={onPressAction}>
+      <Text style={[styles.btnTxtProfile, extraTextStyles ? extraTextStyles : null]}>{text}</Text>
+    </Pressable>
+  );
 }
+export default memo(DefaultPageNavigationBtn);

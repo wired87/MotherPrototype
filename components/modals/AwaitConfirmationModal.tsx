@@ -6,8 +6,6 @@ import LottieView from "lottie-react-native";
 import {useSelector} from "react-redux";
 import {styles} from "./styles";
 
-
-
 export const AwaitConfirmationModal = (
     // @ts-ignore
     { success, modalVisible, setModalVisible, action, lottieSource }

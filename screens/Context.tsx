@@ -2,6 +2,8 @@ import {createContext, Dispatch, SetStateAction} from "react";
 import firebase from "firebase/compat";
 import User = firebase.User;
 import {themeColors} from "../colors/theme";
+import {Audio} from "expo-av";
+import {Recording} from "expo-av/build/Audio/Recording";
 
 // Interface
 interface PrimaryContextType {
@@ -61,7 +63,11 @@ export const InputContext = createContext({
   typing: false,
   setTyping: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
+  currentRecording: false,
+  setCurrentRecording: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
+  userRecording: null as Recording | null,
+  setUserRecording: (() => {}) as Dispatch<SetStateAction<any>>,
 });
 
 export const AuthContext = createContext({
@@ -82,7 +88,9 @@ export const AuthContext = createContext({
 
 export const FunctionContext = createContext(
   {
-    sendMessageProcess: async () => {}
+    sendMessageProcess: async () => {},
+    checkMessagesLeftProcess: async (): Promise<boolean> => false,
+
   }
 );
 

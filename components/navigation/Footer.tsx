@@ -3,13 +3,13 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useTheme} from 'react-native-paper';
 
 import {SettingNavigation} from "../../screens/settings/SettingsNavigator";
-import {Platform} from "react-native";
+import {Platform, StyleSheet} from "react-native";
 import {ChatNavigation} from "../../screens/chat/ChatNavigator";
 const Tab = createMaterialBottomTabNavigator();
 
 import {useDispatch} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
 
 import firebase from "firebase/compat";
 import auth = firebase.auth;
@@ -22,8 +22,8 @@ import {SwipeModal} from "../modals/SwipeModal";
 import {ChatMenuModalContent} from "../container/ChatMenuModalContainer/ChatMenuModalContent";
 
 import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import BottomSheet from "@gorhom/bottom-sheet";
+import {Recording} from "expo-av/build/Audio/Recording";
 
 
 
@@ -33,8 +33,30 @@ const adUnitIdBannerAd = __DEV__
   "ca-app-pub-2225753085204049/2862976257" :
   "ca-app-pub-2225753085204049/8777981057"
 
+
+
+const localStyles = StyleSheet.create(
+  {
+    icon: {
+      top: 0,
+      position: "relative"
+    },
+    barStyles: {
+      height: 50,
+      marginTop: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 0,
+      paddingVertical: 0,
+    }
+  }
+)
+
+
+
+
 // @ts-ignore
-export default function NavigationMain() {
+export default function NavigationMain(){
   //const bottomSheetRef = React.createRef<BottomSheetMethods>();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -46,7 +68,8 @@ export default function NavigationMain() {
   const [messages, setMessages] = useState<any[]>([]);
   const [messageBreakOption, setMessageBreakOption] = useState(false);
   const [typing, setTyping] = useState(false); // typing indicator
-
+  const [currentRecording, setCurrentRecording] = useState(false);
+  const [userRecording, setUserRecording] = useState<Recording | null>(null);
   const {
     user,
     setUser,
@@ -130,29 +153,18 @@ export default function NavigationMain() {
     console.log("darkmodeChatMain", darkmode)
   }, []);
 
-
-
   return (
     <>
       <Tab.Navigator
         shifting={false}
         labeled={false}
-        initialRouteName="Chat"
+        initialRouteName="Settings"
         activeColor={themeColors.sexyBlue}
         inactiveColor={themeColors.sexyBlue}
         backBehavior={"firstRoute"}
-        barStyle={{
-          height: 50,
-          marginTop: 0,
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: 0,
-          paddingVertical: 0,
-          backgroundColor:  customTheme.navigatorColor
-        }}>
+        barStyle={[localStyles.barStyles, {backgroundColor: customTheme.navigatorColor}]}>
           <Tab.Screen
             name="Chat"
-             // if the Screen Component contains any props just pass them at the bottom
             children={
               () =>
                 <InputContext.Provider
@@ -164,8 +176,10 @@ export default function NavigationMain() {
                     setMessageIndex,
                     messageBreakOption,
                     setMessageBreakOption,
-                    typing, setTyping
-                  }
+                    typing, setTyping,
+                    userRecording, setUserRecording,
+                    currentRecording, setCurrentRecording
+                    }
                   }>
                   <ChatNavigation
                     bottomSheetRef={bottomSheetRef}
@@ -174,15 +188,10 @@ export default function NavigationMain() {
                 </InputContext.Provider>
               }
             options={{
-              // tabBarBadge: 0, take it to show new messages
               tabBarColor: customTheme.navigatorColor,
-              // @ts-ignore
-              headerShown: false,
-              tabBarIconStyle: { display: "none"},
-              // tabBarOnPress: animations for tabPress
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
-                  style={{top: 0, position: "relative"}}
+                  style={localStyles.icon}
                   name={focused ? "comment-multiple" : "comment-multiple-outline"}
                   color={color} size={29}
                 />
@@ -193,7 +202,7 @@ export default function NavigationMain() {
           name="Settings"
           component={SettingNavigation}
           options={{
-            tabBarIcon: ({ color, focused }) => (// @ts-ignore
+            tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons name={focused ? "cog" : "cog-outline"} color={color} size={29} />
             ),
           }}
@@ -208,7 +217,6 @@ export default function NavigationMain() {
             dispatchHistorySent={dispatchHistorySent}
           />
         }
-
       />
       <BannerAd
         unitId={adUnitIdBannerAd}

@@ -2,7 +2,6 @@ import {FlatList, Pressable, StyleSheet, View} from "react-native";
 import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
 import {ModalContentNoLog} from "./ModalContentNoLog";
-import {getAuth} from "firebase/auth";
 // @ts-ignore
 import React, {useContext, useEffect, useState} from "react";
 import { ActivityIndicator } from "react-native-paper";

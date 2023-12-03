@@ -1,100 +1,176 @@
-import {Platform, SafeAreaView} from "react-native";
+import {SafeAreaView, StyleSheet} from "react-native";
 import { Appbar } from "react-native-paper";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import React, {memo, useContext, useEffect, useState} from "react";
+import React, {memo, useCallback, useContext} from "react";
 import {uniStyles} from "../../screens/universalStyles";
 import {HeaderView} from "../container/headerContainer";
-import {useDispatch, useSelector} from "react-redux";
 import {ThemeContext} from "../../screens/Context";
 
-const DefaultHeader = (
-    // @ts-ignore
-    { childrenMiddle, childrenRight, extraStyles, back }
-) => {
-  const dispatch = useDispatch()
 
-  const {customTheme} = useContext(ThemeContext);
+const localStyles = StyleSheet.create(
+  {
+    main: {
+      justifyContent: "flex-start",
+      alignItems: "flex-end"
+    },
+    leftExtraStyles: {
+      alignItems: "flex-start",
+      justifyContent: "flex-start",
+      height: "100%"
+    },
+    backIcon: {
+      left: 5,
+      position: "absolute",
+      zIndex: 900000
+    },
+    rightExtra: {
+      justifyContent: "center",
+      alignItems: "flex-end"
+    },
+    middleExtra: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center"
+    }
+  }
+)
+
+const backIconName: string = "less-than";
+
+interface DefaultHeaderTypes {
+  childrenMiddle?: React.ReactNode;
+  childrenRight?: React.ReactNode;
+  extraStyles?: any;
+}
+
+const DefaultHeader: React.FC<DefaultHeaderTypes> = ({
+                                                       childrenMiddle,
+                                                       childrenRight,
+                                                       extraStyles
+                                                     }) => {
+
+  const { customTheme } = useContext(ThemeContext);
   const route = useRoute();
-  // @ts-ignore
-  const purchaseAccess = useSelector(state => state.purchaseAccess.value)
+  const navigation = useNavigation();
+  const canGoBack = navigation.canGoBack();
 
-  const [shouldNavigate, setShouldNavigate] = useState(false);
+  const shouldShowBackIcon = useCallback(() => {
+    return canGoBack || ["PurchaseScreen", "AccountMain"].includes(route.name);
+  }, [canGoBack, route.name]);
 
-  const navigation = useNavigation()
-  const r = useRoute()
+  const shouldShowChildren = useCallback(() => {
+    return ![
+      "PasswordChange",
+      "EmailChange",
+      "ForgotPassword",
+      "NewPasswordConfirmation",
+      "AccountMain",
+      "SettingsMain"].includes(route.name);
+  }, [route.name]);
 
-  const navigateBack = () => {
-    console.log("purchaseAccess", purchaseAccess)
-    if (r.name === "PurchaseScreen" && purchaseAccess) {
-      // @ts-ignore
-      navigation.goBack();
-      setShouldNavigate(true);
-      dispatch({
-        type: 'PURCHASEACCESS',
-        payload: false
-      });
-    } else if (r.name === "PurchaseScreen" && !purchaseAccess) {
-      // @ts-ignore
-      navigation.navigate("SettingsMain");
-    } else {
-      navigation.goBack();
-    }
-  };
-
-  useEffect(() => {
-    if (shouldNavigate) {
-      // @ts-ignore
-      navigation.navigate('Chat', {
-        screen: 'AuthNavigator',
-        params: {
-          screen: 'AccountMain',
-        }
-      });
-      setShouldNavigate(false);
-    }
-  }, [shouldNavigate, navigation]);
-
+  const navigateBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
 
   return (
-    <SafeAreaView style={[extraStyles? extraStyles : null,
-      {justifyContent: "flex-start", alignItems: "flex-end",
-        backgroundColor: customTheme.primary}]}>
-      {
-        route.name !== "SettingsMain" ? (
-      <Appbar.Header
-        style={[[uniStyles.headerContainer], { paddingVertical: Platform.OS === "ios" ? 20 : 0,
-          backgroundColor: "transparent"}]} >
+    <SafeAreaView style={[extraStyles, localStyles.main, { backgroundColor: customTheme.primary }]}>
+      {shouldShowChildren() && (
+        <Appbar.Header style={uniStyles.headerContainer}>
+          <HeaderView extraStyles={localStyles.leftExtraStyles}>
+            {shouldShowBackIcon() && (
+              <Appbar.Action
+                icon={backIconName}
+                style={localStyles.backIcon}
+                color={customTheme.text}
+                size={27}
+                iconColor={customTheme.headerIconColors}
+                onPress={navigateBack}
+              />
+            )}
+          </HeaderView>
 
-        <HeaderView extraStyles={{alignItems: "flex-start", justifyContent: "flex-start", height: "100%"}}>
-          {(back || r.name === "PurchaseScreen" || r.name === "AccountMain" )? (
+          <HeaderView extraStyles={localStyles.middleExtra}>
+            {childrenMiddle}
+          </HeaderView>
+
+          <HeaderView extraStyles={localStyles.rightExtra}>
+            {childrenRight}
+          </HeaderView>
+        </Appbar.Header>
+      )}
+    </SafeAreaView>
+  );
+};
+
+export default memo(DefaultHeader);
+
+
+
+
+
+
+
+
+
+
+/*
+const DefaultHeader = (
+    // @ts-ignore
+    { childrenMiddle, childrenRight, extraStyles }
+) => {
+
+  const {customTheme} = useContext(ThemeContext);
+
+  const route = useRoute();
+
+  const navigation = useNavigation();
+  const canGoBack = navigation.canGoBack();
+
+  const backIcon =
+    canGoBack ||
+    route.name === "PurchaseScreen" ||
+    route.name === "AccountMain" ||
+    route.name !== "ChatMain"
+
+  const routeNames =
+    route.name !== "PasswordChange" &&
+    route.name !== "EmailChange" &&
+    route.name !== "ForgotPassword" &&
+    route.name !== "NewPasswordConfirmation" &&
+    route.name !== "AccountMain";
+
+  const notSettingsMain = route.name !== "SettingsMain";
+
+  const navigateBack = useCallback(() => {
+    return () => navigation.goBack();
+  }, [navigation]);
+
+  return (
+    <SafeAreaView style={[extraStyles? extraStyles : null, localStyles.main,
+      {backgroundColor: customTheme.primary}]}>
+      {notSettingsMain? (
+      <Appbar.Header style={uniStyles.headerContainer}>
+        <HeaderView extraStyles={localStyles.leftExtraStyles}>
+          {backIcon? (
             <Appbar.Action
-              icon="less-than"
-              style={{left: 5, position: "absolute", zIndex: 900000}}
-              color={"rgba(0, 0, 0, .8)"}
+              icon={backIconName}
+              style={localStyles.backIcon}
+              color={customTheme.text}
               size={27}
               iconColor={customTheme.headerIconColors}
-              // @ts-ignore
-              onPress={() => {navigateBack()}}
+              onPress={navigateBack}
             />
           ):null}
-        </HeaderView>
+        </HeaderView>d
 
-        <HeaderView extraStyles={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-          {route.name !== "PasswordChange" &&
-          route.name !== "EmailChange" &&
-          route.name !== "ForgotPassword" &&
-          route.name !== "NewPasswordConfirmation" &&
-          route.name !== "AccountMain" ?(
+        <HeaderView extraStyles={localStyles.middleExtra}>
+          {routeNames?(
           childrenMiddle
           ):null}
         </HeaderView>
 
-        <HeaderView extraStyles={{justifyContent: "center", alignItems: "flex-end"}}>
-          {route.name !== "PasswordChange" &&
-          route.name !== "EmailChange" &&
-          route.name !== "ForgotPassword" &&
-          route.name !== "NewPasswordConfirmation" &&
-          route.name !== "AccountMain" ?(
+        <HeaderView extraStyles={localStyles.rightExtra}>
+          {routeNames ? (
             childrenRight
           ):null}
         </HeaderView>
@@ -104,7 +180,15 @@ const DefaultHeader = (
     </SafeAreaView>
   );
 }
+
 export default memo(DefaultHeader);
+
+
+
+
+
+
+
 
 //  ALL PROPS FROM NAVIGATOR
 /*
@@ -228,6 +312,34 @@ export default memo(DefaultHeader);
     "name": "Login",->
     "params": undefined,->
   },
+    useEffect(() => {
+
+    console.log("purchaseAccess", purchaseAccess)
+    if (!(route.name === "PurchaseScreen" && purchaseAccess)) {
+      navigation.goBack();
+    } else if (route.name === "PurchaseScreen" && !purchaseAccess) {
+      // @ts-ignore
+      navigation.navigate("SettingsMain");
+    } else {
+      setShouldNavigate(true);
+      dispatch({
+        type: 'PURCHASEACCESS',
+        payload: false
+      });
+
+    }
+
+if (shouldNavigate) {
+  // @ts-ignore
+  navigation.navigate('Chat', {
+    screen: 'AuthNavigator',
+    params: {
+      screen: 'AccountMain',
+    }
+  });
+  setShouldNavigate(false);
+}
+}, [shouldNavigate]);
 */
 
 

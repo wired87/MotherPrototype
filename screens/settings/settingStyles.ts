@@ -5,6 +5,10 @@ export const settingStyles = StyleSheet.create({
     box2: {
         marginHorizontal: 10,
     },
+    accountLoop: {
+        paddingHorizontal: 10,
+
+    },
     btnHeading: {
         // backgroundColor: "#2b2a27",
         paddingVertical: 10,
