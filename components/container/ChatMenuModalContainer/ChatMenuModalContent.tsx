@@ -3,12 +3,11 @@ import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
 import {ModalContentNoLog} from "./ModalContentNoLog";
 
-import React, {memo, useCallback, useContext, useEffect, useState} from "react";
+import React, {memo, useCallback, useContext} from "react";
 import { ActivityIndicator } from "react-native-paper";
 import {themeColors} from "../../../colors/theme";
 import {uniStyles} from "../../../screens/universalStyles"
-import axios from "axios";
-import {PrimaryContext} from "../../../screens/Context";
+import {InputContext, PrimaryContext, ThemeContext} from "../../../screens/Context";
 
 // Strings
 const indicatorSize = "large";
@@ -16,34 +15,20 @@ const historyText = "History";
 const noHistoryText = "Could not find any history . . .";
 
 
-const localStyles = StyleSheet.create(
-  {
-    secondMain: {
-      justifyContent: "flex-start",
-      flex: 1,
-      ...StyleSheet.absoluteFillObject,
-      alignItems: "center",
-      paddingBottom: 5,
-      borderBottomWidth: 1,
-      borderBottomColor: themeColors.borderThin,
-      marginTop: 40
-    },
-    main: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center"
-    }
-  }
-)
 
 interface HistoryitemTypes {
-  item: object | null;
+  item: any;
   onPress: void | (() => {}) | any;
 }
 
 const HistoryItem: React.FC<HistoryitemTypes> = memo(({ item, onPress }) => (
-  <Pressable style={uniStyles.historyItem} onPress={() => onPress(item)}>
-    <DefaultText text={item} moreStyles={undefined} />
+  <Pressable
+    style={uniStyles.historyItem}
+    onPress={() => onPress(item.message)}>
+    <DefaultText
+      text={item?.message}
+      moreStyles={undefined}
+    />
   </Pressable>
 ));
 
@@ -52,15 +37,72 @@ const ChatMenuModalContent = (
     { changeText }
 ) => {
 
-  const [history, setHistory] = useState([])
   const {
     user,
     loading,
-    setLoading
   } = useContext(PrimaryContext);
 
-  const dispatchUserData = async () => {
+  const { messages } = useContext(InputContext);
+  const { customTheme } = useContext(ThemeContext);
+
+  // Styles
+  const extraTextStyles = {color: customTheme.text};
+
+  //////////////////////////////////
+
+  const renderContent = useCallback(() => {
+
+    // filter th e last 5 textMessages from user
+    const textItems = messages.filter(item => item.type === 'text' && item.publisher === "USER");
+    const numberOfItems = textItems.length < 5 ? textItems.length : 5;
+    const lastItems = textItems.slice(-numberOfItems);
+
+    if (!user) {
+      return <ModalContentNoLog />;
+    }
+
+    if (loading) {
+      return <ActivityIndicator color={themeColors.sexyBlue} size={indicatorSize} />;
+    }
+
+    if (lastItems?.length > 0) {
+      return (
+        <View style={uniStyles.reminderModalContainer}>
+          <FlatList
+            data={lastItems}
+            style={uniStyles.historyList}
+            renderItem={({ item }) => (
+              <HistoryItem item={item} onPress={changeText} />
+            )}
+            keyExtractor={(_item, index) => index.toString()}
+          />
+        </View>
+      );
+    }
+
+    return <DefaultText text={noHistoryText} moreStyles={extraTextStyles} />;
+
+  }, [messages, user, loading])
+
+  return(
+    <View style={uniStyles.main}>
+      <View style={uniStyles.secondMain}>
+        <HeadingText text={historyText} extraStyles={undefined}/>
+      </View>
+      {renderContent()}
+    </View>
+  );
+}
+export default memo(ChatMenuModalContent);
+
+
+
+
+/*
+Get User Data from backend
+const dispatchUserData = async () => {
     setLoading(true);
+
     try {
       console.log("USER ID NAVIGATION: ", user?.uid)
       const response =
@@ -68,17 +110,16 @@ const ChatMenuModalContent = (
             "user_id": user?.uid
           }
         )
+
       console.log("Chat History response:", response.data.chat_history)
       setHistory(response.data.chat_history);
       console.log("data list: ", history);
+
     } catch(error) {
       console.log("There was an error get the User ID: ", error);
+
     } finally {
       setLoading(false);
-     /* dispatch({
-        type: "LOADING",
-        payload: false
-      });*/
     }
   }
 
@@ -90,40 +131,8 @@ const ChatMenuModalContent = (
         .catch(() => {console.log("FAIL IN dispatchUserData")})
     }
   }, [user]);
-  //////////////////////////////////
-  const renderContent = useCallback(() => {
-    if (!user) {
-      return <ModalContentNoLog />;
-    }
-    if (loading) {
-      return <ActivityIndicator color={themeColors.sexyBlue} size={indicatorSize} />;
-    }
-    if (history?.length > 0) {
-      return (
-        <View style={uniStyles.reminderModalContainer}>
-          <FlatList
-            data={history}
-            style={uniStyles.historyList}
-            renderItem={({ item }) => (
-              <HistoryItem item={item} onPress={changeText} />
-            )}
-            keyExtractor={(_item, index) => index.toString()}
-          />
-        </View>
-      );
-    }
-    return <DefaultText text={noHistoryText} moreStyles={undefined} />;
-  }, [history, user, loading])
 
-  return(
-    <View style={localStyles.main}>
-      <View style={localStyles.secondMain}>
-        <HeadingText text={historyText} extraStyles={undefined}/>
-      </View>
-      <>
-        {renderContent}
-      </>
-    </View>
-  );
-}
-export default memo(ChatMenuModalContent);
+
+
+
+ */

@@ -1,7 +1,8 @@
 import {StyleSheet, Text, View} from "react-native";
 import {DefaultText} from "../../components/text/DefaultText";
 import {BottomSheetScrollView} from "@gorhom/bottom-sheet";
-import {memo} from "react";
+import {memo, useContext} from "react";
+import {ThemeContext} from "../Context";
 
 const styles = StyleSheet.create({
   text: {
@@ -26,16 +27,19 @@ const styles = StyleSheet.create({
 })
 
 const PrivacyPolicy = () => {
+
+  const { customTheme } = useContext(ThemeContext);
+  const policyTextStyles = {color: customTheme.text}
   return (
     <BottomSheetScrollView
       style={styles.scrollView}>
-      <Text style={styles.heading}>
+      <Text style={[styles.heading, policyTextStyles]}>
         Privacy Policy
       </Text>
 
-      <View  style={styles.textContainer}>
+      <View style={styles.textContainer}>
         <DefaultText
-          moreStyles={undefined}
+          moreStyles={policyTextStyles}
           text={ "Privacy Policy " +
             "            \n" +
             "            \n" +
@@ -58,7 +62,7 @@ const PrivacyPolicy = () => {
 
       <View  style={styles.textContainer}>
         <DefaultText
-          moreStyles={undefined}
+          moreStyles={policyTextStyles}
           text={"Interpretation and Definitions \nInterpretation " +
             "\n" +
             "          \n  " +
@@ -112,7 +116,7 @@ const PrivacyPolicy = () => {
       </View>
       <View  style={styles.textContainer}>
         <DefaultText
-          moreStyles={undefined}
+          moreStyles={policyTextStyles}
           text={"Collecting and Using Your Personal Data " +
             "        \n    --------------------------------------- " +
             "        \n    " +
@@ -153,7 +157,7 @@ const PrivacyPolicy = () => {
       </View>
       <View  style={styles.textContainer}>
         <DefaultText
-          moreStyles={undefined}
+          moreStyles={policyTextStyles}
           text={ "\n" +
             "            Use of Your Personal Data " +
             " " +
@@ -239,7 +243,7 @@ const PrivacyPolicy = () => {
       </View>
       <View  style={styles.textContainer}>
         <DefaultText
-          moreStyles={undefined}
+          moreStyles={policyTextStyles}
           text={"Transfer of Your Personal Data\n " +
             "            \n" +
             "            " +
@@ -308,7 +312,7 @@ const PrivacyPolicy = () => {
       </View>
       <View  style={styles.textContainer}>
         <DefaultText
-          moreStyles={undefined}
+          moreStyles={policyTextStyles}
           text={"Security of Your Personal Data \n" +
             "            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n" +
             "            \n" +
@@ -368,6 +372,7 @@ const PrivacyPolicy = () => {
     </BottomSheetScrollView>
   );
 }
+
 export default memo(PrivacyPolicy);
 /*
 

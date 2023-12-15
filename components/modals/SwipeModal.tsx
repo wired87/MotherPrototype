@@ -11,7 +11,7 @@ module.exports = function(api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
-      'react-native-reanimated/plugin',
+      'react-native-reanimated/plugin', -> last one
     ],
   };
 };
@@ -19,7 +19,7 @@ module.exports = function(api) {
 
 interface SwipeModalProps {
   Content: React.ReactNode;
-  modalIndex: number;
+  modalIndex?: number;
   bottomSheetRef: React.Ref<BottomSheet>
 }
 
@@ -31,7 +31,6 @@ const modalStyle = StyleSheet.create(
     }
   }
 )
-
 
 export const SwipeModal: React.FC<SwipeModalProps> = (
     {

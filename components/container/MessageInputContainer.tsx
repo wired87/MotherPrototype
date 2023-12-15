@@ -8,7 +8,7 @@ import {useDispatch} from "react-redux";
 import {TypeIndicator} from "../animations/TypeIndicator";
 import {Audio} from "expo-av";
 
-const audioApiEndpoint = "http://192.168.178.51:8080/open/audio-chat-request/";
+const audioApiEndpoint = "http://192.168.178.51:8080/open/chat-request/"//"http://192.168.178.51:8080/open/audio-chat-request/";
 
 const windowWidth = Dimensions.get('window').width;
 import * as FileSystem from 'expo-file-system';
@@ -33,19 +33,18 @@ interface ExtraData {
 }
 
 export const MessageInputContainer = (
-
 ) => {
   const {darkmode, user} = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
   const {
-    messageIndex, setMessages,
+    messageIndex, setMessages, messages,
     input, setInput, messagesLeft,
     setMessagesLeft, setMessageIndex,
     typing, setTyping, currentRecording, setCurrentRecording,
     userRecording, setUserRecording} = useContext(InputContext);
 
   const { sendMessageProcess, checkMessagesLeftProcess } = useContext(FunctionContext);
-
+  const extraSendStyles = [{color: customTheme.headerIconColors}, styles.sendIcon]
   const dispatch = useDispatch();
 
   const stopRecording = useCallback(async() => {
@@ -74,7 +73,7 @@ export const MessageInputContainer = (
             throw new Error("Audio file does not exist");
           }
 
-          const user_id = user?.uid || "1";
+          const user_id =user?.uid || "1";
           console.log("User in messageInput:", user_id);
           //const fileUri = uri;
           const fileName = `recording-${Date.now()}.m4a`;
@@ -104,9 +103,6 @@ export const MessageInputContainer = (
           const {soundAudio, ...extraDataWithoutSound} = extraData;
           console.log("extraData:", extraData)
 
-          //setMessages((prevMessages: any) => [...prevMessages, extraData]);
-          //setMessageIndex((state: number) => state + 1);
-
           const currentTime = getCurrentTime()
           console.log("current Time:", currentTime);
 
@@ -119,12 +115,12 @@ export const MessageInputContainer = (
                   'Content-Type': 'multipart/form-data',
                 },
                 httpMethod: 'POST',
-                // @ts-ignore
                 mimeType: fileType,
                 parameters: extraDataWithoutSound,
                 sessionType: undefined,
                 uploadType: FileSystem.FileSystemUploadType.MULTIPART, // or BINARY_CONTENT
                 fieldName: "file",
+
               }
             )
 
@@ -168,13 +164,10 @@ export const MessageInputContainer = (
             "AI",
             "aiMessageContainer"
           )
-
           setMessages(prevMessages => [...prevMessages, aiResponse]);
           setMessageIndex((state: number) => state + 1)
-
         } finally {
           setTyping(false);
-
         }
       }
     }
@@ -202,31 +195,34 @@ export const MessageInputContainer = (
 
 
   const recording = useCallback(async () => {
-    Vibration.vibrate();
     if(messagesLeft === "0") {
       await showAds(dispatch, messagesLeft, setMessagesLeft)
     } else if (userRecording){
+      Vibration.vibrate();
       setCurrentRecording(false);
       console.log('Stop recording..');
       await stopRecording()
     } else if(!userRecording) {
+      Vibration.vibrate();
       setCurrentRecording(true);
       console.log('Start recording..');
       await startRecording()
     }
   }, [userRecording, currentRecording])
 
-  const send = async () => {
+  const send = useCallback(async () => {
+
+    console.log("real messages", messages)
     if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
+      Vibration.vibrate()
       await sendMessageProcess()
     } else if (messagesLeft === "0") {
       console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
       await showAds(dispatch, messagesLeft, setMessagesLeft)
-
     } else {
       console.log("Already Sent Message, length === 0 or just whitespace")
     }
-  }
+  }, [messagesLeft, typing, input, messages])
 
   return (
     <DefaultContainer
@@ -242,7 +238,7 @@ export const MessageInputContainer = (
       <View style={styles.inputContainer}>
         <TextInput style={[styles.chatMessageInput,
           {
-            color: customTheme.text,
+            color: "black",
             backgroundColor:  customTheme.navigatorColor,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
@@ -251,7 +247,7 @@ export const MessageInputContainer = (
             borderWidth: darkmode ? 0 : 1,
           }]}
            placeholder={"Ask something!"}
-           placeholderTextColor={customTheme.placeholder}
+           placeholderTextColor={"black"}
            cursorColor={customTheme.placeholder}
            value={input}
            onChangeText={setInput}
@@ -264,13 +260,13 @@ export const MessageInputContainer = (
               <Pressable
                 onPress={() => setInput("")}
                 style={styles.clearInputFiledBtn}>
-                <MaterialCommunityIcons color={customTheme.text} name={"close"} size={17}/>
+                <MaterialCommunityIcons color={"black"} name={"close"} size={17}/>
               </Pressable>
               <MaterialCommunityIcons
                 name={"atlassian"}
                 size={25}
                 onPress={send}
-                style={[{color: customTheme.headerIconColors}, styles.sendIcon]}
+                style={extraSendStyles}
               />
             </>
             ):(

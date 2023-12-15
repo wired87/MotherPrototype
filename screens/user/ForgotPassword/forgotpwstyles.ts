@@ -15,7 +15,6 @@ export const pwResetStyles = StyleSheet.create({
     flexDirection: "column",
     paddingVertical: 20,
     paddingHorizontal: 15,
-    width: windowWidth * .9
-
+    width: windowWidth * .9,
   }
 });

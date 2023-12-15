@@ -1,139 +1,97 @@
-import {Animated, Dimensions, Pressable, Text, View} from "react-native";
-import React, {useCallback, useEffect, useState} from "react";
-import {LinearGradient} from "expo-linear-gradient";
+import {Pressable, Text, View, StyleSheet} from "react-native";
+import React, {useCallback, useContext, useMemo} from "react";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {styles} from "../../styles";
 import {settingStyles} from "../../../screens/settings/settingStyles";
-import {SingleProContainer} from "./SingleProContainer";
+import SingleProContainer from "./SingleProContainer";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {DefaultText} from "../../text/DefaultText";
-import {DefaultLinearGradient} from "../DefaultLinearGradient";
+import {ThemeContext} from "../../../screens/Context";
 
-
-
-const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
-const windowWidth = Dimensions.get('window').width;
+const localStyles = StyleSheet.create(
+  {
+    text: {
+      color: 'white',
+      fontSize: 20,
+      fontWeight: "bold",
+      marginBottom: 5
+    },
+    moreTextStyles: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: "white"
+    }
+  }
+)
 
 let optionsData = [
-    {
-        text: "Unlimited Access and Messages"
-    },
-    {
-        text: "Access to GPT-4V"
-    },
-    {
-        text: "No Ads anymore!"
-    },
+  {
+    text: "Free Access to GPT-4"
+  },
+  {
+      text: "Unlimited Access and Messages"
+  },
 ]
-
+const BOTTOM_COLORS = ['#0e198c', '#1d155e', '#7F00FF', '#0e198c'];
 export const PlusAdContainer = () => {
-  const route = useRoute();
 
-  // @ts-ignore
-  const text = useSelector(state => state.text.value)
-  // @ts-ignore
-  const icon = useSelector(state => state.icon.value)
-  // @ts-ignore
-  const screens = useSelector(state => state.screens.value)
-
-
-  const navigation = useNavigation();
-  const dispatch = useDispatch()
-
-  //const navigateTools = () => { navigation.navigate("Tools",  {screen: 'ToolsMain') }
-
-
-  // @ts-ignore
-  const onExplore = useCallback(() => {
-      console.log("route: ", route)
-      if (route.name === "AccountMain") {
-          console.log("PURCHASEACCESS")
-          dispatch({
-              type: 'PURCHASEACCESS',
-              payload: true
-          });
-      }
-      // @ts-ignore
-      navigation.navigate("Settings", {
-          screen: screens.purchaseScreen
-      });
-  }, []);
+  const mainContainerStyles = [settingStyles.topBtn, {backgroundColor: 'rgba(127,0,255,0.8)'}];
 
   return(
-    <DefaultLinearGradient
-      linearViewStyles={settingStyles.topBtn}
-      customTopColor={undefined}
-      customBottonColor={undefined} >
+    <View style={mainContainerStyles} >
       <View style={styles.header}>
-          <Text style={{ color: 'white', fontSize: 20, fontWeight: "bold", marginBottom: 5}}>Upgrade To Pro</Text>
+        <Text style={localStyles.text}>Features in this App</Text>
       </View>
       {optionsData.map((item, index) => (
         <SingleProContainer key={index} text={item.text} />
       ))}
-      {!(route.name === "PurchaseScreen")? (
-        <Pressable
-          style={[
-              styles.btnContainer,
-              {width: windowWidth * .8, flexDirection: "row",
-                  justifyContent: "center", alignItems: "center"}]}
-          onPress={onExplore}>
-          <DefaultText text={text.plusPlanButton} moreStyles={{fontSize: 18, fontWeight: "bold", color: "white"}}/>
-          <MaterialCommunityIcons name={icon.arrow} size={28} color="rgba(255,255,255,.8)" />
-        </Pressable>
-      ):null}
-
-    </DefaultLinearGradient>
+    </View>
   );
 }
-
-
 
 /*
-import {Animated, Dimensions, FlatList, Text, TouchableOpacity, View} from "react-native";
-import React, {useCallback, useEffect, useState} from "react";
-import {LinearGradient} from "expo-linear-gradient";
+import {Pressable, Text, View, StyleSheet} from "react-native";
+import React, {useCallback, useContext, useMemo} from "react";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import Chroma from 'chroma-js';
 import {styles} from "../../styles";
 import {settingStyles} from "../../../screens/settings/settingStyles";
-import MIcon from "react-native-vector-icons/MaterialIcons";
-import {DefaultButton} from "../../buttons/DefaultButton";
-import {SingleProContainer} from "./SingleProContainer";
+import SingleProContainer from "./SingleProContainer";
 import {useDispatch, useSelector} from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {DefaultText} from "../../text/DefaultText";
-import {DefaultLinearGradient} from "../DefaultLinearGradient";
+import {ThemeContext} from "../../../screens/Context";
 
-
-const TOP_COLORS =  ['#9c0582', '#0e198c', '#1d155e', '#2A3BEF', '#662250', '#6b0e5e'];
-const BOTTOM_COLORS = ['#0e198c', '#1d155e', '#4f0c3d', '#7F00FF', '#0e198c'];
-const GRADIENT_COLOR_LENGTH = 700;
-const TOP_COLORS_SPECTRUM = Chroma.scale(TOP_COLORS).colors(GRADIENT_COLOR_LENGTH);
-const BOTTOM_COLORS_SPECTRUM = Chroma.scale(BOTTOM_COLORS).colors(GRADIENT_COLOR_LENGTH);
-const INTERVAL = 2;
-
-const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
-const windowWidth = Dimensions.get('window').width;
+const localStyles = StyleSheet.create(
+  {
+    text: {
+      color: 'white',
+      fontSize: 20,
+      fontWeight: "bold",
+      marginBottom: 5
+    },
+    moreTextStyles: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: "white"
+    }
+  }
+)
 
 let optionsData = [
     {
         text: "Unlimited Access and Messages"
     },
     {
-        text: "Access to GPT-4V"
+        text: "Access to GPT-4"
     },
     {
         text: "No Ads anymore!"
     },
 ]
-
+const BOTTOM_COLORS = ['#0e198c', '#1d155e', '#7F00FF', '#0e198c'];
 export const PlusAdContainer = () => {
 
-  const [topIndex, setTopIndex] = useState(0);
-  const [bottomIndex, setBottomIndex] = useState(0);
-  const [colorTop, setColorTop] = useState(TOP_COLORS_SPECTRUM[0]);
-  const [colorBottom, setColorBottom] = useState(BOTTOM_COLORS_SPECTRUM[0]);
   const route = useRoute();
 
   // @ts-ignore
@@ -143,30 +101,20 @@ export const PlusAdContainer = () => {
   // @ts-ignore
   const screens = useSelector(state => state.screens.value)
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      let newTopIndex = topIndex + 1;
-      if (newTopIndex === TOP_COLORS_SPECTRUM.length) {
-        newTopIndex = 0;
-      }
-      let newBottomIndex = bottomIndex + 1;
-      if (newBottomIndex === BOTTOM_COLORS_SPECTRUM.length) {
-        newBottomIndex = 0;
-      }
-      setTopIndex(newTopIndex);
-      setBottomIndex(newBottomIndex);
-      setColorTop(TOP_COLORS_SPECTRUM[newTopIndex]);
-      setColorBottom(BOTTOM_COLORS_SPECTRUM[newBottomIndex]);
-    }, INTERVAL);
-
-    return () => clearInterval(interval); // Clear the interval on component unmount
-
-  }, [topIndex, bottomIndex]);
-
   const navigation = useNavigation();
-  const dispatch = useDispatch()
 
-  // @ts-ignore
+  const dispatch = useDispatch();
+
+  const irgendwasJuckMichNicht = useMemo(() => {
+    if (!(route.name === "PurchaseScreen")) {
+      return (
+      <Pressable style={styles.btnContainer} onPress={onExplore}>
+        <DefaultText text={text.plusPlanButton} moreStyles={localStyles.moreTextStyles}/>
+        <MaterialCommunityIcons name={icon.arrow} size={28} color="rgba(255,255,255,.8)" />
+      </Pressable>
+      )}
+  }, [route.name])
+
   const onExplore = useCallback(() => {
       console.log("route: ", route)
       if (route.name === "AccountMain") {
@@ -176,34 +124,23 @@ export const PlusAdContainer = () => {
               payload: true
           });
       }
-      // @ts-ignore
-      navigation.navigate("Settings", {
-          screen: screens.purchaseScreen
-      });
-  }, []);
 
+    navigation.navigate("Settings", {screen: "PurchaseScreen"});
+
+
+  }, []);
+  const mainContainerStyles =
+    [settingStyles.topBtn, {backgroundColor: 'rgba(127,0,255,0.8)'}];
   return(
-    <DefaultLinearGradient linearViewStyles={settingStyles.topBtn} linearGradientColors={undefined} >
+    <View style={mainContainerStyles} >
       <View style={styles.header}>
-          <Text style={{ color: 'white', fontSize: 20, fontWeight: "bold", marginBottom: 5}}>Upgrade To Pro</Text>
+        <Text style={localStyles.text}>Upgrade To Pro</Text>
       </View>
       {optionsData.map((item, index) => (
         <SingleProContainer key={index} text={item.text} />
       ))}
-      {!(route.name === "PurchaseScreen")? (
-        <TouchableOpacity
-          style={[
-              styles.btnContainer,
-              {width: windowWidth * .8, flexDirection: "row",
-                  justifyContent: "center", alignItems: "center"}]}
-          onPress={onExplore}>
-          <DefaultText text={text.plusPlanButton} moreStyles={{fontSize: 18, fontWeight: "bold", color: "white"}}/>
-          <MaterialCommunityIcons name={icon.arrow} size={28} color="rgba(255,255,255,.8)" />
-        </TouchableOpacity>
-      ):null}
-
-    </DefaultLinearGradient>
+      {irgendwasJuckMichNicht}
+    </View>
   );
 }
-
  */

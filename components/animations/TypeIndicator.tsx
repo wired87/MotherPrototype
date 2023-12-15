@@ -3,11 +3,17 @@ import {StyleSheet} from "react-native";
 import {useContext} from "react";
 import {ThemeContext} from "../../screens/Context";
 
-const aiNameList = ["C-3PO", "Computer", "R2D2", "Optimus Prime", "SkyNet", "JARVIS", "Morpheus"]
+/*
+"C-3PO", "Computer", "R2D2", "Optimus Prime", "SkyNet", "JARVIS", "Morpheus", "RoboCop"
+const aiNameList = ["Computer"];
 const aiName = aiNameList[Math.floor(Math.random() * aiNameList.length)];
+ */
+const aiName = "Computer";
 
 export const TypeIndicator = () => {
+
   const { customTheme } = useContext(ThemeContext);
+
   return (
     <View
       style={styles.dots}>
@@ -33,20 +39,7 @@ const styles = StyleSheet.create({
   typeIndicatorText: {
     opacity: .6,
     fontSize: 13,
-
   }
 }
 )
 
-/*
-import {TypingAnimation} from "react-native-typing-animation";
-<TypingAnimation
-        dotColor={customTheme.text}
-        dotMargin={4}
-        dotAmplitude={3}
-        dotSpeed={0.25}
-        dotRadius={2.5}
-        dotX={10}
-        dotY={10}
-      />
- */

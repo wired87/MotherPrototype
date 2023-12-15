@@ -5,11 +5,44 @@ import {View} from "react-native";
 import {DefaultButton} from "../../buttons/DefaultButton";
 import {useSelector} from "react-redux";
 
-import React, {memo} from "react";
+import React, {memo, useContext, useMemo} from "react";
 import {styles} from "../contiStyles";
+import {ThemeContext} from "../../../screens/Context";
+import {BottomSheetSectionList} from "@gorhom/bottom-sheet";
+import { StyleSheet } from "react-native";
+
+const localStyles = StyleSheet.create(
+  {
+    footerMainContainer: {
+      marginVertical: 40,
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    extraTextStyles: {
+      fontSize: 16,
+      marginTop: 30,
+      textAlign: "center",
+      lineHeight: 50,
+    },
+    extraDefaultContainerStyles: {
+      paddingVertical: 40,
+    },
+    sectionContainer: {
+      paddingVertical: 30
+    }
+  }
+)
+
 
 // @ts-ignore
 const FeaturesInFuture = () => {
+  // @ts-ignore
+  const text = useSelector(state => state.text.value);
+
+  const { customTheme } = useContext(ThemeContext);
+  const extraTextStyles = [localStyles.extraTextStyles, {color: customTheme.text}];
+
+  const moreTextStyles  = {fontSize: 18, color: customTheme.text};
 
   let features = [
     "Speech to Text",
@@ -21,43 +54,85 @@ const FeaturesInFuture = () => {
   ]
 
   // @ts-ignore
-  const text = useSelector(state => state.text.value)
+  const renderItem = ({ item }) => (
+    <View style={styles.featuresContainer}>
+      <DefaultText
+        text={item}
+        moreStyles={moreTextStyles}
+      />
+    </View>
+  );
 
-  return(
-    <DefaultContainer
-      extraStyles={undefined}>
+  const sections = useMemo(() => {
+    return features.map((item, index) => ({
+      title: `Section ${index}`,
+      data: [item],
+    }));
+  }, [features]);
+
+  const sectionHeaderComponent = useMemo(() => {
+    return () =>
       <HeadingText
         text={text.featuresInFuture}
-        extraStyles={undefined} />
-      <View>
-        {features.map((item, index) => {
-          return(
-            <View
-              style={styles.featuresContainer}
-              key={index}>
-              <DefaultText
-                text={item}
-                moreStyles={{fontSize: 18}} />
-            </View>
-          );
-        })}
-      </View>
-      <View>
+        extraStyles={undefined}
+      />
+  }, [])
+
+
+  const sectionFooterComponent = useMemo(() => {
+    return(
+      <View style={localStyles.footerMainContainer}>
         <DefaultText
           text={text.notHere}
-          moreStyles={{fontSize: 16, fontWeight: "bold", marginTop: 30}}/>
+          moreStyles={extraTextStyles}
+        />
         <DefaultText
           text={text.contactFeatureText}
-          moreStyles={undefined}/>
+          moreStyles={extraTextStyles}/>
         <DefaultButton
-          extraStyles={undefined}
+          extraStyles={extraTextStyles}
           onPressAction={undefined}
           text={text.contact}
           secondIcon={undefined}
         />
       </View>
-    </DefaultContainer>
+    );
+  }, [])
 
+  return(
+    <DefaultContainer
+      extraStyles={localStyles.extraDefaultContainerStyles}>
+      <View style={localStyles.sectionContainer}>
+        <BottomSheetSectionList
+          sections={sections}
+          keyExtractor={(item, index) => item + index}
+          renderItem={renderItem}
+          ListHeaderComponent={sectionHeaderComponent}
+          ListFooterComponent={sectionFooterComponent}
+        />
+      </View>
+    </DefaultContainer>
   );
 }
-export default memo(FeaturesInFuture)
+
+export default memo(FeaturesInFuture);
+
+
+/*
+
+  const featuresLoop = useMemo(() => {
+    return() =>
+      features.map((item, index) => {
+
+
+          <View
+            style={styles.featuresContainer}
+            key={index}>
+            <DefaultText
+              text={item}
+              moreStyles={moreTextStyles}
+            />
+          </View>
+})
+}, [])
+ */

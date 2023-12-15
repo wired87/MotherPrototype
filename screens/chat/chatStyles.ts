@@ -41,6 +41,7 @@ export const chatStyles = StyleSheet.create({
         borderColor: "rgba(0, 0, 0, .1)",
         paddingTop: 13,
         paddingBottom: 13,
+        zIndex: 999999999999999,
     },
     userMessageContainer: {
         minHeight: 30,
@@ -52,7 +53,9 @@ export const chatStyles = StyleSheet.create({
         borderBottomWidth: .5,
         borderColor: "rgba(0, 0, 0, .1)",
         marginRight: 20,
-        paddingVertical: 13
+        paddingVertical: 13,
+        zIndex: 100000000000000,
+
     },
 
     voiceMessage: {
@@ -68,7 +71,7 @@ export const chatStyles = StyleSheet.create({
         marginTop: 12,
         bottom: 0,
         elevation: 15,
-        zIndex: 100,
+        zIndex: 100000000000000,
     },
 
     audioInfoBox: {

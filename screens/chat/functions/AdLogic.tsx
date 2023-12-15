@@ -1,7 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import {RewardedAdEventType} from "react-native-google-mobile-ads";
 
-// Ads
+// Ad config
 import {RewardedInterstitialAd, TestIds,} from 'react-native-google-mobile-ads';
 import {Platform} from "react-native";
 const adUnitIdFullScreenAd = __DEV__
@@ -9,10 +9,12 @@ const adUnitIdFullScreenAd = __DEV__
   : Platform.OS === "ios"
     ? "ca-app-pub-2225753085204049/3142510997"
     : "ca-app-pub-2225753085204049/7842257619";
+
 const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitIdFullScreenAd, {
   requestNonPersonalizedAdsOnly: true,
   keywords: ['fashion', 'clothing'],
 });
+
 
 export async function postMessageInfoData(value: string) {
   try {
@@ -51,7 +53,6 @@ export const checkUserMessageValue = async (value: string | boolean | null, setM
     return false;
   }
 }
-
 
 export const showAds = async (dispatch: any, messagesLeft: string, setMessagesLeft: any) => {
   if (messagesLeft === "0") {

@@ -9,7 +9,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 import {useDispatch} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, { useContext, useEffect, useRef, useState} from "react";
 
 import firebase from "firebase/compat";
 import auth = firebase.auth;
@@ -17,18 +17,22 @@ import {getAuth, onAuthStateChanged} from "firebase/auth";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
-import {SwipeModal} from "../modals/SwipeModal";
-import ChatMenuModalContent from "../container/ChatMenuModalContainer/ChatMenuModalContent";
 
 import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context";
 import BottomSheet from "@gorhom/bottom-sheet";
 import {Recording} from "expo-av/build/Audio/Recording";
 
-const adUnitIdBannerAd = __DEV__
+const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
   : Platform.OS === "ios" ?
   "ca-app-pub-2225753085204049/2862976257" :
   "ca-app-pub-2225753085204049/8777981057"
+
+const adUnitIdBannerAdHeaderHeader = __DEV__
+  ? TestIds.BANNER
+  : Platform.OS === "ios" ?
+  "ca-app-pub-2225753085204049/1879475723" :
+  "ca-app-pub-2225753085204049/1592481367"
 
 const localStyles = StyleSheet.create(
   {
@@ -47,9 +51,7 @@ const localStyles = StyleSheet.create(
   }
 )
 
-
 export default function NavigationMain(){
-  //const bottomSheetRef = React.createRef<BottomSheetMethods>();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -62,6 +64,7 @@ export default function NavigationMain(){
   const [typing, setTyping] = useState(false); // typing indicator
   const [currentRecording, setCurrentRecording] = useState(false);
   const [userRecording, setUserRecording] = useState<Recording | null>(null);
+
   const elements = {
     input, setInput,
     messagesLeft, setMessagesLeft,
@@ -74,13 +77,13 @@ export default function NavigationMain(){
     userRecording, setUserRecording,
     currentRecording, setCurrentRecording
   }
+
   const {
     user,
     setUser,
     } = useContext(PrimaryContext);
 
   const {customTheme} = useContext(ThemeContext)
-  const {darkmode} = useContext(PrimaryContext);
 
   // make Active Tabbar Shadow color transparent
   const theme = useTheme();
@@ -106,7 +109,7 @@ export default function NavigationMain(){
       if(!user) {
         // first check if the user is in the encrypt storage
         const { user } = await auth().signInAnonymously();  // get the user id
-        console.log('User ID:', user?.uid);
+        console.log('User ID:', user?.uid || null);
       }
     };
 
@@ -123,16 +126,19 @@ export default function NavigationMain(){
     console.log("Dispatched History Text.")
   }
 
-  useEffect(() => {
-    console.log("darkmodeChatMain", darkmode)
-  }, []);
-
   return (
     <>
+      <BannerAd
+        unitId={adUnitIdBannerAdHeaderHeader}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      />
       <Tab.Navigator
         shifting={false}
         labeled={false}
-        initialRouteName="Settings"
+        initialRouteName="Chat"
         activeColor={themeColors.sexyBlue}
         inactiveColor={themeColors.sexyBlue}
         backBehavior={"firstRoute"}
@@ -170,17 +176,9 @@ export default function NavigationMain(){
           }}
         />
       </Tab.Navigator>
-      <SwipeModal
-        bottomSheetRef={bottomSheetRef}
-        modalIndex={-1}
-        Content={
-          <ChatMenuModalContent
-            changeText={setInput}
-          />
-        }
-      />
+
       <BannerAd
-        unitId={adUnitIdBannerAd}
+        unitId={adUnitIdBannerAdFooter}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
@@ -189,8 +187,6 @@ export default function NavigationMain(){
     </>
   );
 }
-
-
 
 
 /* later

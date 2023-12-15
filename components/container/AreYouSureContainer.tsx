@@ -34,11 +34,7 @@ const localStyles = StyleSheet.create(
   }
 )
 
-interface AreYouSureContainerTypes {
-  bottomSheetRef: RefObject<BottomSheet | BottomSheetMethods>;
-}
-
-const AreYouSureContainer: React.FC<AreYouSureContainerTypes> = ({ bottomSheetRef }) => {
+const AreYouSureContainer = () => {
 
   const { user } = useContext(PrimaryContext)
   const { customTheme } = useContext(ThemeContext);
@@ -46,6 +42,7 @@ const AreYouSureContainer: React.FC<AreYouSureContainerTypes> = ({ bottomSheetRe
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
+  const moreTextStyles = [styles.modalH4, {color: customTheme.text}];
 
   // @ts-ignore
   const screen = useSelector(state => state.screens.value)
@@ -89,15 +86,9 @@ const AreYouSureContainer: React.FC<AreYouSureContainerTypes> = ({ bottomSheetRe
             style={localStyles.deleteCheckContainer} >
             <DefaultText
                 text={"Delete your whole History"}
-                moreStyles={[styles.modalH4, {color: customTheme.text}]}
+                moreStyles={moreTextStyles}
             />
             <View style={localStyles.deleteCheckButtonContainer}>
-                <DefaultPageNavigationBtn
-                  text={"Skip"}
-                  onPressAction={() => bottomSheetRef?.current?.close() || undefined}
-                  extraTextStyles={undefined}
-                  extraBtnStyles={undefined}
-                />
                 <DefaultPageNavigationBtn
                   text={"Do it!"}
                   onPressAction={deleteHistory}

@@ -1,7 +1,11 @@
-import React, {lazy, useCallback, useContext, useMemo, useRef, useState} from 'react'
+import React, {lazy, memo, useCallback, useContext, useRef, useState} from 'react'
 import {
   View,
-  ActivityIndicator, StyleSheet, Text, SectionList, Share,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  SectionList,
+  Share,
 } from 'react-native'
 
 import {styles} from "../../components/styles"
@@ -12,57 +16,45 @@ import FeaturesInFuture from "../../components/container/modalContainers/Feature
 import DarkMode from "../../components/container/modalContainers/DarkMode";
 import PrivacyPolicy from "./PrivacyPolicy";
 
-//const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
-
 import successAuth from "../../assets/animations/successLottie.json";
 // @ts-ignore
-import close from "../../assets/images/close.png";
+import failLottie from "../../assets/animations/failLottie.json";
 
 const StatusContainer =
   lazy(() => import("../../components/container/modalContainers/StatusContainer"));
 
 import { imgStyles } from '../../components/images/imgStyles';
-import {PrimaryContext, ThemeContext} from "../Context";
+import {PrimaryContext, SettingsContext, ThemeContext} from "../Context";
 import Imprint from "./Imprint";
 import {settingStyles} from "./settingStyles";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
 import {BottomImage} from "../../components/images/BottomImage";
 import RoundedButton from "../../components/buttons/RoundedButton";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-/*
-interface IconProps {
-  name: string,
-  size: string | number,
-  color: string
-}
 
-interface loopDataTypes {
-  id: number,
-  icon: string,
-  title: string,
-  navigate: string,
-}
-*/
 let settingsData = [
   {
     id: 1,
     icon: "theme-light-dark",
     title: "Theme",
     navigate: "",
-
+    component: memo(() => React.createElement(DarkMode))
   },
   {
     id: 2,
     icon: "help-box",
     title: "Help and Contact",
     navigate: "",
+    component: memo(() => React.createElement(Contact))
+
   },
   {
     id: 3,
     icon: "trash-can-outline",
     title: "Delete History",
     navigate: "",
-  },
+    component: memo(() => React.createElement(AreYouSureContainer))
+  }
 ]
 
 let otherData = [
@@ -71,18 +63,23 @@ let otherData = [
     icon: "help-circle",
     title: "Features in Future",
     navigate: "",
+    component: memo(() => React.createElement(FeaturesInFuture))
   },
   {
     id: 2,
     icon: "star" ,
     title: "Rate us",
     navigate: "",
+    component: null
+
   },
   {
     id: 3,
     icon: "share",
     title: "Share it with your Friends",
     navigate: "",
+    component: null
+
   },
 ]
 
@@ -92,21 +89,23 @@ let aboutData = [
     icon: "note-text",
     title: "Terms of use",
     navigate: "",
+    component: memo(() => React.createElement(DarkMode))
   },
   {
     id: 2,
     icon: "security",
     title: "Privacy Policy",
     navigate: "",
+    component: memo(() => React.createElement(PrivacyPolicy))
   },
   {
     id: 3,
     icon: "security",
     title: "Imprint",
     navigate: "",
+    component: memo(() => React.createElement(Imprint))
   },
 ]
-
 
 const localStyles = StyleSheet.create(
   {
@@ -117,61 +116,55 @@ const localStyles = StyleSheet.create(
 )
 
 export const  SettingsMain = () => {
-
   const [data, setData] = useState(null);
-  const [status, setStatus] = useState(0);
-  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
+  const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const setNewData = useCallback((value: any) => setData(value), []);
 
   const { loading } = useContext(PrimaryContext);
-
   const { customTheme } = useContext(ThemeContext);
+  const {status} = useContext(SettingsContext);
 
   const updateModalIndex = useCallback((number: number) => {
     bottomSheetRef.current?.snapToIndex(number);
   }, []);
 
-  // set the last Field in the
-  const settings = useMemo(() => settingsData.map(item => ({
-    ...item,
-    data:
-      item.id === 1 ?
-        <DarkMode /> :
-        item.id === 2 ?
-          <Contact
-            bottomSheetRef={bottomSheetRef}
-            setStatus={setStatus}
-          /> :
-          <AreYouSureContainer
-            bottomSheetRef={bottomSheetRef}
-          />,
-  })), []);
-
-  const other = useMemo(() => otherData.map(item => ({
-    ...item,
-    data: item.id === 1 ? <FeaturesInFuture /> : null,
-  })), []);
-
-  const about = useMemo(() => aboutData.map(item => ({
-    ...item,
-    data: item.id === 2 ? <PrivacyPolicy /> : item.id === 3 ? <Imprint /> :  null,
-  })), []);
+  const statusData = useCallback(() => {
+    if (loading) {
+      return <ActivityIndicator size={20} />
+    } else if (status === 201 || status === 200) {
+      return <StatusContainer
+                source={successAuth}
+                text={"Success"}
+                styles={imgStyles.statusImg}
+                extraContainerStyles={undefined}
+              />
+    } else if (status === 400 || status === 401) {
+      return <StatusContainer
+                source={failLottie}
+                text={"Failed! \n Please try again or contact us."}
+                styles={imgStyles.statusImg}
+                extraContainerStyles={undefined}
+              />;
+    } else if (data) {
+      return React.createElement(data);
+    }
+  }, [status, data, loading])
 
   ////////////////////////////////////////
 
   const sections = [
     {
-      title: 'Settings',
-      data: settings
+      title: 'General',
+      data: settingsData
     },
     {
       title: 'Other',
-      data: other
+      data: otherData
     },
     {
       title: 'About',
-      data: about
+      data: aboutData
     },
   ];
 
@@ -179,8 +172,8 @@ export const  SettingsMain = () => {
     try {
       const result = await Share.share({
           title: "Share AIX",
-          message: "AIX the AI of you", ///////////////////////////////////////////////////////////////////////
-          url: "https://example.de", ///////////////////////////////////////////////////////////////////////////////////
+          message: "AIX the AI of you",
+          url: "https://example.de",
         },
         {
           dialogTitle: "Look at this cool new App!",
@@ -209,16 +202,18 @@ export const  SettingsMain = () => {
         share()
           .then(() => console.log("Shared successfully.."));
       } else {
-        setNewData(item.data);
         updateModalIndex(2);
+        setNewData(item.component);
+        console.log("item.data", item.component);
       }
     }
-  }, [share, setNewData, updateModalIndex]);
+  }, [share]);
 
   return (
     <View
       style={[localStyles.mainContainer, {backgroundColor: customTheme.primary}]}>
         <View style={styles.container}>
+
           <SectionList
             style={settingStyles.box2}
             showsVerticalScrollIndicator={false}
@@ -232,41 +227,29 @@ export const  SettingsMain = () => {
             }
 
             sections={sections}
+
             keyExtractor={(item, index) => item.toString() + index}
             renderItem={({ item }) => (
+
               <RoundedButton
                 item={item}
-                action={handleAction(item)}
-                list={sections}
+                action={handleAction}
               />
             )}
+
             renderSectionHeader={({ section: { title } }) => (
               <Text style={[settingStyles.btnHeading, {color: customTheme.text}]}>
                 {title}
               </Text>
             )}
           />
+
           <SwipeModal
             bottomSheetRef={bottomSheetRef}
-            modalIndex={-1}
-            Content={
-              loading ? (
-                <ActivityIndicator size={20}/>
-              ) : data ? (
-                status === 201 || status === 200 ? (
-                  <StatusContainer source={successAuth} text={"Success"} styles={imgStyles.statusImg}
-                                   extraContainerStyles={undefined}/>
-                ) : status === 400 || status === 401 ? (
-                  <StatusContainer source={close} text={"Failed! \n Please try again or contact us."}
-                                   styles={imgStyles.statusImg} extraContainerStyles={undefined} />
-                ) : (
-                  data
-                )
-              ) : null}
-             />
+            Content={statusData()}
+          />
+
         </View>
     </View>
     );
 }
-
-

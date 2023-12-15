@@ -2,11 +2,24 @@
 import React, {useEffect, useContext, memo} from 'react';
 
 import {HeadingText} from "../../text/HeadingText";
-import {View} from "react-native";
+import {View, StyleSheet} from "react-native";
 import {DefaultButton} from "../../buttons/DefaultButton";
 import * as SecureStore from "expo-secure-store";
 
 import {PrimaryContext} from "../../../screens/Context";
+
+const localStyles = StyleSheet.create(
+  {
+    main: {
+      justifyContent: "flex-start",
+      alignItems: "center",
+      flex: 1,
+      paddingVertical: 30,
+      paddingHorizontal: 20
+    }
+  }
+)
+
 
 export async function postNewColorValues(bool: boolean){
   try {
@@ -35,7 +48,7 @@ const DarkMode = () => {
     } = useContext(PrimaryContext);
 
   useEffect(() => {
-    console.log("---", darkmode)
+    console.log("---DarkMode", darkmode)
   }, [darkmode]);
 
   const setDarkModeAction = async () => {
@@ -43,7 +56,7 @@ const DarkMode = () => {
   }
 
   return(
-    <View style={{justifyContent: "flex-start", alignItems: "center", flex: 1, paddingVertical: 30, paddingHorizontal: 20}}>
+    <View style={localStyles.main}>
       <HeadingText
         text={"DARKMODE"}
         extraStyles={undefined} />

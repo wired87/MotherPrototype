@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet} from "react-native";
+import {StyleSheet} from "react-native";
 import { Appbar } from "react-native-paper";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import React, {memo, useCallback, useContext} from "react";
@@ -11,26 +11,29 @@ const localStyles = StyleSheet.create(
   {
     main: {
       justifyContent: "flex-start",
-      alignItems: "flex-end"
+      alignItems: "flex-end",
+      height: 20,
     },
     leftExtraStyles: {
       alignItems: "flex-start",
-      justifyContent: "flex-start",
-      height: "100%"
+      justifyContent: "flex-end",
+      height: "100%",
     },
+
     backIcon: {
       left: 5,
       position: "absolute",
       zIndex: 900000
     },
     rightExtra: {
-      justifyContent: "center",
-      alignItems: "flex-end"
+      justifyContent: "flex-start",
+      alignItems: "flex-end",
+
     },
     middleExtra: {
       flexDirection: "row",
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "flex-start",
     }
   }
 )
@@ -43,28 +46,32 @@ interface DefaultHeaderTypes {
   extraStyles?: any;
 }
 
-const DefaultHeader: React.FC<DefaultHeaderTypes> = ({
-                                                       childrenMiddle,
-                                                       childrenRight,
-                                                       extraStyles
-                                                     }) => {
+const DefaultHeader: React.FC<DefaultHeaderTypes> =
+({
+ childrenMiddle,
+ childrenRight,
+}) => {
 
-  const { customTheme } = useContext(ThemeContext);
+  const {customTheme} = useContext(ThemeContext);
   const route = useRoute();
   const navigation = useNavigation();
-  const canGoBack = navigation.canGoBack();
 
   const shouldShowBackIcon = useCallback(() => {
-    return canGoBack || ["PurchaseScreen", "AccountMain"].includes(route.name);
-  }, [canGoBack, route.name]);
+    const screensToShowBackIcon = [
+      "PurchaseScreen",
+      "AccountMain",
+      "PasswordChange",
+      "EmailChange",
+      "NewPasswordConfirmation",
+      "ForgotPassword",
+      "AuthNavigator"
+    ];
+    return navigation.canGoBack() || screensToShowBackIcon.includes(route.name) ||
+      !["ChatMain", "ChatNavigation"].includes(route.name);
+  }, [navigation, route.name]);
 
   const shouldShowChildren = useCallback(() => {
     return ![
-      "PasswordChange",
-      "EmailChange",
-      "ForgotPassword",
-      "NewPasswordConfirmation",
-      "AccountMain",
       "SettingsMain"].includes(route.name);
   }, [route.name]);
 
@@ -72,8 +79,56 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> = ({
     navigation.goBack();
   }, [navigation]);
 
-  return (
-    <SafeAreaView style={[extraStyles, localStyles.main, { backgroundColor: customTheme.primary }]}>
+  const headerStyles = [uniStyles.headerContainer, {backgroundColor: customTheme.primary}]
+
+  if (shouldShowChildren()) {
+    return (
+      <Appbar.Header style={headerStyles}>
+        <HeaderView extraStyles={localStyles.leftExtraStyles}>
+          {shouldShowBackIcon() && (
+            <Appbar.Action
+              icon={backIconName}
+              style={localStyles.backIcon}
+              color={customTheme.text}
+              size={27}
+              iconColor={customTheme.headerIconColors}
+              onPress={navigateBack}
+            />
+          )}
+        </HeaderView>
+
+        <HeaderView extraStyles={localStyles.middleExtra}>
+          {childrenMiddle}
+        </HeaderView>
+
+        <HeaderView extraStyles={localStyles.rightExtra}>
+          {childrenRight}
+        </HeaderView>
+
+      </Appbar.Header>
+    );
+  }
+}
+
+export default memo(DefaultHeader);
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+return (
+    <View style={[extraStyles, localStyles.main, { backgroundColor: customTheme.primary }]}>
       {shouldShowChildren() && (
         <Appbar.Header style={uniStyles.headerContainer}>
           <HeaderView extraStyles={localStyles.leftExtraStyles}>
@@ -98,11 +153,7 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> = ({
           </HeaderView>
         </Appbar.Header>
       )}
-    </SafeAreaView>
-  );
-};
-
-export default memo(DefaultHeader);
+    </View>
 
 
 
@@ -113,7 +164,8 @@ export default memo(DefaultHeader);
 
 
 
-/*
+
+
 const DefaultHeader = (
     // @ts-ignore
     { childrenMiddle, childrenRight, extraStyles }

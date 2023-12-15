@@ -131,6 +131,7 @@ export const userStyles = StyleSheet.create({
         borderRadius: 14,
         elevation: 20,
         paddingVertical: 4,
+        paddingHorizontal: 7,
         addingHorizontal: 7,
         marginVertical: 10
     },
@@ -141,5 +142,6 @@ export const userStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-    }
+    },
+
 })

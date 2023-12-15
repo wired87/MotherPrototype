@@ -15,7 +15,7 @@ import {HeadingText} from "../../../components/text/HeadingText";
 import {DefaultText} from "../../../components/text/DefaultText";
 import {DefaultInput} from "../../../components/input/DefaultInput";
 import {DefaultButton} from "../../../components/buttons/DefaultButton";
-import {PrimaryContext} from "../../Context";
+import {PrimaryContext, ThemeContext} from "../../Context";
 
 const errorMessages = [
     {
@@ -33,6 +33,7 @@ const errorMessages = [
 ]
 
 const EmailChange = () => {
+  // State
   const [currentPassword, setCurrentPassword] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [error, setError] = useState("");
@@ -41,8 +42,14 @@ const EmailChange = () => {
   const [awaitConfirmation, setAwaitConfirmation] = useState(false);
   const [reAuth, setReAuth] = useState(false);
 
-  const { setLoading, loading } = useContext(PrimaryContext);
+  // Context
+  const { setLoading } = useContext(PrimaryContext);
+  const { customTheme } = useContext(ThemeContext);
 
+  // Styles
+  const mainContainerStyles =
+    [userStyles.main_container, {backgroundColor: customTheme.primary}];
+  const moreTextStyles = {color: customTheme.text};
   // @ts-ignore
   const text = useSelector(state => state.text.value)
 
@@ -54,11 +61,6 @@ const EmailChange = () => {
       // @ts-ignore
       const credential = EmailAuthProvider.credential(user?.email, currentPassword);
       if (newEmail.includes("@") && newEmail.length > 0) {
-          /*let action = {
-              type: 'LOADING',
-              payload: true
-          };
-          dispatch(action); loading indicator starts */
           setLoading(true);
           console.log("new email: ", newEmail);
           try {
@@ -68,8 +70,9 @@ const EmailChange = () => {
                   setReAuth(true);
                   // @ts-ignore
                   verifyBeforeUpdateEmail(user, newEmail)
-                    .then(() => {  // second aruemnt is a redirect url to rediret after confirmation
-                        user?.reload()
+                    .then(() => {
+                        user?.reload();
+                        setError("");
                         console.log("ReAuth sent. Await confirmation...");
                         setReAuth(false);
                         setAwaitConfirmation(true);
@@ -79,11 +82,6 @@ const EmailChange = () => {
               }).catch(error => {
                   setError(error.message);
                   console.log("ReAuth error: ", error.message);
-                 /* let action = {
-                      type: 'LOADING',
-                      payload: false
-                  };
-                  dispatch(action); // loading indicator starts */
                 setLoading(false);
               });
           } catch (error: unknown) {
@@ -93,30 +91,29 @@ const EmailChange = () => {
             }
           }
       } else {
-          setError("Invalid E-Mail format. Please try again.");
+        setError("Invalid E-Mail format. Please try again.");
       }
   };
 
   useEffect(() => {
     if (user?.emailVerified && awaitConfirmation) {
-      /*let action = {
-        type: 'LOADING',
-        payload: false
-      };
-      dispatch(action); */
       setLoading(false);
       setModalVisible(false);
       setSuccess(true);
       setAwaitConfirmation(false);
     }
-  }, [])
+  }, []);
+
+  const errorText = useMemo(() => {
+    return <DefaultText text={error} moreStyles={{color: customTheme.errorText}} />
+  }, [error]);
 
   const matchedError =
     errorMessages.find(item => error.includes(item.error));
 
   const extraContent = useMemo(() => {
     if (reAuth) {
-      return <DefaultText text={"Reauthentication successful..."} moreStyles={undefined}/>
+      return <DefaultText text={"Authentication successful..."} moreStyles={undefined}/>
     } else if (awaitConfirmation) {
       return (
         <View style={{gap: 50}}>
@@ -127,22 +124,22 @@ const EmailChange = () => {
       );
     } else if (success) {
       return <DefaultText
-        text={"Your E-Mail Address has been successfully confirmed."}
-        moreStyles={undefined}
-      />
+                text={"Your E-Mail Address has been successfully confirmed."}
+                moreStyles={undefined}
+              />
     } else if (matchedError) {
       return <DefaultText
         text={matchedError.message}
         moreStyles={userStyles.errormessageStyles}
       />
     }
-  }, [matchedError, success, awaitConfirmation, reAuth, newEmail])
+  }, [matchedError, success, awaitConfirmation, reAuth, newEmail]);
 
   return (
-    <SafeAreaView style={userStyles.main_container}>
+    <SafeAreaView style={mainContainerStyles}>
       <KeyboardAvoidingView style={userStyles.infoContainer}>
         <HeadingText text={text.changeEmail} extraStyles={undefined} />
-        <DefaultText text={"current E-Mail: "+ user?.email} moreStyles={undefined} />
+        <DefaultText text={"current E-Mail: "+ user?.email} moreStyles={moreTextStyles} />
         <DefaultInput
           placeholder={"New E-Mail Address"}
           value={newEmail}
@@ -164,6 +161,7 @@ const EmailChange = () => {
         />
 
         {extraContent}
+        {error.length > 0 && !error.includes(text.success) && errorText}
 
         <DefaultButton
           extraStyles={[userStyles.changeBtn, {marginTop: 30}]}
@@ -171,10 +169,12 @@ const EmailChange = () => {
           text={"Confirm"}
           secondIcon={undefined}
         />
+
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
+
 export default memo(EmailChange);
 
 

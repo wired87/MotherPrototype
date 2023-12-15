@@ -16,8 +16,11 @@ export const SetLoading = (state = loading, action: { type: any; payload: any; }
     }
 }
 
+
+*/
+
 const historySent = {
-    value: false
+  value: false
 };
 
 export const HistorySent = (state = historySent, action: { type: any; payload: any; }) => {
@@ -31,7 +34,7 @@ export const HistorySent = (state = historySent, action: { type: any; payload: a
             return state;
     }
 }
-
+/*
 
 const purchaseAccess = {
     value: false

@@ -18,3 +18,7 @@ export const icon = () => ({
 export const screens = () => ({
     type: "SCREENS"
 })
+
+export const historySent = () => ({
+    type: "HISTORY_SENT"
+})

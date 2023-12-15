@@ -158,7 +158,7 @@ export const createMessageObject = (
       "timeToken": getCurrentTime(),
       "publisher": publisher,
       "class": className,
-      "user_id": user.uid || "1",
+      "user_id": user?.uid || "1",
       "type": type
     }
   );

@@ -1,14 +1,12 @@
 import {ActivityIndicator, View, StyleSheet} from "react-native";
 import {DefaultText} from "../../../components/text/DefaultText";
-import {useDispatch, useSelector} from "react-redux";
 import {HeadingText} from "../../../components/text/HeadingText";
 import {DefaultInput} from "../../../components/input/DefaultInput";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useMemo, useState} from "react";
 import {DefaultButton} from "../../../components/buttons/DefaultButton";
-import {themeColors} from "../../../colors/theme";
 import {getAuth, sendPasswordResetEmail} from "firebase/auth";
 import {useNavigation} from "@react-navigation/native";
-import {AuthContext, ThemeContext} from "../../Context";
+import {AuthContext, PrimaryContext, ThemeContext} from "../../Context";
 
 const localStyles = StyleSheet.create(
   {
@@ -17,6 +15,7 @@ const localStyles = StyleSheet.create(
       justifyContent: "flex-start",
       alignItems: "center",
       flexDirection: "column",
+      paddingTop: 150,
       elevation: 20,
       paddingVertical: 50,
     }
@@ -25,59 +24,61 @@ const localStyles = StyleSheet.create(
 export const EmailConfirmationFP = () => {
 
   const {email, setEmail} = useContext(AuthContext);
+  const { loading, setLoading } = useContext(PrimaryContext);
+  const { customTheme } = useContext(ThemeContext);
+
+  const errorTextColor = { color: customTheme.errorText } //
 
   const [errorMessage, setError] =
-    useState<{ code: string; helpText: string } | null>(null);
+    useState<{ code: string; helpText: string; message: string; } | null>(null);
   const [finalError, setFinalError] =
     useState<{ code: string; helpText: string } | null>(null);
-  const { customTheme } = useContext(ThemeContext);
-  // @ts-ignore
-  const loading = useSelector(state => state.loading.value)
-
 
   const navigation = useNavigation()
   const auth = getAuth();
 
-  const dispatch = useDispatch()
   const sendOTP = async (email: string) => {
-    dispatch({
-      type: "LOADING",
-      payload: true
-      }
-    )
+    setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email)
         .then(() => {
           // @ts-ignore
             navigation.navigate("NewPasswordConfirmation")
         })
-    } catch (e) {
-      // @ts-ignore
-      setError(e.message)
-
-
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        // @ts-ignore
+        setError(e.message.toString());
+      }
     } finally {
-      dispatch({
-          type: "LOADING",
-          payload: false
-        }
-      )
+      setLoading(false);
       console.log("errorMessage", errorMessage);
       console.log("finalError: ", finalError)
     }
   };
 
-  useEffect(() => {
-    console.log("error: ", errorMessage)
-  }, []);
+  const errorMessageText = useMemo(() => {
+     if(errorMessage) {
+       return (
+         <DefaultText
+           text={errorMessage}
+           moreStyles={errorTextColor}
+         />
+       )
+     }else {
+       return(
+         <DefaultText
+           text={"We will send you a confirmation Mail"}
+           moreStyles={{color: customTheme.text}}/>
+       );
+     }
+  }, [errorMessage])
 
-  return (
-    <View
-      style={[localStyles.main, {backgroundColor: customTheme.primary}]}>
-
-      {loading ? (
-        <ActivityIndicator size={"large"}/>
-      ) : (
+  const content = useMemo(() => {
+    if (loading) {
+      return (<ActivityIndicator size={"large"}/>);
+    } else {
+      return(
         <>
           <HeadingText
             text={"Password reset"}
@@ -96,23 +97,23 @@ export const EmailConfirmationFP = () => {
             keyboardType={"email-address"}
             extraStyles={undefined}
           />
-          <DefaultText
-            text={"We will send you a confirmation Mail"}
-            moreStyles={{color: customTheme.text}}/>
+
+          {errorMessageText}
           <DefaultButton
-            extraStyles={undefined} // @ts-ignore
+            extraStyles={undefined}
             onPressAction={() => sendOTP(email)}
             text={"Send Mail"}
             secondIcon={undefined}
           />
-          {errorMessage ? (
-            <DefaultText
-              text={errorMessage}
-              moreStyles={{ color: themeColors.deleteRed }}
-            />
-          ):null}
         </>
-      )}
+      )
+    }
+  }, [loading, email])
+
+  return (
+    <View
+      style={[localStyles.main, {backgroundColor: customTheme.primary}]}>
+      {content}
     </View>
   );
 }

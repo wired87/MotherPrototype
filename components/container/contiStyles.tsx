@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 20,
-        backgroundColor: "rgba(191,0,0,.2)"
+        backgroundColor: "rgba(0,0,0,.2)",
     },
     chatMessageInput: {
         width: windowWidth * .8,

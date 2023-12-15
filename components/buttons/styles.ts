@@ -59,9 +59,7 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         paddingVertical: 7,
         paddingHorizontal: 20,
-        marginTop: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
+        textAlign: "center",
         marginHorizontal: 15,
     },
     btnTxtProfile :{

@@ -1,30 +1,57 @@
-import React from "react";
+import React, {memo, useContext} from "react";
 import { DefaultContainer } from "../../../components/container/DefaultContainer";
 import { HeadingText } from "../../../components/text/HeadingText";
 import { DefaultText } from "../../../components/text/DefaultText";
 import { DefaultButton } from "../../../components/buttons/DefaultButton";
 import { useNavigation } from "@react-navigation/native";
-import { themeColors } from "../../../colors/theme";
 import {pwResetStyles as styles} from "./forgotpwstyles"
+import { StyleSheet } from "react-native";
+import {ThemeContext} from "../../Context";
 
+const confirmText: string = "We have sent you a confirmation Mail.\n" +
+  "          Please close this window and follow the steps as described.";
+const goBackText: string = "Go Back";
+const confirmPasswordText: string = "Choose your new Password";
 
-export const NewPasswordConfirmation = () => {
+const localStyles = StyleSheet.create(
+  {
+    main: {
+      flex: 1,
+      width: "100%",
+      height: "100%",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      flexDirection: "column",
+      paddingTop: 150,
+      elevation: 20,
+      paddingVertical: 50,
+    },
+
+  }
+)
+
+const NewPasswordConfirmation = () => {
+
+  const { customTheme } = useContext(ThemeContext);
+
   const navigation = useNavigation();
 
+  const moreTextStyles = {textAlign: "center", color: customTheme.errorText};
+  const mainExtraStyles: any[] = [localStyles.main, {backgroundColor: customTheme.primary}];
+
   return (
-    <DefaultContainer extraStyles={{marginTop: 150}}>
-      <HeadingText text="Confirm your Password" extraStyles={undefined} />
+    <DefaultContainer extraStyles={mainExtraStyles}>
+      <HeadingText text={confirmPasswordText} extraStyles={undefined} />
       <DefaultContainer extraStyles={styles.numPadView} >
-        {/*// @ts-ignore*/}
         <DefaultText
-          moreStyles={{textAlign: "center", color: themeColors.deleteRed}}
-          text={"We have send you a confirmation Mail.\n" +
-            "          Please close this window and follow the steps as described."} />
+          moreStyles={moreTextStyles}
+          text={confirmText}
+        />
         <DefaultButton
           extraStyles={undefined}
           // @ts-ignore
           onPressAction={() => navigation.navigate("Login")}
-          text={"Go Back"}
+          text={goBackText}
           secondIcon={undefined}
         />
       </DefaultContainer>
@@ -32,7 +59,7 @@ export const NewPasswordConfirmation = () => {
   );
 };
 
-
+export default memo(NewPasswordConfirmation);
 
 /*
 

@@ -94,18 +94,14 @@ export const FunctionContext = createContext(
 
   }
 );
-/*
+
 export const SettingsContext = createContext({
   status: 0,
   setStatus: (() => {}) as Dispatch<SetStateAction<number>>,
 
-  statusError: false,
-  setStatusError: (() => {}) as Dispatch<SetStateAction<boolean>>,
-
 });
-*/
-////////////////// THEME
 
+////////////////// THEME
 
 export interface Theme {
   primary: string;
@@ -122,6 +118,9 @@ export interface Theme {
   view: string;
   bottomSheetBg: string;
   primaryButton: string;
+  secondaryTextInput: string;
+  secondaryBorderColor: string;
+  errorText: string;
 }
 
 export const lightModeTheme: Theme = {
@@ -138,7 +137,10 @@ export const lightModeTheme: Theme = {
   view: "#dfe3e8",
   bottomSheetBg: "#c2c3c5",
   placeholder: "rgba(0, 0, 0, .6)",
-  primaryButton: "#01152a"
+  primaryButton: "#01152a",
+  secondaryTextInput: "rgba(255,255,255, 1)",
+  secondaryBorderColor: "rgba(0,0,0,.2)",
+  errorText: 'rgb(110,0,0)',
 
 }
 
@@ -147,7 +149,7 @@ export const darkModeTheme: Theme = {
   secondary: "#d6d9da",
   borderColor: "rgba(241,236,236,0.75)",
   text: "rgb(255,255,255)",
-  navigatorColor: "rgb(91,91,91)",
+  navigatorColor: "#f0f3f7",
   modalColor: "rgba(37,38,38,0.76)",
   secondaryContainerBackground: "rgba(255,255,255,0.2)",
   switchedSecondaryContainerBackground: "rgb(24,24,24)",
@@ -156,9 +158,12 @@ export const darkModeTheme: Theme = {
   view: "rgba(66,66,66,0.1)",
   bottomSheetBg: "#38393a",
   placeholder: "rgba(255, 255, 255, .6)",
-  primaryButton: "#232f44"
-
+  primaryButton: "#232f44",
+  secondaryTextInput: "rgba(255,255,255, .6)",
+  secondaryBorderColor: "rgba(255,255,255, .6)",
+  errorText: 'rgb(148,27,27)',
 }
+
 export interface ThemeContextType {
   customTheme: Theme
 }

@@ -1,24 +1,32 @@
-import {useEffect, useState} from "react";
 
 import Chroma from "chroma-js";
 import {LinearGradient} from "expo-linear-gradient";
+import {memo} from "react";
 
 const INTERVAL = 2;
 
 // @ts-ignore
-export const DefaultLinearGradient = ({ children, linearViewStyles, customTopColor, customBottonColor }) => {
+const DefaultLinearGradient = ({ children, linearViewStyles, customTopColor, customBottonColor }) => {
 
   const TOP_COLORS = customTopColor ? customTopColor :  ['#9c0582', '#0e198c', '#1d155e', '#2A3BEF', '#662250', '#6b0e5e'];
   const BOTTOM_COLORS = customBottonColor ? customBottonColor :  ['#0e198c', '#1d155e', '#4f0c3d', '#7F00FF', '#0e198c'];
-  const GRADIENT_COLOR_LENGTH = 700;
+
+  return(
+    <LinearGradient style={linearViewStyles} colors={[TOP_COLORS , BOTTOM_COLORS]} >
+      {children}
+    </LinearGradient>
+  );
+}
+export default memo(DefaultLinearGradient);
+
+/*  const GRADIENT_COLOR_LENGTH = 700;
+
   const TOP_COLORS_SPECTRUM = Chroma.scale(TOP_COLORS).colors(GRADIENT_COLOR_LENGTH);
   const BOTTOM_COLORS_SPECTRUM = Chroma.scale(BOTTOM_COLORS).colors(GRADIENT_COLOR_LENGTH);
-
   const [topIndex, setTopIndex] = useState(0);
   const [bottomIndex, setBottomIndex] = useState(0);
-  const [colorTop, setColorTop] = useState(TOP_COLORS_SPECTRUM[0]);
-  const [colorBottom, setColorBottom] = useState(BOTTOM_COLORS_SPECTRUM[0]);
-
+  const [colorTop, setColorTop] = useState(TOP_COLORS_SPECTRUM);
+  const [colorBottom, setColorBottom] = useState(BOTTOM_COLORS_SPECTRUM);
   useEffect(() => {
     const interval = setInterval(() => {
       let newTopIndex = topIndex + 1;
@@ -38,11 +46,4 @@ export const DefaultLinearGradient = ({ children, linearViewStyles, customTopCol
     return () => clearInterval(interval); // Clear the interval on component unmount
 
   }, [topIndex, bottomIndex]);
-
-
-  return(
-    <LinearGradient style={linearViewStyles} colors={[colorTop , colorBottom]} >
-      {children}
-    </LinearGradient>
-  );
-}
+ */

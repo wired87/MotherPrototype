@@ -22,22 +22,27 @@ const localStyles = StyleSheet.create(
     centeredText: {
       gap: 20,
       fontSize: 30,
-      color: "rgba(0, 0, 0, .4)"
     },
     defaultContainer: {
       justifyContent: "center",
       alignItems: "center",
-      flex: 1
+      flex: 1,
     },
     fullPercent: {
       width: "100%",
-      height: "100%"
+      height: "100%",
     },
     columnReverse: {
       flexDirection: 'column-reverse'
     },
     customFontSize: {
       fontSize: 10,
+    },
+    main: {
+      paddingTop: 0,
+      flex: 1,
+      marginBottom: 0,
+      flexDirection: "column"
     }
   }
 )
@@ -51,10 +56,13 @@ export const ChatMain = (
   const { messages } = useContext(InputContext);
   const { customTheme } = useContext(ThemeContext);
 
-  const insets = useSafeAreaInsets();
-
+  // Styles
+  const mainViewStyles =
+    [localStyles.main, {backgroundColor: customTheme.primary}];
+  const aixTextStyles =
+    [localStyles.centeredText, {color: customTheme.secondaryBorderColor}]
   // @ts-ignore
-  const renderItem = useCallback(({ item, index }) => {
+  const renderItem = useCallback(({item, index}) => {
     return item.type === "text" ? (
       <SingleMessageMemo
         key={index}
@@ -75,10 +83,9 @@ export const ChatMain = (
 
 
   return(
-    <SafeAreaView style={{ backgroundColor: customTheme.primary, flex: 1, paddingTop: insets.top }}>
+    <SafeAreaView style={mainViewStyles}>
       <KeyboardAvoidingView
-        style={{ paddingTop: insets.top, backgroundColor: customTheme.primary, flex: 1,
-          marginBottom: Platform.OS === "ios" ? 20 : 0, flexDirection: "column" }}>
+        style={mainViewStyles}>
 
         <View style={localStyles.defaultContainer}>
           <View style={
@@ -90,7 +97,8 @@ export const ChatMain = (
               }
             ]
           } >
-          <Text style={localStyles.centeredText}>
+
+          <Text style={aixTextStyles}>
             AIX
           </Text>
 
@@ -111,9 +119,6 @@ export const ChatMain = (
     </SafeAreaView>
   )
 }
-
-
-
 
 /*
               item.type === "text" ? (

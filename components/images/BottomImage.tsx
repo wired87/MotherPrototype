@@ -1,18 +1,28 @@
-import {Image, Text, View} from "react-native";
+import {Text, View, StyleSheet} from "react-native";
 import React, {useContext} from "react";
 import {imgStyles} from "./imgStyles";
-// @ts-ignore
-import logo_final1 from "../../assets/images/logo_final1.png";
 import {ThemeContext} from "../../screens/Context";
+
+const localStyles = StyleSheet.create(
+  {
+    mainText: {
+      fontSize: 28,
+      fontFamily: "wizardFont",
+    }
+  }
+)
+
 
 export const BottomImage = () => {
 
   const {customTheme} = useContext(ThemeContext);
+  const textStyles = [localStyles.mainText, {color: customTheme.text}];
+  const poweredTextStyles = [imgStyles.poweredTxt, {color: customTheme.text}];
 
   return(
     <View style={imgStyles.poweredBy}>
-      <Text style={[imgStyles.poweredTxt, {color: customTheme.text}]}>Powered By</Text>
-      <Image style={imgStyles.logoBottom} source={logo_final1}/>
+      <Text style={poweredTextStyles}>Powered By</Text>
+      <Text style={textStyles}>codingWizard</Text>
     </View>
   );
 }

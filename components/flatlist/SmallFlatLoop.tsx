@@ -77,7 +77,6 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
         <RoundedButton
           item={item}
           action={() => handleAction(item)}
-          list={list}
         />
       )}
       renderSectionHeader={({ section: { title } }) => (

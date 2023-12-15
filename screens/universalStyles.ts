@@ -2,16 +2,19 @@ import {themeColors} from "../colors/theme";
 
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 import {Dimensions, Platform, StyleSheet} from "react-native";
 
 export const uniStyles = StyleSheet.create({
     headerContainer: {                                                       // Header
         flexDirection: "row",
-        zIndex: 1000,
-        backgroundColor: "transparent",
-        paddingVertical: Platform.OS === "ios" ? 20 : 0
+        zIndex: 100,
+        justifyContent: "center",
+        alignItems: "center",
+        height: 40,
+        top: 5,
+        position: "absolute",
+
     },
     containerHeader: {
         alignItems: 'center',
@@ -109,4 +112,19 @@ export const uniStyles = StyleSheet.create({
         margin: 0,
         backgroundColor: "transparent"
     },
+    secondMain: {
+        justifyContent: "flex-start",
+        flex: 1,
+        ...StyleSheet.absoluteFillObject,
+        alignItems: "center",
+        paddingBottom: 5,
+        borderBottomWidth: 1,
+        borderBottomColor: themeColors.borderThin,
+        marginTop: 40
+    },
+    main: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    }
 });

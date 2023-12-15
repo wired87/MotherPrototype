@@ -239,6 +239,8 @@ export const styles = StyleSheet.create({
         shadowRadius: 4,
         padding: 16,
         shadowColor: "#FFFFFF",
+        width: windowWidth * .8,
+        flexDirection: "row",
     },
 
 

@@ -7,7 +7,7 @@ import {
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import React, {useCallback, useContext, useEffect } from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 
 import {
   getAuth,
@@ -15,12 +15,12 @@ import {
   signInWithCredential,
   onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
 } from "firebase/auth";
+
 import * as Google from "expo-auth-session/providers/google";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../components/input/DefaultInput";
 import {HeadingText} from "../../components/text/HeadingText";
 import {useSelector} from "react-redux";
-import {themeColors} from "../../colors/theme";
 
 // @ts-ignore
 import {userStyles as styles} from "./userStyles";
@@ -32,9 +32,7 @@ import {AuthContext, PrimaryContext, ThemeContext} from "../Context";
 // Text
 const googleIcon: string = "google"
 const success: string = "success";
-const errorTextMessage: string = "There is something wrong with your input"
 const forgotPassword: string = "ForgotPassword"
-
 
 // component values
 const iconSize: number = 26;
@@ -42,28 +40,22 @@ const isIos = Platform.OS === 'ios';
 const auth = getAuth();
 const firebaseAuth = FIREBASE_AUTH;
 
-const errorText = (text: any) => {
-  return (
-    <DefaultText text={text} moreStyles={{color: themeColors.deleteRed}}/>
-  );
-}
-
 export const AuthUniversal = ({
 // @ts-ignore
   navigation, googleAuthButtonAction
 }) => {
   const route = useRoute()
+  const [error, setError] = useState("")
   const { user, setLoading } = useContext(PrimaryContext);
 
-  const { email,
+  const {
+    email,
     setEmail,
     password,
     setPassword,
-    error,
-    setError } = useContext(AuthContext);
+  } = useContext(AuthContext);
 
   const login: boolean = route.name === "Login";
-
   const buttonText: string = login ? "Sign in with Google" : "Sign up with Google";
 
   const[request, response, promptAsync] = Google.useAuthRequest({
@@ -77,12 +69,13 @@ export const AuthUniversal = ({
       const credential = GoogleAuthProvider.credential(id_token); //response.params.accessToken
       signInWithCredential(getAuth(), credential).then(() => console.log("success"));
     }
-  }, [response])
+  }, [response]);
 
   // @ts-ignore
-  const text = useSelector(state => state.text.value)
+  const text = useSelector(state => state.text.value);
+
   // @ts-ignore
-  const screen = useSelector(state => state.screens.value)
+  const screen = useSelector(state => state.screens.value);
 
   useEffect(() => {
     if (response?.type === 'success') {
@@ -106,28 +99,33 @@ export const AuthUniversal = ({
         navigation.navigate("AuthNavigator", {screen: screen.account});
       }
     });
-  }, [user]); // beforre password, email, error
+  }, [user]);
 
   const onSignIn = useCallback(async () => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log("User Input E-Mail:", email);
+      console.log("User Input Password:", password);
+    }
+
     setLoading(true);
-    //dispatch({type: 'LOADING', payload: true});
+
     try {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          setError(text.success);
-        })
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message);
-        console.log("please check your Input and try again. \n" + error.message);
-      }
+      await signInWithEmailAndPassword(auth, email, password)
+      setError(text.success);
+    } catch (e: unknown) {
+      // @ts-ignore
+      setError(e.message);
+      console.log("Error in signIn function occurred", e)
     } finally {
       setLoading(false);
-      //dispatch({type: 'LOADING', payload: false});
       setPassword("");
       setEmail("");
     }
   }, [email, password])
+
+  const errorText = useMemo(() => {
+    return <DefaultText text={error} moreStyles={{color: customTheme.errorText}}/>
+  }, [error])
 
   const signUp = useCallback(async () => {
     if (process.env.NODE_ENV === 'development') {
@@ -136,8 +134,8 @@ export const AuthUniversal = ({
     }
     try {
       setLoading(true);
-      //dispatch({ type: 'LOADING', payload: true });
       const user_response = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+
       setError(success);
       if (process.env.NODE_ENV === 'development') {
         console.log("user: ", user_response);
@@ -147,13 +145,15 @@ export const AuthUniversal = ({
         setError(error.message)
         console.error("Error in signUp function:", error.message)
       }
+      console.log("Error while authenticate the user ")
     } finally {
       setLoading(false);
-      //dispatch({ type: 'LOADING', payload: false });
       setPassword("");
       setEmail("");
     }
   }, [password, email])
+
+  const textColor = {color: customTheme.text}
 
   return (
     <KeyboardAvoidingView style={[styles.main, { backgroundColor: customTheme.primary }]}>
@@ -181,21 +181,22 @@ export const AuthUniversal = ({
             extraStyles={styles.extraMargin}
           />
 
-          {error.length > 0 && !error.includes(text.success) && errorText(errorTextMessage)}
+          {error.length > 0 && !error.includes(text.success) && errorText}
+
           {login && (
             <Pressable
               style={[styles.forgotPasswordButton, { borderColor: customTheme.borderColor }]}
               onPress={() => navigation.navigate(forgotPassword)}>
-              <Text style={{color: customTheme.text}}>Forgot Password?</Text>
+              <Text style={textColor}>Forgot Password?</Text>
             </Pressable>
           )}
 
           <DefaultButton
             text={authButtonText}
             onPressAction={() => login ? onSignIn() : signUp()}
-            extraStyles={undefined} secondIcon={undefined} />
+            extraStyles={styles.extraMargin} secondIcon={undefined} />
 
-          <DefaultText text={"Or"} moreStyles={{ color: customTheme.text }} />
+          <DefaultText text={"Or"} moreStyles={textColor} />
 
         </View>
         <View style={styles.alternativeAuthMethodContainer}>

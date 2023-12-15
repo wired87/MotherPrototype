@@ -1,45 +1,46 @@
-import React, {memo, useCallback, useContext, useState} from 'react';
+import React, {memo, useCallback, useContext, useMemo, useState} from 'react';
 import { View } from 'react-native';
 import { EmailAuthProvider, updatePassword, reauthenticateWithCredential } from 'firebase/auth';
 import {useSelector} from "react-redux";
 
-import LottieView from 'lottie-react-native';
-
-// animations
-import successLottie from "../../assets/animations/successLottie.json"
-import failLottie from "../../assets/animations/failLottie.json"
 
 import {DefaultInput} from "../../components/input/DefaultInput";
 import {HeadingText} from "../../components/text/HeadingText";
 import {DefaultButton} from "../../components/buttons/DefaultButton";
-import { styles } from '../../components/modals/styles';
 import {userStyles} from "./userStyles";
-import {AlertBox} from "../../components/modals/errorBox";
-import {AuthContext, PrimaryContext} from "../Context";
+import {AuthContext, PrimaryContext, ThemeContext} from "../Context";
 import {useNavigation} from "@react-navigation/native";
+import {DefaultText} from "../../components/text/DefaultText";
 
 const  PasswordChangeComponent = () => {
 
   const [newPassword, setNewPassword] = useState('');
-
+  const [error, setError] = useState("");
   const navigation = useNavigation();
   const { user, setLoading } = useContext(PrimaryContext);
 
   const {
       password, setPassword,
-      error, setError ,
-      modalVisible, setModalVisible
+      setModalVisible
   } = useContext(AuthContext);
+
+  const { customTheme } = useContext(ThemeContext);
+
+  // Styles
+  const mainContainerStyles =
+    [userStyles.main_container, {backgroundColor: customTheme.primary}];
+  const moreTextStyles = {color: customTheme.text};
 
   // @ts-ignore
   const text = useSelector(state => state.text.value)
 
+
+  const errorText = useMemo(() => {
+    return <DefaultText text={error} moreStyles={{color: customTheme.errorText}}/>
+  }, [error])
+
+
   const handleChangePassword = useCallback(async () => {
-    /*  let action = {
-          type: 'LOADING',
-          payload: true
-      };
-      dispatch(action);*/
     setLoading(false);
     console.log("user: ", user);
     console.log("current password: ", password);
@@ -59,17 +60,12 @@ const  PasswordChangeComponent = () => {
       }
       setModalVisible(true);
     } finally {
-      /*  action = {
-            type: 'LOADING',
-            payload: false
-        };
-        dispatch(action);*/
       setLoading(false);
     }
   }, [])
 
   return (
-    <View style={userStyles.main_container}>
+    <View style={mainContainerStyles}>
       <View style={userStyles.infoContainer}>
         <HeadingText text={text.changePassword} extraStyles={undefined} />
 
@@ -91,6 +87,8 @@ const  PasswordChangeComponent = () => {
           editable={true} keyboardType={undefined} extraStyles={undefined}
         />
 
+        {error.length > 0 && !error.includes(text.success) && errorText}
+
         <DefaultButton
           onPressAction={handleChangePassword}
           text={text.changePassword}
@@ -98,24 +96,7 @@ const  PasswordChangeComponent = () => {
           extraStyles={undefined}
         />
 
-        <DefaultButton
-          extraStyles={userStyles.changeInfoBtn}
-          onPressAction={handleChangePassword}
-          text={"Change Password"}
-          secondIcon={undefined}
-        />
-
       </View>
-      <AlertBox
-        buttonText={text.goHomeText}
-        // @ts-ignore
-        redirectAction={() => navigation.navigate(text.navigatePasswordChange)}
-        errorAnimation={
-            <LottieView source={error ? failLottie : successLottie} style={styles.lottieAnimationViewContainer} />
-        }
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      />
     </View>
   );
 }

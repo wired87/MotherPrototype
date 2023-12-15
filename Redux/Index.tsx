@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import {
+  HistorySent,
   SetIcon,
   SetScreens,
   SetText,
@@ -10,6 +11,7 @@ export const allReducers = combineReducers(
     text: SetText,
     icon: SetIcon,
     screens: SetScreens,
+    historySent: HistorySent
     }
 );
 

@@ -4,16 +4,17 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Provider as ReduxProvider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
+import * as SplashScreen from 'expo-splash-screen';
 
 import {PrimaryContext, Theme, ThemeContext, lightModeTheme, darkModeTheme} from "./screens/Context";
 import { store } from "./Redux/store";
 import NavigationMain from "./components/navigation/Footer";
 import { getDarkmode } from "./components/container/modalContainers/DarkMode";
 import * as SecureStore from "expo-secure-store";
+import * as Font from "expo-font";
+
 import firebase from "firebase/compat";
 
-
-//  const bottomSheetRef = React.createRef<BottomSheetMethods>();
 export default function App() {
 
   // PrimaryContext definitions
@@ -21,43 +22,66 @@ export default function App() {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [customTheme, setCustomTheme] = useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
   const [loading, setLoading] = useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
 
   // init DarkMode
   const toggleTheme = () => setDarkmode(!darkmode);
 
   useEffect(() => {
-    const loadDarkMode = async () => {
+    console.log("appIsReady", appIsReady)
+    const loadPreferences = async () => {
       try {
-        const storedThemePreference = await getDarkmode();
-        console.log("storedThemePreference", storedThemePreference, typeof storedThemePreference)
+        // Keep the splash screen visible while fetching fonts
+        await SplashScreen.preventAutoHideAsync();
+
+        console.log("Splashscreen initialized..");
+
+        await Font.loadAsync({
+          'JetBrainsMono': require('./assets/fonts/Roboto-Regular.ttf'),
+          'Roboto': require('./assets/fonts/Roboto-Regular.ttf'),
+          'wizardFont': require('./assets/fonts/poweredFont.otf'),
+        })
+
+        console.log("Fonts have been loaded..");
+        const storedThemePreference: string | false | null | true = await getDarkmode();
+
+        console.log("storedThemePreference", storedThemePreference, typeof storedThemePreference);
+
         if (storedThemePreference !== null) {
-          setDarkmode(storedThemePreference === "true")
+          console.log("storedThemePreference !== null");
+          setAppIsReady(true);
+          setDarkmode(storedThemePreference === "true");
+        }else {
+          setAppIsReady(true);
+          setDarkmode(false);
         }
-      } catch (e) {
-        console.error('Failed to load theme preference', e);
+
+      } catch (e: unknown) {
+        if (e instanceof Error) console.error("Cant load preferences", e.message);
+
+      } finally {
+        console.log("SplashScreen will be closed..");
+        await SplashScreen.hideAsync();
       }
-    };
-    loadDarkMode().then(() => console.log("Preferences successfully load"));
+    }
+    if (!(appIsReady)) loadPreferences().then(() => console.log("Fonts have been successfully loaded!"));
   }, []);
 
-
   useEffect(() => {
-    console.log("darkmodeAPP.tsx", darkmode)
-    console.log("customTheme", customTheme);
+    console.log("darkmodeAPP.tsx", darkmode);
     const updateDarkMode = async () => {
       try {
         await SecureStore.setItemAsync("darkmode", String(darkmode));
         console.log("DarkMode changed in main darkMode func to", darkmode);
+        const storedValue = await getDarkmode();
+        console.log("Stored value in Secure Store:", storedValue);
+        // update the colors here
+        setCustomTheme(darkmode ? darkModeTheme : lightModeTheme);
       } catch (e) {
         console.error('Error updating dark mode', e);
       }
     };
-    updateDarkMode()
-      .then(() => {
-        console.log("Successfully finished darkMode function..");
-        // update the colors here
-        setCustomTheme(darkmode? darkModeTheme : lightModeTheme)
-      });
+    if (appIsReady) updateDarkMode().then(() => console.log("Alright"));
   }, [darkmode]);
 
   return (
@@ -80,9 +104,21 @@ export default function App() {
 }
 
 /*
+  useEffect(() => {
+    const loadDarkMode = async () => {
+      try {
 
-
-
+        const storedThemePreference = await getDarkmode();
+        console.log("storedThemePreference", storedThemePreference, typeof storedThemePreference)
+        if (storedThemePreference !== null) {
+          setDarkmode(storedThemePreference === "true")
+        }
+      } catch (e) {
+        console.error('Failed to load theme preference', e);
+      }
+    };
+    loadDarkMode().then(() => console.log("Preferences successfully load"));
+  }, []);
 
 import {
   PaperProvider,

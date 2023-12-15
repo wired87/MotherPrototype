@@ -8,7 +8,7 @@ import {Logout} from "./Logout";
 import Login from "./Login";
 import {SignUp} from "./SignUp";
 import {EmailConfirmationFP} from "./ForgotPassword/EmailConfirmationFP";
-import {NewPasswordConfirmation} from "./ForgotPassword/NewPasswordConfirmation";
+import NewPasswordConfirmation from "./ForgotPassword/NewPasswordConfirmation";
 import {PrimaryContext} from "../Context";
 import React, {lazy, useContext, useMemo} from "react";
 import AuthHeader from "./AuthHeader";
