@@ -10,7 +10,6 @@ export const SignUp = (
   return(
     <AuthUniversal
       navigation={navigation}
-      googleAuthButtonAction={undefined} // change later to google auth signup
     />
   );
 }

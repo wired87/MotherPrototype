@@ -69,6 +69,9 @@ export const InputContext = createContext({
 
   userRecording: null as Recording | null,
   setUserRecording: (() => {}) as Dispatch<SetStateAction<any>>,
+
+
+
 });
 
 export const AuthContext = createContext({
@@ -132,7 +135,7 @@ export const lightModeTheme: Theme = {
   modalColor: "rgba(241,236,236,0.75)",
   secondaryContainerBackground: "rgba(250,250,250,0.75)",
   switchedSecondaryContainerBackground: "rgb(37,38,38)",
-  headerIconColors: "rgb(3,4,21)",
+  headerIconColors: "rgba(3,4,21, .7)",
   messageContainer: "#e1e4e7",
   view: "#dfe3e8",
   bottomSheetBg: "#c2c3c5",
@@ -153,7 +156,7 @@ export const darkModeTheme: Theme = {
   modalColor: "rgba(37,38,38,0.76)",
   secondaryContainerBackground: "rgba(255,255,255,0.2)",
   switchedSecondaryContainerBackground: "rgb(24,24,24)",
-  headerIconColors: "rgb(255,255,255)",
+  headerIconColors: "rgb(255,255,255, .7)",
   messageContainer: "rgba(105,103,103,0.4)",
   view: "rgba(66,66,66,0.1)",
   bottomSheetBg: "#38393a",

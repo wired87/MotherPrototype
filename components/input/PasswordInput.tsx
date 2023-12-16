@@ -32,7 +32,7 @@ export default interface DefaulttextInputTypes {
 }
 
 // @ts-ignore
-export const DefaultInput: React.FC<DefaulttextInputTypes> = (
+export const PasswordInput: React.FC<DefaulttextInputTypes> = (
   { placeholder,
     value,
     onChangeAction,
@@ -40,15 +40,35 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     keyboardType,
     extraStyles
   }) => {
+  const [secure, setSecure] = useState(true);
+  const [icon, setIcon]  = useState("eye-off-outline");
+  const buttonStyles = [{}, localStyles.visibleButton]
+  const { customTheme } = useContext(ThemeContext);
+
+
+  useEffect(() => {
+    if (secure) {
+      setIcon("eye-off-outline")
+    } else {
+      setIcon("eye-outline")
+    }
+  }, [secure])
+
+
+  const setPasswordVisibility = useCallback(() => {
+    setSecure(!secure);
+  },[secure])
+
 
   return(
+    <View style={localStyles.main}>
       <TextInput
         multiline={false}
         maxLength={100}
         style={[inputStyles.defaultInput, extraStyles || null]} //->account no mb!!!<-
         placeholder={placeholder}
         placeholderTextColor={themeColors.mediumDark}
-        secureTextEntry={false}
+        secureTextEntry={secure}
         autoCapitalize={"none"}
         value={value}
         onChangeText={onChangeAction}
@@ -56,6 +76,7 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
         keyboardType={keyboardType}
         blurOnSubmit={true}
       />
-
+      <IconButton onPress={setPasswordVisibility} iconColor={customTheme.headerIconColors} icon={icon} style={buttonStyles}/>
+    </View>
   );
 }

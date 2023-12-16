@@ -177,31 +177,3 @@ const EmailChange = () => {
 
 export default memo(EmailChange);
 
-
-
-/*
-      <AwaitConfirmationModal
-        action={
-          reAuth? (
-            <DefaultText text={"Reauthentication successful..."} moreStyles={undefined} />
-          ): awaitConfirmation? (
-            <View style={{gap: 50}}>
-              <DefaultText
-                text={"Confirmation sent to: " + newEmail + "\n This may take a few minutes."}
-                moreStyles={undefined} />
-            </View>
-          ): success? (
-            <DefaultText
-              text={"Your E-Mail Address " + newEmail + " has been successfully confirmed."}
-              moreStyles={undefined} />
-          ): matchedError? (
-            <DefaultText
-              text={matchedError.message}
-              moreStyles={localStyles.errormessageStyles}
-            />
-          ):null}
-        success={success}
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        lottieSource={successLottie}/>
- */

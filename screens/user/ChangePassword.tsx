@@ -16,7 +16,6 @@ const  PasswordChangeComponent = () => {
 
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState("");
-  const navigation = useNavigation();
   const { user, setLoading } = useContext(PrimaryContext);
 
   const {

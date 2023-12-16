@@ -11,7 +11,6 @@ export default function Login({navigation}) {
   return(
     <AuthUniversal
       navigation={navigation}
-      googleAuthButtonAction={undefined}
     />
   );
 }

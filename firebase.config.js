@@ -21,8 +21,6 @@ export const FIREBASE_AUTH = initializeAuth(FIREBASE_APP, {
 });
 export const FIRESTORE_DB = getFirestore(FIREBASE_APP);
 
-
-
 /*
 IOS: 638697637722-kgj3icuat9ggo05qn6uetsjsr7vcug27.apps.googleusercontent.com
 ANDROID: 638697637722-n50nno2tho7dob2hpd6fr186mdr48lio.apps.googleusercontent.com
