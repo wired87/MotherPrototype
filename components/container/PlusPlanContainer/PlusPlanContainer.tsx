@@ -1,13 +1,9 @@
-import {Pressable, Text, View, StyleSheet} from "react-native";
-import React, {useCallback, useContext, useMemo} from "react";
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {Text, View, StyleSheet} from "react-native";
+import React from "react";
 import {styles} from "../../styles";
 import {settingStyles} from "../../../screens/settings/settingStyles";
 import SingleProContainer from "./SingleProContainer";
-import {useDispatch, useSelector} from "react-redux";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {DefaultText} from "../../text/DefaultText";
-import {ThemeContext} from "../../../screens/Context";
+
 
 const localStyles = StyleSheet.create(
   {
@@ -27,10 +23,10 @@ const localStyles = StyleSheet.create(
 
 let optionsData = [
   {
-    text: "Free Access to GPT-4"
+    text: "Free Access to Google's Gemini Model"
   },
   {
-      text: "Unlimited Access and Messages"
+    text: "Unlimited Access and Messages"
   },
 ]
 const BOTTOM_COLORS = ['#0e198c', '#1d155e', '#7F00FF', '#0e198c'];

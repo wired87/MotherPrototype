@@ -1,0 +1,86 @@
+import React, {memo, useCallback, useMemo} from "react";
+import {Text, StyleSheet, View} from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {LinearGradient} from "expo-linear-gradient";
+
+const ls = StyleSheet.create(
+  {
+    bgView: {
+      backgroundColor: "black",
+      borderRadius: 22,
+      padding: 0,
+      marginTop: 200
+    },
+    button: {
+      paddingVertical: 15,
+      paddingHorizontal: 10,
+      borderRadius: 22,
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    icon:{
+      marginBottom: 10,
+      color: "white",
+    },
+    text:  {
+      color: "white",
+      fontSize: 19,
+
+    }
+  }
+)
+
+interface ToolitemButton {
+  buttonHeight?: number;
+  text?: string;
+  color: string;
+  extraText?: string;
+}
+
+const ToolitemButton: React.FC<ToolitemButton> = (
+  {
+    buttonHeight ,
+    text,
+    color,
+    extraText
+  }
+) => {
+
+  const extraTextComponent = useMemo(() => {
+    if (extraText) return <Text>{extraText}</Text>
+  }, [extraText]);
+
+  const finalButton = useCallback((className: any) => {
+    return [className, {width: 150, height: buttonHeight || 120}]
+  }, []);
+
+  return(
+    <View style={finalButton(ls.bgView)}>
+      <LinearGradient
+        style={finalButton(ls.button)}
+        colors={[color, "black"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: .1, y: .8 }}>
+        <MaterialCommunityIcons size={30} style={ls.icon} name={"text-to-speech"}/>
+          <Text style={ls.text}>{text || " Voice to Text"}</Text>
+        {extraTextComponent}
+      </LinearGradient>
+    </View>
+  );
+}
+
+
+export default memo(ToolitemButton);
+
+/*
+Tools * icon * text * container bg color * category
+-------------------
+
+https://callstack.github.io/react-native-paper/docs/guides/icons/
+
+text 2 speech * "text-to-speech" * Voice to Text * 'rgba(255,99,0,.6)' * General
+image classify * "bird" + "message-image" * What's on this Image? * "rgba(0,179,0, .7)" * General
+Application creator * "format-float-left" * Application creator (small text below: Let write AI your Job Application) * "rgba(0,0,98,0.7)" * Assistant
+idea finder * "lightbulb-on" * Idea finder (small text below: Creative or ask about Ideas with help of AI) * "rgba(99,14,99, .7)" * Creative
+ */

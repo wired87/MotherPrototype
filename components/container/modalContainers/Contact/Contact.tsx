@@ -1,12 +1,11 @@
 import React, {memo, useCallback, useContext, useMemo, useState} from 'react';
 import {BottomSheetScrollView, BottomSheetSectionList} from "@gorhom/bottom-sheet";
-import {AuthContext, SettingsContext, ThemeContext} from "../../../../screens/Context";
+import {AuthContext, PrimaryContext, SettingsContext, ThemeContext} from "../../../../screens/Context";
 import {useDispatch} from "react-redux";
 import axios from "axios/index";
 import {HeadingText} from "../../../text/HeadingText";
 import {DefaultText} from "../../../text/DefaultText";
 import {StyleSheet, View} from "react-native";
-import {DefaultInput} from "../../../input/DefaultInput";
 import {Picker} from "@react-native-picker/picker";
 import {inputStyles} from "../../../input/styles";
 import {MultilineInput} from "../../../input/MultilineTextField";
@@ -15,21 +14,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import {themeColors} from "../../../../colors/theme";
 import {BottomSheetTextInputCustom} from "../../../input/BottomSheettextInputCustom";
 
-const inputOptions = [
-  {
-    placeholder: "First Name",
-    name: "first_name",
-  },
-  {
-    placeholder: "Last Name",
-    name: "last_name"
-  },
-  {
-    placeholder: "E-Mail",
-    name: "e_mail"
-  }
-
-]
 
 const options = [
   "Security",
@@ -79,9 +63,9 @@ const localStyles = StyleSheet.create(
       marginVertical: 30,
       fontSize: 29
     },
-    contactContainer:{
+    contactContainer:{justifyContent: "center", alignItems: "center"}
 
-    }
+
   }
 );
 
@@ -94,15 +78,17 @@ const lastNameSetForm = "last_name";
 const emailPlaceholder = "E-Mail Address";
 const emailSetForm = "e_mail";
 
-
+const postUrl = __DEV__ ?
+  'http://192.168.178.51:8000/open/contact/' :
+  'http://wired87.pythonanywhere.com/open/contact/';
 
 const Contact = () => {
   const {setStatus} = useContext(SettingsContext);
   const {customTheme} = useContext(ThemeContext);
 
-  const dispatch = useDispatch()
   const [submit, setSubmit] = useState(false);
   const {error, setError} = useContext(AuthContext);
+  const { setLoading } = useContext(PrimaryContext);
 
   const matchedError =
     errorMessages.find(item => error.includes(item.error));
@@ -113,26 +99,35 @@ const Contact = () => {
 
   const onSubmit = useCallback(async(formData: object) => {
     setSubmit(true);
-    dispatch({
+    /*dispatch({
       type: 'LOADING',
       payload: true
-    });
+    });*/
+    setLoading(true);
     try {
       console.log("data sent: ", formData)
-      const response = await axios.post('http://192.168.178.51:8000/open/contact/', formData);
+      const response = await axios.post(postUrl, formData);
       console.log("response:" , response.data.status)
       setStatus(response.data.status);
     } catch (error: any) {
       setError(error.message);
       console.log(error.message);
     } finally {
-      dispatch({
-        type: 'LOADING',
-        payload: false
-      });
+      setLoading(true);
       setStatus(0);
     }
   }, []);
+
+
+  const matchedErrorText = useMemo(() => {
+    if (matchedError) {
+      return <DefaultText
+                text={matchedError.message}
+                moreStyles={localStyles.errormessageStyles}
+              />
+    }
+  }, [matchedError])
+
 
   const handleChange = (value: string, name: string | number) => {
     setForm({ ...form, [name]: value });
@@ -140,17 +135,14 @@ const Contact = () => {
 
   return (
     <BottomSheetScrollView
-      contentContainerStyle={{justifyContent: "center", alignItems: "center"}} style={{paddingVertical : 50, }} >
+      contentContainerStyle={localStyles.contactContainer} style={{ paddingVertical : 50 }}>
       <HeadingText
         text={"Contact"}
         extraStyles={localStyles.headingExtras}
       />
-      {(matchedError? (
-        <DefaultText
-          text={matchedError.message}
-          moreStyles={localStyles.errormessageStyles}
-        />
-      ):null)}
+
+      {matchedErrorText}
+
       <View>
         <BottomSheetTextInputCustom
           placeholder={firstNamePlaceholder}
@@ -162,6 +154,7 @@ const Contact = () => {
           keyboardType={undefined}
           value={(form as any)["first_name"]}
         />
+
         <BottomSheetTextInputCustom
           placeholder={lastNamePlaceholder}
           onChangeAction={(text: any) => handleChange(text, lastNameSetForm)}
@@ -171,6 +164,7 @@ const Contact = () => {
           keyboardType={undefined}
           value={(form as any)["last_name"]}
           />
+
         <BottomSheetTextInputCustom
           placeholder={emailPlaceholder}
           onChangeAction={(text: any) => handleChange(text, emailSetForm)}

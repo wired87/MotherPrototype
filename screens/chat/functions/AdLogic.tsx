@@ -4,11 +4,14 @@ import {RewardedAdEventType} from "react-native-google-mobile-ads";
 // Ad config
 import {RewardedInterstitialAd, TestIds,} from 'react-native-google-mobile-ads';
 import {Platform} from "react-native";
+
+import {FULL_SCREEN_ANDROID, FULL_SCREEN_IOS} from "@env";
+
 const adUnitIdFullScreenAd = __DEV__
   ? TestIds.REWARDED_INTERSTITIAL
   : Platform.OS === "ios"
-    ? "ca-app-pub-2225753085204049/3142510997"
-    : "ca-app-pub-2225753085204049/7842257619";
+    ? FULL_SCREEN_IOS
+    : FULL_SCREEN_ANDROID;
 
 const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitIdFullScreenAd, {
   requestNonPersonalizedAdsOnly: true,

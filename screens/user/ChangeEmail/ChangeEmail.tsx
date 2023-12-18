@@ -1,13 +1,6 @@
 import React, {memo, useContext, useEffect, useMemo, useState} from 'react';
 import {View, SafeAreaView, KeyboardAvoidingView} from 'react-native';
 
-import {
-    getAuth,
-    EmailAuthProvider,
-    reauthenticateWithCredential,
-    verifyBeforeUpdateEmail
-} from 'firebase/auth';
-
 // Lottie animations
 import {userStyles} from "../userStyles";
 import {useSelector} from "react-redux";
@@ -50,22 +43,19 @@ const EmailChange = () => {
   const mainContainerStyles =
     [userStyles.main_container, {backgroundColor: customTheme.primary}];
   const moreTextStyles = {color: customTheme.text};
+
   // @ts-ignore
   const text = useSelector(state => state.text.value)
-
-  const auth = getAuth();
-  const user = auth.currentUser;
-
+  const { user } = useContext(PrimaryContext);
   const handleChangeEmail = async () => {
       setModalVisible(true);
       // @ts-ignore
-      const credential = EmailAuthProvider.credential(user?.email, currentPassword);
+      const credential = auth.EmailAuthProvider.credential(user?.email, currentPassword);
       if (newEmail.includes("@") && newEmail.length > 0) {
           setLoading(true);
           console.log("new email: ", newEmail);
           try {
-              // @ts-ignore
-              await reauthenticateWithCredential(user, credential).then(() => {
+              user?.reauthenticateWithCredential(credential).then(() => {
                   console.log("reauth success...");
                   setReAuth(true);
                   // @ts-ignore
@@ -76,10 +66,10 @@ const EmailChange = () => {
                         console.log("ReAuth sent. Await confirmation...");
                         setReAuth(false);
                         setAwaitConfirmation(true);
-                    }).catch(error => {
+                    }).catch((error: { message: string; }) => {
                       console.log("reAuth error: Could not change mail", error.message);
                   })
-              }).catch(error => {
+              }).catch((error: { message: string; }) => {
                   setError(error.message);
                   console.log("ReAuth error: ", error.message);
                 setLoading(false);

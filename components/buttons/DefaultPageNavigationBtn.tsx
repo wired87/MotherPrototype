@@ -1,7 +1,6 @@
 import {Pressable, Text} from "react-native";
-import React, {memo, useContext} from "react";
+import React, {memo} from "react";
 import {styles} from "./styles";
-import {ThemeContext} from "../../screens/Context";
 
 
 const DefaultPageNavigationBtn =
@@ -10,7 +9,6 @@ const DefaultPageNavigationBtn =
   }
 ) => {
   // vars
-  const { customTheme } = useContext(ThemeContext);
   const extraLocalStyles = [styles.roundBtn, extraBtnStyles] // authHeader not , {backgroundColor: customTheme.primaryButton}
   const extraLocalTextStyles = [styles.btnTxtProfile, extraTextStyles || null];
 

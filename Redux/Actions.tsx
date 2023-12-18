@@ -17,6 +17,7 @@ export const SetLoading = (state = loading, action: { type: any; payload: any; }
 }
 
 
+
 */
 
 const historySent = {

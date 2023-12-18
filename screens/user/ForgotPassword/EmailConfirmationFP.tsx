@@ -4,9 +4,10 @@ import {HeadingText} from "../../../components/text/HeadingText";
 import {DefaultInput} from "../../../components/input/DefaultInput";
 import {useContext, useMemo, useState} from "react";
 import {DefaultButton} from "../../../components/buttons/DefaultButton";
-import {getAuth, sendPasswordResetEmail} from "firebase/auth";
+
 import {useNavigation} from "@react-navigation/native";
 import {AuthContext, PrimaryContext, ThemeContext} from "../../Context";
+import {getAuth, sendPasswordResetEmail} from "firebase/auth";
 
 const localStyles = StyleSheet.create(
   {
@@ -35,12 +36,11 @@ export const EmailConfirmationFP = () => {
     useState<{ code: string; helpText: string } | null>(null);
 
   const navigation = useNavigation()
-  const auth = getAuth();
 
   const sendOTP = async (email: string) => {
     setLoading(true);
     try {
-      await sendPasswordResetEmail(auth, email)
+      await sendPasswordResetEmail(getAuth(), email)
         .then(() => {
           // @ts-ignore
             navigation.navigate("NewPasswordConfirmation")

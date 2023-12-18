@@ -3,13 +3,12 @@ import {styles} from "./contiStyles";
 import DefaultPageNavigationBtn from "../buttons/DefaultPageNavigationBtn";
 import {View, StyleSheet} from "react-native";
 import {DefaultButton} from "../buttons/DefaultButton";
-import React, {memo, RefObject, useCallback, useContext} from "react";
+import React, {memo, useCallback, useContext} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import axios from "axios";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
-import BottomSheet from "@gorhom/bottom-sheet";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
+
 
 
 const localStyles = StyleSheet.create(
@@ -36,7 +35,7 @@ const localStyles = StyleSheet.create(
 
 const AreYouSureContainer = () => {
 
-  const { user } = useContext(PrimaryContext)
+  const { user, setLoading } = useContext(PrimaryContext)
   const { customTheme } = useContext(ThemeContext);
 
   const navigation = useNavigation();
@@ -54,10 +53,7 @@ const AreYouSureContainer = () => {
     navigation.navigate("Chat", {screen: 'AuthNavigator', params: {screen: screen.login}});
 
   const deleteHistory = useCallback(async() => {
-    dispatch({
-      type: 'LOADING',
-      payload: true
-    });
+    setLoading(true);
     try {
       const userObject = {
         user_id: user?.uid
@@ -72,10 +68,7 @@ const AreYouSureContainer = () => {
     } catch(error) {
       console.log("error: " + error);
     } finally {
-      dispatch({
-        type: 'LOADING',
-        payload: false
-      });
+      setLoading(false);
     }
   }, [])
     return(

@@ -11,9 +11,7 @@ import {useDispatch} from "react-redux";
 import {themeColors} from "../../colors/theme";
 import React, { useContext, useEffect, useRef, useState} from "react";
 
-import firebase from "firebase/compat";
-import auth = firebase.auth;
-import {getAuth, onAuthStateChanged} from "firebase/auth";
+
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
@@ -21,18 +19,21 @@ import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context";
 import BottomSheet from "@gorhom/bottom-sheet";
 import {Recording} from "expo-av/build/Audio/Recording";
+import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
+import {getAuth} from 'firebase/auth';
+import firebase from "firebase/compat";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
   : Platform.OS === "ios" ?
-  "ca-app-pub-2225753085204049/2862976257" :
-  "ca-app-pub-2225753085204049/8777981057"
+    BANNER_FOOTER_IOS :
+    BANNER_FOOTER_ANDORID
 
 const adUnitIdBannerAdHeaderHeader = __DEV__
   ? TestIds.BANNER
   : Platform.OS === "ios" ?
-  "ca-app-pub-2225753085204049/1879475723" :
-  "ca-app-pub-2225753085204049/1592481367"
+    BANNER_HEADER_IOS :
+    BANNER_HEADER_ANDROID
 
 const localStyles = StyleSheet.create(
   {
@@ -92,7 +93,7 @@ export default function NavigationMain(){
   const dispatch = useDispatch();
 
   useEffect(() => {
-    onAuthStateChanged(getAuth(), (user) => {
+    getAuth().onAuthStateChanged((user) => {
       if (user) {
         setUser((user as firebase.User));
         console.log("User in Footer: ", user)
@@ -101,21 +102,6 @@ export default function NavigationMain(){
       }
       console.log("user:", user)
     });
-  }, []);
-
-  useEffect(() => {
-    // Anmelden mit Firebase Anonymous Auth
-    const signInAnonymously = async () => {
-      if(!user) {
-        // first check if the user is in the encrypt storage
-        const { user } = await auth().signInAnonymously();  // get the user id
-        console.log('User ID:', user?.uid || null);
-      }
-    };
-
-    signInAnonymously()
-      .then(() => console.log("User is authenticated"))
-      .catch(() => console.log("Fail in footer while try set the user"))
   }, []);
 
   const dispatchHistorySent = (value: boolean) => {

@@ -1,24 +1,21 @@
 import {DefaultContainer} from "./DefaultContainer";
-import {Dimensions, TextInput, View, Vibration, Pressable} from "react-native";
+import { TextInput, View, Vibration, Pressable } from "react-native";
 import {styles} from "./contiStyles";
 import {IconButton} from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React, {useCallback, useContext} from "react";
+import React, {useCallback, useContext, useMemo} from "react";
 import {useDispatch} from "react-redux";
 import {TypeIndicator} from "../animations/TypeIndicator";
 import {Audio} from "expo-av";
 
-const audioApiEndpoint = "http://192.168.178.51:8080/open/chat-request/"//"http://192.168.178.51:8080/open/audio-chat-request/";
+const audioApiEndpoint = __DEV__?
+  "http://192.168.178.51:8080/open/chat-request/" :
+  "http://wired87.pythonanywhere.com/open/chat-request/"
 
-const windowWidth = Dimensions.get('window').width;
 import * as FileSystem from 'expo-file-system';
-import {getAuth} from "firebase/auth";
 import getDurationFormatted, {createMessageObject, getCurrentTime} from "../../screens/chat/functions/SendProcess";
 import {showAds} from "../../screens/chat/functions/AdLogic";
 import {FunctionContext, InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
-
-
-const apiEndpoint = "http://192.168.178.51:8080/open/audio-chat-request/"
 
 interface ExtraData {
   id: string;
@@ -136,6 +133,7 @@ export const MessageInputContainer = (
               "AI",
               "aiMessageContainer",
             )
+
             setMessages((prevMessages: any) => [...prevMessages, aiResponse]);
             setMessageIndex((state: number) => state + 1);
 
@@ -146,7 +144,7 @@ export const MessageInputContainer = (
               "\nIf that error comes not alone please contact the support",
               "text",
               messageIndex,
-              getAuth().currentUser,
+              user,
               "AI",
               "aiMessageContainer",
             )
@@ -160,7 +158,7 @@ export const MessageInputContainer = (
             "\nIf that error comes not alone please contact the support of this beautiful Application",
             "text",
             messageIndex,
-            getAuth().currentUser,
+            user,
             "AI",
             "aiMessageContainer"
           )
@@ -222,17 +220,21 @@ export const MessageInputContainer = (
     } else {
       console.log("Already Sent Message, length === 0 or just whitespace")
     }
-  }, [messagesLeft, typing, input, messages])
+  }, [messagesLeft, typing, input, messages]);
+
+  const typeIndicator = useMemo(() => {
+    if (typing) {
+      return <View style={styles.indicatorContainer}>
+              <TypeIndicator/>
+            </View>
+    }
+  },[]);
 
   return (
     <DefaultContainer
       extraStyles={styles.main}>
       <View style={styles.secondContainer}>
-        {typing ? (
-          <View style={styles.indicatorContainer}>
-            <TypeIndicator/>
-          </View>
-        ):null}
+        {typeIndicator}
       </View>
 
       <View style={styles.inputContainer}>

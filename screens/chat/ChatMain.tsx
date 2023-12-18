@@ -1,15 +1,12 @@
 import React, {memo, useCallback, useContext} from "react";
-import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, Text, View, StyleSheet } from "react-native";
+import { FlatList, KeyboardAvoidingView, SafeAreaView, Text, View, StyleSheet } from "react-native";
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
 import {MessageInputContainer} from "../../components/container/MessageInputContainer";
 
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-
 // @ts-ignore
 import {SingleAudio} from "../../components/container/chat/SingleAudio";
 import {InputContext, ThemeContext} from "../Context";
-
 
 const localStyles = StyleSheet.create(
   {
@@ -22,6 +19,10 @@ const localStyles = StyleSheet.create(
     centeredText: {
       gap: 20,
       fontSize: 30,
+    },
+    bgText: {
+      fontSize: 160,
+      fontFamily: "logoFont",
     },
     defaultContainer: {
       justifyContent: "center",
@@ -43,6 +44,13 @@ const localStyles = StyleSheet.create(
       flex: 1,
       marginBottom: 0,
       flexDirection: "column"
+    },
+    aiContainer: {
+      justifyContent: "flex-start",
+      alignItems: "center",
+      position: "absolute",
+      width: 200,
+      height: 200,
     }
   }
 )
@@ -60,7 +68,13 @@ export const ChatMain = (
   const mainViewStyles =
     [localStyles.main, {backgroundColor: customTheme.primary}];
   const aixTextStyles =
-    [localStyles.centeredText, {color: customTheme.secondaryBorderColor}]
+    [localStyles.centeredText, {color: customTheme.secondaryBorderColor}];
+
+  const aixBgTextStyles =
+    [localStyles.bgText, {color: customTheme.secondaryBorderColor}]
+
+  const primaryTextStyles = {textAlign: "justify", color: customTheme.text}
+  const secondaryTextStyles = {color: customTheme.text}
   // @ts-ignore
   const renderItem = useCallback(({item, index}) => {
     return item.type === "text" ? (
@@ -68,25 +82,23 @@ export const ChatMain = (
         key={index}
         item={item}
         styles={chatStyles}
-        primaryTextStyles={{textAlign: "justify", color: customTheme.text}}
-        secondaryTextStyles={{color: customTheme.text,  }}
+        primaryTextStyles={primaryTextStyles}
+        secondaryTextStyles={secondaryTextStyles}
       />
     ) : (
       <SingleAudioMemo
         key={index}
         item={item}
         styles={chatStyles}
-        secondaryTextStyles={{color: "white", fontSize: 12}}
+        secondaryTextStyles={secondaryTextStyles}
       />
     );
   }, [customTheme, messages]);
-
 
   return(
     <SafeAreaView style={mainViewStyles}>
       <KeyboardAvoidingView
         style={mainViewStyles}>
-
         <View style={localStyles.defaultContainer}>
           <View style={
             [
@@ -98,9 +110,16 @@ export const ChatMain = (
             ]
           } >
 
-          <Text style={aixTextStyles}>
-            AIX
-          </Text>
+            <Text style={aixTextStyles}>
+              MIRACLE
+            </Text>
+
+            <View style={localStyles.aiContainer}>
+              <Text style={aixBgTextStyles}>
+                AI
+              </Text>
+            </View>
+
 
           </View>
           <FlatList
@@ -113,30 +132,13 @@ export const ChatMain = (
           />
         </View>
         <View style={localStyles.messageInputView}>
-          <MessageInputContainer/>
+          <MessageInputContainer />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
-
 /*
-              item.type === "text" ? (
+<ToolitemButton color={"rgba(255,144,0,0.55)"}/>
 
-                <SingleMessage
-                  key={index}
-                  item={item}
-                  styles={chatStyles}
-                  primaryTextStyles={{textAlign: "justify", color: customTheme.text}}
-                  secondaryTextStyles={{color: customTheme.text, fontSize: 10, }}
-                />
-              ):(
-                <SingleAudio
-                  key={index}
-                  item={item}
-                  styles={chatStyles}
-                  secondaryTextStyles={{color: "white", fontSize: 12}}
-                />
-              ))}
-          />
  */

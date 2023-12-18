@@ -1,7 +1,7 @@
 import React, {useCallback, useContext, useMemo} from 'react';
 import {SectionList} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
-import {getAuth} from "firebase/auth";
+
 import {BottomImage} from "../../components/images/BottomImage";
 import {useSelector} from "react-redux";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
@@ -9,6 +9,7 @@ import {AuthContext, PrimaryContext, ThemeContext} from "../Context";
 import {settingStyles} from "../settings/settingStyles";
 import RoundedButton from "../../components/buttons/RoundedButton";
 import ProfileContainer from "../../components/container/ProfileContainer";
+import {getAuth} from "firebase/auth";
 
 const accountOptions = [
   {
@@ -30,7 +31,7 @@ const accountOptions = [
 
 export const AccountMain = () => {
 
-  const auth = getAuth();
+  ;
   const {user, setUser, setLoading, loading} = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
   const {setError} = useContext(AuthContext);
@@ -64,7 +65,7 @@ export const AccountMain = () => {
     setLoading(true);
     try {
 
-      await auth.signOut().then(() => {
+      await getAuth().signOut().then(() => {
         console.log("User is successfully logged out")
         setUser(null);
       });

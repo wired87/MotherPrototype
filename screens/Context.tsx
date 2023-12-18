@@ -1,33 +1,9 @@
 import {createContext, Dispatch, SetStateAction} from "react";
-import firebase from "firebase/compat";
-import User = firebase.User;
+
 import {themeColors} from "../colors/theme";
 import {Recording} from "expo-av/build/Audio/Recording";
+import firebase from "firebase/compat";
 
-/*
-interface PrimaryContextType {
-
-  toggleTheme: () => void;
-  darkmode: boolean;
-  setUser: (value: User | null) => void;
-  user: User | firebase.User | null;
-  setDarkmode: (value: (((prevState: boolean) => boolean) | boolean)) => void
-
-}
-
-interface InputContextType {
-  input: string;
-  setInput: Dispatch<SetStateAction<string>>;
-
-  messagesLeft: string;
-  setMessagesLeft: Dispatch<SetStateAction<string>>;
-
-  messages: any; // Define a more specific type if possible
-  setMessages: Dispatch<SetStateAction<any>>;
-
-  messageIndex: number
-}
-*/
 
 export const PrimaryContext = createContext(
   {
@@ -36,8 +12,8 @@ export const PrimaryContext = createContext(
 
     toggleTheme: (() => {}),
 
-    user: null as User | null,
-    setUser: (() => {}) as Dispatch<SetStateAction<User | null>>,
+    user: null as firebase.User | null,
+    setUser: (() => {}) as Dispatch<SetStateAction<firebase.User | null>>,
 
     loading: false,
     setLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
@@ -68,9 +44,7 @@ export const InputContext = createContext({
   setCurrentRecording: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
   userRecording: null as Recording | null,
-  setUserRecording: (() => {}) as Dispatch<SetStateAction<any>>,
-
-
+  setUserRecording: (() => {}) as Dispatch<SetStateAction<any>>
 
 });
 
@@ -156,7 +130,7 @@ export const darkModeTheme: Theme = {
   modalColor: "rgba(37,38,38,0.76)",
   secondaryContainerBackground: "rgba(255,255,255,0.2)",
   switchedSecondaryContainerBackground: "rgb(24,24,24)",
-  headerIconColors: "rgb(255,255,255, .7)",
+  headerIconColors: "rgb(255,255,255)",
   messageContainer: "rgba(105,103,103,0.4)",
   view: "rgba(66,66,66,0.1)",
   bottomSheetBg: "#38393a",

@@ -7,3 +7,4 @@ npx expo install --check
 
 # build
 npx eas-cli build --profile development
+

@@ -7,10 +7,9 @@ import {ChatMain} from "./ChatMain";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {StyleSheet, Vibration} from "react-native";
-import {AuthNavigator} from "../user/AuthNavigator";
 
 // Context
-import {InputContext, PrimaryContext, AuthContext, ThemeContext, FunctionContext} from "../Context";
+import {InputContext, PrimaryContext, ThemeContext, FunctionContext} from "../Context";
 
 // Ads
 import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, showAds} from "./functions/AdLogic";
@@ -81,11 +80,6 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  // Auth Provider
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [password, setPassword] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
   const route = useRoute();
   const [history, setHistory] = useState(false);
 
@@ -177,10 +171,11 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     }, [])
 
   const sendMessageProcess = useCallback(async() => {
-    textMessageStart()
+    textMessageStart();
     console.log("inputRef.current", inputRef.current);
     console.log("typing", typing);
-    const success = await checkMessagesLeftProcess()
+    const success = await checkMessagesLeftProcess();
+
     if (success) {
       if (inputRef.current?.trim().length !== 0) {
         const userMessage: userMesssageObject =
@@ -264,16 +259,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
                       size={30}
                   />
                 }
-                  childrenRight={
-                    <IconButton
-                      icon="account-circle-outline"
-                      iconColor={customTheme.headerIconColors}
-                      style={iconStyles.headerIcon}
-                      // @ts-ignore
-                      onPress={() => navigation.navigate("AuthNavigator", {screen: authPressScreen})}
-                      size={30}
-                    />
-                  }
+                childrenRight={undefined}
               />
             }}
           >
@@ -287,7 +273,42 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
             </FunctionContext.Provider>
           }
         />
-        <ChatStack.Screen
+      </ChatStack.Navigator>
+      <SwipeModal
+        bottomSheetRef={bottomSheetRef}
+        modalIndex={-1}
+        Content={
+          <ChatMenuModalContent
+            changeText={historySentMessage}
+          />
+        }
+      />
+    </>
+  );
+}
+
+
+/*
+
+  // Auth Provider
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [password, setPassword] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+childrenRight={
+                    <IconButton
+                      icon="account-circle-outline"
+                      iconColor={customTheme.headerIconColors}
+                      style={iconStyles.headerIcon}
+                      // @ts-ignore
+                      onPress={() => navigation.navigate("AuthNavigator", {screen: authPressScreen})}
+                      size={30}
+                    />
+                  }
+
+
+ <ChatStack.Screen
           name={"AuthNavigator"}
           children={
             () =>
@@ -305,16 +326,4 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
             headerShown: false
           }}
         />
-      </ChatStack.Navigator>
-      <SwipeModal
-        bottomSheetRef={bottomSheetRef}
-        modalIndex={-1}
-        Content={
-          <ChatMenuModalContent
-            changeText={historySentMessage}
-          />
-        }
-      />
-    </>
-  );
-}
+ */
