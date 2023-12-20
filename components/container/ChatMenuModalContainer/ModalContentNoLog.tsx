@@ -11,9 +11,9 @@ import {ThemeContext} from "../../../screens/Context";
 const historyReminder = "To see your Chat History, \n you must be logged in.";
 const loginText = "Login";
 const registerText = "Register";
+
 export const ModalContentNoLog = () => {
   const { customTheme } = useContext(ThemeContext);
-
 
   // @ts-ignore
   const screen = useSelector(state => state.screens.value)

@@ -1,4 +1,4 @@
-import React, {memo, useContext} from 'react';
+/*import React, {memo, useContext} from 'react';
 import {Modal, Text, Pressable, View} from 'react-native';
 import {ActivityIndicator} from "react-native-paper";
 import {useNavigation} from "@react-navigation/native";
@@ -67,5 +67,4 @@ const AwaitConfirmationModal = (
   );
 };
 
-export default memo(AwaitConfirmationModal);
-
+*/

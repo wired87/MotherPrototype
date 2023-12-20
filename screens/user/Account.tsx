@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useMemo} from 'react';
+/*import React, {useCallback, useContext, useMemo} from 'react';
 import {SectionList} from 'react-native';
 import {useNavigation} from "@react-navigation/native";
 
@@ -137,3 +137,4 @@ export const AccountMain = () => {
   );
 }
 
+*/

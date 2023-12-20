@@ -66,9 +66,9 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
       "ForgotPassword",
       "AuthNavigator"
     ];
-    return navigation.canGoBack() || screensToShowBackIcon.includes(route.name) ||
+    return navigation.canGoBack() && screensToShowBackIcon.includes(route.name) &&
       !["ChatMain", "ChatNavigation"].includes(route.name);
-  }, [navigation, route.name]);
+  }, [navigation, route.name,]);
 
   const shouldShowChildren = useCallback(() => {
     return ![

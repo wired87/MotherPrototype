@@ -2,9 +2,11 @@ import {BottomSheetTextInput} from "@gorhom/bottom-sheet";
 import {inputStyles} from "./styles";
 import {themeColors} from "../../colors/theme";
 import DefaulttextInputTypes from "./DefaultInput";
-import React from "react";
+import React, { memo } from "react";
+import {KeyboardAvoidingView} from "react-native";
 
-export const BottomSheetTextInputCustom: React.FC<DefaulttextInputTypes> = (
+
+const BottomSheetTextInputCustom: React.FC<DefaulttextInputTypes> = (
   {
     placeholder,
     value,
@@ -16,20 +18,20 @@ export const BottomSheetTextInputCustom: React.FC<DefaulttextInputTypes> = (
   }
 ) => {
   return(
-    <BottomSheetTextInput
-      multiline={false}
-      maxLength={100}
-      style={[inputStyles.defaultInput,  extraStyles || null //->account no mb!!!<-
-      ]}
-      placeholder={placeholder}
-      placeholderTextColor={themeColors.mediumDark}
-      secureTextEntry={secure}
-      autoCapitalize={"none"}
-      value={value}
-      onChangeText={onChangeAction}
-      editable={editable}
-      keyboardType={keyboardType}
-      blurOnSubmit={true}
-    />
+      <BottomSheetTextInput
+        multiline={false}
+        maxLength={100}
+        style={[inputStyles.defaultInput, extraStyles || null //->account no mb!!!<-
+        ]}
+        placeholder={placeholder}
+        placeholderTextColor={themeColors.mediumDark}
+        secureTextEntry={secure}
+        value={value}
+        onChangeText={onChangeAction}
+        editable={editable}
+        keyboardType={keyboardType}
+      />
   );
 }
+
+export default memo(BottomSheetTextInputCustom);

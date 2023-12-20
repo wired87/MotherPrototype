@@ -4,8 +4,8 @@ import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 // @ts-ignore
 import {ChatMain} from "./ChatMain";
-import {useDispatch, useSelector} from "react-redux";
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useDispatch} from "react-redux";
+import {useRoute} from "@react-navigation/native";
 import {StyleSheet, Vibration} from "react-native";
 
 // Context
@@ -23,9 +23,6 @@ import {IconButton} from "react-native-paper";
 import {SwipeModal} from "../../components/modals/SwipeModal";
 import ChatMenuModalContent from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
 
-
-
-
 interface ChatNavigationTypes {
   dispatchHistorySent: (value: boolean) => void,
   bottomSheetRef: React.Ref<BottomSheetMethods>//(number: number) => void;
@@ -33,19 +30,6 @@ interface ChatNavigationTypes {
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// INTERFACE#
-/*
-interface ExtraData {
-  id: string;
-  timeToken: string;
-  publisher: string;
-  class: string;
-  file_id: string;
-  user_id: string;
-  soundAudio: any;
-  type: string;
-  duration: string;
-}
-*/
 
 interface userMesssageObject {
   id: number | string,
@@ -55,6 +39,7 @@ interface userMesssageObject {
   class: string,
   user_id: number | string
   type: string,
+  start?: boolean
 }
 
 
@@ -74,10 +59,9 @@ const iconStyles = StyleSheet.create(
 const ChatStack = createNativeStackNavigator();
 
 export const ChatNavigation: React.FC<ChatNavigationTypes> = (
-  { bottomSheetRef, dispatchHistorySent }
+  { bottomSheetRef }
 ) => {
   // Essentials
-  const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const route = useRoute();
@@ -101,9 +85,6 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     if (!(input === "" || input.trim().length === 0))
       inputRef.current = input;
   }, [input]);
-
-  // @ts-ignore // SELECTORS ////////////////////////
-  const screen = useSelector(state => state.screens.value)
 
   // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {
@@ -176,6 +157,9 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     console.log("typing", typing);
     const success = await checkMessagesLeftProcess();
 
+    const firstMessage = messageIndex === 0;
+
+    console.log("firstMessage", firstMessage);
     if (success) {
       if (inputRef.current?.trim().length !== 0) {
         const userMessage: userMesssageObject =
@@ -186,7 +170,8 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
             "publisher": "USER",
             "class": "userMessageContainer",
             "user_id": user?.uid || "1",
-            "type": "text"
+            "type": "text",
+            "start": firstMessage
           }
 
         setMessageIndex((state: number) => state + 1)
@@ -220,7 +205,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
       // Ads in useEffect above will be showed
       setTyping(false);
     }
-  }, [user]);
+  }, [user, messageIndex, user]);
 
   useEffect(() => {
     if (history) {
@@ -230,9 +215,6 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
        .finally(() => setHistory(false));
     }
   }, [history]);
-
-
-  const authPressScreen = user? screen.account : screen.login;
 
   const historySentMessage = useCallback((text: string) => {
     setInput(text)

@@ -79,8 +79,16 @@ Tools * icon * text * container bg color * category
 
 https://callstack.github.io/react-native-paper/docs/guides/icons/
 
-text 2 speech * "text-to-speech" * Voice to Text * 'rgba(255,99,0,.6)' * General
-image classify * "bird" + "message-image" * What's on this Image? * "rgba(0,179,0, .7)" * General
+text 2 speech * "text-to-speech" * Voice to Text * 'rgba(255,99,0,.6)' * Assistant
+image classify * "bird" + "message-image" * What's on this Image? * "rgba(0,179,0, .7)" * Creative
 Application creator * "format-float-left" * Application creator (small text below: Let write AI your Job Application) * "rgba(0,0,98,0.7)" * Assistant
 idea finder * "lightbulb-on" * Idea finder (small text below: Creative or ask about Ideas with help of AI) * "rgba(99,14,99, .7)" * Creative
+document editor(make image from dec, edit it and download the result) *
+get text from image
+
+webAPP
+audio, text and/or image to code (output component is editable either noCode or code)
+Application creator * "format-float-left" * Application creator (small text below: Let write AI your Job Application) * "rgba(0,0,98,0.7)" * Assistant
+
+
  */

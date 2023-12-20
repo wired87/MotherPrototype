@@ -16,8 +16,7 @@ export const postMessageObject = async (
   senderObject: any,
   options: any
 ): Promise<any> => {
-  const postUrl = __DEV__ ?
-    "http://192.168.178.51:8080/open/chat-request/" :
+  const postUrl =// __DEV__ ? :   "http://192.168.178.51:8080/open/chat-request/"
     "http://wired87.pythonanywhere.com/open/chat-request/";
 
   const { timeout = 20000 } = options;
@@ -62,7 +61,7 @@ export const sendObject = async (senderObject: any, messageIndex: number | strin
     if (res instanceof Error || res.name ) {
       console.log("sendObject res === error")
       response = {
-        message: "Ups that request is taking too much time." +
+        message: "Ups cant listen to your Question" +
           "\nIf that issue is coming up again feel free to contact the support to fix it.",
         status: 200,
       }

@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     },
     chatMessageInput: {
         width: windowWidth * .8,
-
+        fontFamily: "JetBrainsMono",
         borderColor: themeColors.borderThin,
         paddingVertical: 10,
         paddingHorizontal: 15,

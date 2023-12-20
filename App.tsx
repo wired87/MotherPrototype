@@ -13,7 +13,7 @@ import { getDarkmode } from "./components/container/modalContainers/DarkMode";
 import * as SecureStore from "expo-secure-store";
 import * as Font from "expo-font";
 
-import { getAuth, signInAnonymously } from "firebase/auth";
+import {getAuth, signInAnonymously} from "firebase/auth";
 import firebase from "firebase/compat";
 import {FIREBASE_AUTH} from "./firebase.config";
 
@@ -29,24 +29,32 @@ export default function App() {
   // init DarkMode
   const toggleTheme = () => setDarkmode(!darkmode);
 
+
+  useEffect(() => {
+    getAuth().onAuthStateChanged((user) => {
+      if (user) {
+        setUser((user as firebase.User));
+        console.log("User set in App: ", user)
+      } else {
+        console.log("User could not be set in App")
+      }
+    });
+  }, []);
+
+
   useEffect(() => {
     console.log("appIsReady", appIsReady);
 
     const loadPreferences = async () => {
       try {
-        // Keep the splash screen visible while fetching fonts
         await SplashScreen.preventAutoHideAsync();
 
-        signInAnonymously(FIREBASE_AUTH)
-          .then((userCredential) => {
-            setUser(user as firebase.User);
-            console.log("User initialized:", userCredential.user);
-          })
-          .catch((error) => {
-            console.error("Error signing in anonymously:", error);
-          });
-
-        console.log("User initialized:", user)
+        try {
+           await signInAnonymously(FIREBASE_AUTH)
+        }
+        catch(e:unknown) {
+          if (e instanceof Error) console.log("Could not sign in the user anonymously..")
+        }
 
         console.log("Splashscreen initialized..");
 
@@ -54,7 +62,6 @@ export default function App() {
           'JetBrainsMono': require('./assets/fonts/codeFont/JetBrainsMono.ttf'),
           'Roboto': require('./assets/fonts/Roboto-Regular.ttf'),
           'wizardFont': require('./assets/fonts/poweredFont.otf'),
-          'logoFont': require('./assets/fonts/AILogo.regular.ttf'),
         })
 
         console.log("Fonts have been loaded..");
@@ -70,7 +77,6 @@ export default function App() {
           setAppIsReady(true);
           setDarkmode(false);
         }
-
       } catch (e: unknown) {
         if (e instanceof Error) console.error("Cant load preferences", e.message);
 

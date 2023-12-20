@@ -3,7 +3,6 @@ import { FlatList, KeyboardAvoidingView, SafeAreaView, Text, View, StyleSheet } 
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
 import {MessageInputContainer} from "../../components/container/MessageInputContainer";
-
 // @ts-ignore
 import {SingleAudio} from "../../components/container/chat/SingleAudio";
 import {InputContext, ThemeContext} from "../Context";
@@ -18,11 +17,11 @@ const localStyles = StyleSheet.create(
     },
     centeredText: {
       gap: 20,
-      fontSize: 30,
+      fontFamily: "wizardFont",
+      fontSize: 20,
     },
     bgText: {
       fontSize: 160,
-      fontFamily: "logoFont",
     },
     defaultContainer: {
       justifyContent: "center",
@@ -70,9 +69,6 @@ export const ChatMain = (
   const aixTextStyles =
     [localStyles.centeredText, {color: customTheme.secondaryBorderColor}];
 
-  const aixBgTextStyles =
-    [localStyles.bgText, {color: customTheme.secondaryBorderColor}]
-
   const primaryTextStyles = {textAlign: "justify", color: customTheme.text}
   const secondaryTextStyles = {color: customTheme.text}
   // @ts-ignore
@@ -108,19 +104,7 @@ export const ChatMain = (
                 backgroundColor: customTheme.view
               }
             ]
-          } >
-
-            <Text style={aixTextStyles}>
-              MIRACLE
-            </Text>
-
-            <View style={localStyles.aiContainer}>
-              <Text style={aixBgTextStyles}>
-                AI
-              </Text>
-            </View>
-
-
+          }>
           </View>
           <FlatList
             inverted
@@ -138,7 +122,3 @@ export const ChatMain = (
     </SafeAreaView>
   )
 }
-/*
-<ToolitemButton color={"rgba(255,144,0,0.55)"}/>
-
- */

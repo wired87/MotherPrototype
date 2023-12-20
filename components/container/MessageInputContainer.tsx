@@ -8,8 +8,7 @@ import {useDispatch} from "react-redux";
 import {TypeIndicator} from "../animations/TypeIndicator";
 import {Audio} from "expo-av";
 
-const audioApiEndpoint = __DEV__?
-  "http://192.168.178.51:8080/open/chat-request/" :
+const audioApiEndpoint = //__DEV__? "http://192.168.178.51:8080/open/chat-request/" :
   "http://wired87.pythonanywhere.com/open/chat-request/"
 
 import * as FileSystem from 'expo-file-system';
@@ -25,7 +24,8 @@ interface ExtraData {
   file_id: string;
   user_id: string;
   soundAudio: any; // oder ersetzen Sie `any` durch den passenden Typ, falls bekannt
-  type: string;
+  type: string,
+  start: string,
   duration: string;
 }
 
@@ -77,6 +77,7 @@ export const MessageInputContainer = (
           console.log("fileName:", fileName);
 
           const fileType = 'audio/m4a';
+          const firstMessage = messageIndex == 0;
 
           // sender object
           let extraData: ExtraData = {
@@ -88,6 +89,7 @@ export const MessageInputContainer = (
             "user_id": user_id.toString(),
             "soundAudio": sound,
             "type": "speech",
+            "start": firstMessage.toString(),
             "duration": getDurationFormatted(status.isLoaded ? status.durationMillis : null),
           }
 
@@ -117,7 +119,6 @@ export const MessageInputContainer = (
                 sessionType: undefined,
                 uploadType: FileSystem.FileSystemUploadType.MULTIPART, // or BINARY_CONTENT
                 fieldName: "file",
-
               }
             )
 

@@ -3,7 +3,7 @@ import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
 import {ModalContentNoLog} from "./ModalContentNoLog";
 
-import React, {memo, useCallback, useContext} from "react";
+import React, {memo, useCallback, useContext, useMemo} from "react";
 import { ActivityIndicator } from "react-native-paper";
 import {themeColors} from "../../../colors/theme";
 import {uniStyles} from "../../../screens/universalStyles"
@@ -50,22 +50,19 @@ const ChatMenuModalContent = (
 
   //////////////////////////////////
 
-  const renderContent = useCallback(() => {
-
+  const renderContent = useMemo(() => {
+    console.log("USER IN HISTORY CONTENT CONTAIENR", user)
     // filter th e last 5 textMessages from user
     const textItems = messages.filter(item => item.type === 'text' && item.publisher === "USER");
     const numberOfItems = textItems.length < 5 ? textItems.length : 5;
     const lastItems = textItems.slice(-numberOfItems);
-
-    if (!user) {
+    /*if (!user) {
       return <ModalContentNoLog />;
-    }
-
+    }*/
     if (loading) {
       return <ActivityIndicator color={themeColors.sexyBlue} size={indicatorSize} />;
     }
-
-    if (lastItems?.length > 0) {
+    else if (lastItems?.length > 0 && user) {
       return (
         <View style={uniStyles.reminderModalContainer}>
           <FlatList
@@ -79,9 +76,9 @@ const ChatMenuModalContent = (
         </View>
       );
     }
-
-    return <DefaultText text={noHistoryText} moreStyles={extraTextStyles} />;
-
+    else if (user?.uid) {
+      return <DefaultText text={noHistoryText} moreStyles={extraTextStyles}/>;
+    }
   }, [messages, user, loading])
 
   return(
@@ -89,7 +86,7 @@ const ChatMenuModalContent = (
       <View style={uniStyles.secondMain}>
         <HeadingText text={historyText} extraStyles={undefined}/>
       </View>
-      {renderContent()}
+      {renderContent}
     </View>
   );
 }

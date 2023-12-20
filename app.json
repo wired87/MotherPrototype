@@ -5,7 +5,7 @@
     "slug": "AiChat501",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/icon.png",
+    "icon": "./assets/icons/iconFinal.png",
     "userInterfaceStyle": "light",
     "plugins": [
       [
@@ -16,7 +16,7 @@
       ]
     ],
     "splash": {
-      "image": "./assets/icons/icon.png",
+      "image": "./assets/icons/splashScreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -32,13 +32,16 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/icon.png",
+        "foregroundImage": "./assets/icons/splashScreen.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.wired87.AiChat501"
+      "package": "com.wired87.AiChat501",
+      "splash": {
+        "backgroundColor": "rgb(0,0,1)"
+      }
     },
     "web": {
-      "favicon": "./assets/icons/icon.png"
+      "favicon": "./assets/icons/iconFinal.png"
     },
     "extra": {
       "eas": {

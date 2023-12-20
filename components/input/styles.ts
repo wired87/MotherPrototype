@@ -1,7 +1,6 @@
 import {Dimensions, StyleSheet} from "react-native";
 import {themeColors} from "../../colors/theme";
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 export const inputStyles = StyleSheet.create({
     defaultInput: {
         width: windowWidth * .9,

@@ -80,7 +80,6 @@ export default function NavigationMain(){
   }
 
   const {
-    user,
     setUser,
     } = useContext(PrimaryContext);
 
@@ -91,18 +90,6 @@ export default function NavigationMain(){
   theme.colors.secondaryContainer = "transperent"
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    getAuth().onAuthStateChanged((user) => {
-      if (user) {
-        setUser((user as firebase.User));
-        console.log("User in Footer: ", user)
-      } else {
-        console.log("User could not be set in Footer")
-      }
-      console.log("user:", user)
-    });
-  }, []);
 
   const dispatchHistorySent = (value: boolean) => {
     dispatch({

@@ -3,7 +3,6 @@ import { View, StyleSheet } from 'react-native';
 
 import {ThemeContext} from "../Context";
 
-import underConstruction from "../../assets/animations/underConstruction.json";
 import LottieView from "lottie-react-native";
 
 export const PurchaseScreen = () => {
@@ -13,7 +12,6 @@ export const PurchaseScreen = () => {
 
     return (
       <View style={uniStylesLocal}>
-          <LottieView source={underConstruction} />
       </View>
     );
 }
@@ -29,10 +27,6 @@ const localStyles = StyleSheet.create(
       }
   }
 )
-
-
-
-
 
 /*
 

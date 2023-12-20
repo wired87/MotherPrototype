@@ -1,4 +1,4 @@
-import React, {memo, useContext, useMemo} from "react";
+import React, {memo, useContext} from "react";
 import {View} from "react-native";
 import {settingStyles} from "./settingStyles"
 import {styles} from "../../components/styles"

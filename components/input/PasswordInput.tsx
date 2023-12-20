@@ -1,5 +1,5 @@
 import {KeyboardTypeOptions, TextInput, StyleSheet, View} from "react-native";
-import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import {inputStyles} from "./styles";
 import {themeColors} from "../../colors/theme";
 import {IconButton} from "react-native-paper";
@@ -18,8 +18,6 @@ const localStyles = StyleSheet.create(
     }
   }
 )
-
-
 
 export default interface DefaulttextInputTypes {
   placeholder?: string;
@@ -58,7 +56,6 @@ export const PasswordInput: React.FC<DefaulttextInputTypes> = (
   const setPasswordVisibility = useCallback(() => {
     setSecure(!secure);
   },[secure])
-
 
   return(
     <View style={localStyles.main}>

@@ -23,7 +23,7 @@ const localStyles = StyleSheet.create(
 
 let optionsData = [
   {
-    text: "Free Access to Google's Gemini Model"
+    text: "Free Access to Gemini-Pro Model"
   },
   {
     text: "Unlimited Access and Messages"
