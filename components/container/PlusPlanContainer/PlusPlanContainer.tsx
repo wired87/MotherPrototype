@@ -23,13 +23,14 @@ const localStyles = StyleSheet.create(
 
 let optionsData = [
   {
-    text: "Free Access to Gemini-Pro Model"
+    text: "Free Access to Google's Gemini-Pro Model"
   },
   {
     text: "Unlimited Access and Messages"
   },
 ]
 const BOTTOM_COLORS = ['#0e198c', '#1d155e', '#7F00FF', '#0e198c'];
+
 export const PlusAdContainer = () => {
 
   const mainContainerStyles = [settingStyles.topBtn, {backgroundColor: 'rgba(127,0,255,0.8)'}];

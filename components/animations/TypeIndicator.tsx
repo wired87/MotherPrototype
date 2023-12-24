@@ -8,6 +8,9 @@ import {ThemeContext} from "../../screens/Context";
 const aiNameList = ["Computer"];
 const aiName = aiNameList[Math.floor(Math.random() * aiNameList.length)];
  */
+
+
+
 const aiName = "Computer";
 
 export const TypeIndicator = () => {
@@ -17,7 +20,7 @@ export const TypeIndicator = () => {
   return (
     <View
       style={styles.dots}>
-      <Text style={[styles.typeIndicatorText, {color: customTheme.text}]}>{aiName} is typing</Text>
+      <Text style={[styles.typeIndicatorText, {color: customTheme.text}]}>Generate Answer...</Text>
     </View>
   );
 }
@@ -39,6 +42,7 @@ const styles = StyleSheet.create({
   typeIndicatorText: {
     opacity: .6,
     fontSize: 13,
+    fontFamily: "typeIndicator",
   }
 }
 )

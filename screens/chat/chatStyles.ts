@@ -34,36 +34,26 @@ export const chatStyles = StyleSheet.create({
         position: "relative",
         height: "auto",
         minHeight: 30,
-        marginLeft: 20,
-        marginRight: 20,
-        borderTopWidth: .5,
-        borderBottomWidth: .5,
-        borderColor: "rgba(0, 0, 0, .1)",
-        paddingTop: 13,
-        paddingBottom: 13,
-        zIndex: 999999999999999,
+        marginRight: windowWidth * .11,
+        paddingVertical: 14,
+        paddingHorizontal: 15,
+
     },
     userMessageContainer: {
         minHeight: 30,
         position: "relative",
-        width: "auto",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         height: "auto",
-        marginLeft: 20,
-        borderTopWidth: .5,
-        borderBottomWidth: .5,
-        borderColor: "rgba(0, 0, 0, .1)",
-        marginRight: 20,
-        paddingVertical: 13,
-        zIndex: 100000000000000,
-
+        justifyContent: "center",
+        alignItems: "flex-end",
+        marginLeft: windowWidth * .11
     },
-
     voiceMessage: {
         height: 44,
         borderRadius: 14,
         width: "auto",
-        marginHorizontal: 20,
-        paddingVertical: 13,
+        marginLeft: windowWidth * .11,
         position: "relative",
         justifyContent: "space-between",
         alignItems: "center",
@@ -71,7 +61,6 @@ export const chatStyles = StyleSheet.create({
         marginTop: 12,
         bottom: 0,
         elevation: 15,
-        zIndex: 100000000000000,
     },
 
     audioInfoBox: {
@@ -87,7 +76,7 @@ export const chatStyles = StyleSheet.create({
         position: "absolute",
         alignItems: "center",
         justifyContent: "center",
-        width: windowWidth * .9,
+        width: windowWidth * .85,
         height: "80%",
         marginVertical: "50%",
         borderRadius: 14

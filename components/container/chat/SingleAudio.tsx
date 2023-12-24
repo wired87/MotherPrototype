@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import * as Sharing from "expo-sharing";
 import {View} from "react-native";
 import {IconButton} from "react-native-paper";
@@ -36,29 +36,36 @@ export const SingleAudio = ({ item, styles, secondaryTextStyles }) => {
   const checkAudioStatus = useCallback(() => {
     if (play) {setPlay(false)} else {setPlay(true)}
   }, [play])
+  // STYLES
+  const singleAuduioContainerStyles = [styles[item.class],
+    {backgroundColor: customTheme.primaryButton}];
+
+  const shareButton = useMemo(() => {
+    if (isSharingAvailable) {
+      return <IconButton
+        size={17}
+        iconColor={themeColors.headerTextLight} icon={"share"}
+        onPress={() => {
+          Sharing.shareAsync(item.file_id)
+            .then(() => console.log("Recorded file successfully shared.."))
+            .catch(e => console.log("Cant share the file:", e))
+        }
+        }
+      />
+    }
+  }, [isSharingAvailable])
+
+
 
   return(
-    <View style={[styles[item.class],
-      item.id % 2 === 0 ? {left: 0} : {right: 0},
-      {backgroundColor: customTheme.primaryButton}]}>
+    <View style={singleAuduioContainerStyles}>
       <View style={[styles.audioInfoBox, {left: 0}]}>
         <IconButton iconColor={"white"} icon={play? "pause" : "play"} onPress={checkAudioStatus} />
         <DefaultText text={item.duration} moreStyles={secondaryTextStyles}/>
       </View>
       <View style={[styles.audioInfoBox, {right: -8, bottom: -12}]}>
         <DefaultText text={item.timeToken} moreStyles={secondaryTextStyles}/>
-        {isSharingAvailable? (
-          <IconButton
-            size={17}
-            iconColor={themeColors.headerTextLight} icon={"share"}
-            onPress={() => {
-              Sharing.shareAsync(item.file_id)
-                .then(() => console.log("Recorded file successfully shared.."))
-                .catch(e => console.log("Cant share the file:", e))
-              }
-            }
-          />
-        ):null}
+        {shareButton}
       </View>
     </View>
   );

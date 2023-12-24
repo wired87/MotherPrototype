@@ -78,7 +78,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
   }  = useContext(InputContext);
 
   const { customTheme } = useContext(ThemeContext);
-  const {user} = useContext(PrimaryContext);
+  const {user, setClearMessages, clearMessages} = useContext(PrimaryContext);
 
   const inputRef = useRef(input);
   useEffect(() => {
@@ -221,6 +221,13 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     setHistory(true);
   }, [])
 
+
+  useEffect(() => {
+    if (clearMessages) {
+      setClearMessages(false);
+      setMessages([]);
+    }
+  }, [clearMessages]);
 
   return(
     <>

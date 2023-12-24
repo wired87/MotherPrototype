@@ -4,14 +4,13 @@ import {AuthContext, PrimaryContext, SettingsContext, ThemeContext} from "../../
 import axios from "axios/index";
 import {HeadingText} from "../../../text/HeadingText";
 import {DefaultText} from "../../../text/DefaultText";
-import {KeyboardAvoidingView, StyleSheet} from "react-native";
+import {StyleSheet} from "react-native";
 import {Picker} from "@react-native-picker/picker";
 import {inputStyles} from "../../../input/styles";
 import {MultilineInput} from "../../../input/MultilineTextField";
 import {DefaultButton} from "../../../buttons/DefaultButton";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {themeColors} from "../../../../colors/theme";
-import BottomSheetTextInputCustom from "../../../input/BottomSheettextInputCustom";
 import {DefaultInput} from "../../../input/DefaultInput";
 
 const options = [
@@ -109,7 +108,6 @@ const Contact = () => {
       console.log(error.message);
     } finally {
       setLoading(false);
-      setStatus(0);
     }
   }, []);
 
@@ -122,7 +120,6 @@ const Contact = () => {
               />
     }
   }, [matchedError])
-
 
   const handleChange = (value: string, name: string | number) => {
     setForm({ ...form, [name]: value });
@@ -143,7 +140,7 @@ const Contact = () => {
         onChangeAction={(text: any) => handleChange(text, firstNameSetForm)}
         secure={false}
         editable={true}
-        extraStyles={{backgroundColor: customTheme.secondaryTextInput}}
+        extraStyles={/*{backgroundColor: customTheme.secondaryTextInput}*/undefined}
 
         keyboardType={undefined}
         value={(form as any)["first_name"]}
@@ -154,7 +151,7 @@ const Contact = () => {
         onChangeAction={(text: any) => handleChange(text, lastNameSetForm)}
         secure={false}
         editable={true}
-        extraStyles={{backgroundColor: customTheme.secondaryTextInput}}
+        extraStyles={/*{backgroundColor: customTheme.secondaryTextInput}*/undefined}
         keyboardType={undefined}
         value={(form as any)["last_name"]}
         />

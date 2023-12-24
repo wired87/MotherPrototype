@@ -3,7 +3,7 @@ import {themeColors} from "../colors/theme";
 
 const windowWidth = Dimensions.get('window').width;
 
-import {Dimensions, Platform, StyleSheet} from "react-native";
+import {Dimensions, StyleSheet} from "react-native";
 
 export const uniStyles = StyleSheet.create({
     headerContainer: {                                                       // Header
@@ -14,7 +14,6 @@ export const uniStyles = StyleSheet.create({
         height: 40,
         top: 5,
         position: "absolute",
-
     },
     containerHeader: {
         alignItems: 'center',
@@ -92,15 +91,13 @@ export const uniStyles = StyleSheet.create({
     },
     historyItem: {
         flexDirection: 'row',
-        height: 40,
+        height: 50,
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 5,
-        paddingVertical: 10,
-        backgroundColor: 'rgb(255, 255, 255)',
+        paddingHorizontal: 15,
         overflow: 'hidden',
         width: windowWidth * .9,
-        marginBottom: 5,
+        marginBottom: 15,
         borderRadius: 9,
     },
     bgImage: {

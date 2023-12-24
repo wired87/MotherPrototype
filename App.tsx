@@ -25,6 +25,7 @@ export default function App() {
   const [customTheme, setCustomTheme] = useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
   const [loading, setLoading] = useState(false);
   const [appIsReady, setAppIsReady] = useState(false);
+  const [clearMessages, setClearMessages] = useState(false);
 
   // init DarkMode
   const toggleTheme = () => setDarkmode(!darkmode);
@@ -33,14 +34,15 @@ export default function App() {
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
       if (user) {
+
         setUser((user as firebase.User));
         console.log("User set in App: ", user)
+
       } else {
         console.log("User could not be set in App")
       }
     });
   }, []);
-
 
   useEffect(() => {
     console.log("appIsReady", appIsReady);
@@ -62,6 +64,8 @@ export default function App() {
           'JetBrainsMono': require('./assets/fonts/codeFont/JetBrainsMono.ttf'),
           'Roboto': require('./assets/fonts/Roboto-Regular.ttf'),
           'wizardFont': require('./assets/fonts/poweredFont.otf'),
+          'typeIndicator': require('./assets/fonts/codeFont/JetBrainsMono-Italic.ttf'),
+
         })
 
         console.log("Fonts have been loaded..");
@@ -108,7 +112,11 @@ export default function App() {
   return (
     <ReduxProvider store={store}>
       <ThemeContext.Provider value={{customTheme}}>
-        <PrimaryContext.Provider value={{ darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading }}>
+        <PrimaryContext.Provider
+          value={{
+            darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
+            clearMessages, setClearMessages
+        }}>
           <PaperProvider>
             <GestureHandlerRootView style={{ flex: 1 }}>
               <BottomSheetModalProvider>

@@ -8,37 +8,51 @@ import LottieView from "lottie-react-native";
 const localStyles = StyleSheet.create(
   {
     lottieStyles: {
-      height: 40,
-      width: 40
+      height: 200,
+      width: 200
     },
+    main: {
+      paddingHorizontal: 20
+    }
   }
 );
 
 interface StatusContainer {
   source: string | any;
   text?: string;
-  styles?: object;
-  extraContainerStyles?: object;
+  helpText?: string;
 }
 
 const StatusContainer: React.FC<StatusContainer> = (
 
-  { source, text, styles,extraContainerStyles }
+  { source, text,helpText }
 ) => {
+  const textStyles = {fontSize: 22, textAlign: "center", gap: 10, marginBottom: 30};
+  const helpTextStyles = {fontSize: 16, textAlign: "center", gap: 10}
 
   return(
     <DefaultContainer
-      extraStyles={extraContainerStyles}>
+      extraStyles={localStyles.main}>
+
       <LottieView
         style={localStyles.lottieStyles}
-        source={source} autoPlay
-        // loop
+        source={source}
+        autoPlay
+        loop={false}
       />
+
       <DefaultText
         text={text}
-        moreStyles={{fontSize: 22}}
+        moreStyles={textStyles}
       />
+
+      <DefaultText
+        text={helpText}
+        moreStyles={helpTextStyles}
+      />
+
     </DefaultContainer>
   );
 }
+
 export default memo(StatusContainer);

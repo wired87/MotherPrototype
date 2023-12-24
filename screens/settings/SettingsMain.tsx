@@ -1,4 +1,4 @@
-import React, {lazy, memo, useCallback, useContext, useRef, useState} from 'react'
+import React, {lazy, memo, useCallback, useContext, useMemo, useRef, useState} from 'react'
 import {
   View,
   ActivityIndicator,
@@ -8,6 +8,8 @@ import {
   Share,
 } from 'react-native'
 
+import * as Linking from 'expo-linking';
+
 import {styles} from "../../components/styles"
 import { SwipeModal } from '../../components/modals/SwipeModal';
 import AreYouSureContainer from "../../components/container/AreYouSureContainer";
@@ -15,15 +17,18 @@ import Contact from "../../components/container/modalContainers/Contact/Contact"
 import FeaturesInFuture from "../../components/container/modalContainers/FeaturesInFuture";
 import DarkMode from "../../components/container/modalContainers/DarkMode";
 import PrivacyPolicy from "./PrivacyPolicy";
+import successSent from "../../assets/animations/successSent.json";
 
-import successAuth from "../../assets/animations/successLottie.json";
 // @ts-ignore
 import failLottie from "../../assets/animations/failLottie.json";
 
+
+// STINGS
+const termsUrl = "https://www.app-privacy-policy.com/live.php?token=NWq13bWUVgAMJFLBRIlHlsxdsSasqurJ";
+const privacyUrl = "https://www.app-privacy-policy.com/live.php?token=1imlqB2AjBzWW6xCk201qYMelCw2TQm5"
 const StatusContainer =
   lazy(() => import("../../components/container/modalContainers/StatusContainer"));
 
-import { imgStyles } from '../../components/images/imgStyles';
 import {PrimaryContext, SettingsContext, ThemeContext} from "../Context";
 import Imprint from "./Imprint";
 import {settingStyles} from "./settingStyles";
@@ -71,7 +76,6 @@ let otherData = [
     title: "Rate us",
     navigate: "",
     component: null
-
   },
   {
     id: 3,
@@ -79,7 +83,6 @@ let otherData = [
     title: "Share it with your Friends",
     navigate: "",
     component: null
-
   },
 ]
 
@@ -89,14 +92,14 @@ let aboutData = [
     icon: "note-text",
     title: "Terms of use",
     navigate: "",
-    component: memo(() => React.createElement(DarkMode))
+    component: null
   },
   {
     id: 2,
     icon: "security",
     title: "Privacy Policy",
     navigate: "",
-    component: memo(() => React.createElement(PrivacyPolicy))
+    component: null
   },
   {
     id: 3,
@@ -129,22 +132,20 @@ export const  SettingsMain = () => {
     bottomSheetRef.current?.snapToIndex(number);
   }, []);
 
-  const statusData = useCallback(() => {
+  const statusData = useMemo(() => {
     if (loading) {
       return <ActivityIndicator size={20} />
-    } else if (status === 201 || status === 200) {
+    } else if (status == 201 || status == 200) {
       return <StatusContainer
-                source={successAuth}
-                text={"Success"}
-                styles={imgStyles.statusImg}
-                extraContainerStyles={undefined}
+                source={successSent}
+                text={"Success!"}
+                helpText={"We have received your Message and contact you ASAP!"}
               />
-    } else if (status === 400 || status === 401) {
+    } else if (status == 400 || status == 401) {
       return <StatusContainer
                 source={failLottie}
-                text={"Failed! \n Please try again or contact us."}
-                styles={imgStyles.statusImg}
-                extraContainerStyles={undefined}
+                text={"Failed!\n"}
+                helpText={"Please try again."}
               />;
     } else if (data) {
       return React.createElement(data);
@@ -201,6 +202,14 @@ export const  SettingsMain = () => {
       if (item.title.includes("Share")) {
         share()
           .then(() => console.log("Shared successfully.."));
+      }else if (item.title.includes("Terms")){
+         Linking.openURL(termsUrl)
+           .then(() => console.log("Terms successfully linked"))
+           .catch(e => console.log("Error while linking Terms:", e));
+      }else if (item.title.includes("Privacy")){
+         Linking.openURL(privacyUrl)
+           .then(() => console.log("Privacy successfully linked"))
+           .catch(e => console.log("Error while linking Privacy:", e));
       } else {
         updateModalIndex(2);
         setNewData(item.component);
@@ -246,10 +255,32 @@ export const  SettingsMain = () => {
 
           <SwipeModal
             bottomSheetRef={bottomSheetRef}
-            Content={statusData()}
+            Content={statusData}
           />
 
         </View>
     </View>
     );
 }
+/*
+import { A } from '@expo/html-elements';
+import {userStyles} from "../user/userStyles";
+import {memo, useContext} from "react";
+import {ThemeContext} from "../Context";
+
+
+const TermsOfUse = () => {
+
+  const {customTheme} = useContext(ThemeContext);
+
+  const pressableStyles = [userStyles.changeInfoBtn,
+    {backgroundColor: customTheme.primaryButton, color: customTheme.text}]
+
+  return(
+    <>
+      <A style={pressableStyles} href={termsUrl}>Terms and Conditions</A>
+    </>
+  );
+}
+export default memo(TermsOfUse)
+ */

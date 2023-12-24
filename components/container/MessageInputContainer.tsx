@@ -1,5 +1,5 @@
 import {DefaultContainer} from "./DefaultContainer";
-import { TextInput, View, Vibration, Pressable } from "react-native";
+import {TextInput, View, Vibration, Pressable, ActivityIndicator} from "react-native";
 import {styles} from "./contiStyles";
 import {IconButton} from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -210,8 +210,8 @@ export const MessageInputContainer = (
   }, [userRecording, currentRecording])
 
   const send = useCallback(async () => {
-
     console.log("real messages", messages)
+
     if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
       Vibration.vibrate()
       await sendMessageProcess()
@@ -227,9 +227,10 @@ export const MessageInputContainer = (
     if (typing) {
       return <View style={styles.indicatorContainer}>
               <TypeIndicator/>
+              <ActivityIndicator size={"small"} color={customTheme.text}/>
             </View>
     }
-  },[]);
+  },[typing]);
 
   return (
     <DefaultContainer

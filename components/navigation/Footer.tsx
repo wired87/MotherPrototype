@@ -78,16 +78,14 @@ export default function NavigationMain(){
     userRecording, setUserRecording,
     currentRecording, setCurrentRecording
   }
-
   const {
-    setUser,
     } = useContext(PrimaryContext);
 
   const {customTheme} = useContext(ThemeContext)
 
   // make Active Tabbar Shadow color transparent
   const theme = useTheme();
-  theme.colors.secondaryContainer = "transperent"
+  theme.colors.secondaryContainer = "transparent"
 
   const dispatch = useDispatch();
 
@@ -115,13 +113,14 @@ export default function NavigationMain(){
         activeColor={themeColors.sexyBlue}
         inactiveColor={themeColors.sexyBlue}
         backBehavior={"firstRoute"}
-        barStyle={[localStyles.barStyles, {backgroundColor: customTheme.navigatorColor}]}>
+        barStyle={[localStyles.barStyles, { backgroundColor: customTheme.navigatorColor }]}>
           <Tab.Screen
             name="Chat"
             children={
               () =>
                 <InputContext.Provider
                   value={elements}>
+
                   <ChatNavigation
                     bottomSheetRef={bottomSheetRef}
                     dispatchHistorySent={dispatchHistorySent}
@@ -149,7 +148,6 @@ export default function NavigationMain(){
           }}
         />
       </Tab.Navigator>
-
       <BannerAd
         unitId={adUnitIdBannerAdFooter}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
@@ -163,6 +161,16 @@ export default function NavigationMain(){
 
 
 /* later
+fooooooooooo
+
+
+
+heaaaaaaaaaaaaa
+
+
+
+
+
   async function retrieveUserSession() {
     try { // check if the user is already stored
       const data = await getUserSessionData();

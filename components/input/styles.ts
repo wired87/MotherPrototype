@@ -12,12 +12,12 @@ export const inputStyles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 10,
         color: '#000000',
-        backgroundColor: 'white',
         height: 50,
         marginBottom: 0,
         minWidth: 250,
         marginHorizontal: 5,
-        marginTop: 10
+        marginTop: 10,
+        backgroundColor: "rgba(255,255,255,.8)"
     },
     inputPicker: {
         fontFamily: "JetBrainsMono",

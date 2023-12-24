@@ -46,16 +46,15 @@ const FeaturesInFuture = () => {
 
   let features = [
     "Speech to Text",
-    "Text to Speech",
-    "Website scanner(Pro)",
+    "Job Application creator",
     "Cook assistant",
-    "Translator(the best)",
-    "Partnerships(Contact me)",
+    "Text from Image converter",
+    "Partnerships(Contact us)",
   ]
 
   // @ts-ignore
   const renderItem = ({ item }) => (
-    <View style={styles.featuresContainer}>
+    <View style={[styles.featuresContainer, { backgroundColor: customTheme.modalColor, borderColor: customTheme.text }]}>
       <DefaultText
         text={item}
         moreStyles={moreTextStyles}
@@ -89,12 +88,6 @@ const FeaturesInFuture = () => {
         <DefaultText
           text={text.contactFeatureText}
           moreStyles={extraTextStyles}/>
-        <DefaultButton
-          extraStyles={extraTextStyles}
-          onPressAction={undefined}
-          text={text.contact}
-          secondIcon={undefined}
-        />
       </View>
     );
   }, [])

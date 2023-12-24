@@ -7,7 +7,7 @@ import React, {memo, useCallback, useContext} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import axios from "axios";
-import {PrimaryContext, ThemeContext} from "../../screens/Context";
+import {InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 
 
 
@@ -35,12 +35,14 @@ const localStyles = StyleSheet.create(
 
 const AreYouSureContainer = () => {
 
-  const { user, setLoading } = useContext(PrimaryContext)
+  const {
+    user, setLoading,
+    clearMessages, setClearMessages
+  } = useContext(PrimaryContext)
   const { customTheme } = useContext(ThemeContext);
 
   const navigation = useNavigation();
 
-  const dispatch = useDispatch();
   const moreTextStyles = [styles.modalH4, {color: customTheme.text}];
 
   // @ts-ignore
@@ -55,7 +57,9 @@ const AreYouSureContainer = () => {
   const deleteHistory = useCallback(async() => {
     setLoading(true);
     try {
+      /*
       const userObject = {
+
         user_id: user?.uid
       }
       console.log("user id: ", user?.uid)
@@ -65,6 +69,8 @@ const AreYouSureContainer = () => {
       // @ts-ignore
       setStatus(response.data.status);
       console.log("response: ", response.data.messages, "\n response.status:", response.data.status);
+       */
+      setClearMessages(true);
     } catch(error) {
       console.log("error: " + error);
     } finally {

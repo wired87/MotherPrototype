@@ -49,7 +49,6 @@ export const settingStyles = StyleSheet.create({
     },
     topBtn: {
         marginTop: 40,
-        marginHorizontal: 10,
         paddingHorizontal: 20,
         paddingVertical: 20,
         borderRadius: 20,

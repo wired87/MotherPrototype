@@ -1,36 +1,18 @@
-import {FlatList, Pressable, StyleSheet, View} from "react-native";
+import {FlatList, View} from "react-native";
 import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
-import {ModalContentNoLog} from "./ModalContentNoLog";
 
-import React, {memo, useCallback, useContext, useMemo} from "react";
+import React, {memo, useContext, useMemo} from "react";
 import { ActivityIndicator } from "react-native-paper";
 import {themeColors} from "../../../colors/theme";
 import {uniStyles} from "../../../screens/universalStyles"
 import {InputContext, PrimaryContext, ThemeContext} from "../../../screens/Context";
+import {HistoryItem} from "./HistoryItem";
 
 // Strings
 const indicatorSize = "large";
 const historyText = "History";
 const noHistoryText = "Could not find any history . . .";
-
-
-
-interface HistoryitemTypes {
-  item: any;
-  onPress: void | (() => {}) | any;
-}
-
-const HistoryItem: React.FC<HistoryitemTypes> = memo(({ item, onPress }) => (
-  <Pressable
-    style={uniStyles.historyItem}
-    onPress={() => onPress(item.message)}>
-    <DefaultText
-      text={item?.message}
-      moreStyles={undefined}
-    />
-  </Pressable>
-));
 
 const ChatMenuModalContent = (
     // @ts-ignore
@@ -40,6 +22,7 @@ const ChatMenuModalContent = (
   const {
     user,
     loading,
+
   } = useContext(PrimaryContext);
 
   const { messages } = useContext(InputContext);
@@ -69,7 +52,10 @@ const ChatMenuModalContent = (
             data={lastItems}
             style={uniStyles.historyList}
             renderItem={({ item }) => (
-              <HistoryItem item={item} onPress={changeText} />
+              <HistoryItem
+                item={item}
+                onPress={changeText}
+              />
             )}
             keyExtractor={(_item, index) => index.toString()}
           />

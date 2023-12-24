@@ -17,6 +17,10 @@ export const PrimaryContext = createContext(
 
     loading: false,
     setLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
+
+    clearMessages: false,
+    setClearMessages: (() => {}) as Dispatch<SetStateAction<boolean>>,
+
   });
 
 
@@ -98,6 +102,9 @@ export interface Theme {
   secondaryTextInput: string;
   secondaryBorderColor: string;
   errorText: string;
+  textMessage: string;
+  aiTextMessage: string;
+  mirageChatMainColor: string;
 }
 
 export const lightModeTheme: Theme = {
@@ -112,13 +119,15 @@ export const lightModeTheme: Theme = {
   headerIconColors: "rgba(3,4,21, .7)",
   messageContainer: "#e1e4e7",
   view: "#dfe3e8",
-  bottomSheetBg: "#c2c3c5",
+  bottomSheetBg: "rgba(255,255,255,0.6)",
   placeholder: "rgba(0, 0, 0, .6)",
   primaryButton: "#01152a",
   secondaryTextInput: "rgba(255,255,255, 1)",
   secondaryBorderColor: "rgba(0,0,0,.2)",
   errorText: 'rgb(110,0,0)',
-
+  textMessage: "transparent",//"rgba(0,0,0, .1)",
+  aiTextMessage: "rgba(0,0,0,.2)",
+  mirageChatMainColor: "rgba(1,21,42,0.42)"
 }
 
 export const darkModeTheme: Theme = {
@@ -133,12 +142,15 @@ export const darkModeTheme: Theme = {
   headerIconColors: "rgb(255,255,255)",
   messageContainer: "rgba(105,103,103,0.4)",
   view: "rgba(66,66,66,0.1)",
-  bottomSheetBg: "#38393a",
+  bottomSheetBg: "rgba(189,189,189,0.24)",
   placeholder: "rgba(255, 255, 255, .6)",
   primaryButton: "#232f44",
   secondaryTextInput: "rgba(255,255,255, .6)",
   secondaryBorderColor: "rgba(255,255,255, .6)",
   errorText: 'rgb(148,27,27)',
+  textMessage: "transparent", //"rgba(255,255,255, .1)", //"rgba(35,47,68,0.76)", //"rgba(255,255,255,0.44)",
+  aiTextMessage: "rgba(215,215,215,0.2)",
+  mirageChatMainColor: "rgba(255,255,255, .6)",
 }
 
 export interface ThemeContextType {
@@ -148,8 +160,6 @@ export interface ThemeContextType {
 export const ThemeContext = createContext<ThemeContextType>({
   customTheme: lightModeTheme
 });
-
-
 
 
 

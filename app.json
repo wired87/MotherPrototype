@@ -11,14 +11,13 @@
       [
         "expo-av",
         {
-          "microphonePermission": "Allow AIX to access your microphone."
+          "microphonePermission": "Allow MIRACLE to access your microphone."
         }
       ]
     ],
     "splash": {
-      "image": "./assets/icons/splashScreen.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/icons/screen.png",
+      "resizeMode": "contain"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -32,12 +31,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/splashScreen.png",
+        "foregroundImage": "./assets/icons/screen.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.wired87.AiChat501",
       "splash": {
-        "backgroundColor": "rgb(0,0,1)"
+        "backgroundColor": "#ffffff"
       }
     },
     "web": {

@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useContext} from "react";
+import React, {memo, useCallback, useContext, useMemo} from "react";
 import { FlatList, KeyboardAvoidingView, SafeAreaView, Text, View, StyleSheet } from "react-native";
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
@@ -29,8 +29,7 @@ const localStyles = StyleSheet.create(
       flex: 1,
     },
     fullPercent: {
-      width: "100%",
-      height: "100%",
+      marginTop: 50
     },
     columnReverse: {
       flexDirection: 'column-reverse'
@@ -66,11 +65,10 @@ export const ChatMain = (
   // Styles
   const mainViewStyles =
     [localStyles.main, {backgroundColor: customTheme.primary}];
-  const aixTextStyles =
-    [localStyles.centeredText, {color: customTheme.secondaryBorderColor}];
 
   const primaryTextStyles = {textAlign: "justify", color: customTheme.text}
-  const secondaryTextStyles = {color: customTheme.text}
+  const secondaryTextStyles = {color: "white", fontSize: 10}
+  const secondaryTextStylesText = {color: customTheme.text, fontSize: 10}
   // @ts-ignore
   const renderItem = useCallback(({item, index}) => {
     return item.type === "text" ? (
@@ -79,7 +77,7 @@ export const ChatMain = (
         item={item}
         styles={chatStyles}
         primaryTextStyles={primaryTextStyles}
-        secondaryTextStyles={secondaryTextStyles}
+        secondaryTextStyles={secondaryTextStylesText}
       />
     ) : (
       <SingleAudioMemo
@@ -91,21 +89,29 @@ export const ChatMain = (
     );
   }, [customTheme, messages]);
 
+  const miracleText = useMemo(() => {
+    const aixTextStyles =
+      [localStyles.centeredText, {color: customTheme.mirageChatMainColor}];
+    return <View style={
+      [
+        chatStyles.chatBackground,
+        {
+          borderColor: customTheme.borderColor,
+          backgroundColor: customTheme.view
+        }
+      ]
+    }>
+      <Text style={aixTextStyles}>MIRACLE</Text>
+    </View>
+  },[customTheme])
+
+
   return(
     <SafeAreaView style={mainViewStyles}>
       <KeyboardAvoidingView
         style={mainViewStyles}>
         <View style={localStyles.defaultContainer}>
-          <View style={
-            [
-              chatStyles.chatBackground,
-              {
-                borderColor: customTheme.borderColor,
-                backgroundColor: customTheme.view
-              }
-            ]
-          }>
-          </View>
+          {miracleText}
           <FlatList
             inverted
             style={localStyles.fullPercent}

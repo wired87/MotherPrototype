@@ -12,15 +12,12 @@ export const styles = StyleSheet.create({
     },
     featuresContainer: {
         width: windowWidth * .85,
-        borderTopWidth: 1,
         borderWidth: 1,
-        borderColor: themeColors.borderThin,
         marginVertical: 5,
         paddingVertical: 10,
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 20,
-        backgroundColor: "rgba(0,0,0,.2)",
     },
     chatMessageInput: {
         width: windowWidth * .8,
@@ -75,7 +72,9 @@ export const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "flex-start",
         width: windowWidth * .5,
-        paddingLeft: 20
+        paddingLeft: 20,
+        flexDirection: "row",
+        gap: 10,
     },
     clearInputFiledBtn: {
         position: "absolute",
