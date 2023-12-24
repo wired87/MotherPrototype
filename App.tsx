@@ -30,7 +30,6 @@ export default function App() {
   // init DarkMode
   const toggleTheme = () => setDarkmode(!darkmode);
 
-
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
       if (user) {

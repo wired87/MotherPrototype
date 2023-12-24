@@ -12,6 +12,7 @@
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-native-google-signin/google-signin": "^11.0.0",
     "@react-native-picker/picker": "2.4.10",
+    "@react-native-seoul/masonry-list": "^1.4.2",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.16",
     "@reduxjs/toolkit": "^1.9.7",

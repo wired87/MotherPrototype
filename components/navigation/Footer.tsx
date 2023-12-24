@@ -9,9 +9,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 import {useDispatch} from "react-redux";
 import {themeColors} from "../../colors/theme";
-import React, { useContext, useEffect, useRef, useState} from "react";
-
-
+import React, { useContext, useRef, useState} from "react";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
@@ -20,8 +18,7 @@ import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context"
 import BottomSheet from "@gorhom/bottom-sheet";
 import {Recording} from "expo-av/build/Audio/Recording";
 import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
-import {getAuth} from 'firebase/auth';
-import firebase from "firebase/compat";
+import ToolsMain2 from "../../screens/tools/ToolsMain2";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -139,6 +136,15 @@ export default function NavigationMain(){
             }}
           />
         <Tab.Screen
+          name="Tools"
+          component={ToolsMain2}
+          options={{
+            tabBarIcon: ({ color, focused }) => (
+              <MaterialCommunityIcons name={focused ? "view-dashboard" : "view-dashboard-outline"} color={color} size={29} />
+            ),
+          }}
+        />
+        <Tab.Screen
           name="Settings"
           component={SettingNavigation}
           options={{
@@ -160,17 +166,7 @@ export default function NavigationMain(){
 }
 
 
-/* later
-fooooooooooo
-
-
-
-heaaaaaaaaaaaaa
-
-
-
-
-
+/*
   async function retrieveUserSession() {
     try { // check if the user is already stored
       const data = await getUserSessionData();

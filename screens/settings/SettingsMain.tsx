@@ -16,12 +16,10 @@ import AreYouSureContainer from "../../components/container/AreYouSureContainer"
 import Contact from "../../components/container/modalContainers/Contact/Contact";
 import FeaturesInFuture from "../../components/container/modalContainers/FeaturesInFuture";
 import DarkMode from "../../components/container/modalContainers/DarkMode";
-import PrivacyPolicy from "./PrivacyPolicy";
 import successSent from "../../assets/animations/successSent.json";
 
 // @ts-ignore
 import failLottie from "../../assets/animations/failLottie.json";
-
 
 // STINGS
 const termsUrl = "https://www.app-privacy-policy.com/live.php?token=NWq13bWUVgAMJFLBRIlHlsxdsSasqurJ";
