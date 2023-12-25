@@ -10,5 +10,8 @@ declare module '@env' {
   export const BANNER_HEADER_ANDROID: string;
   export const BANNER_FOOTER_IOS: string;
   export const BANNER_FOOTER_ANDORID: string;
+  export const NEURONWRITER_AFFILIATE_LINK: string;
+  export const LINKMINK_AFFILIATE_URL: string;
+  export const ORIGIBNALITY_AFFILITE_UTR: string;
 
 }

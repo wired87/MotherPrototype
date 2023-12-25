@@ -3,13 +3,16 @@ import {Text, StyleSheet, View} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {LinearGradient} from "expo-linear-gradient";
 
+
+
 const ls = StyleSheet.create(
   {
     bgView: {
       backgroundColor: "black",
       borderRadius: 22,
       padding: 0,
-      marginTop: 200
+      marginTop: 20,
+      marginHorizontal: 11,
     },
     button: {
       paddingVertical: 15,
@@ -18,32 +21,36 @@ const ls = StyleSheet.create(
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+
     },
     icon:{
       marginBottom: 10,
       color: "white",
+      opacity: .9
     },
     text:  {
       color: "white",
       fontSize: 19,
-
+      textAlign: "center",
+      lineHeight: 25,
+      opacity: .9
     }
   }
 )
 
 interface ToolitemButton {
-  buttonHeight?: number;
   text?: string;
   color: string;
   extraText?: string;
+  icon: string
 }
 
 const ToolitemButton: React.FC<ToolitemButton> = (
   {
-    buttonHeight ,
     text,
     color,
-    extraText
+    extraText,
+    icon
   }
 ) => {
 
@@ -51,19 +58,24 @@ const ToolitemButton: React.FC<ToolitemButton> = (
     if (extraText) return <Text>{extraText}</Text>
   }, [extraText]);
 
+
   const finalButton = useCallback((className: any) => {
-    return [className, {width: 150, height: buttonHeight || 120}]
-  }, []);
+    return [className, {width: 170}]
+  }, [icon]);
+
+  const getRandomBoolean = useCallback(() => {
+    return Math.random() < 0.5
+  }, [icon]);
 
   return(
     <View style={finalButton(ls.bgView)}>
       <LinearGradient
-        style={finalButton(ls.button)}
+        style={[finalButton(ls.button), {height: getRandomBoolean() ? 100 : 150}]}
         colors={[color, "black"]}
         start={{ x: 0, y: 0 }}
         end={{ x: .1, y: .8 }}>
-        <MaterialCommunityIcons size={30} style={ls.icon} name={"text-to-speech"}/>
-          <Text style={ls.text}>{text || " Voice to Text"}</Text>
+        <MaterialCommunityIcons size={30} style={ls.icon} name={icon}/>
+          <Text style={ls.text}>{text}</Text>
         {extraTextComponent}
       </LinearGradient>
     </View>
