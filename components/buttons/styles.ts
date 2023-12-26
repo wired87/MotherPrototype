@@ -68,4 +68,12 @@ export const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
     },
+    redordingButton: {
+        borderRadius: 50,
+        width: 150,
+        height: 150,
+        borderWidth: 2
+
+
+    }
 })

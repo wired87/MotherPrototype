@@ -164,14 +164,13 @@ const CategoryButton:
   memo(({ item, selected, setSelectedItem }
   ) => {
 
-const color = "rgba(24,62,131,0.2)";
 
   const { customTheme } = useContext(ThemeContext);
 
   const pressableStyles =
     [
       styles.categoryButton,
-      {  shadowColor: customTheme.text, borderColor: customTheme.text, borderRadius: 14, },
+      {  shadowColor: customTheme.text, paddingVertical: 7, paddingHorizontal: 10 },
     ]
 
   const handlePress = () => {
@@ -179,11 +178,11 @@ const color = "rgba(24,62,131,0.2)";
     item.onPress();
   }
 
-  const linearColor = selected? "rgba(255,255,255,0.1)" : color;
+  const linearColor = selected? customTheme.categoryButton : customTheme.primaryButton;
 
   return(
-    <Pressable onPress={handlePress} style={styles.categoryButton}>
-      <View style={styles.categoryButton}>
+    <Pressable onPress={handlePress} style={[styles.categoryButton, ]}>
+      <View style={[styles.categoryButton, {backgroundColor: customTheme.primary}]}>
         <LinearGradient
           colors={[linearColor, 'rgba(0,0,0,.5)']}
           style={pressableStyles}
@@ -343,13 +342,10 @@ const styles = StyleSheet.create({
   },
 
   categoryButton: {
-    paddingVertical: 7,
-    paddingHorizontal: 10,
     width: 110,
-    borderRadius: 14,
-    flexDirection: 'column',
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 22
 
   },
 

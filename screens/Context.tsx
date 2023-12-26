@@ -105,6 +105,7 @@ export interface Theme {
   textMessage: string;
   aiTextMessage: string;
   mirageChatMainColor: string;
+  categoryButton: string;
 }
 
 export const lightModeTheme: Theme = {
@@ -127,7 +128,8 @@ export const lightModeTheme: Theme = {
   errorText: 'rgb(110,0,0)',
   textMessage: "transparent",//"rgba(0,0,0, .1)",
   aiTextMessage: "rgba(0,0,0,.2)",
-  mirageChatMainColor: "rgba(1,21,42,0.42)"
+  mirageChatMainColor: "rgba(1,21,42,0.42)",
+  categoryButton: "rgba(0,0,0,0.76)"
 }
 
 export const darkModeTheme: Theme = {
@@ -151,6 +153,8 @@ export const darkModeTheme: Theme = {
   textMessage: "transparent", //"rgba(255,255,255, .1)", //"rgba(35,47,68,0.76)", //"rgba(255,255,255,0.44)",
   aiTextMessage: "rgba(215,215,215,0.2)",
   mirageChatMainColor: "rgba(255,255,255, .6)",
+  categoryButton: "rgba(255,255,255,0.1)"
+
 }
 
 export interface ThemeContextType {
