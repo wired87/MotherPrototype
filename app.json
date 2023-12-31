@@ -17,7 +17,7 @@
     ],
     "splash": {
       "image": "./assets/icons/screen.png",
-      "resizeMode": "contain"
+      "resizeMode": "cover"
     },
     "assetBundlePatterns": [
       "**/*"

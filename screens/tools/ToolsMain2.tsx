@@ -27,6 +27,7 @@ interface DataItem {
   icon: string,
   navigation: string,
   extraText?: string,
+  screen: string,
 }
 
 
@@ -86,7 +87,8 @@ const businessButtonList: DataItem[] = [
     color: "rgba(29,152,189,0.4)",
     icon: "format-float-left",
     navigation: "ChatNavigator",
-    extraText: undefined
+    extraText: undefined,
+    screen: "ResumeCreator"
   },
   {
     text: "Document Editor",
@@ -94,16 +96,18 @@ const businessButtonList: DataItem[] = [
     icon: "sticker-text-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
+    screen: "DocumentEditor"
   }
 ]
 
 const creativeButtonList: DataItem[] = [
   {
-    text: 'Text-To-Speech',
+    text: 'Speech-to-Text',
     color: "rgba(110,0,0,.7)",
     icon: "text-to-speech",
     navigation: "ChatNavigator",
-    extraText: undefined
+    extraText: undefined,
+    screen: "Speech-to-Text"
   },
   {
     text: "Idea finder",
@@ -111,6 +115,7 @@ const creativeButtonList: DataItem[] = [
     icon: "lightbulb-on-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
+    screen: "ideaFinder"
   },
   {
     text: "Image editor",
@@ -118,6 +123,7 @@ const creativeButtonList: DataItem[] = [
     icon: "wallpaper",
     navigation: "ChatNavigator",
     extraText: undefined,
+    screen: "ImageEditor"
   }
 ]
 
@@ -127,7 +133,8 @@ const lifeButtonList: DataItem[] = [
     color: "rgba(37,210,37,0.2)",
     icon: "television-shimmer",
     navigation: "ChatNavigator",
-    extraText: undefined
+    extraText: undefined,
+    screen: "MediaFinder"
   },
   {
     text: "Chat",
@@ -135,6 +142,7 @@ const lifeButtonList: DataItem[] = [
     navigation: "ChatNavigator",
     color: "rgba(255,255,255,.2)",
     extraText: undefined,
+    screen: "ImageExplanation"
   },
   {
     text: "Image explanation",
@@ -142,19 +150,95 @@ const lifeButtonList: DataItem[] = [
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
+    screen: "ImageExplanation"
   }
 ]
+
+const textButtonList: DataItem[] = [
+  {
+    text: "Birthday Card",
+    color: "rgba(37,210,37,0.2)",
+    icon: "television-shimmer",
+    navigation: "ChatNavigator",
+    extraText: undefined,
+    screen: "MediaFinder"
+  },
+  {
+    text: "Christmas Card",
+    icon: "comment-multiple-outline",
+    navigation: "ChatNavigator",
+    color: "rgba(255,255,255,.2)",
+    extraText: undefined,
+    screen: "ImageExplanation"
+  },
+  {
+    text: "New Year Wishes",
+    color: "rgba(255,165,0,.4)",
+    icon: "tooltip-image-outline",
+    navigation: "ChatNavigator",
+    extraText: undefined,
+    screen: "ImageExplanation"
+  },
+  {
+    text: "E-Mail writer",
+    color: "rgba(255,165,0,.4)",
+    icon: "tooltip-image-outline",
+    navigation: "ChatNavigator",
+    extraText: undefined,
+    screen: "ImageExplanation"
+  },
+  {
+    text: "Greeting Card",
+    color: "rgba(255,165,0,.4)",
+    icon: "tooltip-image-outline",
+    navigation: "ChatNavigator",
+    extraText: undefined,
+    screen: "ImageExplanation"
+  },
+  {
+    text: "Product Text writer",
+    color: "rgba(255,165,0,.4)",
+    icon: "tooltip-image-outline",
+    navigation: "ChatNavigator",
+    extraText: undefined,
+    screen: "ImageExplanation"
+  },
+  {
+    text: "Story writer",
+    color: "rgba(255,165,0,.4)",
+    icon: "tooltip-image-outline",
+    navigation: "ChatNavigator",
+    extraText: undefined,
+    screen: "ImageExplanation"
+  },
+  {
+    text: "Poem writer",
+    color: "rgba(255,165,0,.4)",
+    icon: "tooltip-image-outline",
+    navigation: "ChatNavigator",
+    extraText: undefined,
+    screen: "ImageExplanation"
+  },
+  {
+    text: "",
+    color: "rgba(255,165,0,.4)",
+    icon: "tooltip-image-outline",
+    navigation: "ChatNavigator",
+    extraText: undefined,
+    screen: "ImageExplanation"
+  }
+]
+
 
 interface ToolItemProps {
   item: DataItem;
   index: number | string;
-
 }
 
 const ToolItem: React.FC<ToolItemProps> = ({ item, index}) => {
   return (
     <View key={index}>
-      <ToolItemButton text={item.text} color={item.color} extraText={item.extraText} icon={item.icon}/>
+      <ToolItemButton text={item.text} color={item.color} extraText={item.extraText} icon={item.icon} navigationScreen={item.screen}/>
     </View>
   );
 };
@@ -220,6 +304,7 @@ const ToolsMain = () => {
     { key: "1", title: 'Assistant', onPress: () => handleCategoryChange(1) },
     { key: "2", title: 'Business', onPress: () => handleCategoryChange(2) },
     { key: "3", title: 'Creative', onPress: () => handleCategoryChange(3) },
+    { key: "4", title: 'Text', onPress: () => handleCategoryChange(4) },
   ];
 
   const getItemLayout = useCallback((_: any, index: number) => ({
@@ -246,12 +331,12 @@ const ToolsMain = () => {
 
   }, []);
 
-
   const categoryContent = useMemo(() => {
     const data =
       category === 1 ? lifeButtonList :
         category === 2 ? creativeButtonList :
-          businessButtonList;
+          category === 3 ? businessButtonList :
+            textButtonList
 
     return (
       <MasonryList
@@ -292,7 +377,7 @@ const ToolsMain = () => {
 
       <View style={{overflow: "visible"}}>
         <FlatList
-          style={{overflow: "visible", paddingHorizontal: 10}}
+          style={{overflow: "visible", paddingHorizontal: 0}}
           data={items}
           initialScrollIndex={0}
           horizontal
@@ -306,6 +391,7 @@ const ToolsMain = () => {
                   />
           }
           showsHorizontalScrollIndicator={false}
+
           ItemSeparatorComponent={
             () => <View style={{width: 10}}/>
           }
@@ -345,7 +431,7 @@ const styles = StyleSheet.create({
     width: 110,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 22
+    borderRadius: 22,
 
   },
 
@@ -370,7 +456,7 @@ const styles = StyleSheet.create({
   },
 
   categoryList: {
-    marginTop: 20,
+    marginVertical: 20,
     paddingHorizontal: 18,
   },
 
@@ -381,6 +467,7 @@ const styles = StyleSheet.create({
 
   masonryList: {
     flex: 1,
+    paddingBottom: 50,
   },
 
   affiliateImage: {
@@ -405,3 +492,9 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 });
+
+/*
+Image editor: input a image and a string for description, send it to my backend and get a image and string as response (after user chooses an image it must me alsdo displayed in the ui)
+ideafinder: for business ideas. user choose the category (tech, ......) from a Picker ("@react-native-picker/picker")
+and the last one is a
+ */

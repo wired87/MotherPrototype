@@ -52,6 +52,24 @@ export const InputContext = createContext({
 
 });
 
+export const ToolContext= createContext(
+  {
+    actionValue: "",
+    setActionValue: (() => {}) as Dispatch<SetStateAction<string>>,
+
+    error: "",
+    setError: (() => {}) as Dispatch<SetStateAction<string>>,
+  }
+)
+
+export const ResumeContext= createContext(
+  {
+    resume: "",
+    setResume: (() => {}) as Dispatch<SetStateAction<string>>,
+
+  }
+)
+
 export const AuthContext = createContext({
   password: "",
   setPassword: (() => {}) as Dispatch<SetStateAction<string>>,
@@ -106,6 +124,7 @@ export interface Theme {
   aiTextMessage: string;
   mirageChatMainColor: string;
   categoryButton: string;
+  placeholder
 }
 
 export const lightModeTheme: Theme = {
@@ -129,7 +148,9 @@ export const lightModeTheme: Theme = {
   textMessage: "transparent",//"rgba(0,0,0, .1)",
   aiTextMessage: "rgba(0,0,0,.2)",
   mirageChatMainColor: "rgba(1,21,42,0.42)",
-  categoryButton: "rgba(0,0,0,0.76)"
+  categoryButton: "rgba(0,0,0,0.76)",
+
+
 }
 
 export const darkModeTheme: Theme = {
@@ -153,7 +174,7 @@ export const darkModeTheme: Theme = {
   textMessage: "transparent", //"rgba(255,255,255, .1)", //"rgba(35,47,68,0.76)", //"rgba(255,255,255,0.44)",
   aiTextMessage: "rgba(215,215,215,0.2)",
   mirageChatMainColor: "rgba(255,255,255, .6)",
-  categoryButton: "rgba(255,255,255,0.1)"
+  categoryButton: "rgba(255,255,255,0.1)",
 
 }
 

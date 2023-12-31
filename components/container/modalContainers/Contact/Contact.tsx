@@ -124,7 +124,8 @@ const Contact = () => {
   const handleChange = (value: string, name: string | number) => {
     setForm({ ...form, [name]: value });
   };
-
+  const pickerStyles =
+    [inputStyles.defaultInput, localStyles.inputExtra, {backgroundColor: customTheme.primary, color: customTheme.text}]
   return (
     <BottomSheetScrollView
       contentContainerStyle={localStyles.contactContainer} style={{ paddingTop : 50 }}>
@@ -165,7 +166,8 @@ const Contact = () => {
         keyboardType={"email-address"}
         value={(form as any)["e_mail"]}
       />
-      <Picker style={[inputStyles.defaultInput, localStyles.inputExtra]}
+
+      <Picker style={pickerStyles}
               selectedValue={(form as any)["option"]}
               onValueChange={(itemValue) => handleChange(itemValue, "option")}>
         {options.map((item, index) => (

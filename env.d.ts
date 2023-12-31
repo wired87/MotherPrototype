@@ -13,5 +13,7 @@ declare module '@env' {
   export const NEURONWRITER_AFFILIATE_LINK: string;
   export const LINKMINK_AFFILIATE_URL: string;
   export const ORIGIBNALITY_AFFILITE_UTR: string;
+  export const TOOLS_IOS_INTERSITIAL: string;
+  export const TOOLS_ANDROID_INTERSITIAL: string;
 
 }

@@ -1,7 +1,8 @@
 import {TextInput, StyleSheet} from "react-native";
 import {inputStyles as styles} from "./styles";
 import {themeColors} from "../../colors/theme";
-import React from "react";
+import React, {useContext} from "react";
+import {ThemeContext} from "../../screens/Context";
 
 interface Form {
   e_mail: string;
@@ -27,7 +28,15 @@ const localStyles = StyleSheet.create(
   }
 )
 
-export const MultilineInput: React.FC<MultilineInputTypes> = ({ value, onChangeText, placeholder }) => {
+export const MultilineInput: React.FC<MultilineInputTypes> = (
+  {
+    value,
+    onChangeText,
+    placeholder
+  }
+  ) => {
+  const { customTheme } = useContext(ThemeContext);
+  const inputStyles = [styles.defaultInput, localStyles.inputExtraStyles, {backgroundColor: customTheme.primary, color: customTheme.text}]
     return(
       <TextInput
         multiline={true}
@@ -38,8 +47,8 @@ export const MultilineInput: React.FC<MultilineInputTypes> = ({ value, onChangeT
         editable={true}
         blurOnSubmit={true}
         maxLength={1200}
-        style={[styles.defaultInput, localStyles.inputExtraStyles]}
-        placeholderTextColor={themeColors.mediumDark}
+        style={inputStyles}
+        placeholderTextColor={customTheme.placeholder}
       />
     );
 }

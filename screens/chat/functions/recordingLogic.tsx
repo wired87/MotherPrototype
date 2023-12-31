@@ -16,11 +16,13 @@ export const startRecording: StartRecordingFunction = async (
     await Audio.requestPermissionsAsync();
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: true,
-      playsInSilentModeIOS: true})
+      playsInSilentModeIOS: true
+    });
     const recording = new Audio.Recording();
     await recording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
     await recording.startAsync();
     console.log('Starting recording...');
+    console.log("RECORDING:", recording)
     setUserRecording(recording);
   } catch (err) {
     console.error('Failed to start recording', err);
@@ -28,6 +30,7 @@ export const startRecording: StartRecordingFunction = async (
     console.log("userRecording startRecording");
   }
 }
+
 
 export const stopRecordingProcess = async( userRecording: Recording | null ) => {
   console.log('Stopping recording..');

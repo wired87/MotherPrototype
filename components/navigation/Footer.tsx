@@ -14,11 +14,11 @@ import React, { useContext, useRef, useState} from "react";
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 
-import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context";
+import {PrimaryContext, InputContext, ThemeContext, ToolContext} from "../../screens/Context";
 import BottomSheet from "@gorhom/bottom-sheet";
 import {Recording} from "expo-av/build/Audio/Recording";
 import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
-import ToolsMain2 from "../../screens/tools/ToolsMain2";
+import ToolsNavigator from "../../screens/tools/ToolsNavigation";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -63,6 +63,10 @@ export default function NavigationMain(){
   const [currentRecording, setCurrentRecording] = useState(false);
   const [userRecording, setUserRecording] = useState<Recording | null>(null);
 
+  //  TOOL CONTEXT
+  const [actionValue, setActionValue] = useState<string>("");
+  const [error, setError] = useState<string>("");
+
   const elements = {
     input, setInput,
     messagesLeft, setMessagesLeft,
@@ -74,6 +78,12 @@ export default function NavigationMain(){
     typing, setTyping,
     userRecording, setUserRecording,
     currentRecording, setCurrentRecording
+  }
+  const toolElements = {
+    actionValue,
+    setActionValue,
+    error,
+    setError,
   }
   const {
     } = useContext(PrimaryContext);
@@ -106,7 +116,7 @@ export default function NavigationMain(){
       <Tab.Navigator
         shifting={false}
         labeled={false}
-        initialRouteName="Chat"
+        initialRouteName="ToolsNavigator"
         activeColor={themeColors.sexyBlue}
         inactiveColor={themeColors.sexyBlue}
         backBehavior={"firstRoute"}
@@ -136,8 +146,13 @@ export default function NavigationMain(){
             }}
           />
         <Tab.Screen
-          name="Tools"
-          component={ToolsMain2}
+          name="ToolsNavigator"
+          children={
+            () =>
+            <ToolContext.Provider value={toolElements}>
+              <ToolsNavigator />
+            </ToolContext.Provider>
+          }
           options={{
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons name={focused ? "view-dashboard" : "view-dashboard-outline"} color={color} size={29} />

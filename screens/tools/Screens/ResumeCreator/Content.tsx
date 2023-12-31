@@ -1,0 +1,145 @@
+import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useMemo, useState} from "react";
+import {DefaultInput} from "../../../../components/input/DefaultInput";
+import {postMessageObject} from "../../../chat/functions/SendProcess";
+import {PrimaryContext, ResumeContext, ThemeContext} from "../../../Context";
+import {DefaultButton} from "../../../../components/buttons/DefaultButton";
+import {DefaultText} from "../../../../components/text/DefaultText";
+import firebase from "firebase/compat";
+
+// STRINGS
+const titlePlaceholder: string = "Job Title";
+const skillsPlaceholder: string = "Your skills for the Job (optional)";
+const contactPlaceholder: string = "Contact Person (optional)";
+const languagePlaceholder: string = "Application Language (eng/de/fr/...";
+const personalDataPlaceholder: string = "Contact Information's (optional)";
+
+const create: string = "Create";
+const error = "This Field is required";
+const postUrl: string = "http://wired87.pythonanywhere.com/open/text-request/";
+
+// INTERFACE
+interface InputTypes {
+  value: string;
+  setState: Dispatch<SetStateAction<string>>;
+  numberOfLines?: number;
+}
+
+interface ResumeTypes {
+  setError: Dispatch<SetStateAction<boolean>>
+}
+
+const ResumeContent: React.FC<ResumeTypes> = (
+  {
+    setError
+  }
+) => {
+  const [jobTitle, setJobTitle ] = useState<string>("");
+  const [skills, setSkills] = useState<string>("");
+  const [contactPerson, setContactPerson] = useState<string>("");
+  const [personalData, setPersonalData] = useState<string>("");
+  const [language, setLanguage] = useState<string>("");
+
+  const [fieldError, setFieldError] = useState<boolean>(false);
+
+  // CONTEXT
+  const { setResume } = useContext(ResumeContext);
+  const { customTheme } = useContext(ThemeContext);
+  const { setLoading } = useContext(PrimaryContext);
+  const { user } = useContext(PrimaryContext);
+
+  // STYLES
+  const extraInputStyles = {backgroundColor: "transparent", borderColor: customTheme.text}
+
+  const createresumeObject = (
+    user: firebase.User | null
+  ) => {
+    return {
+      "jobTitle": jobTitle,
+      "skills": skills,
+      "contactPerson": contactPerson,
+      "personalData": personalData,
+      "language": language,
+      "type": "APPLICATION_CREATOR",
+      "user_id": user?.uid
+    }
+  }
+
+  const handleResumeCreatePress = useCallback(async () => {
+    if (jobTitle.length == 0) {
+      setFieldError(true);
+    }else {
+      setFieldError(false);
+      setLoading(true);
+      const fileObject = createresumeObject(user);
+      try {
+        const res = await postMessageObject(
+          fileObject,
+          postUrl, {
+            timeout: 20000
+          })
+        setResume(res.response)
+      }catch(e:unknown){
+        setError(true);
+      }finally{
+        setLoading(false);
+      }
+    }
+  }, [jobTitle]);
+
+  const FieldError = useMemo(() => {
+    if (fieldError) {
+      return <DefaultText text={error} moreStyles={undefined} error={fieldError} />
+    }
+  }, [fieldError])
+
+  return(
+    <>
+      <DefaultInput
+        placeholder={contactPlaceholder}
+        value={contactPerson}
+        extraStyles={extraInputStyles}
+        onChangeAction={setContactPerson}
+      />
+      <DefaultInput
+        placeholder={titlePlaceholder}
+        value={jobTitle}
+        extraStyles={extraInputStyles}
+        onChangeAction={setJobTitle}
+      />
+      {FieldError}
+      <DefaultInput
+        placeholder={skillsPlaceholder}
+        value={skills}
+        multiline={true}
+        numberOfLines={5}
+        extraStyles={extraInputStyles}
+        onChangeAction={setSkills}
+      />
+
+      <DefaultInput
+        placeholder={personalDataPlaceholder}
+        value={personalData}
+        extraStyles={extraInputStyles}
+        onChangeAction={setPersonalData}
+        keyboardType={"email-address"}
+      />
+
+      <DefaultInput
+        placeholder={languagePlaceholder}
+        value={language}
+        extraStyles={extraInputStyles}
+        onChangeAction={setLanguage}
+      />
+
+      <DefaultButton
+        extraStyles={undefined}
+        onPressAction={handleResumeCreatePress}
+        text={create}
+        secondIcon={undefined}
+      />
+
+    </>
+  );
+}
+
+export default memo(ResumeContent);

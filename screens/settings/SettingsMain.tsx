@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Text,
   SectionList,
-  Share,
 } from 'react-native'
 
 import * as Linking from 'expo-linking';
@@ -34,6 +33,7 @@ import {PlusAdContainer} from "../../components/container/PlusPlanContainer/Plus
 import {BottomImage} from "../../components/images/BottomImage";
 import RoundedButton from "../../components/buttons/RoundedButton";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
+import {share} from "../ExpoFunctions";
 
 let settingsData = [
   {
@@ -167,38 +167,12 @@ export const  SettingsMain = () => {
     },
   ];
 
-  const share = useCallback(async() => {
-    try {
-      const result = await Share.share({
-          title: "Share AIX",
-          message: "AIX the AI of you",
-          url: "https://example.de",
-        },
-        {
-          dialogTitle: "Look at this cool new App!",
-          subject: "The cooles App ever!",
-          tintColor: customTheme.text,
-          }
-        );
-      if (result?.action === Share.sharedAction) {
-        if (result.activityType) {
-          console.log("1")
-        } else {
-          console.log("2")
-        }
-      } else if (result.action === Share.dismissedAction) {
-        console.log("3")
-      }
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  }, [])
 
   const handleAction = useCallback((item: any) => {
     return () => {
       console.log("item title", item.title);
       if (item.title.includes("Share")) {
-        share()
+        share(customTheme)
           .then(() => console.log("Shared successfully.."));
       }else if (item.title.includes("Terms")){
          Linking.openURL(termsUrl)

@@ -14,10 +14,10 @@ export const getCurrentTime = () => {
 
 export const postMessageObject = async (
   senderObject: any,
+  postUrl: string,
   options: any
 ): Promise<any> => {
-  const postUrl = // __DEV__ ? :   "http://192.168.178.51:8080/open/chat-request/"
-    "http://wired87.pythonanywhere.com/open/chat-request/";
+
 
   const { timeout = 20000 } = options;
   const controller = new AbortController();
@@ -34,7 +34,13 @@ export const postMessageObject = async (
       signal: controller.signal
     });
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    }catch {
+      data = response
+    }
+
     console.log('Success:', data);
     clearTimeout(id);
     return data;
@@ -47,9 +53,12 @@ export const postMessageObject = async (
 }
 
 export const sendObject = async (senderObject: any, messageIndex: number | string, user: firebase.User | null) => {
+  const postUrl = // __DEV__ ? :   "http://192.168.178.51:8080/open/chat-request/"
+    "http://wired87.pythonanywhere.com/open/chat-request/";
   try {
     const res = await postMessageObject(
       senderObject,
+      postUrl,
       {
         timeout: 20000
       }

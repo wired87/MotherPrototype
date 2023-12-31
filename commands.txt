@@ -8,3 +8,10 @@ npx expo install --check
 # build
 npx eas-cli build --profile development
 
+# Production build
+npx eas-cli build -p android
+
+
+
+
+

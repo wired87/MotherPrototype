@@ -1,7 +1,8 @@
 import React, {memo, useCallback, useMemo} from "react";
-import {Text, StyleSheet, View} from "react-native";
+import {Text, StyleSheet, View, Pressable} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {LinearGradient} from "expo-linear-gradient";
+import {useNavigation} from "@react-navigation/native";
 
 
 
@@ -10,7 +11,7 @@ const ls = StyleSheet.create(
     bgView: {
       backgroundColor: "black",
       borderRadius: 22,
-      padding: 0,
+      paddingVertical: 0,
       marginTop: 20,
       marginHorizontal: 11,
     },
@@ -42,7 +43,8 @@ interface ToolitemButton {
   text?: string;
   color: string;
   extraText?: string;
-  icon: string
+  icon: string,
+  navigationScreen?: string
 }
 
 const ToolitemButton: React.FC<ToolitemButton> = (
@@ -50,9 +52,12 @@ const ToolitemButton: React.FC<ToolitemButton> = (
     text,
     color,
     extraText,
-    icon
+    icon,
+    navigationScreen
   }
 ) => {
+
+  const navigation = useNavigation();
 
   const extraTextComponent = useMemo(() => {
     if (extraText) return <Text>{extraText}</Text>
@@ -67,10 +72,18 @@ const ToolitemButton: React.FC<ToolitemButton> = (
     return Math.random() < 0.5
   }, [icon]);
 
+  const navigate = useCallback(() => {
+    if (navigationScreen) {
+      // @ts-ignore
+      navigation.navigate(navigationScreen);
+    }
+  }, [navigationScreen, navigation]);
+
+
   return(
-    <View style={finalButton(ls.bgView)}>
+    <Pressable style={finalButton(ls.bgView)} onPress={navigate}>
       <LinearGradient
-        style={[finalButton(ls.button), {height: getRandomBoolean() ? 100 : 150}]}
+        style={[finalButton(ls.button), {height: getRandomBoolean() ? 130 : 180}]}
         colors={[color, "black"]}
         start={{ x: 0, y: 0 }}
         end={{ x: .1, y: .8 }}>
@@ -78,7 +91,7 @@ const ToolitemButton: React.FC<ToolitemButton> = (
           <Text style={ls.text}>{text}</Text>
         {extraTextComponent}
       </LinearGradient>
-    </View>
+    </Pressable>
   );
 }
 

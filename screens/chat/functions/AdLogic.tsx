@@ -1,11 +1,10 @@
 import * as SecureStore from "expo-secure-store";
-import {RewardedAdEventType} from "react-native-google-mobile-ads";
 
 // Ad config
-import {RewardedInterstitialAd, TestIds,} from 'react-native-google-mobile-ads';
+import {RewardedInterstitialAd, TestIds, AdEventType, InterstitialAd, RewardedAdEventType} from 'react-native-google-mobile-ads';
 import {Platform} from "react-native";
 
-import {FULL_SCREEN_ANDROID, FULL_SCREEN_IOS} from "@env";
+import {FULL_SCREEN_ANDROID, FULL_SCREEN_IOS, TOOLS_ANDROID_INTERSITIAL, TOOLS_IOS_INTERSITIAL} from "@env";
 
 const adUnitIdFullScreenAd = __DEV__
   ? TestIds.REWARDED_INTERSTITIAL
@@ -17,6 +16,20 @@ const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitIdF
   requestNonPersonalizedAdsOnly: true,
   keywords: ['fashion', 'clothing'],
 });
+
+// FullScreen interstitial
+const intersitialAdUnitId = __DEV__
+  ? TestIds.REWARDED_INTERSTITIAL
+  : Platform.OS === "ios"
+    ? TOOLS_IOS_INTERSITIAL
+    : TOOLS_ANDROID_INTERSITIAL;
+
+const interstitial = InterstitialAd.createForAdRequest(intersitialAdUnitId, {
+  keywords: ['fashion', 'clothing'],
+});
+
+
+
 
 
 export async function postMessageInfoData(value: string) {
@@ -90,6 +103,22 @@ export const showAds = async (dispatch: any, messagesLeft: string, setMessagesLe
     };
   }
 }
+
+
+
+
+export const showToolAds = async () => {
+  console.log("Ads initialized..")
+  interstitial.load();
+  const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+    interstitial.show()
+    },
+  );
+  return () => {
+    unsubscribe();
+  };
+}
+
 
 
 
