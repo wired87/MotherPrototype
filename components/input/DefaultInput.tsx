@@ -38,7 +38,6 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
       selectionColor={customTheme.errorText}
       multiline={multiline || false}
       numberOfLines={numberOfLines || 1}
-      maxLength={100}
       style={[inputStyles.defaultInput, extraStyles || null, {backgroundColor: customBackground, color: customTheme.text}]} //->account no mb!!!<-
       placeholder={placeholder}
       placeholderTextColor={customTheme.placeholder}

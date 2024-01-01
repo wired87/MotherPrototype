@@ -33,6 +33,7 @@ export const postMessageObject = async (
       ...options,
       signal: controller.signal
     });
+    console.log("Response:", response);
 
     let data;
     try {

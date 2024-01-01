@@ -8,7 +8,6 @@ import {ChatNavigation} from "../../screens/chat/ChatNavigator";
 const Tab = createMaterialBottomTabNavigator();
 
 import {useDispatch} from "react-redux";
-import {themeColors} from "../../colors/theme";
 import React, { useContext, useRef, useState} from "react";
 
 // GOOGLE ADMOB
@@ -63,10 +62,6 @@ export default function NavigationMain(){
   const [currentRecording, setCurrentRecording] = useState(false);
   const [userRecording, setUserRecording] = useState<Recording | null>(null);
 
-  //  TOOL CONTEXT
-  const [actionValue, setActionValue] = useState<string>("");
-  const [error, setError] = useState<string>("");
-
   const elements = {
     input, setInput,
     messagesLeft, setMessagesLeft,
@@ -79,11 +74,12 @@ export default function NavigationMain(){
     userRecording, setUserRecording,
     currentRecording, setCurrentRecording
   }
+  //  TOOL CONTEXT
+  const [toolActionValue, setToolActionValue] = useState<string>("");
+
   const toolElements = {
-    actionValue,
-    setActionValue,
-    error,
-    setError,
+    toolActionValue,
+    setToolActionValue,
   }
   const {
     } = useContext(PrimaryContext);
@@ -103,7 +99,8 @@ export default function NavigationMain(){
     })
     console.log("Dispatched History Text.")
   }
-
+  const footerIconColor = customTheme.text;
+  const footerActiveIconColor = customTheme.primaryButton
   return (
     <>
       <BannerAd
@@ -117,10 +114,11 @@ export default function NavigationMain(){
         shifting={false}
         labeled={false}
         initialRouteName="ToolsNavigator"
-        activeColor={themeColors.sexyBlue}
-        inactiveColor={themeColors.sexyBlue}
+
+        activeColor={footerActiveIconColor}
+        inactiveColor={footerIconColor}
         backBehavior={"firstRoute"}
-        barStyle={[localStyles.barStyles, { backgroundColor: customTheme.navigatorColor }]}>
+        barStyle={[localStyles.barStyles, { backgroundColor: customTheme.primary }]}>
           <Tab.Screen
             name="Chat"
             children={

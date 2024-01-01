@@ -137,10 +137,6 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     return await checkUserMessageValue(valueMessages || "3", setMessagesLeft);
   };
 
-  useEffect(() => {
-    console.log("routeName", route.name);
-  }, []);
-
   ///////////////////////////////////////////////////////////////////////////////////
   //////////////////////// MESSAGE SENT PROCESS /////////////////////////////////////
 

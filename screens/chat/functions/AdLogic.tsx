@@ -1,5 +1,4 @@
 import * as SecureStore from "expo-secure-store";
-
 // Ad config
 import {RewardedInterstitialAd, TestIds, AdEventType, InterstitialAd, RewardedAdEventType} from 'react-native-google-mobile-ads';
 import {Platform} from "react-native";
@@ -29,13 +28,21 @@ const interstitial = InterstitialAd.createForAdRequest(intersitialAdUnitId, {
 });
 
 
-
-
-
 export async function postMessageInfoData(value: string) {
   try {
     await SecureStore.setItemAsync("totalMessages", value);
     console.log('Saved Secure Store Data..');
+  } catch (e) {
+
+    console.error('Error while save the Data', e);
+  }
+}
+/////////////////////////////////////////////////////////////////////
+//////////////////////////////// TOOLS SECURE STORE LOGIC
+export async function postToolActionValue(value: string) {
+  try {
+    await SecureStore.setItemAsync("totalToolActions", value);
+    console.log('Saved Secure Store Data (ToolActions)..');
   } catch (e) {
 
     console.error('Error while save the Data', e);
@@ -46,6 +53,16 @@ export async function getMessageInfoData() {
   try {
     console.log("Getting messages from SecureStore")
     return await SecureStore.getItemAsync("totalMessages")
+  } catch (e) {
+    console.error('Error at requesting the Data: ', e);
+    return false;
+  }
+}
+
+export async function getToolActionValue() {
+  try {
+    console.log("Getting toolActions from SecureStore")
+    return await SecureStore.getItemAsync("totalToolActions")
   } catch (e) {
     console.error('Error at requesting the Data: ', e);
     return false;
@@ -63,6 +80,20 @@ export const checkUserMessageValue = async (value: string | boolean | null, setM
       await postMessageInfoData("2").then(() => setMessagesLeft("2"));
     } else {
       await postMessageInfoData("0").then(() => setMessagesLeft("0"));
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export const checkToolActionValue = async (value: string | boolean | null, setToolActionValue: any) => {
+  if (value !== "0" || value !== null) {
+    console.log("User has", value, "tool actions left.")
+    if (value === "1") {
+      await postMessageInfoData("0").then(() => setToolActionValue("0"));
+    } else {
+      await postMessageInfoData("0").then(() => setToolActionValue("0"));
     }
     return true;
   } else {
@@ -104,8 +135,40 @@ export const showAds = async (dispatch: any, messagesLeft: string, setMessagesLe
   }
 }
 
+export const showToolAds = async (actionsLeft: string, setActionsLeft: any) => {
+  if (actionsLeft === "0") {
+    console.log("Tool Ads initialized..")
+    const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
+      RewardedAdEventType.LOADED,
+      () => {
+        rewardedInterstitial.show()
+      },
+    );
+    const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward: any) => {
+        console.log("Full screen ad is showing right now..")
+        postToolActionValue("1")
+          .then(() => setActionsLeft("1"))
+          .catch(() => setActionsLeft("1"))
+        console.log('User finished the Ad and earned reward of ', reward);
+      },
+    );
+    // Start loading the rewarded interstitial ad straight away
+    rewardedInterstitial.load();
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }
+}
 
 
+
+
+/*
 
 export const showToolAds = async () => {
   console.log("Ads initialized..")
@@ -119,10 +182,6 @@ export const showToolAds = async () => {
   };
 }
 
-
-
-
-/*
         rewardedInterstitial.show()
           .then(
             async () => {

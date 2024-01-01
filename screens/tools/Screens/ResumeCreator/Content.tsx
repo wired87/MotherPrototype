@@ -6,6 +6,9 @@ import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultText} from "../../../../components/text/DefaultText";
 import firebase from "firebase/compat";
 
+import {toolStyles as ts} from "../../toolStyles";
+import {Vibration} from "react-native";
+
 // STRINGS
 const titlePlaceholder: string = "Job Title";
 const skillsPlaceholder: string = "Your skills for the Job (optional)";
@@ -25,12 +28,14 @@ interface InputTypes {
 }
 
 interface ResumeTypes {
-  setError: Dispatch<SetStateAction<boolean>>
+  setError: Dispatch<SetStateAction<boolean>>;
+  setResume: Dispatch<SetStateAction<string>>;
 }
 
 const ResumeContent: React.FC<ResumeTypes> = (
   {
-    setError
+    setError,
+    setResume
   }
 ) => {
   const [jobTitle, setJobTitle ] = useState<string>("");
@@ -42,7 +47,6 @@ const ResumeContent: React.FC<ResumeTypes> = (
   const [fieldError, setFieldError] = useState<boolean>(false);
 
   // CONTEXT
-  const { setResume } = useContext(ResumeContext);
   const { customTheme } = useContext(ThemeContext);
   const { setLoading } = useContext(PrimaryContext);
   const { user } = useContext(PrimaryContext);
@@ -50,7 +54,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
   // STYLES
   const extraInputStyles = {backgroundColor: "transparent", borderColor: customTheme.text}
 
-  const createresumeObject = (
+  const createApplicationObject = (
     user: firebase.User | null
   ) => {
     return {
@@ -59,26 +63,30 @@ const ResumeContent: React.FC<ResumeTypes> = (
       "contactPerson": contactPerson,
       "personalData": personalData,
       "language": language,
-      "type": "APPLICATION_CREATOR",
+      "inputType": "APPLICATION_CREATOR",
       "user_id": user?.uid
     }
   }
 
   const handleResumeCreatePress = useCallback(async () => {
     if (jobTitle.length == 0) {
+      Vibration.vibrate();
       setFieldError(true);
     }else {
+      setError(false);
       setFieldError(false);
       setLoading(true);
-      const fileObject = createresumeObject(user);
+      const fileObject = createApplicationObject(user);
       try {
         const res = await postMessageObject(
           fileObject,
           postUrl, {
             timeout: 20000
-          })
-        setResume(res.response)
+          }
+        )
+        setResume(res.message)
       }catch(e:unknown){
+        setLoading(false);
         setError(true);
       }finally{
         setLoading(false);

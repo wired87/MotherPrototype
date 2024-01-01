@@ -73,6 +73,6 @@ export const styles = StyleSheet.create({
         width: 150,
         height: 150,
         borderWidth: 2,
-        marginBottom: 30
+        marginVertical: 30
     }
 })

@@ -54,11 +54,8 @@ export const InputContext = createContext({
 
 export const ToolContext= createContext(
   {
-    actionValue: "",
-    setActionValue: (() => {}) as Dispatch<SetStateAction<string>>,
-
-    error: "",
-    setError: (() => {}) as Dispatch<SetStateAction<string>>,
+    toolActionValue: "",
+    setToolActionValue: (() => {}) as Dispatch<SetStateAction<string>>,
   }
 )
 
@@ -124,7 +121,6 @@ export interface Theme {
   aiTextMessage: string;
   mirageChatMainColor: string;
   categoryButton: string;
-  placeholder
 }
 
 export const lightModeTheme: Theme = {

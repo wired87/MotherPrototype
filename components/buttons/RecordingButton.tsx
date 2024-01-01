@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useCallback, useContext, useState} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 import {IconButton} from "react-native-paper";
 import {styles as s} from "./styles"
 import {PrimaryContext, ThemeContext, ToolContext} from "../../screens/Context";
@@ -7,8 +7,15 @@ import * as FileSystem from "expo-file-system";
 import getDurationFormatted, {getCurrentTime} from "../../screens/chat/functions/SendProcess";
 import { Vibration} from "react-native";
 import {Recording} from "expo-av/build/Audio/Recording";
-import {showToolAds} from "../../screens/chat/functions/AdLogic";
+import {
+  checkToolActionValue,
+  checkUserMessageValue,
+  getMessageInfoData, getToolActionValue,
+  postMessageInfoData, postToolActionValue,
+  showToolAds
+} from "../../screens/chat/functions/AdLogic";
 import * as RNLocalize from "react-native-localize";
+import {useRoute} from "@react-navigation/native";
 
 
 interface ExtraData {
@@ -40,20 +47,20 @@ const getCurrentLanguage = () => {
 const RecordingButtonTTS: React.FC<RecordingButtonTTSProps> = (
   {
     setTranscript,
-    setEditable,
-
-
+    setEditable
   }
-) => {
+  ) => {
   const  [userRecording, setUserRecording] = useState<null | Recording>(null);
   const [currentRecording, setCurrentRecording] = useState<boolean>(false);
-  const [adLoaded, setAdLoaded] = useState<boolean>(false);
   const [audio, setAudio] = useState<object | null>(null);
 
   const { customTheme } = useContext(ThemeContext);
   const [error, setError] = useState<string>("");
   const { setLoading, user } = useContext(PrimaryContext);
 
+  const { toolActionValue, setToolActionValue } = useContext(ToolContext);
+
+  const route = useRoute()
 
   // styles
   const recordingButtonStyles = [s.redordingButton, {borderColor: customTheme.text}];
@@ -62,6 +69,19 @@ const RecordingButtonTTS: React.FC<RecordingButtonTTSProps> = (
     return currentRecording ? "red" : customTheme.text
   }, [currentRecording])
 
+
+  const checkToolActionValueProcess = async (): Promise<boolean> => {
+    const valueToolActions = await getToolActionValue();
+    console.log("Try to get the user Tool Action Value", valueToolActions);
+    if (!valueToolActions) {
+      await postToolActionValue("1").then(async () => {
+        setToolActionValue("1");
+      });
+    } else {
+      setToolActionValue(valueToolActions);
+    }
+    return await checkToolActionValue(valueToolActions || "1", setToolActionValue);
+  };
 
   const createFileData = useCallback(async(uri: string | null | undefined) => {
     try {
@@ -95,17 +115,13 @@ const RecordingButtonTTS: React.FC<RecordingButtonTTSProps> = (
   }, [user, userRecording])
 
 
-
-
-
-
   const postRecording = useCallback(async( extraData: ExtraData | null, uri: string | null | undefined ) => {
     const {soundAudio, ...extraDataWithoutSound} = extraData as ExtraData ;
     console.log("extraData:", extraData)
     const currentTime = getCurrentTime()
     console.log("current Time:", currentTime);
     try {
-      await showToolAds();
+      await showToolAds(toolActionValue, setToolActionValue);
       return await FileSystem.uploadAsync(
         transcriptApiEndpoint,
         uri || "",
@@ -160,21 +176,29 @@ const RecordingButtonTTS: React.FC<RecordingButtonTTSProps> = (
   }, [userRecording]);
 
   const handlePress = useCallback(async() => {
-    Vibration.vibrate();
-    if(userRecording) {
-      setCurrentRecording(false);
-      console.log('Stop recording..');
-      await recordEndProcess()
-    } else if(!userRecording) {
-      if (currentRecording){
-        setCurrentRecording(false);
-        setUserRecording(null);
+    const valueToolActions = await getToolActionValue();
+    if (valueToolActions !== "0")  {
+      Vibration.vibrate();
+      if(userRecording) {
+        const success = await checkToolActionValueProcess();
+        if (success) {
+          setCurrentRecording(false);
+          console.log('Stop recording..');
+          await recordEndProcess()
+        }
+      }else if(!userRecording) {
+        if (currentRecording) {
+          setCurrentRecording(false);
+          setUserRecording(null);
+        }
+        console.log("userRecording:", userRecording);
+        setCurrentRecording(true);
+        await startRecording({setUserRecording});
       }
-      console.log("userRecording:", userRecording);
-      setCurrentRecording(true);
-      await startRecording({ setUserRecording });
+    }else {
+      await showToolAds(toolActionValue, setToolActionValue)
     }
-  }, [userRecording, currentRecording]);
+  }, [userRecording, currentRecording, toolActionValue]);
 
 
   return(

@@ -179,7 +179,6 @@ export const MessageInputContainer = (
   }, [userRecording, messageIndex]);
 
 
-
   ////////////////////// ////////////////////// //////////////////////
   //////////////////////    SEND PROCESSES
   const recording = useCallback(async () => {
@@ -223,6 +222,34 @@ export const MessageInputContainer = (
     }
   },[typing]);
 
+
+  const sendButton = useMemo(() => {
+    if (input?.trim().length > 0) {
+      return(
+        <>
+          <Pressable
+            onPress={() => setInput("")}
+            style={styles.clearInputFiledBtn}>
+            <MaterialCommunityIcons color={"black"} name={"close"} size={17}/>
+          </Pressable>
+          <MaterialCommunityIcons
+            name={"atlassian"}
+            size={25}
+            onPress={send}
+            style={extraSendStyles}
+          />
+        </>
+      )
+    }else {
+      return(
+      <IconButton
+        icon={"microphone-outline"}
+        iconColor={currentRecording ? "red" : customTheme.headerIconColors}
+        onPress={recording}
+      />
+      )}
+  }, [input])
+
   return (
     <DefaultContainer
       extraStyles={styles.main}>
@@ -250,27 +277,7 @@ export const MessageInputContainer = (
         />
 
         <View style={[styles.container, {borderColor: customTheme.borderColor}]}>
-          {input?.trim().length > 0 ? (
-            <>
-              <Pressable
-                onPress={() => setInput("")}
-                style={styles.clearInputFiledBtn}>
-                <MaterialCommunityIcons color={"black"} name={"close"} size={17}/>
-              </Pressable>
-              <MaterialCommunityIcons
-                name={"atlassian"}
-                size={25}
-                onPress={send}
-                style={extraSendStyles}
-              />
-            </>
-            ):(
-            <IconButton
-              icon={"microphone-outline"}
-              iconColor={currentRecording ? "red" : customTheme.headerIconColors}
-              onPress={recording}
-            />
-          )}
+          {sendButton}
         </View>
       </View>
     </DefaultContainer>

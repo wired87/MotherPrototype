@@ -2,20 +2,17 @@ import {toolStyles as ts} from "../../../screens/tools/toolStyles";
 import {DefaultInput} from "../../input/DefaultInput";
 import {IconButton, ProgressBar} from "react-native-paper";
 import {KeyboardAvoidingView, TextInput, View} from "react-native";
-import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState} from "react";
 
 const copy = "content-copy";
-const download = "download";
-
+const clear = "close";
 import {memo} from "react";
 import {PrimaryContext, ThemeContext, ToolContext} from "../../../screens/Context";
 import * as Clipboard from "expo-clipboard";
-import {DefaultText} from "../../text/DefaultText";
 import {BottomImage} from "../../images/BottomImage";
 import * as RNLocalize from "react-native-localize";
 import * as Print from "expo-print";
 import {sharePdf} from "../../../screens/ExpoFunctions";
-import TextStream from "../../text/TextStream";
 import {inputStyles} from "../../input/styles";
 
 interface TextResultTypes {
@@ -85,15 +82,15 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     await Clipboard.setStringAsync(value);
   }, [value]);
 
+  const handleClearField = useCallback(() => {
+    changeText("");
+  }, [value])
+
   const getCurrentLanguage = () => {
     const languages = RNLocalize.getLocales();
     if (languages.length > 0) return languages[0].languageCode;
     return null;
   };
-
-
-
-
 
   const defaultTextColor = {color: customTheme.text};
 
@@ -110,6 +107,7 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
       console.error('Fehler beim Erstellen des PDFs: ', error);
     }
   }, [value]);
+
   const moreHeadingStreamInputStyles = [inputStyles.streamHeadingInput, defaultTextColor]
   return(
     <KeyboardAvoidingView style={mainContainerStyles}>
@@ -135,10 +133,14 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
           extraStyles={transcriptInputStyles}
           multiline={true}
         />
+
+        <IconButton size={20} iconColor={copyButtonColor} style={ts.clearButton} onPress={handleClearField} icon={clear}/>
         <IconButton size={20} iconColor={copyButtonColor} style={ts.copyButton} onPress={handleCopyClick} icon={copy}/>
+
       </View>
       <BottomImage />
     </KeyboardAvoidingView>
   );
 }
+
 export default memo(UniversalTextCreator);

@@ -35,6 +35,11 @@ export const toolStyles = StyleSheet.create(
     copyButton: {
       position: "absolute",
       right: 2,
+      bottom: 2,
+    },
+    clearButton: {
+      position: "absolute",
+      right: 2,
       top: 2,
     },
     shareButton: {
@@ -71,6 +76,38 @@ export const toolStyles = StyleSheet.create(
     },
     resumeInput: {
       borderWidth: 1
+    },
+    errorTextHeading: {
+      textAlign: "center",
+      fontFamily: "JetBrainsMono",
+      fontSize: 22,
+      marginBottom: 15,
+    },
+    errorTextMessage: {
+      lineHeight: 60,
+      textAlign: "center",
+      fontFamily: "JetBrainsMono",
+      fontSize: 15,
+      zIndex: 50,
+    },
+    errorLinkingButton: {
+      bottom: 0,
+    },
+    contactLinkingButton: {
+      bottom: 20,
+    },
+    modalToolErrorContainer: {
+      height: 350,
+      flexDirection: "column",
+      alignItems: "center",
+    },
+    errorLottieView: {
+      height: 100,
+      width: 100,
+    },
+    mV: {
+      marginVertical: 10
     }
+
   }
 )

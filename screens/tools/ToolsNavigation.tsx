@@ -1,20 +1,27 @@
-import React, {memo, useMemo, useState} from "react";
+import React, {memo, useContext, useEffect, useMemo, useState} from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
 import SpeechToText from "./Screens/SpeechToText";
 import ToolsMain2 from "./ToolsMain2";
 import ResumeCreator from "./Screens/ResumeCreator/ResumeCreator";
-import {ResumeContext} from "../Context";
+import {ResumeContext, ToolContext} from "../Context";
+import {showToolAds} from "../chat/functions/AdLogic";
 
 const ToolStack = createNativeStackNavigator();
 
 const ToolsNavigator = () => {
-  const [resume, setResume] = useState<string>("")
-
+  const { toolActionValue, setToolActionValue}  = useContext(ToolContext);
 
   const screenHeaderOptions = useMemo(() => ({
     header: () => null,
   }), []);
+
+  // GOOGLE MOBILE AD LOGIC ////////////////////
+  useEffect(() => {
+    console.log("Real toolActionValue:", toolActionValue)
+    showToolAds(toolActionValue, setToolActionValue)
+      .then(() => console.log("Ads successfully showed. Refilled the Messages"));
+  }, [toolActionValue]);
 
   return(
     <ToolStack.Navigator
@@ -33,9 +40,7 @@ const ToolsNavigator = () => {
         name="ResumeCreator"
         children={
         () =>
-          <ResumeContext.Provider value={[resume, setResume]}>
             <ResumeCreator />
-          </ResumeContext.Provider>
       }
       />
 

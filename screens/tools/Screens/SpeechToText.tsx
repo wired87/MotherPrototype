@@ -1,15 +1,13 @@
 import React, {memo, useCallback, useContext, useMemo, useState} from "react";
 
 import {
-  Dimensions,
   ScrollView,
 } from "react-native";
 
 import {toolStyles as ts} from "../toolStyles";
 import RecordingButton from "../../../components/buttons/RecordingButton";
-import {ThemeContext, ToolContext} from "../../Context";
+import {ThemeContext} from "../../Context";
 import * as RNLocalize from 'react-native-localize';
-import {sharePdf} from "../../ExpoFunctions"
 import * as Print from 'expo-print';
 import UniversalTextCreator from "../../../components/container/Tools/UniversalTextCreator";
 
@@ -29,7 +27,6 @@ const SpeechToText: React.FC<SpeechToTextTypes> = () => {
 
   // Context
   const { customTheme } = useContext(ThemeContext);
-  const { setError } = useContext(ToolContext);
 
   const backgroundColor = {backgroundColor: customTheme.primary};
 
@@ -39,6 +36,7 @@ const SpeechToText: React.FC<SpeechToTextTypes> = () => {
     return null; // oder eine Standard-Sprache festlegen
   };
 
+
   const handleDownloadClick = useCallback(async () => {
     try {
       const htmlContent = `<html><body><p>${transcript}</p></body></html>`;
@@ -46,7 +44,7 @@ const SpeechToText: React.FC<SpeechToTextTypes> = () => {
         html: htmlContent
       });
       console.log('PDF erstellt: ', uri);
-      await sharePdf(uri, setError)
+      // await sharePdf(uri, setError)
     } catch (error) {
       console.error('Fehler beim Erstellen des PDFs: ', error);
     }
