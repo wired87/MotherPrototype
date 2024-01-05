@@ -1,7 +1,6 @@
 import {KeyboardTypeOptions, TextInput} from "react-native";
 import React, {useContext} from "react";
 import {inputStyles} from "./styles";
-import {themeColors} from "../../colors/theme";
 import {ThemeContext} from "../../screens/Context";
 
 

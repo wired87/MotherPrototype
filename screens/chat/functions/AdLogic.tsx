@@ -81,8 +81,10 @@ export const checkUserMessageValue = async (value: string | boolean | null, setM
     } else {
       await postMessageInfoData("0").then(() => setMessagesLeft("0"));
     }
+    console.log("VALUE IN CHECK MESSAGES(before update) -> true: ", value)
     return true;
   } else {
+    console.log("VALUE IN CHECK MESSAGES(before update) -> false: ", value)
     return false;
   }
 }
@@ -95,8 +97,10 @@ export const checkToolActionValue = async (value: string | boolean | null, setTo
     } else {
       await postMessageInfoData("0").then(() => setToolActionValue("0"));
     }
+    console.log("VALUE IN CHECK TOOL ACTIONS(before update) -> true: ", value)
     return true;
   } else {
+    console.log("VALUE IN CHECK TOOL ACTIONS(before update) -> false: ", value)
     return false;
   }
 }

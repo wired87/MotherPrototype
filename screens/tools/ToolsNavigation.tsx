@@ -1,10 +1,10 @@
-import React, {memo, useContext, useEffect, useMemo, useState} from "react";
+import React, {memo, useContext, useEffect, useMemo} from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
 import SpeechToText from "./Screens/SpeechToText";
 import ToolsMain2 from "./ToolsMain2";
 import ResumeCreator from "./Screens/ResumeCreator/ResumeCreator";
-import {ResumeContext, ToolContext} from "../Context";
+import {ToolContext} from "../Context";
 import {showToolAds} from "../chat/functions/AdLogic";
 
 const ToolStack = createNativeStackNavigator();

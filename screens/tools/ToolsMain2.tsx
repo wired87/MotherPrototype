@@ -1,17 +1,23 @@
 import MasonryList from '@react-native-seoul/masonry-list';
 import {LinearGradient} from 'expo-linear-gradient';
-import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useMemo, useState} from 'react';
-import {FlatList, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle, Image} from 'react-native';
+import React, {memo, useCallback, useContext, useMemo, useState} from 'react';
+import {FlatList, Pressable, StyleProp, Text, View, ViewStyle, Image} from 'react-native';
 import ToolItemButton from "../../components/buttons/ToolitemButton";
 import {DefaultText} from "../../components/text/DefaultText";
 import * as Linking from "expo-linking";
 import {ThemeContext} from "../Context";
 import {LINKMINK_AFFILIATE_URL, NEURONWRITER_AFFILIATE_LINK, ORIGIBNALITY_AFFILITE_UTR} from "@env";
+import {toolStyles as styles} from "./toolStyles";
+
 
 //Affiliate Images
 import neuronNoBg from "../../assets/affiliateImages/neuronNoBg.png";
 import originalityNoBg from "../../assets/affiliateImages/originalityNoBg.png";
 import linkMinkNoBg from "../../assets/affiliateImages/linkMinkNoBg.png";
+import CategoryButton from "../../components/buttons/CategoryNavigationButton";
+
+
+//////////////////////////////////////// INAPP RECENSION BZUILD IN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 // INTERFACE
 interface CarouselDataTypes {
@@ -38,7 +44,6 @@ interface CategoryTypes {
 }
 
 
-
 const carouselData: CarouselDataTypes[] =
 [
   {
@@ -60,26 +65,6 @@ const carouselData: CarouselDataTypes[] =
     url: LINKMINK_AFFILIATE_URL
   },
 ]
-/*
-{
-    text: "Example01",
-    image: {},
-    backgroundColor: "",
-    url: "https://example.com/01"
-  },
-  {
-    text: "Example01",
-    image: {},
-    backgroundColor: "",
-    url: "https://example.com/01"
-  },
-  {
-    text: "Example01",
-    image: {},
-    backgroundColor: "",
-    url: "https://example.com/01"
-  },
- */
 
 const businessButtonList: DataItem[] = [
   {
@@ -87,7 +72,7 @@ const businessButtonList: DataItem[] = [
     color: "rgba(29,152,189,0.4)",
     icon: "format-float-left",
     navigation: "ChatNavigator",
-    extraText: undefined,
+    extraText: "AI job Application writer",
     screen: "ResumeCreator"
   },
   {
@@ -95,7 +80,7 @@ const businessButtonList: DataItem[] = [
     color: "rgba(255,255,0,.4)",
     icon: "sticker-text-outline",
     navigation: "ChatNavigator",
-    extraText: undefined,
+    extraText: "Edit any documents",
     screen: "DocumentEditor"
   }
 ]
@@ -106,7 +91,7 @@ const creativeButtonList: DataItem[] = [
     color: "rgba(110,0,0,.7)",
     icon: "text-to-speech",
     navigation: "ChatNavigator",
-    extraText: undefined,
+    extraText: "Transcribe your thoughts",
     screen: "Speech-to-Text"
   },
   {
@@ -114,7 +99,7 @@ const creativeButtonList: DataItem[] = [
     color: "#232f44",
     icon: "lightbulb-on-outline",
     navigation: "ChatNavigator",
-    extraText: undefined,
+    extraText: "Share your ideas for feedback or create some for your next Business",
     screen: "ideaFinder"
   },
   {
@@ -122,7 +107,7 @@ const creativeButtonList: DataItem[] = [
     color: 'rgba(127,0,255,0.6)',
     icon: "wallpaper",
     navigation: "ChatNavigator",
-    extraText: undefined,
+    extraText: "Dont like the Background of an image? Change it!",
     screen: "ImageEditor"
   }
 ]
@@ -130,10 +115,10 @@ const creativeButtonList: DataItem[] = [
 const lifeButtonList: DataItem[] = [
   {
     text: "Movie/Series-\nfinder",
-    color: "rgba(37,210,37,0.2)",
+    color: "rgba(50,112,196,0.2)",
     icon: "television-shimmer",
     navigation: "ChatNavigator",
-    extraText: undefined,
+    extraText: "Find the best Movie for your Movie night",
     screen: "MediaFinder"
   },
   {
@@ -141,7 +126,7 @@ const lifeButtonList: DataItem[] = [
     icon: "comment-multiple-outline",
     navigation: "ChatNavigator",
     color: "rgba(255,255,255,.2)",
-    extraText: undefined,
+    extraText: "Keep yourself informed!",
     screen: "ImageExplanation"
   },
   {
@@ -149,7 +134,15 @@ const lifeButtonList: DataItem[] = [
     color: "rgba(255,165,0,.4)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
-    extraText: undefined,
+    extraText: "What's on that image?",
+    screen: "ImageExplanation"
+  },
+  {
+    text: "Chat response helper",
+    color: "rgba(255,165,0,.4)",
+    icon: "tooltip-image-outline",
+    navigation: "ChatNavigator",
+    extraText: "Dont know how to answer to an Text Message? Our Model does!",
     screen: "ImageExplanation"
   }
 ]
@@ -229,7 +222,6 @@ const textButtonList: DataItem[] = [
   }
 ]
 
-
 interface ToolItemProps {
   item: DataItem;
   index: number | string;
@@ -243,43 +235,7 @@ const ToolItem: React.FC<ToolItemProps> = ({ item, index}) => {
   );
 };
 
-const CategoryButton:
-  React.FC<{ item: CategoryTypes; selected: boolean; setSelectedItem: Dispatch<SetStateAction<string | null>>; }> =
-  memo(({ item, selected, setSelectedItem }
-  ) => {
 
-
-  const { customTheme } = useContext(ThemeContext);
-
-  const pressableStyles =
-    [
-      styles.categoryButton,
-      {  shadowColor: customTheme.text, paddingVertical: 7, paddingHorizontal: 10 },
-    ]
-
-  const handlePress = () => {
-    setSelectedItem(item.key.toString());
-    item.onPress();
-  }
-
-  const linearColor = selected? customTheme.categoryButton : customTheme.primaryButton;
-
-  return(
-    <Pressable onPress={handlePress} style={[styles.categoryButton, ]}>
-      <View style={[styles.categoryButton, {backgroundColor: customTheme.primary}]}>
-        <LinearGradient
-          colors={[linearColor, 'rgba(0,0,0,.5)']}
-          style={pressableStyles}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0.85}}>
-          <Text style={styles.categoryButtonText}>
-            {item?.title}
-          </Text>
-        </LinearGradient>
-      </View>
-    </Pressable>
-  )
-});
 
 
 
@@ -293,7 +249,7 @@ const ToolsMain = () => {
   // styles
   const masonryStyles: StyleProp<ViewStyle> = { paddingHorizontal: 0, alignSelf: 'stretch', padding: 10 };
   const extraFlatListStyles: StyleProp<ViewStyle> = { justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }
-
+  const categoryTextStyles = [styles.categoryText, {color: customTheme.text}]
   const mainContainer = [styles.main, {backgroundColor: customTheme.primary}]
 
   const handleCategoryChange = useCallback((newCategory: React.SetStateAction<number>) => {
@@ -316,7 +272,7 @@ const ToolsMain = () => {
   const CarouselDataComponent: React.FC<{ item: CarouselDataTypes }> = useCallback(({item}) => {
 
     const carouselContainer =
-      [styles.item, {backgroundColor: item.backgroundColor}]
+      [styles.item, {backgroundColor: item.backgroundColor}];
 
     return <Pressable style={carouselContainer} onPress={() => Linking.openURL(item.url)}>
               <LinearGradient
@@ -372,12 +328,12 @@ const ToolsMain = () => {
       </View>
 
       <View style={styles.categoryList}>
-        <Text style={styles.categoryText}>Categories</Text>
+        <Text style={categoryTextStyles}>Categories</Text>
       </View>
 
       <View style={{overflow: "visible"}}>
         <FlatList
-          style={{overflow: "visible", paddingHorizontal: 0}}
+          style={{overflow: "visible", paddingHorizontal: 0, paddingVertical: 5,}}
           data={items}
           initialScrollIndex={0}
           horizontal
@@ -409,89 +365,6 @@ const ToolsMain = () => {
 
 export default memo(ToolsMain);
 
-const styles = StyleSheet.create({
-  main: {
-    flex: 1,
-  },
-
-  flatListContainer: {
-    marginTop: 40,
-  },
-
-  item: {
-    width: 200,
-    height: 120,
-    borderRadius: 14,
-    marginHorizontal: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  categoryButton: {
-    width: 110,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 22,
-
-  },
-
-  categoryButtonText: {
-    fontSize: 15,
-    marginVertical: 5,
-    color: 'white',
-  },
-
-  categoryListContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-
-  categoryText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-
-  categoryList: {
-    marginVertical: 20,
-    paddingHorizontal: 18,
-  },
-
-  pressableView: {
-    backgroundColor: "black",
-    borderRadius: 15,
-  },
-
-  masonryList: {
-    flex: 1,
-    paddingBottom: 50,
-  },
-
-  affiliateImage: {
-    position: "absolute",
-    width: "90%",
-    height: "20%",
-    bottom: 30,
-  },
-  affiliateText: {
-    textAlign: "center",
-    position: "absolute",
-    top: 10,
-    fontSize: 16,
-    marginHorizontal: 5,
-    fontFamily: "JetBrainsMono"
-  },
-  affiliateLineargradient: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 14,
-    justifyContent: "center",
-    alignItems: "center"
-  }
-});
 
 /*
 Image editor: input a image and a string for description, send it to my backend and get a image and string as response (after user chooses an image it must me alsdo displayed in the ui)

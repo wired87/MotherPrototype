@@ -15,5 +15,7 @@ declare module '@env' {
   export const ORIGIBNALITY_AFFILITE_UTR: string;
   export const TOOLS_IOS_INTERSITIAL: string;
   export const TOOLS_ANDROID_INTERSITIAL: string;
+  export const JWT_CHECK: string;
+  export const JWT_GET: string;
 
 }

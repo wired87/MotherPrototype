@@ -4,7 +4,10 @@ import {themeColors} from "../colors/theme";
 import {Recording} from "expo-av/build/Audio/Recording";
 import firebase from "firebase/compat";
 
-
+export interface JwtToken {
+  access: string;
+  refresh: string;
+}
 export const PrimaryContext = createContext(
   {
     darkmode: false,
@@ -20,6 +23,9 @@ export const PrimaryContext = createContext(
 
     clearMessages: false,
     setClearMessages: (() => {}) as Dispatch<SetStateAction<boolean>>,
+
+    jwtToken: {} as JwtToken,
+    setJwtToken: (() => {}) as Dispatch<SetStateAction<JwtToken>>,
 
   });
 
@@ -56,6 +62,7 @@ export const ToolContext= createContext(
   {
     toolActionValue: "",
     setToolActionValue: (() => {}) as Dispatch<SetStateAction<string>>,
+    checkToolActionValueProcess: async (): Promise<boolean> => false,
   }
 )
 
@@ -87,7 +94,6 @@ export const FunctionContext = createContext(
   {
     sendMessageProcess: async () => {},
     checkMessagesLeftProcess: async (): Promise<boolean> => false,
-
   }
 );
 
@@ -145,8 +151,6 @@ export const lightModeTheme: Theme = {
   aiTextMessage: "rgba(0,0,0,.2)",
   mirageChatMainColor: "rgba(1,21,42,0.42)",
   categoryButton: "rgba(0,0,0,0.76)",
-
-
 }
 
 export const darkModeTheme: Theme = {

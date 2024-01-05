@@ -1,29 +1,26 @@
-import React, {memo, useCallback, useContext, useMemo, useState} from "react";
+import React, {memo, useCallback, useContext, useState} from "react";
 
 import {
   ScrollView,
 } from "react-native";
+import * as FileSystem from "expo-file-system";
 
 import {toolStyles as ts} from "../toolStyles";
-import RecordingButton from "../../../components/buttons/RecordingButton";
 import {ThemeContext} from "../../Context";
 import * as RNLocalize from 'react-native-localize';
 import * as Print from 'expo-print';
 import UniversalTextCreator from "../../../components/container/Tools/UniversalTextCreator";
-
+import TranscribeButton from "../../../components/buttons/TranscribeButton";
 
 // Strings
-const placeholderTranscript = "Your generated transcript will be shown here";
+const placeholderTranscript: string = "Your generated transcript will be shown here";
 
-const heading = "Transcribe your thoughts..";
+const heading: string = "Transcribe your thoughts..";
 
-interface SpeechToTextTypes {
-
-}
-
-const SpeechToText: React.FC<SpeechToTextTypes> = () => {
+const SpeechToText: React.FC = () => {
   const [transcript, setTranscript] = useState<string>("");
   const [editable, setEditable] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   // Context
   const { customTheme } = useContext(ThemeContext);
@@ -36,6 +33,12 @@ const SpeechToText: React.FC<SpeechToTextTypes> = () => {
     return null; // oder eine Standard-Sprache festlegen
   };
 
+  const updateTranscript = useCallback((response: FileSystem.FileSystemUploadResult) => {
+    const text = JSON.parse(response.body).response;
+    console.log("RESPONSE TEXT", text);
+    setTranscript((prevTranscript: string) => prevTranscript + text + " ");
+    setEditable(true);
+  }, [transcript, editable])
 
   const handleDownloadClick = useCallback(async () => {
     try {
@@ -51,10 +54,6 @@ const SpeechToText: React.FC<SpeechToTextTypes> = () => {
   }, [transcript]);
 
 
-  const Content = useMemo(() => {
-    return <RecordingButton setTranscript={setTranscript} setEditable={setEditable}/>
-  }, [])
-
   return(
     <ScrollView style={backgroundColor} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
@@ -63,7 +62,15 @@ const SpeechToText: React.FC<SpeechToTextTypes> = () => {
         editable={editable}
         changeText={setTranscript}
         heading={heading}
-        Content={Content} />
+        Content={
+          <TranscribeButton
+            setTranscript={setTranscript}
+            setEditable={setEditable}
+            setError={setError}
+            transcript={transcript}
+          />
+        }
+      />
     </ScrollView>
   );
 }

@@ -11,7 +11,7 @@ import {InputContext, ThemeContext} from "../Context";
 const localStyles = StyleSheet.create(
   {
     messageInputView: {
-      bottom: 20,
+      bottom: 10,
       flexDirection: "row",
       justifyContent:"center",
       alignItems: "center"

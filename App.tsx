@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import * as SplashScreen from 'expo-splash-screen';
 
-import {PrimaryContext, Theme, ThemeContext, lightModeTheme, darkModeTheme} from "./screens/Context";
+import {PrimaryContext, Theme, ThemeContext, lightModeTheme, darkModeTheme, JwtToken} from "./screens/Context";
 import { store } from "./Redux/store";
 import NavigationMain from "./components/navigation/Footer";
 import { getDarkmode } from "./components/container/modalContainers/DarkMode";
@@ -16,6 +16,15 @@ import * as Font from "expo-font";
 import {getAuth, signInAnonymously} from "firebase/auth";
 import firebase from "firebase/compat";
 import {FIREBASE_AUTH} from "./firebase.config";
+import {alert, checkTokenAvailability, saveJwtToken} from "./AppFunctions";
+import {JWT_CHECK, JWT_GET} from "@env";
+import axios from "axios/index";
+
+
+// SECURE URLS
+const checkEndpoint: string = JWT_CHECK;
+const getEndpoint: string = JWT_GET;
+
 
 export default function App() {
 
@@ -26,9 +35,14 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [appIsReady, setAppIsReady] = useState(false);
   const [clearMessages, setClearMessages] = useState(false);
-
-  // init DarkMode
+  const [authenticated, setAuthenticated] = useState(false);
+  const [jwtToken, setJwtToken] = useState<JwtToken>({} as JwtToken);
   const toggleTheme = () => setDarkmode(!darkmode);
+
+  const contextValue = {darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
+    clearMessages, setClearMessages, jwtToken, setJwtToken}
+  // init DarkMode
+
 
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
@@ -43,6 +57,56 @@ export default function App() {
     });
   }, []);
 
+  const getNewToken = useCallback(async(): Promise<JwtToken | null> => {
+    const response = await axios.post(JWT_GET, user?.uid);
+    const data: JwtToken = response.data;
+    if (response.status && data.access && data.refresh) {
+      await saveJwtToken(data);
+      return data;
+    }
+    return null
+  }, [user])
+
+  const getNewTokenProcess = async () => {
+    const tokenObject: JwtToken | null  = await getNewToken();
+    if (tokenObject) {
+      setJwtToken(tokenObject);
+    }else {
+      console.log("Could not save the new JWT Token!")
+      alert()
+    }
+  }
+
+  const getToken = useCallback(async() => {
+    const userJwtTokenExist = await checkTokenAvailability()
+    if (userJwtTokenExist) {
+      const response = await axios.post(checkEndpoint, {"refresh": userJwtTokenExist.refresh});
+      if (response.data.access) {
+        console.log("")
+        userJwtTokenExist.access = response.data.access
+        await saveJwtToken(userJwtTokenExist);
+        setJwtToken(userJwtTokenExist);
+        console.log("Token was successfully Set..")
+      } else {
+        await getNewTokenProcess()
+        }
+      }
+    else {
+      await getNewTokenProcess()
+    }
+  }, [jwtToken])
+
+
+  useEffect(() => {
+    if (authenticated && user) {
+      getToken()
+        .then(
+          () => setAuthenticated(false)
+        );
+    }
+  }, [authenticated, user]);
+
+
   useEffect(() => {
     console.log("appIsReady", appIsReady);
 
@@ -51,7 +115,10 @@ export default function App() {
         await SplashScreen.preventAutoHideAsync();
 
         try {
-           await signInAnonymously(FIREBASE_AUTH)
+           signInAnonymously(FIREBASE_AUTH)
+             .then(() => {
+               setAuthenticated(true);
+             })
         }
         catch(e:unknown) {
           if (e instanceof Error) console.log("Could not sign in the user anonymously..")
@@ -112,10 +179,7 @@ export default function App() {
     <ReduxProvider store={store}>
       <ThemeContext.Provider value={{customTheme}}>
         <PrimaryContext.Provider
-          value={{
-            darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
-            clearMessages, setClearMessages
-        }}>
+          value={contextValue}>
           <PaperProvider>
             <GestureHandlerRootView style={{ flex: 1 }}>
               <BottomSheetModalProvider>

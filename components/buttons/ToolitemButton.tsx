@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useMemo} from "react";
-import {Text, StyleSheet, View, Pressable} from "react-native";
+import {Text, StyleSheet, Pressable} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {LinearGradient} from "expo-linear-gradient";
 import {useNavigation} from "@react-navigation/native";
@@ -35,6 +35,12 @@ const ls = StyleSheet.create(
       textAlign: "center",
       lineHeight: 25,
       opacity: .9
+    },
+    extraText: {
+      color: "white",
+      textAlign: "center",
+      fontSize: 14,
+      marginTop: 10,
     }
   }
 )
@@ -60,7 +66,8 @@ const ToolitemButton: React.FC<ToolitemButton> = (
   const navigation = useNavigation();
 
   const extraTextComponent = useMemo(() => {
-    if (extraText) return <Text>{extraText}</Text>
+    const extratextStyles = [ls.extraText]
+    if (extraText) return <Text style={extratextStyles}>{extraText}</Text>
   }, [extraText]);
 
 
@@ -83,13 +90,12 @@ const ToolitemButton: React.FC<ToolitemButton> = (
   return(
     <Pressable style={finalButton(ls.bgView)} onPress={navigate}>
       <LinearGradient
-        style={[finalButton(ls.button), {height: getRandomBoolean() ? 130 : 180}]}
+        style={[finalButton(ls.button), {height: getRandomBoolean() ? 150 : 200}]}
         colors={[color, "black"]}
         start={{ x: 0, y: 0 }}
         end={{ x: .1, y: .8 }}>
         <MaterialCommunityIcons size={30} style={ls.icon} name={icon}/>
           <Text style={ls.text}>{text}</Text>
-        {extraTextComponent}
       </LinearGradient>
     </Pressable>
   );

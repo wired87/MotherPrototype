@@ -39,6 +39,7 @@ const ChatMenuModalContent = (
     const textItems = messages.filter(item => item.type === 'text' && item.publisher === "USER");
     const numberOfItems = textItems.length < 5 ? textItems.length : 5;
     const lastItems = textItems.slice(-numberOfItems);
+
     /*if (!user) {
       return <ModalContentNoLog />;
     }*/

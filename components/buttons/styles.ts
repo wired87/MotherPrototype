@@ -1,5 +1,4 @@
 import {StyleSheet} from "react-native";
-import {themeColors} from "../../colors/theme";
 
 export const styles = StyleSheet.create({
     buttonSelected: {
@@ -74,5 +73,8 @@ export const styles = StyleSheet.create({
         height: 150,
         borderWidth: 2,
         marginVertical: 30
+    },
+    historyItemTextStyles: {
+        color: "white",
     }
 })

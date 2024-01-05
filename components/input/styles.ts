@@ -28,7 +28,7 @@ export const inputStyles = StyleSheet.create({
     streamHeadingInput: {
         textAlign: "center",
         fontSize: 21,
+        marginVertical: 30,
         fontFamily: "JetBrainsMono",
-    }
-
+    },
 })

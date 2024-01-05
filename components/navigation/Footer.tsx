@@ -1,11 +1,13 @@
-import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useTheme} from 'react-native-paper';
 
 import {SettingNavigation} from "../../screens/settings/SettingsNavigator";
 import {Platform, StyleSheet} from "react-native";
 import {ChatNavigation} from "../../screens/chat/ChatNavigator";
-const Tab = createMaterialBottomTabNavigator();
+
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
 
 import {useDispatch} from "react-redux";
 import React, { useContext, useRef, useState} from "react";
@@ -16,8 +18,10 @@ import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import {PrimaryContext, InputContext, ThemeContext, ToolContext} from "../../screens/Context";
 import BottomSheet from "@gorhom/bottom-sheet";
 import {Recording} from "expo-av/build/Audio/Recording";
+
 import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
 import ToolsNavigator from "../../screens/tools/ToolsNavigation";
+import {checkToolActionValue, getToolActionValue, postToolActionValue} from "../../screens/chat/functions/AdLogic";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -35,15 +39,14 @@ const localStyles = StyleSheet.create(
   {
     icon: {
       top: 0,
-      position: "relative"
+      position: "relative",
+      margin: 0,
     },
     barStyles: {
-      height: 50,
-      marginTop: 0,
+      height: 40,
       justifyContent: 'center',
       alignItems: 'center',
-      paddingHorizontal: 0,
-      paddingVertical: 0,
+
     }
   }
 )
@@ -77,9 +80,23 @@ export default function NavigationMain(){
   //  TOOL CONTEXT
   const [toolActionValue, setToolActionValue] = useState<string>("");
 
+  const checkToolActionValueProcess = async (): Promise<boolean> => {
+    const valueToolActions = await getToolActionValue();
+    console.log("Try to get the user Tool Action Value", valueToolActions);
+    if (!valueToolActions) {
+      await postToolActionValue("1").then(async () => {
+        setToolActionValue("1");
+      });
+    } else {
+      setToolActionValue(valueToolActions);
+    }
+    return await checkToolActionValue(valueToolActions || "1", setToolActionValue);
+  };
+
   const toolElements = {
     toolActionValue,
     setToolActionValue,
+    checkToolActionValueProcess
   }
   const {
     } = useContext(PrimaryContext);
@@ -99,8 +116,11 @@ export default function NavigationMain(){
     })
     console.log("Dispatched History Text.")
   }
+  // STYLES
+  const tabNavStyles = [localStyles.barStyles, {backgroundColor: customTheme.primary}]
   const footerIconColor = customTheme.text;
-  const footerActiveIconColor = customTheme.primaryButton
+  const footerActiveIconColor = customTheme.primaryButton;
+
   return (
     <>
       <BannerAd
@@ -111,21 +131,39 @@ export default function NavigationMain(){
         }}
       />
       <Tab.Navigator
-        shifting={false}
-        labeled={false}
-        initialRouteName="ToolsNavigator"
+        initialRouteName="Chat" // Erster Tab beim Start der App
+        backBehavior="initialRoute" // Verhalten, wenn die Zurück-Taste gedrückt wird
+        screenOptions={{
 
-        activeColor={footerActiveIconColor}
-        inactiveColor={footerIconColor}
-        backBehavior={"firstRoute"}
-        barStyle={[localStyles.barStyles, { backgroundColor: customTheme.primary }]}>
+          headerShown: false,
+          tabBarActiveTintColor: footerActiveIconColor, // Farbe des aktiven Tabs
+          tabBarInactiveTintColor: footerIconColor, // Farbe der inaktiven Tabs
+          tabBarShowLabel: false, // Ob Labels angezeigt werden sollen
+          tabBarLabelStyle: { fontSize: 0 }, // Stil des Textlabels
+          tabBarBadge: undefined,
+          tabBarStyle: {
+            backgroundColor: customTheme.primary,
+            borderTopWidth: 0,
+            borderTopColor: customTheme.primary,
+            shadowOffset: {
+              width: 0,
+              height: 0, // for iOS
+            },
+            elevation: 0,
+            zIndex: 0,
+            shadowColor: customTheme.primary,
+            height: 50,
+
+          },
+          tabBarHideOnKeyboard: true, // Bestimmt, ob die Tastatur die Tab-Leiste ausblendet
+        }}>
+
           <Tab.Screen
             name="Chat"
             children={
               () =>
                 <InputContext.Provider
                   value={elements}>
-
                   <ChatNavigation
                     bottomSheetRef={bottomSheetRef}
                     dispatchHistorySent={dispatchHistorySent}
@@ -133,7 +171,6 @@ export default function NavigationMain(){
                 </InputContext.Provider>
               }
             options={{
-              tabBarColor: customTheme.navigatorColor,
               tabBarIcon: ({ color, focused }) => (
                 <MaterialCommunityIcons
                   style={localStyles.icon}
@@ -178,69 +215,13 @@ export default function NavigationMain(){
   );
 }
 
-
 /*
-  async function retrieveUserSession() {
-    try { // check if the user is already stored
-      const data = await getUserSessionData();
-      if (data !== undefined || true) {
-        storeUserSessionData()
-          .then(() => console.log("User session successfully saved ..."))
-      }
-    } catch (error) {
-      console.log("There was an error save the user session ...")
-    }
-  }
-
-
- <Tab.Screen
-          name="Tools"
-          component={ToolsNavigation}
-          options={{
-            tabBarIcon: ({ color, focused }) => (// @ts-ignore
-              <MaterialCommunityIcons name={focused ? "cog" : "cog-outline"} color={color} size={29} />
-            ),
-          }}
-        />
-
-
-
-
-<Tab.Screen
-                name="Tools"
-                component={ToolScreens} // if the Screen Component contains any props just pass them at the bottom
-                options={{
-                    tabBarColor: "transparent",
-                    tabBarIcon: ({color, focused}) => (
-                        <MaterialCommunityIcons name={focused ? "ballot" : "ballot-outline"} color={color} size={26} />
-                    ),
-                }}
-            />
-<Tab.Screen
-        name="Profile"
-        component={ProfileMain}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account-circle" color={color} size={26} />
-          ),
-        }}
-
-
-          const storeUserSessionData = async () => {
-    try {
-      const jsonValue = JSON.stringify(5);
-      await AsyncStorage.setItem(`user_${user?.uid}`, jsonValue);
-    } catch (e) {
-      console.log("There was an error save the user session ...")    }
-  };
-
-  const getUserSessionData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(`user_${user?.uid}`);
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      // error reading value
-    }
-  };
+ <Tab.Navigator
+        shifting={false}
+        labeled={false}
+        initialRouteName="ToolsNavigator"
+        activeColor={footerActiveIconColor}
+        inactiveColor={footerIconColor}
+        backBehavior={"firstRoute"}
+        barStyle={[localStyles.barStyles, { backgroundColor: customTheme.primary }]}>
  */

@@ -1,18 +1,17 @@
 import {toolStyles as ts} from "../../../screens/tools/toolStyles";
 import {DefaultInput} from "../../input/DefaultInput";
 import {IconButton, ProgressBar} from "react-native-paper";
-import {KeyboardAvoidingView, TextInput, View} from "react-native";
-import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {KeyboardAvoidingView, Text, View} from "react-native";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 
 const copy = "content-copy";
 const clear = "close";
+
 import {memo} from "react";
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../screens/Context";
+import {PrimaryContext, ThemeContext} from "../../../screens/Context";
 import * as Clipboard from "expo-clipboard";
 import {BottomImage} from "../../images/BottomImage";
-import * as RNLocalize from "react-native-localize";
 import * as Print from "expo-print";
-import {sharePdf} from "../../../screens/ExpoFunctions";
 import {inputStyles} from "../../input/styles";
 
 interface TextResultTypes {
@@ -40,12 +39,10 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
   // Context
   const { customTheme } = useContext(ThemeContext);
   const { loading } = useContext(PrimaryContext);
-  const { setError } = useContext(ToolContext);
 
 
   // STYLES
   const copyButtonColor = customTheme.text;
-  const moreTextStyles = [ts.heading];  //{/*unbedingt am anfange einmal streamen*/}
   const transcriptInputStyles = [
     ts.input, {
       backgroundColor: "transparent", borderColor: copyButtonColor, color: copyButtonColor
@@ -53,7 +50,7 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
   ];
   const loadingStyle = [
     ts.loadingStyle, {
-      marginBottom: loading? 10 : 0
+      marginVertical: loading? 10 : 0
     }
   ];
 
@@ -86,12 +83,6 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     changeText("");
   }, [value])
 
-  const getCurrentLanguage = () => {
-    const languages = RNLocalize.getLocales();
-    if (languages.length > 0) return languages[0].languageCode;
-    return null;
-  };
-
   const defaultTextColor = {color: customTheme.text};
 
   const handleDownloadClick = useCallback(async () => {
@@ -102,7 +93,7 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
       });
 
       console.log('PDF erstellt: ', uri);
-      await sharePdf(uri, setError)
+      //await sharePdf(uri, setError)
     } catch (error) {
       console.error('Fehler beim Erstellen des PDFs: ', error);
     }
@@ -112,13 +103,10 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
   return(
     <KeyboardAvoidingView style={mainContainerStyles}>
 
-    <TextInput
-      selectionColor={customTheme.errorText}
-      style={moreHeadingStreamInputStyles}
-      value={streamedHeading}
-      editable={false}
-      autoFocus
-    />
+    <Text
+      style={moreHeadingStreamInputStyles}>
+      {streamedHeading}
+    </Text>
       {Content}
 
       <ProgressBar progress={.5} color={customTheme.primaryButton} style={loadingStyle} indeterminate={true} visible={loading} />
@@ -134,8 +122,8 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
           multiline={true}
         />
 
-        <IconButton size={20} iconColor={copyButtonColor} style={ts.clearButton} onPress={handleClearField} icon={clear}/>
-        <IconButton size={20} iconColor={copyButtonColor} style={ts.copyButton} onPress={handleCopyClick} icon={copy}/>
+        <IconButton size={20} iconColor={copyButtonColor} style={ts.clearButton} onPress={handleClearField} icon={clear} />
+        <IconButton size={20} iconColor={copyButtonColor} style={ts.copyButton} onPress={handleCopyClick} icon={copy} />
 
       </View>
       <BottomImage />

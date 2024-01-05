@@ -1,12 +1,11 @@
 import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useMemo, useState} from "react";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {postMessageObject} from "../../../chat/functions/SendProcess";
-import {PrimaryContext, ResumeContext, ThemeContext} from "../../../Context";
+import {PrimaryContext, ThemeContext} from "../../../Context";
 import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultText} from "../../../../components/text/DefaultText";
 import firebase from "firebase/compat";
 
-import {toolStyles as ts} from "../../toolStyles";
 import {Vibration} from "react-native";
 
 // STRINGS
@@ -17,7 +16,7 @@ const languagePlaceholder: string = "Application Language (eng/de/fr/...";
 const personalDataPlaceholder: string = "Contact Information's (optional)";
 
 const create: string = "Create";
-const error = "This Field is required";
+const filedErrorMessage = "This Field is required";
 const postUrl: string = "http://wired87.pythonanywhere.com/open/text-request/";
 
 // INTERFACE
@@ -28,7 +27,7 @@ interface InputTypes {
 }
 
 interface ResumeTypes {
-  setError: Dispatch<SetStateAction<boolean>>;
+  setError: Dispatch<SetStateAction<string>>;
   setResume: Dispatch<SetStateAction<string>>;
 }
 
@@ -73,7 +72,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
       Vibration.vibrate();
       setFieldError(true);
     }else {
-      setError(false);
+      setError("");
       setFieldError(false);
       setLoading(true);
       const fileObject = createApplicationObject(user);
@@ -87,7 +86,9 @@ const ResumeContent: React.FC<ResumeTypes> = (
         setResume(res.message)
       }catch(e:unknown){
         setLoading(false);
-        setError(true);
+        if (e instanceof Error && e){
+          setError("Could not create your Resume.\n AI returned the following Issue:" + e?.message);
+        }
       }finally{
         setLoading(false);
       }
@@ -96,7 +97,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
 
   const FieldError = useMemo(() => {
     if (fieldError) {
-      return <DefaultText text={error} moreStyles={undefined} error={fieldError} />
+      return <DefaultText text={filedErrorMessage} moreStyles={undefined} error={fieldError} />
     }
   }, [fieldError])
 

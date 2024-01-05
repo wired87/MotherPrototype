@@ -22,9 +22,11 @@ export const styles = StyleSheet.create({
     chatMessageInput: {
         width: windowWidth * .8,
         fontFamily: "JetBrainsMono",
-        borderColor: themeColors.borderThin,
         paddingVertical: 10,
         paddingHorizontal: 15,
+        borderRadius: 20,
+        borderWidth: 1,
+        backgroundColor: "transparent",
     },
     container: {
         right: 0,
@@ -54,7 +56,8 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "column",
         bottom: -5,
-        padding: 0
+        padding: 0,
+        marginBottom: 0,
     },
     secondContainer: {
         flexDirection: "row",
