@@ -67,22 +67,22 @@ const carouselData: CarouselDataTypes[] =
 ]
 
 const businessButtonList: DataItem[] = [
-  {
-    text: "Resume creator",
-    color: "rgba(29,152,189,0.4)",
-    icon: "format-float-left",
-    navigation: "ChatNavigator",
-    extraText: "AI job Application writer",
-    screen: "ResumeCreator"
-  },
-  {
+  /*{
     text: "Document Editor",
     color: "rgba(255,255,0,.4)",
     icon: "sticker-text-outline",
     navigation: "ChatNavigator",
     extraText: "Edit any documents",
     screen: "DocumentEditor"
-  }
+  }*/
+  {
+    text: "Idea finder",
+    color: "#232f44",
+    icon: "lightbulb-on-outline",
+    navigation: "ChatNavigator",
+    extraText: "Share your ideas for feedback or create some for your next Business",
+    screen: "ideaFinder"
+  },
 ]
 
 const creativeButtonList: DataItem[] = [
@@ -95,27 +95,27 @@ const creativeButtonList: DataItem[] = [
     screen: "Speech-to-Text"
   },
   {
-    text: "Idea finder",
-    color: "#232f44",
-    icon: "lightbulb-on-outline",
+    text: "Resume creator",
+    color: "rgba(50,112,196,0.2)",
+    icon: "format-float-left",
     navigation: "ChatNavigator",
-    extraText: "Share your ideas for feedback or create some for your next Business",
-    screen: "ideaFinder"
+    extraText: "AI job Application writer",
+    screen: "ResumeCreator"
   },
-  {
+  /*{
     text: "Image editor",
     color: 'rgba(127,0,255,0.6)',
     icon: "wallpaper",
     navigation: "ChatNavigator",
     extraText: "Dont like the Background of an image? Change it!",
     screen: "ImageEditor"
-  }
+  }*/
 ]
 
 const lifeButtonList: DataItem[] = [
   {
     text: "Movie/Series-\nfinder",
-    color: "rgba(50,112,196,0.2)",
+    color: "#232f44",
     icon: "television-shimmer",
     navigation: "ChatNavigator",
     extraText: "Find the best Movie for your Movie night",
@@ -129,17 +129,17 @@ const lifeButtonList: DataItem[] = [
     extraText: "Keep yourself informed!",
     screen: "ImageExplanation"
   },
-  {
+  /*{
     text: "Image explanation",
     color: "rgba(255,165,0,.4)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: "What's on that image?",
     screen: "ImageExplanation"
-  },
+  },*/
   {
     text: "Chat response helper",
-    color: "rgba(255,165,0,.4)",
+    color: "rgba(50,112,196,0.2)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: "Dont know how to answer to an Text Message? Our Model does!",
@@ -150,7 +150,7 @@ const lifeButtonList: DataItem[] = [
 const textButtonList: DataItem[] = [
   {
     text: "Birthday Card",
-    color: "rgba(37,210,37,0.2)",
+    color: "#232f44",
     icon: "television-shimmer",
     navigation: "ChatNavigator",
     extraText: undefined,
@@ -160,13 +160,13 @@ const textButtonList: DataItem[] = [
     text: "Christmas Card",
     icon: "comment-multiple-outline",
     navigation: "ChatNavigator",
-    color: "rgba(255,255,255,.2)",
+    color: "rgba(50,112,196,0.2)",
     extraText: undefined,
     screen: "ImageExplanation"
   },
   {
     text: "New Year Wishes",
-    color: "rgba(255,165,0,.4)",
+    color: "#232f44",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
@@ -174,7 +174,7 @@ const textButtonList: DataItem[] = [
   },
   {
     text: "E-Mail writer",
-    color: "rgba(255,165,0,.4)",
+    color: "rgba(110,0,0,.7)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
@@ -182,7 +182,7 @@ const textButtonList: DataItem[] = [
   },
   {
     text: "Greeting Card",
-    color: "rgba(255,165,0,.4)",
+    color: "rgba(50,112,196,0.2)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
@@ -190,7 +190,7 @@ const textButtonList: DataItem[] = [
   },
   {
     text: "Product Text writer",
-    color: "rgba(255,165,0,.4)",
+    color: "rgba(110,0,0,.7)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
@@ -198,7 +198,7 @@ const textButtonList: DataItem[] = [
   },
   {
     text: "Story writer",
-    color: "rgba(255,165,0,.4)",
+    color: "#232f44",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
@@ -206,7 +206,7 @@ const textButtonList: DataItem[] = [
   },
   {
     text: "Poem writer",
-    color: "rgba(255,165,0,.4)",
+    color: "rgba(50,112,196,0.2)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
@@ -214,7 +214,7 @@ const textButtonList: DataItem[] = [
   },
   {
     text: "",
-    color: "rgba(255,165,0,.4)",
+    color: "#232f44",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: undefined,
@@ -280,12 +280,12 @@ const ToolsMain = () => {
                 colors={[item.backgroundColor, "black"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: .1, y: .8 }}>
-                <DefaultText text={item.text} moreStyles={styles.affiliateText} />
+                <Text style={styles.affiliateText} >{item.text}</Text>
                 <Image source={item.image} style={styles.affiliateImage}/>
               </LinearGradient>
           </Pressable>
-
   }, []);
+
 
   const categoryContent = useMemo(() => {
     const data =

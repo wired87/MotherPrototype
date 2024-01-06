@@ -85,6 +85,7 @@ const RecordingButtonTTS: React.FC<RecordingButtonTTSProps> = (
     return null
   }, [user, userRecording])
 
+
   const postRecording = useCallback(async( extraData: ExtraData | null, uri: string | null | undefined ) => {
     const {soundAudio, ...extraDataWithoutSound} = extraData as ExtraData ;
     console.log("extraData:", extraData)

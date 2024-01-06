@@ -1,6 +1,5 @@
 import {TextInput, StyleSheet} from "react-native";
 import {inputStyles as styles} from "./styles";
-import {themeColors} from "../../colors/theme";
 import React, {useContext} from "react";
 import {ThemeContext} from "../../screens/Context";
 

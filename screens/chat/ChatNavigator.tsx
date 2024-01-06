@@ -1,11 +1,10 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import React, {useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 // @ts-ignore
 import {ChatMain} from "./ChatMain";
 import {useDispatch} from "react-redux";
-import {useRoute} from "@react-navigation/native";
 import {StyleSheet, Vibration} from "react-native";
 
 // Context
@@ -58,13 +57,11 @@ const iconStyles = StyleSheet.create(
 // STACK DEFINITIONS ///////////////////////
 const ChatStack = createNativeStackNavigator();
 
-export const ChatNavigation: React.FC<ChatNavigationTypes> = (
+const ChatNavigation: React.FC<ChatNavigationTypes> = (
   { bottomSheetRef }
 ) => {
-  // Essentials
   const dispatch = useDispatch();
 
-  const route = useRoute();
   const [history, setHistory] = useState(false);
 
   // Context //////////////////////////
@@ -78,7 +75,15 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
   }  = useContext(InputContext);
 
   const { customTheme } = useContext(ThemeContext);
-  const {user, setClearMessages, clearMessages} = useContext(PrimaryContext);
+  const {
+    user,
+    setClearMessages,
+    clearMessages,
+    jwtToken,
+    isConnected
+  } = useContext(PrimaryContext);
+
+  const jwtTokenRef = useRef(jwtToken);
 
   const inputRef = useRef(input);
   useEffect(() => {
@@ -99,22 +104,29 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     bottomSheetRef?.current?.snapToIndex(2);
   }
 
+  useEffect(() => {
+    jwtTokenRef.current = jwtToken;
+  }, [jwtToken]);
+
   const sendPackage = async (userMessage: any) => {
+    console.log("isConnected", isConnected);
     try {
-      console.log("Sending Message Object...")
-      const aiResponse = await sendObject(userMessage, messageIndex, user);
-      setTyping(false);
-      setMessageIndex((state: number) => state + 1)
-      console.log("Final response Object: ", aiResponse);
-
-      if (aiResponse === 1) {
-        console.log('Something went wrong in one of the following functions: ' +
-          '\n - "sendMessage", \n- "sendObject", \n- "postMessageObject"')
-      } else {
-
-        setMessages( // @ts-ignore
-          prevMessages => [...prevMessages, aiResponse] /////////////////////////////////////////////////////////////////////////////
-        );
+      if (jwtTokenRef?.current) {
+        const aiResponse = await sendObject(userMessage, messageIndex, user, jwtTokenRef?.current?.access);
+        setTyping(false);
+        setMessageIndex((state: number) => state + 1);
+        console.log("Final response Object: ", aiResponse);
+        setMessages(prevMessages => [...prevMessages, aiResponse || null])
+      }else{
+        const aiResponse =  createMessageObject(
+          "There was an error validating your request. If that error keep active, please contact our support Team.",
+          "text",
+          messageIndex,
+          user,
+          "AI",
+          "aiMessageContainer"
+        )
+        setMessages(prevMessages => [...prevMessages, aiResponse])
       }
     } catch (error) {
       console.log("error while sending a message", error)
@@ -201,7 +213,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
       // Ads in useEffect above will be showed
       setTyping(false);
     }
-  }, [user, messageIndex, user]);
+  }, [user, messageIndex, jwtToken]);
 
   useEffect(() => {
     if (history) {
@@ -271,7 +283,7 @@ export const ChatNavigation: React.FC<ChatNavigationTypes> = (
     </>
   );
 }
-
+export default memo(ChatNavigation);
 
 /*
 

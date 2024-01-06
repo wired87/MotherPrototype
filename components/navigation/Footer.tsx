@@ -3,7 +3,7 @@ import {useTheme} from 'react-native-paper';
 
 import {SettingNavigation} from "../../screens/settings/SettingsNavigator";
 import {Platform, StyleSheet} from "react-native";
-import {ChatNavigation} from "../../screens/chat/ChatNavigator";
+import ChatNavigation from "../../screens/chat/ChatNavigator";
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -77,6 +77,7 @@ export default function NavigationMain(){
     userRecording, setUserRecording,
     currentRecording, setCurrentRecording
   }
+
   //  TOOL CONTEXT
   const [toolActionValue, setToolActionValue] = useState<string>("");
 
@@ -116,8 +117,8 @@ export default function NavigationMain(){
     })
     console.log("Dispatched History Text.")
   }
+
   // STYLES
-  const tabNavStyles = [localStyles.barStyles, {backgroundColor: customTheme.primary}]
   const footerIconColor = customTheme.text;
   const footerActiveIconColor = customTheme.primaryButton;
 

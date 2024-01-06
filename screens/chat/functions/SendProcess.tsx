@@ -1,4 +1,5 @@
 import firebase from "firebase/compat";
+import {JwtToken} from "../../Context";
 
 export const getCurrentTime = () => {
   const timeNow = new Date();
@@ -13,6 +14,7 @@ export const getCurrentTime = () => {
 }
 
 export const postMessageObject = async (
+  jwtToken: string,
   senderObject: any,
   postUrl: string,
   options: any
@@ -22,11 +24,12 @@ export const postMessageObject = async (
   const { timeout = 20000 } = options;
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-
+  console.log("JwtToken.access postMessageObject:", jwtToken);
   try {
     const response = await fetch(postUrl, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${jwtToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(senderObject),
@@ -53,11 +56,20 @@ export const postMessageObject = async (
   }
 }
 
-export const sendObject = async (senderObject: any, messageIndex: number | string, user: firebase.User | null) => {
-  const postUrl = // __DEV__ ? :   "http://192.168.178.51:8080/open/chat-request/"
-    "http://wired87.pythonanywhere.com/open/chat-request/";
+interface SenderObjectTypes {
+  senderObject: any,
+  messageIndex: number | string,
+  user: firebase.User | null,
+  jwtToken: string
+}
+export const sendObject = async ( senderObject: any,
+                                  messageIndex: number | string,
+                                  user: firebase.User | null,
+                                  jwtToken: string) => {
+  const postUrl = "http://wired87.pythonanywhere.com/open/chat-request/";
   try {
     const res = await postMessageObject(
+      jwtToken,
       senderObject,
       postUrl,
       {

@@ -6,15 +6,13 @@ import ToolsMain2 from "./ToolsMain2";
 import ResumeCreator from "./Screens/ResumeCreator/ResumeCreator";
 import {ToolContext} from "../Context";
 import {showToolAds} from "../chat/functions/AdLogic";
+import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 const ToolStack = createNativeStackNavigator();
 
 const ToolsNavigator = () => {
   const { toolActionValue, setToolActionValue}  = useContext(ToolContext);
 
-  const screenHeaderOptions = useMemo(() => ({
-    header: () => null,
-  }), []);
 
   // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {
@@ -23,9 +21,14 @@ const ToolsNavigator = () => {
       .then(() => console.log("Ads successfully showed. Refilled the Messages"));
   }, [toolActionValue]);
 
+  const screenHeaderOptions = useMemo(() => ({
+    header: () => <DefaultHeader />,
+  }), []);
+
   return(
     <ToolStack.Navigator
-      initialRouteName="ToolsMain2" screenOptions={screenHeaderOptions}>
+      initialRouteName="ToolsMain2"
+      screenOptions={screenHeaderOptions}>
 
       <ToolStack.Screen
         name="ToolsMain2"

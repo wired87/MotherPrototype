@@ -33,7 +33,7 @@ import {PlusAdContainer} from "../../components/container/PlusPlanContainer/Plus
 import {BottomImage} from "../../components/images/BottomImage";
 import RoundedButton from "../../components/buttons/RoundedButton";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-import {share} from "../ExpoFunctions";
+import {share} from "../Functions";
 
 let settingsData = [
   {

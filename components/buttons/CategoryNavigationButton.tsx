@@ -1,7 +1,6 @@
 import React, {Dispatch, memo, SetStateAction, useContext} from "react";
 import {ThemeContext} from "../../screens/Context";
-import {Pressable, StyleProp, Text, TextStyle, View} from "react-native";
-import {LinearGradient} from "expo-linear-gradient";
+import {Pressable, StyleProp, Text, TextStyle} from "react-native";
 import {toolStyles as styles} from "../../screens/tools/toolStyles";
 
 
@@ -21,9 +20,15 @@ const CategoryButton:
     const pressableStyles =
       [
         styles.categoryButton,
-        {  shadowColor: customTheme.text,
+
+        {
+
+          shadowColor: customTheme.text,
           paddingVertical: 7,
           paddingHorizontal: 10,
+          borderWidth: selected? 0:2,
+          borderColor: customTheme.text,
+
         },
       ]
 
@@ -31,27 +36,16 @@ const CategoryButton:
       setSelectedItem(item.key.toString());
       item.onPress();
     }
-    const textColor = selected? customTheme.text : "white"
-    const linearColor = selected? customTheme.categoryButton : customTheme.primaryButton;
-    const bothColors = selected? ["transparent", "transparent"] : [linearColor, customTheme.primaryButton];
     const categoryTextStyles: StyleProp<TextStyle> = [styles.categoryButtonText, {
-      color: textColor,
+      color: customTheme.text,
       fontWeight: "500"
-    }]
+    }];
 
     return(
-      <Pressable onPress={handlePress} style={[styles.categoryButton, ]}>
-        <View style={[styles.categoryButton, {backgroundColor: customTheme.primary}]}>
-          <LinearGradient
-            colors={bothColors}
-            style={pressableStyles}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0.85}}>
-            <Text style={categoryTextStyles}>
-              {item?.title}
-            </Text>
-          </LinearGradient>
-        </View>
+      <Pressable onPress={handlePress} style={pressableStyles}>
+        <Text style={categoryTextStyles}>
+          {item?.title}
+        </Text>
       </Pressable>
     )
   });

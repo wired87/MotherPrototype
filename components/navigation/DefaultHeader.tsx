@@ -64,7 +64,9 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
       "EmailChange",
       "NewPasswordConfirmation",
       "ForgotPassword",
-      "AuthNavigator"
+      "AuthNavigator",
+      "Speech-to-Text",
+      "ResumeCreator",
     ];
     return navigation.canGoBack() && screensToShowBackIcon.includes(route.name) &&
       !["ChatMain", "ChatNavigation"].includes(route.name);

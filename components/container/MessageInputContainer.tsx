@@ -85,7 +85,7 @@ export const MessageInputContainer = (
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${jwtToken.access}`,
+            Authorization: `Bearer ${jwtToken?.access}`,
 
           },
           httpMethod: 'POST',

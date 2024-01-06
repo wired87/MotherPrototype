@@ -24,9 +24,11 @@ export const PrimaryContext = createContext(
     clearMessages: false,
     setClearMessages: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
-    jwtToken: {} as JwtToken,
-    setJwtToken: (() => {}) as Dispatch<SetStateAction<JwtToken>>,
+    jwtToken: null as JwtToken | null,
+    setJwtToken: (() => {}) as Dispatch<SetStateAction<JwtToken | null>>,
 
+    isConnected: false,
+    setIsConnected: (() => {}) as Dispatch<SetStateAction<boolean>>,
   });
 
 
@@ -63,14 +65,6 @@ export const ToolContext= createContext(
     toolActionValue: "",
     setToolActionValue: (() => {}) as Dispatch<SetStateAction<string>>,
     checkToolActionValueProcess: async (): Promise<boolean> => false,
-  }
-)
-
-export const ResumeContext= createContext(
-  {
-    resume: "",
-    setResume: (() => {}) as Dispatch<SetStateAction<string>>,
-
   }
 )
 

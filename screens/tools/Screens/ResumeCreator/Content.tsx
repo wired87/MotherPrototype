@@ -47,7 +47,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
 
   // CONTEXT
   const { customTheme } = useContext(ThemeContext);
-  const { setLoading } = useContext(PrimaryContext);
+  const { setLoading, jwtToken } = useContext(PrimaryContext);
   const { user } = useContext(PrimaryContext);
 
   // STYLES
@@ -78,6 +78,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
       const fileObject = createApplicationObject(user);
       try {
         const res = await postMessageObject(
+          jwtToken?.access || "1",
           fileObject,
           postUrl, {
             timeout: 20000
