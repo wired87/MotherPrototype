@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import React, {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {memo, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 // @ts-ignore
@@ -8,7 +8,7 @@ import {useDispatch} from "react-redux";
 import {StyleSheet, Vibration} from "react-native";
 
 // Context
-import {InputContext, PrimaryContext, ThemeContext, FunctionContext} from "../Context";
+import {InputContext, PrimaryContext, ThemeContext, FunctionContext, JwtToken} from "../Context";
 
 // Ads
 import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, showAds} from "./functions/AdLogic";
@@ -72,6 +72,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     setTyping, typing,
     setMessages,
     setMessageIndex,
+    messages,
   }  = useContext(InputContext);
 
   const { customTheme } = useContext(ThemeContext);
@@ -80,12 +81,14 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     setClearMessages,
     clearMessages,
     jwtToken,
+    setJwtToken,
     isConnected
   } = useContext(PrimaryContext);
 
-  const jwtTokenRef = useRef(jwtToken);
-
+  // REFS
   const inputRef = useRef(input);
+  const jwtTokenRef = useRef<JwtToken | null>(null);
+
   useEffect(() => {
     if (!(input === "" || input.trim().length === 0))
       inputRef.current = input;
@@ -105,31 +108,60 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   }
 
   useEffect(() => {
+    console.log("jwt changed in ChatNavigator:", jwtToken);
     jwtTokenRef.current = jwtToken;
+    console.log("jwt ref:", jwtTokenRef.current);
   }, [jwtToken]);
 
+  const errorMessageAIResponse = useCallback(() => {
+    console.log("Error AIResponse created.. ")
+    const aiResponse =  createMessageObject(
+      "We could not authenticate you. I have contacted the support Team, for you, to fix the problem." +
+      "Feel free to Contact us directly also. Sometimes a Refresh can also solve the Problem.",
+      "error",
+      messageIndex,
+      user,
+      "AI",
+      "aiMessageContainer"
+    )
+    setMessageIndex((state: number) => state + 1);
+    setMessages(prevMessages => [...prevMessages, aiResponse]);
+  }, [messageIndex, messages])
+
+
   const sendPackage = async (userMessage: any) => {
-    console.log("isConnected", isConnected);
+    let aiResponse: object;
     try {
-      if (jwtTokenRef?.current) {
-        const aiResponse = await sendObject(userMessage, messageIndex, user, jwtTokenRef?.current?.access);
-        setTyping(false);
-        setMessageIndex((state: number) => state + 1);
-        console.log("Final response Object: ", aiResponse);
-        setMessages(prevMessages => [...prevMessages, aiResponse || null])
+      console.log("Sending Message Object...")
+      if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
+        console.log("jwtTokenRef:", jwtTokenRef);
+        const response = await sendObject(userMessage, jwtTokenRef.current , setJwtToken);
+        if (!response) {
+          // Error while sending the message. -> Send contact
+          console.log("sendPackage Response === null...")
+          errorMessageAIResponse();
+        }else{
+          console.log("Create Message with response:", response);
+          aiResponse = createMessageObject(
+            response,
+            "text",
+            messageIndex,
+            user,
+            "AI",
+            "aiMessageContainer",
+          )
+          setMessageIndex((state: number) => state + 1);
+          setMessages(prevMessages => [...prevMessages, aiResponse]);
+          console.log("Final response Object: ", aiResponse);
+        }
+        console.log("Finished the sendPackage function..");
       }else{
-        const aiResponse =  createMessageObject(
-          "There was an error validating your request. If that error keep active, please contact our support Team.",
-          "text",
-          messageIndex,
-          user,
-          "AI",
-          "aiMessageContainer"
-        )
-        setMessages(prevMessages => [...prevMessages, aiResponse])
+        console.log("sendPackage Response === null...")
+        errorMessageAIResponse();
       }
-    } catch (error) {
-      console.log("error while sending a message", error)
+    }catch (error) {
+      console.log("Error occurred while try sending the request:", error);
+      errorMessageAIResponse();
     } finally {
       setTyping(false);
       console.log("Function end...")

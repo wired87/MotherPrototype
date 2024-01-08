@@ -30,7 +30,8 @@ export const styles = StyleSheet.create({
         padding: 4,
     },
     middleText: {
-        textAlign: "center"
+        textAlign: "center",
+        marginBottom: 5,
     },
 
 

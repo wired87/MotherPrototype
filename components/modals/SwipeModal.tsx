@@ -36,7 +36,7 @@ export const SwipeModal: React.FC<SwipeModalProps> = (
     {
       Content,
       modalIndex,
-      bottomSheetRef
+      bottomSheetRef,
     }
 ) => {
   const { customTheme } = useContext(ThemeContext);

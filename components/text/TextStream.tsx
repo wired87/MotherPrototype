@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useState} from "react";
+import React, {useState} from "react";
 import {View} from "react-native";
 import {DefaultText} from "./DefaultText";
 

@@ -9,15 +9,15 @@ import {SwipeModal} from "../../../../components/modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import ErrorContainerSwipeModal from "../../../../components/container/ErrorContainerSwipeModal";
 
-
-const heading = "AI Job Application \n creator"
-const placeholderResume = "Your written Application will be shown here.."
+const heading: string = "AI Job Application \n creator"
+const placeholderResume: string = "Your written Application will be shown here.."
 
 const ResumeCreator = () => {
   const [editable, setEditable] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const [resume, setResume] = useState<string>("");
+
   // Context
   const { customTheme } = useContext(ThemeContext);
 

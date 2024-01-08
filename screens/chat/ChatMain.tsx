@@ -1,5 +1,14 @@
 import React, {memo, useCallback, useContext, useMemo} from "react";
-import { FlatList, KeyboardAvoidingView, SafeAreaView, Text, View, StyleSheet } from "react-native";
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  Text,
+  View,
+  StyleSheet,
+  Platform,
+  ListRenderItem
+} from "react-native";
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
 import {MessageInputContainer} from "../../components/container/MessageInputContainer";
@@ -55,40 +64,41 @@ const localStyles = StyleSheet.create(
 )
 
 const SingleMessageMemo = memo(SingleMessage);
-const SingleAudioMemo = memo(SingleAudio);
 
 export const ChatMain = (
 ) => {
 
   const { messages } = useContext(InputContext);
   const { customTheme } = useContext(ThemeContext);
+  const keyExtractor = (item: object, index: number) => String(index);
 
   // Styles
   const mainViewStyles =
     [localStyles.main, {backgroundColor: customTheme.primary}];
 
-  const primaryTextStyles = {textAlign: "justify", color: customTheme.text}
-  const secondaryTextStyles = {color: "white", fontSize: 10}
-  const secondaryTextStylesText = {color: customTheme.text, fontSize: 10}
-  // @ts-ignore
-  const renderItem = useCallback(({item, index}) => {
-    return item.type === "text" ? (
-      <SingleMessageMemo
-        key={index}
-        item={item}
-        styles={chatStyles}
-        primaryTextStyles={primaryTextStyles}
-        secondaryTextStyles={secondaryTextStylesText}
-      />
-    ) : (
-      <SingleAudioMemo
-        key={index}
-        item={item}
-        styles={chatStyles}
-        secondaryTextStyles={secondaryTextStyles}
-      />
-    );
+  const primaryTextStyles = {textAlign: "justify", marginBottom: 15, color: customTheme.text}
+  const secondaryTextStylesText = {color: customTheme.text, fontSize: 10, position: "absolute", left: 10, bottom: 3}
+
+  const renderItem = useCallback(({ item }: { item: any }): JSX.Element => {
+    if (item && item.type === "error") {
+      return (
+        // here error Message Container with Contact and Refresh Button.
+        <></>
+      );
+    }else if (item && item.type === "text") {
+      return(
+        <SingleMessageMemo
+          item={item}
+          styles={chatStyles}
+          primaryTextStyles={primaryTextStyles}
+          secondaryTextStyles={secondaryTextStylesText}
+        />
+      )
+    }else{
+      return <></>
+    }
   }, [customTheme, messages]);
+
 
   const miracleText = useMemo(() => {
     const aixTextStyles =
@@ -118,7 +128,7 @@ export const ChatMain = (
             style={localStyles.fullPercent}
             data={messages}
             contentContainerStyle={localStyles.columnReverse}
-            keyExtractor={(item, index) => String(index)}
+            keyExtractor={keyExtractor}
             renderItem={renderItem}
           />
         </View>

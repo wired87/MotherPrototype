@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 // Ad config
-import {RewardedInterstitialAd, TestIds, AdEventType, InterstitialAd, RewardedAdEventType} from 'react-native-google-mobile-ads';
+import {RewardedInterstitialAd, TestIds, InterstitialAd, RewardedAdEventType} from 'react-native-google-mobile-ads';
 import {Platform} from "react-native";
 
 import {FULL_SCREEN_ANDROID, FULL_SCREEN_IOS, TOOLS_ANDROID_INTERSITIAL, TOOLS_IOS_INTERSITIAL} from "@env";

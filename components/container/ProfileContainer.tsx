@@ -40,8 +40,7 @@ const ProfileContainer = (
       <View style={userStyles.inputSection}>
         <DefaultInput
           placeholder={undefined}
-          value={user?.email || null}
-          onChangeAction={null}
+          value={user?.email || ""}
           secure={false}
           editable={false}
           keyboardType={undefined}
@@ -54,9 +53,7 @@ const ProfileContainer = (
           secondIcon={undefined}
         />
         <DefaultInput
-          placeholder={null}
           value={text.password}
-          onChangeAction={null}
           secure={true}
           editable={false}
           keyboardType={undefined}

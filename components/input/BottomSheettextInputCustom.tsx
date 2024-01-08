@@ -3,7 +3,6 @@ import {inputStyles} from "./styles";
 import {themeColors} from "../../colors/theme";
 import DefaulttextInputTypes from "./DefaultInput";
 import React, { memo } from "react";
-import {KeyboardAvoidingView} from "react-native";
 
 
 const BottomSheetTextInputCustom: React.FC<DefaulttextInputTypes> = (

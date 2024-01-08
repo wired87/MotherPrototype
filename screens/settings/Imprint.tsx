@@ -17,7 +17,7 @@ const Imprint = () => {
           text={"CEO: Benedikt Sterra"} />
         <DefaultText
           moreStyles={textStyles}
-          text={"E-Mail: info@sales-detective.live"} />
+          text={"Contact: info@sales-detective.live"} />
         <DefaultText
           moreStyles={textStyles}
           text={"Address: Klingestr 22, 01159 Dresden, Germany"} />

@@ -13,7 +13,8 @@ export default interface DefaulttextInputTypes {
   keyboardType?: KeyboardTypeOptions;
   extraStyles?: object;
   multiline?: boolean;
-  numberOfLines?: number
+  numberOfLines?: number;
+  max_length?: number;
 }
 
 // @ts-ignore
@@ -26,7 +27,8 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     keyboardType,
     extraStyles,
     multiline,
-    numberOfLines
+    numberOfLines,
+    max_length
   }
 ) => {
 
@@ -43,6 +45,7 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
       secureTextEntry={false}
       autoCapitalize={"none"}
       value={value}
+      maxLength={max_length || undefined}
       onChangeText={onChangeAction}
       editable={editable || true}
       keyboardType={keyboardType}

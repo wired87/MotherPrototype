@@ -3,7 +3,7 @@ import { SectionList, Share, Text } from "react-native";
 import { settingStyles } from "../../screens/settings/settingStyles";
 import {themeColors} from "../../colors/theme";
 import {PlusAdContainer} from "../container/PlusPlanContainer/PlusPlanContainer";
-import {BottomImage} from "../images/BottomImage";
+import BottomImage from "../images/BottomImage";
 import {ThemeContext} from "../../screens/Context";
 import RoundedButton from "../buttons/RoundedButton";
 
@@ -73,7 +73,7 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
       }
       sections={list}
       keyExtractor={(item, index) => item + index}
-      renderItem={({ item, index }) => (
+      renderItem={({ item }) => (
         <RoundedButton
           item={item}
           action={() => handleAction(item)}
@@ -88,30 +88,3 @@ const SmallFlatLoop: React.FC<SmallFlatLoopProps> = (
 
 export default memo(SmallFlatLoop);
 
-
-/*
-  return (
-    <>
-      <Text style={[settingStyles.btnHeading, { color: colors.text[darkmode? 1 : 0] }]}>
-        {headingText}
-      </Text>
-      <View style={settingStyles.box2}>
-        {list.map((item: { title: any; icon: any; id: any; data?: any; }, index: number) => (
-          <Pressable
-            key={item.id}
-
-            <View style={styles.TouchableView}>
-              <View style={styles.box2Icon}>
-                {item.icon}
-              </View>
-              <Text style={styles.buttonText}>{item.title}</Text>
-            </View>
-            <MIcon name="arrow-forward-ios" size={16} color="#40434f" />
-          </Pressable>
-        ))}
-      </View>
-    </>
-  );
-};
-
- */

@@ -1,7 +1,8 @@
 import {Text, View, StyleSheet} from "react-native";
-import React, {useContext} from "react";
+import React, {memo, useContext} from "react";
 import {imgStyles} from "./imgStyles";
 import {ThemeContext} from "../../screens/Context";
+
 
 const localStyles = StyleSheet.create(
   {
@@ -12,8 +13,7 @@ const localStyles = StyleSheet.create(
   }
 )
 
-
-export const BottomImage = () => {
+const BottomImage = () => {
 
   const {customTheme} = useContext(ThemeContext);
   const textStyles = [localStyles.mainText, {color: customTheme.text}];
@@ -26,3 +26,5 @@ export const BottomImage = () => {
     </View>
   );
 }
+
+export default memo(BottomImage);

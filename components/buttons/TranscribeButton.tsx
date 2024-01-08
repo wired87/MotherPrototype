@@ -8,6 +8,8 @@ import {ThemeContext} from "../../screens/Context"; // Später nur ein mal am An
 
 // STRINGS
 const defaultIcon = "microphone";
+
+
 interface TranscribeButtonTypes {
   setTranscript: Dispatch<SetStateAction<string>>;
   setError: Dispatch<SetStateAction<string>>;
@@ -19,6 +21,7 @@ interface TranscribeButtonTypes {
 
 
 const TranscribeButton: React.FC<TranscribeButtonTypes> = (
+
   {
     setTranscript,
     setError,
@@ -27,6 +30,7 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
     buttonStyles,
     transcript
   }
+
   ) => {
 
   const { customTheme } = useContext(ThemeContext);
@@ -46,7 +50,6 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
       Voice.destroy()
         .then(() => Voice.removeAllListeners)
     }
-
   }, []);
 
   const onSpeechError = useCallback((e: SpeechErrorEvent) => {

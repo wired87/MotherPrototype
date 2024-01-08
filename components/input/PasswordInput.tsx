@@ -38,10 +38,13 @@ export const PasswordInput: React.FC<DefaulttextInputTypes> = (
     keyboardType,
     extraStyles
   }) => {
+
   const [secure, setSecure] = useState(true);
   const [icon, setIcon]  = useState("eye-off-outline");
-  const buttonStyles = [{}, localStyles.visibleButton]
+
   const { customTheme } = useContext(ThemeContext);
+
+  const buttonStyles = [{}, localStyles.visibleButton];
 
 
   useEffect(() => {

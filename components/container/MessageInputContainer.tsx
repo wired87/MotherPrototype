@@ -6,14 +6,10 @@ import React, {useCallback, useContext, useMemo, useState} from "react";
 import { useDispatch } from "react-redux";
 import { TypeIndicator } from "../animations/TypeIndicator";
 
-const audioApiEndpoint = //__DEV__? "http://192.168.178.51:8080/open/chat-request/" :
-  "http://wired87.pythonanywhere.com/open/chat-request/"
-
-import * as FileSystem from 'expo-file-system';
-import {createMessageObject, getCurrentTime} from "../../screens/chat/functions/SendProcess";
 import {showAds} from "../../screens/chat/functions/AdLogic";
 import {FunctionContext, InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 import TranscribeButton from "../buttons/TranscribeButton";
+import {IconButton} from "react-native-paper";
 
 
 interface ExtraData {
@@ -39,10 +35,6 @@ interface aiResponseType {
   type: string
 }
 
-// STRINGS
-const errorMessageText = "Sorry i could not listening to you text message. " +
-    "\nIf that error comes not alone please contact the support"
-
 export const MessageInputContainer = (
 ) => {
 
@@ -51,71 +43,16 @@ export const MessageInputContainer = (
   const [error, setError] = useState<string>("");
 
   const {
-    messageIndex, setMessages, messages,
+    messages,
     input, setInput, messagesLeft,
-    setMessagesLeft, setMessageIndex,
-    typing, setTyping, currentRecording, setCurrentRecording,
-    userRecording, setUserRecording} = useContext(InputContext);
+    setMessagesLeft,
+    typing,
+    } = useContext(InputContext);
 
-  const { sendMessageProcess, checkMessagesLeftProcess } = useContext(FunctionContext);
+  const { sendMessageProcess } = useContext(FunctionContext);
   const recordingButtonStyles = {margin: 10}
-  const extraSendStyles = [{color: customTheme.headerIconColors}, styles.sendIcon]
   const dispatch = useDispatch();
 
-
-  const updateMessages = (data: ExtraData | null | aiResponseType) => {
-    setMessages((prevMessages: any) => [...prevMessages, data]);
-    setMessageIndex((state: number) => state + 1);
-  }
-
-  const sendRecording = useCallback(async( extraData: ExtraData | null, uri: string | null | undefined ) => {
-    const success = await checkMessagesLeftProcess()
-    if (!success) console.log("0 Messages Left. Ads initialized");
-
-    const {soundAudio, ...extraDataWithoutSound} = extraData as ExtraData ;
-    console.log("extraData:", extraData)
-
-    const currentTime = getCurrentTime()
-    console.log("current Time:", currentTime);
-
-    try {
-      return await FileSystem.uploadAsync(
-        audioApiEndpoint,
-        uri || "",
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${jwtToken?.access}`,
-
-          },
-          httpMethod: 'POST',
-          mimeType: 'audio/m4a',
-          parameters: extraDataWithoutSound,
-          sessionType: undefined,
-          uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-          fieldName: "file",
-        }
-      )
-    }catch(e:unknown) {
-      if (e instanceof Error) {
-        console.log("Error wile sending a message occurred", e);
-      }
-    }
-    return null
-  }, []);
-
-
-  const createAiResponse = useCallback((responseMessage: string) => {
-    const aiResponse: aiResponseType | ExtraData | null = createMessageObject(
-      responseMessage,
-      "text",
-      messageIndex,
-      user,
-      "AI",
-      "aiMessageContainer",
-    )
-    updateMessages(aiResponse)
-  }, [messages, messageIndex])
 
 
   const send = useCallback(async () => {
@@ -143,21 +80,20 @@ export const MessageInputContainer = (
 
 
   const sendButton = useMemo(() => {
-
+    const extraSendStyles = styles.sendIcon;
     if (input?.trim().length > 0) {
       return(
         <>
           <Pressable
             onPress={() => setInput("")}
             style={styles.clearInputFiledBtn}>
-            <MaterialCommunityIcons color={"black"} name={"close"} size={17}/>
+            <MaterialCommunityIcons color={customTheme.text} name={"close"} size={17}/>
           </Pressable>
-          <MaterialCommunityIcons
-            name={"atlassian"}
-            size={25}
+          <IconButton
             onPress={send}
             style={extraSendStyles}
-          />
+            iconColor={customTheme.headerIconColors}
+           icon={"atlassian"}/>
         </>
       )
     }else {
@@ -171,7 +107,6 @@ export const MessageInputContainer = (
         />
       )}
   }, [input, error, darkmode]);
-
 
   return (
     <DefaultContainer
@@ -199,6 +134,7 @@ export const MessageInputContainer = (
         <View style={[styles.container, {borderColor: customTheme.borderColor}]}>
           {sendButton}
         </View>
+
       </View>
     </DefaultContainer>
   );

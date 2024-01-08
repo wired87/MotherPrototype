@@ -4,15 +4,14 @@ import {IconButton, ProgressBar} from "react-native-paper";
 import {KeyboardAvoidingView, Text, View} from "react-native";
 import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 
-const copy = "content-copy";
 const clear = "close";
 
 import {memo} from "react";
 import {PrimaryContext, ThemeContext} from "../../../screens/Context";
-import * as Clipboard from "expo-clipboard";
 import {BottomImage} from "../../images/BottomImage";
 import * as Print from "expo-print";
 import {inputStyles} from "../../input/styles";
+import CopyButton from "../../buttons/CopyButton";
 
 interface TextResultTypes {
   value: string;
@@ -40,12 +39,12 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
   const { customTheme } = useContext(ThemeContext);
   const { loading } = useContext(PrimaryContext);
 
-
   // STYLES
-  const copyButtonColor = customTheme.text;
+  const buttonColor  = customTheme.text;
+
   const transcriptInputStyles = [
     ts.input, {
-      backgroundColor: "transparent", borderColor: copyButtonColor, color: copyButtonColor
+      backgroundColor: "transparent", borderColor: buttonColor, color: buttonColor
     }
   ];
   const loadingStyle = [
@@ -75,9 +74,7 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     }
   }, [currentHeadingIndex, heading]);
 
-  const handleCopyClick = useCallback(async () => {
-    await Clipboard.setStringAsync(value);
-  }, [value]);
+
 
   const handleClearField = useCallback(() => {
     changeText("");
@@ -122,8 +119,8 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
           multiline={true}
         />
 
-        <IconButton size={20} iconColor={copyButtonColor} style={ts.clearButton} onPress={handleClearField} icon={clear} />
-        <IconButton size={20} iconColor={copyButtonColor} style={ts.copyButton} onPress={handleCopyClick} icon={copy} />
+        <IconButton size={20} iconColor={buttonColor} style={ts.clearButton} onPress={handleClearField} icon={clear} />
+        <CopyButton value={value} />
 
       </View>
       <BottomImage />

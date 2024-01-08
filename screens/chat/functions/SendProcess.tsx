@@ -1,5 +1,7 @@
 import firebase from "firebase/compat";
 import {JwtToken} from "../../Context";
+import {Dispatch, SetStateAction} from "react";
+import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions";
 
 export const getCurrentTime = () => {
   const timeNow = new Date();
@@ -37,22 +39,19 @@ export const postMessageObject = async (
       signal: controller.signal
     });
     console.log("Response:", response);
-
+    clearTimeout(id);
     let data;
     try {
       data = await response.json();
+      console.log("Data postMessageObject:", data);
+      return data;
     }catch {
-      data = response
+      return null;
     }
-
-    console.log('Success:', data);
-    clearTimeout(id);
-    return data;
-
   } catch (e: unknown) {
     clearTimeout(id);
     console.log("Error in postMessageObject:", e);
-    return e
+    return null;
   }
 }
 
@@ -60,52 +59,65 @@ interface SenderObjectTypes {
   senderObject: any,
   messageIndex: number | string,
   user: firebase.User | null,
-  jwtToken: string
+  jwtToken: JwtToken
 }
-export const sendObject = async ( senderObject: any,
-                                  messageIndex: number | string,
-                                  user: firebase.User | null,
-                                  jwtToken: string) => {
+export const sendObject = async (
+  senderObject: any,
+  jwtToken: JwtToken,
+  setJwtToken: Dispatch<SetStateAction<JwtToken | null>>,
+  customPostUrl?: string
+) => {
   const postUrl = "http://wired87.pythonanywhere.com/open/chat-request/";
+
+  const jwtTokenData = getTokenInfoData(jwtToken)
+  if (jwtTokenData.refreshExp) {
+    console.log("REFRESH Token expired. Creating a new one...");
+    const newTokenObject = await getNewTokenProcess(setJwtToken);
+    if (!newTokenObject) {
+      console.log("Could not create a new Token Object..");
+      return null;
+    }
+    console.log("New Token Object created:", newTokenObject);
+    console.log("sendObject jwtToken.access old State:", jwtToken.access);
+    jwtToken.access = newTokenObject.access;
+
+  }else if(jwtTokenData.accessExp) {
+    console.log("ACCESS Token expired. Creating a new one...");
+    const newTokenObject = await checkExistingToken(jwtToken, setJwtToken);
+    if (!newTokenObject) {
+      console.log("Could not create a new ACCESS Token..");
+      return null;
+    }
+    console.log("New Token Object created:", newTokenObject);
+    console.log("sendObject jwtToken.access old State:", jwtToken.access);
+    jwtToken.access = newTokenObject.access;
+  }
   try {
-    const res = await postMessageObject(
-      jwtToken,
+    console.log("Create the post Object with accessToken:", jwtToken.access)
+    const response = await postMessageObject(
+      jwtToken.access,
       senderObject,
-      postUrl,
+      customPostUrl || postUrl,
       {
         timeout: 20000
       }
     );
+    console.log("sendObject res ===", response)
+    if (!response) {
 
-    console.log("res", res);
-
-    let response;
-    if (res instanceof Error || res.name ) {
-      console.log("sendObject res === error")
-      response = {
-        message: "Ups cant listen to your Question" +
-          "\nIf that issue is coming up again feel free to contact the support to fix it.",
-        status: 200,
+    }else if (response.detail){
+      const checkTokenAgain = await checkExistingToken(jwtToken, setJwtToken);
+      if (!checkTokenAgain) {
+        return null;
       }
-    } else {
-      response = await res;
-      console.log("sendObject res ===", response)
     }
-
+    // Success
     console.log("Response", response);
+    return response.message;
 
-    return createMessageObject(
-      response.message,
-      "text",
-      messageIndex,
-      user,
-      "AI",
-      "aiMessageContainer",
-    )
-
-  } catch(e) {
+  }catch(e) {
     console.log('Error in "sendObject":', e)
-    return 1;
+    return null;
   }
 }
 
@@ -114,6 +126,23 @@ export default function getDurationFormatted(milliseconds: any) {
   const sec = Math.round((minutes - Math.floor(minutes)) * 60);
   return sec < 10 ? `${Math.floor(minutes)}:0${sec}` : `${Math.floor(minutes)}:${sec}`
 }
+
+
+
+const sendErrorMessage = () => {
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*

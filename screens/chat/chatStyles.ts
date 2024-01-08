@@ -42,10 +42,10 @@ export const chatStyles = StyleSheet.create({
     userMessageContainer: {
         minHeight: 30,
         position: "relative",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: 14,
+        paddingHorizontal: 15,
         height: "auto",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "flex-end",
         marginLeft: windowWidth * .11
     },

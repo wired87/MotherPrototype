@@ -10,18 +10,20 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
 import {useDispatch} from "react-redux";
-import React, { useContext, useRef, useState} from "react";
+import React, {memo, RefObject, useContext, useRef, useState} from "react";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 
 import {PrimaryContext, InputContext, ThemeContext, ToolContext} from "../../screens/Context";
-import BottomSheet from "@gorhom/bottom-sheet";
 import {Recording} from "expo-av/build/Audio/Recording";
 
 import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
 import ToolsNavigator from "../../screens/tools/ToolsNavigation";
 import {checkToolActionValue, getToolActionValue, postToolActionValue} from "../../screens/chat/functions/AdLogic";
+import {SwipeModal} from "../modals/SwipeModal";
+import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
+import WelcomeContainer from "../container/WelcomeContainer";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -51,9 +53,18 @@ const localStyles = StyleSheet.create(
   }
 )
 
-export default function NavigationMain(){
+export interface NavigationMainTypes {
+  welcomeBottomSheetRef: RefObject<BottomSheetMethods>
+}
 
-  const bottomSheetRef = useRef<BottomSheet>(null);
+
+const NavigationMain: React.FC<NavigationMainTypes> = (
+  {
+    welcomeBottomSheetRef
+  }
+) => {
+
+  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
   // InputContext definitions
   const [messageIndex, setMessageIndex] = useState(0);
@@ -212,10 +223,16 @@ export default function NavigationMain(){
           requestNonPersonalizedAdsOnly: true,
         }}
       />
+      <SwipeModal
+        bottomSheetRef={welcomeBottomSheetRef}
+        Content={
+          <WelcomeContainer />
+        }
+      />
     </>
   );
 }
-
+export default memo(NavigationMain);
 /*
  <Tab.Navigator
         shifting={false}

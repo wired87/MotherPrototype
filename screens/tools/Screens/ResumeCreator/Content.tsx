@@ -1,12 +1,23 @@
-import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useMemo, useState} from "react";
+import React, {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
-import {postMessageObject} from "../../../chat/functions/SendProcess";
-import {PrimaryContext, ThemeContext} from "../../../Context";
+import {postMessageObject, sendObject} from "../../../chat/functions/SendProcess";
+import {JwtToken, PrimaryContext, ThemeContext} from "../../../Context";
 import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultText} from "../../../../components/text/DefaultText";
 import firebase from "firebase/compat";
 
 import {Vibration} from "react-native";
+import {getToken} from "../../../../AppFunctions";
 
 // STRINGS
 const titlePlaceholder: string = "Job Title";
@@ -16,8 +27,8 @@ const languagePlaceholder: string = "Application Language (eng/de/fr/...";
 const personalDataPlaceholder: string = "Contact Information's (optional)";
 
 const create: string = "Create";
-const filedErrorMessage = "This Field is required";
-const postUrl: string = "http://wired87.pythonanywhere.com/open/text-request/";
+const filedErrorMessage: string = "This Field is required";
+const postUrl: string = "http://wired87.pythonanywhere.com/ai-creation/application-request/";
 
 // INTERFACE
 interface InputTypes {
@@ -47,8 +58,10 @@ const ResumeContent: React.FC<ResumeTypes> = (
 
   // CONTEXT
   const { customTheme } = useContext(ThemeContext);
-  const { setLoading, jwtToken } = useContext(PrimaryContext);
-  const { user } = useContext(PrimaryContext);
+  const { setLoading, jwtToken, setJwtToken, user } = useContext(PrimaryContext);
+
+  // REFs
+  const jwtTokenRef = useRef<JwtToken | null>(null);
 
   // STYLES
   const extraInputStyles = {backgroundColor: "transparent", borderColor: customTheme.text}
@@ -62,10 +75,15 @@ const ResumeContent: React.FC<ResumeTypes> = (
       "contactPerson": contactPerson,
       "personalData": personalData,
       "language": language,
-      "inputType": "APPLICATION_CREATOR",
       "user_id": user?.uid
     }
   }
+
+  useEffect(() => {
+    console.log("jwt changed in ChatNavigator:", jwtToken);
+    jwtTokenRef.current = jwtToken;
+    console.log("jwt ref:", jwtTokenRef.current);
+  }, [jwtToken]);
 
   const handleResumeCreatePress = useCallback(async () => {
     if (jobTitle.length == 0) {
@@ -76,19 +94,39 @@ const ResumeContent: React.FC<ResumeTypes> = (
       setFieldError(false);
       setLoading(true);
       const fileObject = createApplicationObject(user);
+      let response;
       try {
-        const res = await postMessageObject(
-          jwtToken?.access || "1",
-          fileObject,
-          postUrl, {
-            timeout: 20000
+        if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
+          response = await sendObject(
+            fileObject,
+            jwtTokenRef.current,
+            setJwtToken,
+            postUrl
+          )
+        }else{
+          const newToken = await getToken(setJwtToken);
+          if (newToken) {
+            response = await sendObject(
+              fileObject,
+              newToken,
+              setJwtToken,
+              postUrl
+            )
+          }else{
+            setError("Could not authenticate you. Please contact the support or try again later.")
           }
-        )
-        setResume(res.message)
-      }catch(e:unknown){
-        setLoading(false);
-        if (e instanceof Error && e){
-          setError("Could not create your Resume.\n AI returned the following Issue:" + e?.message);
+        }
+        if (response && !(response.status === "500")) {
+          console.log("response:" , response.status);
+          setResume(response.message);
+        }else{
+          setError(response.message);
+        }
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          console.log("Error while sending the chatCompletion request:", e.message)
+          setError(e.message);
+          console.log(e.message);
         }
       }finally{
         setLoading(false);

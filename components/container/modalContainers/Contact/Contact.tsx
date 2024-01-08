@@ -1,10 +1,9 @@
-import React, {memo, useCallback, useContext, useMemo, useState} from 'react';
+import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {BottomSheetScrollView} from "@gorhom/bottom-sheet";
-import {AuthContext, PrimaryContext, SettingsContext, ThemeContext} from "../../../../screens/Context";
-import axios from "axios/index";
+import {JwtToken, PrimaryContext, SettingsContext, ThemeContext} from "../../../../screens/Context";
 import {HeadingText} from "../../../text/HeadingText";
 import {DefaultText} from "../../../text/DefaultText";
-import {StyleSheet} from "react-native";
+import {StyleSheet, Vibration} from "react-native";
 import {Picker} from "@react-native-picker/picker";
 import {inputStyles} from "../../../input/styles";
 import {MultilineInput} from "../../../input/MultilineTextField";
@@ -12,6 +11,8 @@ import {DefaultButton} from "../../../buttons/DefaultButton";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {themeColors} from "../../../../colors/theme";
 import {DefaultInput} from "../../../input/DefaultInput";
+import {sendObject} from "../../../../screens/chat/functions/SendProcess";
+import {getToken} from "../../../../AppFunctions";
 
 const options = [
   "Security",
@@ -21,25 +22,6 @@ const options = [
   "Other"
 ]
 
-const errorMessages = [
-  {
-    error: "cyclical structure in JSON object",
-    message: "There was an error with your input. \n Please check it and try again"
-  },
-  {
-    error: "Cannot read property 'length' of undefined",
-    message: "You forgot one Field. \n Please check an try again"
-  },
-  {
-    error: "All Fields are required.",
-    message: "All Fields are required."
-  },
-  {
-    error: "201" || "200",
-    message: "There was an error with your input. \n Please check it and try again"
-
-  }
-]
 
 const localStyles = StyleSheet.create(
   {
@@ -62,8 +44,6 @@ const localStyles = StyleSheet.create(
       fontSize: 29
     },
     contactContainer:{justifyContent: "center", alignItems: "center"}
-
-
   }
 );
 
@@ -76,19 +56,16 @@ const lastNameSetForm = "last_name";
 const emailPlaceholder = "E-Mail Address";
 const emailSetForm = "e_mail";
 
-const postUrl = // __DEV__ ? 'http://192.168.178.51:8000/open/contact/' :
-  'http://wired87.pythonanywhere.com/open/contact/';
+const postUrl = 'http://wired87.pythonanywhere.com/ai-creation/contact/';
 
-const Contact = () => {
+const Contact: React.FC = () => {
+  // CONTEXT
+  const [fieldError, setFieldError] = useState<boolean>(false);
+
   const {setStatus} = useContext(SettingsContext);
   const {customTheme} = useContext(ThemeContext);
+  const { setLoading, jwtToken, setJwtToken } = useContext(PrimaryContext);
 
-  //const [submit, setSubmit] = useState(false);
-  const {error, setError} = useContext(AuthContext);
-  const { setLoading } = useContext(PrimaryContext);
-
-  const matchedError =
-    errorMessages.find(item => error.includes(item.error));
 
   const [form, setForm] = useState({
     option: "security"
@@ -96,36 +73,85 @@ const Contact = () => {
 
   const textStyles = [localStyles.extraTextStyles, {color: customTheme.text}];
 
+  const jwtTokenRef = useRef<JwtToken | null>(null);
+
+
+  useEffect(() => {
+    console.log("jwt changed in ChatNavigator:", jwtToken);
+    jwtTokenRef.current = jwtToken;
+    console.log("jwt ref:", jwtTokenRef.current);
+  }, [jwtToken]);
+
+
+  const handleSubmit = useCallback(async() => {
+    if ((form as any)["message"].length == 0) {
+      setFieldError(true);
+    }else{
+      await onSubmit(form);
+    }
+  }, [form])
+
+
   const onSubmit = useCallback(async(formData: object) => {
     setLoading(true);
+    setFieldError(false);
+    let response;
     try {
-      console.log("data sent: ", formData)
-      const response = await axios.post(postUrl, formData);
-      console.log("response:" , response.data.status)
-      setStatus(response.data.status);
-    } catch (error: any) {
-      setError(error.message);
-      console.log(error.message);
+      if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
+        console.log("data sent: ", formData);
+        response = await sendObject(
+          formData,
+          jwtTokenRef.current,
+          setJwtToken,
+          postUrl
+        )
+      }else{
+        const newToken = await getToken(setJwtToken);
+        if (newToken) {
+          response = await sendObject(
+            formData,
+            newToken,
+            setJwtToken,
+            postUrl
+          )
+        }else {
+          setStatus(300);
+        }
+      }
+      if (response) {
+        console.log("response:" , response.status)
+        setStatus(response.status);
+      }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setStatus(500);
+        console.log(e.message);
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [jwtTokenRef, jwtToken]);
 
 
-  const matchedErrorText = useMemo(() => {
-    if (matchedError) {
-      return <DefaultText
-                text={matchedError.message}
-                moreStyles={localStyles.errormessageStyles}
-              />
+  const fielErrorText = useMemo(() => {
+    if (fieldError) {
+      Vibration.vibrate();
+      return(
+        <DefaultText error text={'Field "Message" is required'}/>
+      );
     }
-  }, [matchedError])
+  }, [fieldError])
+
 
   const handleChange = (value: string, name: string | number) => {
     setForm({ ...form, [name]: value });
   };
-  const pickerStyles =
-    [inputStyles.defaultInput, localStyles.inputExtra, {backgroundColor: customTheme.primary, color: customTheme.text}]
+
+
+  const pickerStyles: any[] =
+    [inputStyles.defaultInput, localStyles.inputExtra, {backgroundColor: customTheme.primary, color: customTheme.text}];
+
+
   return (
     <BottomSheetScrollView
       contentContainerStyle={localStyles.contactContainer} style={{ paddingTop : 50 }}>
@@ -135,13 +161,12 @@ const Contact = () => {
         extraStyles={localStyles.headingExtras}
       />
 
-      {matchedErrorText}
       <DefaultInput
         placeholder={firstNamePlaceholder}
         onChangeAction={(text: any) => handleChange(text, firstNameSetForm)}
         secure={false}
         editable={true}
-        extraStyles={/*{backgroundColor: customTheme.secondaryTextInput}*/undefined}
+        extraStyles={undefined}
 
         keyboardType={undefined}
         value={(form as any)["first_name"]}
@@ -155,7 +180,7 @@ const Contact = () => {
         extraStyles={/*{backgroundColor: customTheme.secondaryTextInput}*/undefined}
         keyboardType={undefined}
         value={(form as any)["last_name"]}
-        />
+      />
 
       <DefaultInput
         placeholder={emailPlaceholder}
@@ -180,10 +205,11 @@ const Contact = () => {
         placeholder={"Your Message"}
         value={(form as any)["message"]}
       />
+      {fielErrorText}
 
       <DefaultButton
         extraStyles={undefined}
-        onPressAction={() => onSubmit(form)}
+        onPressAction={() => handleSubmit}
         text={"Send"}
         secondIcon={
           <MaterialCommunityIcons name={"email-open-multiple-outline"} size={18} color="white" />

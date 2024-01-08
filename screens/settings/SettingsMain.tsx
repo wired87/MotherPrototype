@@ -21,8 +21,8 @@ import successSent from "../../assets/animations/successSent.json";
 import failLottie from "../../assets/animations/failLottie.json";
 
 // STINGS
-const termsUrl = "https://www.app-privacy-policy.com/live.php?token=NWq13bWUVgAMJFLBRIlHlsxdsSasqurJ";
-const privacyUrl = "https://www.app-privacy-policy.com/live.php?token=1imlqB2AjBzWW6xCk201qYMelCw2TQm5"
+const termsUrl: string = "https://www.app-privacy-policy.com/live.php?token=NWq13bWUVgAMJFLBRIlHlsxdsSasqurJ";
+const privacyUrl: string = "https://www.app-privacy-policy.com/live.php?token=1imlqB2AjBzWW6xCk201qYMelCw2TQm5"
 const StatusContainer =
   lazy(() => import("../../components/container/modalContainers/StatusContainer"));
 
@@ -30,7 +30,7 @@ import {PrimaryContext, SettingsContext, ThemeContext} from "../Context";
 import Imprint from "./Imprint";
 import {settingStyles} from "./settingStyles";
 import {PlusAdContainer} from "../../components/container/PlusPlanContainer/PlusPlanContainer";
-import {BottomImage} from "../../components/images/BottomImage";
+import BottomImage from "../../components/images/BottomImage";
 import RoundedButton from "../../components/buttons/RoundedButton";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import {share} from "../Functions";
@@ -49,7 +49,6 @@ let settingsData = [
     title: "Help and Contact",
     navigate: "",
     component: memo(() => React.createElement(Contact))
-
   },
   {
     id: 3,
@@ -139,12 +138,19 @@ export const  SettingsMain = () => {
                 text={"Success!"}
                 helpText={"We have received your Message and contact you ASAP!"}
               />
-    } else if (status == 400 || status == 401) {
+    } else if (status == 400 || status == 401 || status == 500) {
       return <StatusContainer
-                source={failLottie}
-                text={"Failed!\n"}
-                helpText={"Please try again."}
-              />;
+        source={failLottie}
+        text={"Failed!\n"}
+        helpText={"Please try again."}
+      />;
+
+    } else if (status == 300){
+      return <StatusContainer
+        source={failLottie}
+        text={"Authentication Error\n"}
+        helpText={"We could not authenticate you. \n Please write us your E-Mail directly at info@sales-detective.live"}
+      />;
     } else if (data) {
       return React.createElement(data);
     }

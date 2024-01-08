@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -16,14 +16,11 @@ import * as Font from "expo-font";
 import {getAuth, signInAnonymously} from "firebase/auth";
 import firebase from "firebase/compat";
 import {FIREBASE_AUTH} from "./firebase.config";
-import {alert, checkTokenAvailability, connectionAlert, saveJwtToken} from "./AppFunctions";
-import {CHECK_JWT, LOGIN_JWT} from "@env";
+import {connectionAlert, getToken} from "./AppFunctions";
 
 import NetInfo from "@react-native-community/netinfo";
+import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
-// SECURE URLS
-const checkEndpoint: string = CHECK_JWT;
-const getEndpoint: string = LOGIN_JWT;
 
 
 export default function App() {
@@ -43,6 +40,7 @@ export default function App() {
   const contextValue = {darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
     clearMessages, setClearMessages, jwtToken, setJwtToken, isConnected, setIsConnected};
 
+  const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
 
   useEffect(() => {
     NetInfo.fetch().then((state) => {
@@ -50,6 +48,7 @@ export default function App() {
       setIsConnected(state.isConnected || false);
     });
   }, []);
+
 
   useEffect(() => {
     console.log("Check for the internet connection..")
@@ -98,47 +97,15 @@ export default function App() {
 
   useEffect(() => {
     if (authenticated && user) {
-      getToken()
+      getToken(setJwtToken)
         .then(
           () => setAuthenticated(false)
         );
     }
-  }, [authenticated, user]);
+  }, [authenticated, user, setJwtToken]);
 
 
-  const getToken = useCallback(async() => {
-    const userJwtTokenExist = await checkTokenAvailability();
-    console.log("userJwtTokenExist:", userJwtTokenExist);
-    if (userJwtTokenExist) {
-      try {
-        const res = await fetch(checkEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({"refresh": userJwtTokenExist.refresh}),
-        });
-        console.log("res checkEndpoint:", res);
-        const response = await res.json();
-        console.log("checkEndpoint Response:", response);
-        if (response.refresh && response.refresh.access) {
-          console.log("accessToken received..");
-          userJwtTokenExist.access = response.refresh.access;
-          await saveJwtToken(userJwtTokenExist);
-          setJwtToken(userJwtTokenExist);
-          console.log("Token was successfully Set..");
-        } else {
-          await getNewTokenProcess();
-        }
-      } catch(e) {
-        if (e instanceof Error) {
-          console.error("Error occurred AAAAAAAH,", e);
-        }
-      }
-    } else {
-      await getNewTokenProcess();
-    }
-  }, [jwtToken, user, authenticated]);
+
 
   useEffect(() => {
     console.log("JWTTOKEN:", jwtToken);
@@ -147,46 +114,11 @@ export default function App() {
 
   useEffect(() => {
     console.log("jwtToken:", jwtToken);
-  }, []);
-  const getNewTokenProcess = async () => {
-    console.log("getNewTokenProcess started..")
-    const tokenObject: JwtToken | null  = await getNewToken();
-    console.log("tokenObject getNewTokenProcess:", tokenObject);
-    if (tokenObject) {
-      setJwtToken(tokenObject);
-    }else {
-      console.log("Could not save the new JWT Token!")
-      alert()
-    }
-  }
+  }, [jwtToken]);
 
-
-
-  const getNewToken = async(): Promise<JwtToken | null> => {
-    console.log("getNewToken started..");
-    const senderObject = JSON.stringify({"user_id": user?.uid});
-    console.log("senderObject created:", senderObject);
-    try {
-      const res = await fetch(
-        getEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: senderObject,
-        }
-      );
-      console.log("res:", res)
-      const response = await res.json();
-      console.log("response getNewToken:", response);
-      if (response.access && response.refresh) {
-        await saveJwtToken(response);
-        return response;
-      }
-    }catch (e: unknown) {
-      if (e instanceof Error) console.error("Error occurred in getNewToken", e.message);
-    }
-  return null
+  const updateWelcomeBottomSheetIndex = () => {
+    // @ts-ignore
+    welcomeBottomSheetRef?.current?.snapToIndex(1);
   }
 
 
@@ -195,6 +127,7 @@ export default function App() {
     const loadPreferences = async () => {
       try {
         await SplashScreen.preventAutoHideAsync();
+
         console.log("Splashscreen initialized..");
         await Font.loadAsync({
           'JetBrainsMono': require('./assets/fonts/codeFont/JetBrainsMono.ttf'),
@@ -244,8 +177,11 @@ export default function App() {
         console.error('Error updating dark mode', e);
       }
     };
-    if (appIsReady) updateDarkMode()
-      .then(() => console.log("Alright"));
+    if (appIsReady) {
+      updateWelcomeBottomSheetIndex();
+      updateDarkMode()
+        .then(() => console.log("Alright"));
+    }
   }, [darkmode]);
 
 
@@ -258,7 +194,7 @@ export default function App() {
             <GestureHandlerRootView style={{ flex: 1 }}>
               <BottomSheetModalProvider>
                 <NavigationContainer>
-                  <NavigationMain />
+                  <NavigationMain welcomeBottomSheetRef={welcomeBottomSheetRef}/>
                 </NavigationContainer>
               </BottomSheetModalProvider>
             </GestureHandlerRootView>
