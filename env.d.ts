@@ -17,5 +17,7 @@ declare module '@env' {
   export const TOOLS_ANDROID_INTERSITIAL: string;
   export const CHECK_JWT: string;
   export const LOGIN_JWT: string;
+  export const CHAT_REQUEST_URL: string;
+  export const CONTACT_REQUEST_URL: string;
 
 }

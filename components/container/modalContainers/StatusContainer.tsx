@@ -27,8 +27,8 @@ const StatusContainer: React.FC<StatusContainer> = (
 
   { source, text,helpText }
 ) => {
-  const textStyles = {fontSize: 22, textAlign: "center", gap: 10, marginBottom: 30};
-  const helpTextStyles = {fontSize: 16, textAlign: "center", gap: 10}
+  const textStyles = {fontSize: 22, fontFamily: "JetBrainsMono", textAlign: "center", gap: 10, marginBottom: 10};
+  const helpTextStyles = {fontSize: 16, fontWeight: "bold", textAlign: "center", gap: 10}
 
   return(
     <DefaultContainer

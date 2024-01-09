@@ -1,6 +1,6 @@
-import React, {useCallback, useContext, useMemo} from "react";
+import React, {memo, useCallback, useContext, useEffect, useMemo} from "react";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetHandle } from '@gorhom/bottom-sheet';
-import {SettingsContext, ThemeContext} from "../../screens/Context";
+import {PrimaryContext, SettingsContext, ThemeContext} from "../../screens/Context";
 import { StyleSheet } from "react-native";
 
 /*
@@ -19,7 +19,7 @@ module.exports = function(api) {
 
 interface SwipeModalProps {
   Content: React.ReactNode;
-  modalIndex?: number;
+  modalIndex: number;
   bottomSheetRef: React.Ref<BottomSheet>
 }
 
@@ -32,26 +32,38 @@ const modalStyle = StyleSheet.create(
   }
 )
 
-export const SwipeModal: React.FC<SwipeModalProps> = (
+const SwipeModal: React.FC<SwipeModalProps> = (
     {
       Content,
       modalIndex,
       bottomSheetRef,
     }
 ) => {
+
   const { customTheme } = useContext(ThemeContext);
+  const { setBottomSheetLoaded, bottomSheetLoaded } = useContext(PrimaryContext);
   const {status, setStatus } = useContext(SettingsContext);
 
-  const defaultSnapPoints = useMemo(() => ['25%', '50%', "75%", "90%"], []);
+  const defaultSnapPoints = useMemo(() => ['25%', '50%', "75%", "90%"], [modalIndex]);
 
   const setStatusNull = useCallback(() => {
     setStatus(0);
-  }, [status])
+  }, [status]);
+
+  useEffect(() => {
+    if (!bottomSheetLoaded) {
+      setTimeout(() => {
+        console.log("Initialize Welcome Modal...")
+        setBottomSheetLoaded(true);
+      }, 100);
+      console.log("Value for Modal set...")
+    }
+  }, []);
 
   return(
     <BottomSheet
        ref={bottomSheetRef}
-       index={modalIndex || -1} // initial snap index
+       index={modalIndex === undefined ? -1 : modalIndex} // initial snap index
        snapPoints={defaultSnapPoints}
       // bottom to top
        overDragResistanceFactor={2.5} // how violently(heftig) the modal has to be stopped at pull up
@@ -103,3 +115,4 @@ export const SwipeModal: React.FC<SwipeModalProps> = (
   );
 }
 
+export default memo(SwipeModal);

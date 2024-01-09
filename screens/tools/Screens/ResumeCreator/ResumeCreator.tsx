@@ -1,11 +1,11 @@
-import React, {memo, useContext, useEffect, useMemo, useRef, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {ThemeContext} from "../../../Context";
 
 import {ScrollView} from "react-native";
 import {toolStyles as ts} from "../../toolStyles";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import ResumeContent from "./Content";
-import {SwipeModal} from "../../../../components/modals/SwipeModal";
+import SwipeModal from "../../../../components/modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import ErrorContainerSwipeModal from "../../../../components/container/ErrorContainerSwipeModal";
 
@@ -31,13 +31,13 @@ const ResumeCreator = () => {
     />
   }, [])
 
-  const updateModalIndex = () => {
-    bottomSheetRef?.current?.snapToIndex(2);
-  }
+  const updateModalIndex = useCallback((number:number) => {
+    bottomSheetRef?.current?.snapToIndex(number);
+  }, [])
 
   useEffect(() => {
     if (error.length > 0) {
-      updateModalIndex()
+      updateModalIndex(2)
     }
   }, [error]);
 
@@ -54,8 +54,9 @@ const ResumeCreator = () => {
       <SwipeModal
         bottomSheetRef={bottomSheetRef}
         Content={
-        <ErrorContainerSwipeModal error={error}/>
+          <ErrorContainerSwipeModal error={error}/>
       }
+        modalIndex={-1}
       />
     </ScrollView>
   );

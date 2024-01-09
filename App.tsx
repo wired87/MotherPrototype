@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -34,13 +34,28 @@ export default function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [jwtToken, setJwtToken] = useState<JwtToken | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [bottomSheetLoaded, setBottomSheetLoaded] = useState<boolean>(false);
 
   const toggleTheme = () => setDarkmode(!darkmode);
 
-  const contextValue = {darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
-    clearMessages, setClearMessages, jwtToken, setJwtToken, isConnected, setIsConnected};
+  const contextValue = {
+    darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
+    clearMessages, setClearMessages, jwtToken, setJwtToken, isConnected, setIsConnected,
+    bottomSheetLoaded, setBottomSheetLoaded
+  };
 
   const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
+
+  useEffect(() => {
+    if(bottomSheetLoaded) {
+      setTimeout(() => {
+        console.log("1 sec...")
+        updateWelcomeBottomSheetIndex(1);
+      }, 1000);
+      console.log("0 sec...")
+    }
+  }, [bottomSheetLoaded]);
+
 
   useEffect(() => {
     NetInfo.fetch().then((state) => {
@@ -105,22 +120,11 @@ export default function App() {
   }, [authenticated, user, setJwtToken]);
 
 
-
-
-  useEffect(() => {
-    console.log("JWTTOKEN:", jwtToken);
-  }, [jwtToken]);
-
-
-  useEffect(() => {
-    console.log("jwtToken:", jwtToken);
-  }, [jwtToken]);
-
-  const updateWelcomeBottomSheetIndex = () => {
-    // @ts-ignore
-    welcomeBottomSheetRef?.current?.snapToIndex(1);
-  }
-
+  const updateWelcomeBottomSheetIndex = useCallback((number: number) => {
+    if(welcomeBottomSheetRef.current) {
+      welcomeBottomSheetRef.current.snapToIndex(number);
+    }
+  }, []);
 
   useEffect(() => {
     console.log("appIsReady", appIsReady);
@@ -143,12 +147,11 @@ export default function App() {
 
         if (storedThemePreference !== null) {
           console.log("storedThemePreference !== null");
-          setAppIsReady(true);
           setDarkmode(storedThemePreference === "true");
         }else {
-          setAppIsReady(true);
           setDarkmode(false);
         }
+        setAppIsReady(true);
       } catch (e: unknown) {
         if (e instanceof Error) console.error("Cant load preferences", e.message);
 
@@ -157,8 +160,12 @@ export default function App() {
         await SplashScreen.hideAsync();
       }
     }
-    if (!(appIsReady)) loadPreferences()
-      .then(() => console.log("Fonts have been successfully loaded!"));
+    if (!(appIsReady)) {
+      loadPreferences()
+        .then(() => {
+          console.log("Fonts have been successfully loaded!");
+        });
+    }
   }, []);
 
 
@@ -178,7 +185,6 @@ export default function App() {
       }
     };
     if (appIsReady) {
-      updateWelcomeBottomSheetIndex();
       updateDarkMode()
         .then(() => console.log("Alright"));
     }

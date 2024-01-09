@@ -19,12 +19,12 @@ import {
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
 import {IconButton} from "react-native-paper";
-import {SwipeModal} from "../../components/modals/SwipeModal";
+import SwipeModal from "../../components/modals/SwipeModal";
 import ChatMenuModalContent from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
 
 interface ChatNavigationTypes {
   dispatchHistorySent: (value: boolean) => void,
-  bottomSheetRef: React.Ref<BottomSheetMethods>//(number: number) => void;
+  bottomSheetRef: React.RefObject<BottomSheetMethods>;//(number: number) => void;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -102,10 +102,11 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   }, [messagesLeft]);
 
 
-  const updateModalIndex = () => {
-    // @ts-ignore
-    bottomSheetRef?.current?.snapToIndex(2);
-  }
+  const updateModalIndex = useCallback((number: number) => {
+    if (bottomSheetRef.current) {
+      bottomSheetRef.current.snapToIndex(number);
+    }
+  }, []);
 
   useEffect(() => {
     console.log("jwt changed in ChatNavigator:", jwtToken);
@@ -284,7 +285,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
                       icon="menu"
                       iconColor={customTheme.headerIconColors}
                       style={iconStyles.headerIcon}
-                      onPress={updateModalIndex}
+                      onPress={() => updateModalIndex(2)}
                       size={30}
                   />
                 }
@@ -311,7 +312,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
             changeText={historySentMessage}
           />
         }
-      />
+       />
     </>
   );
 }

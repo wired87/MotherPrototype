@@ -10,21 +10,12 @@ import {
 import * as Linking from 'expo-linking';
 
 import {styles} from "../../components/styles"
-import { SwipeModal } from '../../components/modals/SwipeModal';
+import SwipeModal from '../../components/modals/SwipeModal';
 import AreYouSureContainer from "../../components/container/AreYouSureContainer";
 import Contact from "../../components/container/modalContainers/Contact/Contact";
 import FeaturesInFuture from "../../components/container/modalContainers/FeaturesInFuture";
 import DarkMode from "../../components/container/modalContainers/DarkMode";
 import successSent from "../../assets/animations/successSent.json";
-
-// @ts-ignore
-import failLottie from "../../assets/animations/failLottie.json";
-
-// STINGS
-const termsUrl: string = "https://www.app-privacy-policy.com/live.php?token=NWq13bWUVgAMJFLBRIlHlsxdsSasqurJ";
-const privacyUrl: string = "https://www.app-privacy-policy.com/live.php?token=1imlqB2AjBzWW6xCk201qYMelCw2TQm5"
-const StatusContainer =
-  lazy(() => import("../../components/container/modalContainers/StatusContainer"));
 
 import {PrimaryContext, SettingsContext, ThemeContext} from "../Context";
 import Imprint from "./Imprint";
@@ -34,6 +25,16 @@ import BottomImage from "../../components/images/BottomImage";
 import RoundedButton from "../../components/buttons/RoundedButton";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import {share} from "../Functions";
+
+import failLottie from "../../assets/animations/failLottie.json";
+
+// STINGS
+const termsUrl: string = "https://www.app-privacy-policy.com/live.php?token=NWq13bWUVgAMJFLBRIlHlsxdsSasqurJ";
+const privacyUrl: string = "https://www.app-privacy-policy.com/live.php?token=1imlqB2AjBzWW6xCk201qYMelCw2TQm5"
+const StatusContainer =
+  lazy(() => import("../../components/container/modalContainers/StatusContainer"));
+
+
 
 let settingsData = [
   {
@@ -142,9 +143,8 @@ export const  SettingsMain = () => {
       return <StatusContainer
         source={failLottie}
         text={"Failed!\n"}
-        helpText={"Please try again."}
+        helpText={"Please try again or send us your E-Mail directly at info@sales-detective.live."}
       />;
-
     } else if (status == 300){
       return <StatusContainer
         source={failLottie}
@@ -156,7 +156,7 @@ export const  SettingsMain = () => {
     }
   }, [status, data, loading])
 
-  ////////////////////////////////////////
+
 
   const sections = [
     {
@@ -234,6 +234,7 @@ export const  SettingsMain = () => {
           <SwipeModal
             bottomSheetRef={bottomSheetRef}
             Content={statusData}
+            modalIndex={-1}
           />
 
         </View>

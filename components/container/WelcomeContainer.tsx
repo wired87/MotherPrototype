@@ -1,49 +1,83 @@
-import React, {memo} from "react";
+import React, {memo, useContext} from "react";
 import {StyleSheet, View} from "react-native";
 import {HeadingText} from "../text/HeadingText";
 import {DefaultText} from "../text/DefaultText";
+import LottieView from "lottie-react-native";
+import Party from "../../assets/animations/Party.json";
+import {ThemeContext} from "../../screens/Context";
 
 // STRINGS
 const headingText:string = "Welcome to the Beta!";
-const welcomeText:string = "Im Happy you are here \njoining the Beta!";
-const reminder :string= "We work really hard to make the experience best possible for you. \n We would appreciate " +
-  "to report any Bugs that you can find. \n We are 24/7 available and will solve it asap!";
+const welcomeText:string = "I'm Happy you are here!";
+const reminder:string= "Please report any Bugs that you can find so I can make the experience best possible for you.";
 const wishes:string = "Have a great Time!"
 
 
 const ls = StyleSheet.create(
   {
     main: {
-      flex: 1, justifyContent: "flex-start", alignItems: "flex-start", borderWidth: 2, borderColor: "red"
+      flex: 1,
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+      backgroundColor: "transparent",
     },
-    welcomeTextBig: {
-
+    text: {
+      textAlign: "center",
+      fontWeight: "bold",
     },
-    welcomeTextSmall: {
-
+    wishes: {
+      textAlign: "center",
+      fontWeight: "bold",
     },
     defaultView: {
+      marginTop: 30,
       justifyContent: "center",
       alignItems: "center",
-
+      width: "100%",
+      backgroundColor: "transparent",
+      paddingHorizontal: 15,
+    },
+    lottieStyle: {
+      width: "100%",
+      backgroundColor: "transparent",
+      position: "absolute",
+      top: 0,
     }
   }
 )
 
+/*
+borderWidth: 1,
+borderColor: "red"
+ */
 
 const WelcomeContainer: React.FC = () => {
+  const { customTheme } = useContext(ThemeContext);
 
+  const textStyles = [ls.text, {color: customTheme.text}]
+  const wishesStyle = [textStyles, {fontSize: 16}];
+  const heading:object = {fontFamily: "JetBrainsMono", fontSize: 22};
   return(
-    <View style={ls.main}>
-      {/*SOME MASCOT ANIMATION HERE*/}
-      <View style={ls.defaultView}>
-        <HeadingText text={headingText} extraStyles={undefined}  />
+    <>
+      <LottieView resizeMode={"contain"} style={ls.lottieStyle} source={Party} autoPlay loop />
+      <View style={ls.main}>
+        <View style={ls.defaultView}>
+          <HeadingText text={headingText} extraStyles={heading}  />
+        </View>
+        <View style={ls.defaultView}>
+          <DefaultText moreStyles={textStyles} text={welcomeText}
+          />
+        </View>
+        <View style={ls.defaultView}>
+          <DefaultText moreStyles={textStyles} text={reminder}
+          />
+        </View>
+        <View style={ls.defaultView}>
+        <DefaultText moreStyles={wishesStyle} text={wishes}
+          />
+        </View>
       </View>
-
-      <DefaultText moreStyles={ls.welcomeTextBig} text={welcomeText}/>
-      <DefaultText moreStyles={ls.welcomeTextSmall} text={reminder}/>
-      <DefaultText moreStyles={ls.welcomeTextSmall} text={wishes}/>
-    </View>
+    </>
   );
 }
 

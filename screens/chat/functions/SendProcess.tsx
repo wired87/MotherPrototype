@@ -2,6 +2,7 @@ import firebase from "firebase/compat";
 import {JwtToken} from "../../Context";
 import {Dispatch, SetStateAction} from "react";
 import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions";
+import {CHAT_REQUEST_URL} from "@env";
 
 export const getCurrentTime = () => {
   const timeNow = new Date();
@@ -61,13 +62,14 @@ interface SenderObjectTypes {
   user: firebase.User | null,
   jwtToken: JwtToken
 }
+
 export const sendObject = async (
   senderObject: any,
   jwtToken: JwtToken,
   setJwtToken: Dispatch<SetStateAction<JwtToken | null>>,
   customPostUrl?: string
 ) => {
-  const postUrl = "http://wired87.pythonanywhere.com/open/chat-request/";
+  const postUrl:string = CHAT_REQUEST_URL;
 
   const jwtTokenData = getTokenInfoData(jwtToken)
   if (jwtTokenData.refreshExp) {
@@ -104,7 +106,7 @@ export const sendObject = async (
     );
     console.log("sendObject res ===", response)
     if (!response) {
-
+      return null;
     }else if (response.detail){
       const checkTokenAgain = await checkExistingToken(jwtToken, setJwtToken);
       if (!checkTokenAgain) {

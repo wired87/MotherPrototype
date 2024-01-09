@@ -21,7 +21,7 @@ import {Recording} from "expo-av/build/Audio/Recording";
 import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
 import ToolsNavigator from "../../screens/tools/ToolsNavigation";
 import {checkToolActionValue, getToolActionValue, postToolActionValue} from "../../screens/chat/functions/AdLogic";
-import {SwipeModal} from "../modals/SwipeModal";
+import SwipeModal from "../modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
 
@@ -54,7 +54,7 @@ const localStyles = StyleSheet.create(
 )
 
 export interface NavigationMainTypes {
-  welcomeBottomSheetRef: RefObject<BottomSheetMethods>
+  welcomeBottomSheetRef: React.RefObject<BottomSheetMethods>;
 }
 
 
@@ -225,6 +225,7 @@ const NavigationMain: React.FC<NavigationMainTypes> = (
       />
       <SwipeModal
         bottomSheetRef={welcomeBottomSheetRef}
+        modalIndex={-1}
         Content={
           <WelcomeContainer />
         }

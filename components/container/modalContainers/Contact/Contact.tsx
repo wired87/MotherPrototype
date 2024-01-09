@@ -13,6 +13,7 @@ import {themeColors} from "../../../../colors/theme";
 import {DefaultInput} from "../../../input/DefaultInput";
 import {sendObject} from "../../../../screens/chat/functions/SendProcess";
 import {getToken} from "../../../../AppFunctions";
+import {CONTACT_REQUEST_URL} from "@env";
 
 const options = [
   "Security",
@@ -47,16 +48,16 @@ const localStyles = StyleSheet.create(
   }
 );
 
-const firstNamePlaceholder = "First Name";
-const firstNameSetForm = "first_name";
+const firstNamePlaceholder:string = "First Name";
+const firstNameSetForm:string = "first_name";
 
-const lastNamePlaceholder = "Last Name";
-const lastNameSetForm = "last_name";
+const lastNamePlaceholder:string = "Last Name";
+const lastNameSetForm:string = "last_name";
 
-const emailPlaceholder = "E-Mail Address";
-const emailSetForm = "e_mail";
+const emailPlaceholder:string = "E-Mail Address";
+const emailSetForm:string = "e_mail";
 
-const postUrl = 'http://wired87.pythonanywhere.com/ai-creation/contact/';
+const postUrl:string = CONTACT_REQUEST_URL;
 
 const Contact: React.FC = () => {
   // CONTEXT
@@ -64,14 +65,19 @@ const Contact: React.FC = () => {
 
   const {setStatus} = useContext(SettingsContext);
   const {customTheme} = useContext(ThemeContext);
-  const { setLoading, jwtToken, setJwtToken } = useContext(PrimaryContext);
+  const { setLoading,
+    jwtToken,
+    setJwtToken
+  } = useContext(PrimaryContext);
 
 
   const [form, setForm] = useState({
     option: "security"
   });
 
+  // STYLES
   const textStyles = [localStyles.extraTextStyles, {color: customTheme.text}];
+  const moreTextStyles = {fontWeight: "bold"};
 
   const jwtTokenRef = useRef<JwtToken | null>(null);
 
@@ -83,29 +89,33 @@ const Contact: React.FC = () => {
   }, [jwtToken]);
 
 
-  const handleSubmit = useCallback(async() => {
-    if ((form as any)["message"].length == 0) {
+  const handleSubmit = useCallback(async () => {
+    if (!(form as any)["message"] || (form as any)["message"].length === 0) {
+      console.log("len of messages === 0. Provide some Text...")
       setFieldError(true);
     }else{
+      console.log("Submit initialized...");
       await onSubmit(form);
     }
   }, [form])
 
 
   const onSubmit = useCallback(async(formData: object) => {
+    console.log("jwtToken11111111111111:", jwtToken)
     setLoading(true);
     setFieldError(false);
     let response;
     try {
-      if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
+      if (jwtToken?.refresh && jwtToken.access) {
         console.log("data sent: ", formData);
         response = await sendObject(
           formData,
-          jwtTokenRef.current,
+          jwtToken,
           setJwtToken,
           postUrl
-        )
+        );
       }else{
+        console.error("No token provided");
         const newToken = await getToken(setJwtToken);
         if (newToken) {
           response = await sendObject(
@@ -113,31 +123,37 @@ const Contact: React.FC = () => {
             newToken,
             setJwtToken,
             postUrl
-          )
+          );
         }else {
+          console.error("New Token request failed...");
           setStatus(300);
         }
       }
       if (response) {
-        console.log("response:" , response.status)
-        setStatus(response.status);
+        console.log("response Successfully:" , response);
+        setStatus(response);
+      }else {
+        console.log("Response returned no result...")
+        setStatus(500);
       }
     } catch (e: unknown) {
       if (e instanceof Error) {
         setStatus(500);
-        console.log(e.message);
+        console.error("Error while contact submit occurred:", e.message);
       }
     } finally {
+      console.log("Contact POST function finished...");
       setLoading(false);
     }
-  }, [jwtTokenRef, jwtToken]);
+  }, [jwtToken]);
 
 
   const fielErrorText = useMemo(() => {
+
     if (fieldError) {
       Vibration.vibrate();
       return(
-        <DefaultText error text={'Field "Message" is required'}/>
+        <DefaultText error text={'Field "Message" is required'} moreStyles={moreTextStyles}/>
       );
     }
   }, [fieldError])
@@ -167,7 +183,6 @@ const Contact: React.FC = () => {
         secure={false}
         editable={true}
         extraStyles={undefined}
-
         keyboardType={undefined}
         value={(form as any)["first_name"]}
       />
@@ -209,7 +224,7 @@ const Contact: React.FC = () => {
 
       <DefaultButton
         extraStyles={undefined}
-        onPressAction={() => handleSubmit}
+        onPressAction={() => handleSubmit()}
         text={"Send"}
         secondIcon={
           <MaterialCommunityIcons name={"email-open-multiple-outline"} size={18} color="white" />

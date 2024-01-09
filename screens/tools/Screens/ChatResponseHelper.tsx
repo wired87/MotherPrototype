@@ -10,7 +10,7 @@ import UniversalTextCreator from "../../../components/container/Tools/UniversalT
 import {DefaultInput} from "../../../components/input/DefaultInput";
 import {DefaultButton} from "../../../components/buttons/DefaultButton";
 import ErrorContainerSwipeModal from "../../../components/container/ErrorContainerSwipeModal";
-import {SwipeModal} from "../../../components/modals/SwipeModal";
+import SwipeModal from "../../../components/modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import {sendObject} from "../../chat/functions/SendProcess";
 import {getToken} from "../../../AppFunctions";
@@ -144,8 +144,8 @@ const ChatResponseHelper: React.FC = () => {
       <SwipeModal
         bottomSheetRef={bottomSheetRef}
         Content={
-          <ErrorContainerSwipeModal error={error}/>
-        }
+          <ErrorContainerSwipeModal error={error}/>}
+        modalIndex={-1}
       />
     </ScrollView>
   );

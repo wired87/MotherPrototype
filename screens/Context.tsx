@@ -29,6 +29,9 @@ export const PrimaryContext = createContext(
 
     isConnected: false,
     setIsConnected: (() => {}) as Dispatch<SetStateAction<boolean>>,
+
+    bottomSheetLoaded: false,
+    setBottomSheetLoaded: (() => {}) as Dispatch<SetStateAction<boolean>>,
   });
 
 

@@ -6,15 +6,15 @@ import RNRestart from 'react-native-restart';
 import {Dispatch, SetStateAction} from "react";
 import {CHECK_JWT, LOGIN_JWT} from "@env";
 import {getAuth} from "firebase/auth";
-const eMailBody: string = "Hey, i detected a security Problem while try set the JwtToken!"
-const errorUrl: string = `https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=${eMailBody}`
 import { Buffer } from 'buffer';
 import * as RNLocalize from "react-native-localize";
 
 
-// SECURE URLS
+// URLS
 const checkEndpoint: string = CHECK_JWT;
 const getEndpoint: string = LOGIN_JWT;
+const eMailBody: string = "Hey, i detected a security Problem while try set the JwtToken!"
+const errorUrl: string = `https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=${eMailBody}`
 
 
 
@@ -28,7 +28,6 @@ export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
       return parsedToken;
     }
   }catch(e: unknown){
-
     if (e instanceof Error)
       console.error("Could not get the JwtToken from SecureStore:", e);
   }
@@ -46,7 +45,7 @@ export const getToken = async (setJwtToken: Dispatch<SetStateAction<JwtToken | n
   if (userJwtTokenExist) {
     try {
       await checkExistingToken(userJwtTokenExist, setJwtToken);
-    } catch (e) {
+    }catch (e) {
       if (e instanceof Error) {
         console.error("Error occurred AAAAAAAH,", e);
       }
@@ -60,6 +59,7 @@ export const getToken = async (setJwtToken: Dispatch<SetStateAction<JwtToken | n
 
 export const checkExistingToken = async (token: JwtToken, setJwtToken: Dispatch<SetStateAction<JwtToken | null>>) => {
   // Generate here a new access token with sending the refresh token to the Backend
+  console.log("checkEndpoint:", checkEndpoint);
   const res = await fetch(checkEndpoint, {
     method: 'POST',
     headers: {
@@ -79,6 +79,7 @@ export const checkExistingToken = async (token: JwtToken, setJwtToken: Dispatch<
     console.log("Token was successfully Set..");
     return response.refresh.access;
   }else {
+    console.log("response contains not refresh...")
     const tokenResponse = await getNewTokenProcess(setJwtToken);
     if (!tokenResponse) {
       return null;
@@ -131,6 +132,8 @@ const getNewToken = async(): Promise<JwtToken | null> => {
 export const getTokenInfoData = (jwtToken: JwtToken) => {
   const refreshToken = jwtToken.refresh;
   const accessToken = jwtToken.access;
+  console.log("INFO DATA REFRESH:", refreshToken);
+  console.log("INFO DATA ACCESS:", accessToken);
 
   // get th encoded data
   const refreshPayload = refreshToken.split('.')[1];
@@ -139,20 +142,33 @@ export const getTokenInfoData = (jwtToken: JwtToken) => {
   // decode the token strings
   const decodedRefreshPayload = Buffer.from(refreshPayload, 'base64').toString();
   const decodedAccessPayload = Buffer.from(accessPayload, 'base64').toString();
+  console.log("INFO DATA DECODED REFRESH PAYLOAD:", decodedRefreshPayload)
+  console.log("INFO DATA DECODED ACCESS PAYLOAD:", decodedAccessPayload)
 
   // transform Token back to Json
   const refreshTokenData = JSON.parse(decodedRefreshPayload);
   const accessTokenData = JSON.parse(decodedAccessPayload);
+  console.log("INFO DATA DECODED REFRESH ENCODED DATA:", refreshTokenData);
+  console.log("INFO DATA DECODED ACCESS ENCODED DATA:", accessTokenData);
 
   // check if Tokens are expired
+  const currentDate = new Date();
   const refreshExpirationDate = new Date(refreshTokenData.exp * 1000);
   const accessExpirationDate = new Date(accessTokenData.exp * 1000);
+  console.log("INFO DATE:", currentDate);
+  console.log("INFO REFRESH EXP DATA:", refreshExpirationDate);
+  console.log("INFO ACCESS EXP DATA:", accessExpirationDate);
+
+  const refreshExpired= currentDate > refreshExpirationDate;
+  const accessExpired= currentDate > accessExpirationDate;
+  console.log("INFO REFRESH EXP BOOL:", refreshExpired);
+  console.log("INFO ACCESS EXP BOOL:", accessExpired);
 
   return {
     "refreshTokenData": refreshTokenData,
     "accessTokenData": accessTokenData,
-    "refreshExp": refreshExpirationDate,
-    "accessExp": accessExpirationDate,
+    "refreshExp": refreshExpired,
+    "accessExp": accessExpired,
   }
 }
 

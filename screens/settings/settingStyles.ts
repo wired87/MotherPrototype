@@ -13,7 +13,7 @@ export const settingStyles = StyleSheet.create({
         // backgroundColor: "#2b2a27",
         paddingVertical: 10,
         fontWeight: 'bold',
-        fontFamily: "Roboto",
+        fontFamily: "JetBrainsMono",
         fontSize: 16,
         letterSpacing: 2,
         marginHorizontal: 20,
