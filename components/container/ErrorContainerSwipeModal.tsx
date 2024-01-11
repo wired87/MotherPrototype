@@ -9,10 +9,12 @@ import {ThemeContext} from "../../screens/Context";
 import * as Linking from "expo-linking";
 
 // STRINGS
-const errorUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=Hey,"
+const message:string = "I have detected an Error in the Job Application Tool: >>>Description Here<<<. \nPlease fix it asap!";
+const errorUrl:string = `https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=Hey, ${message}`;
+const defaultError: string = "An unexpected Error occurred";
 
 interface ErrorContainerTypes {
-  error?: any
+  error?: string
 }
 
 const ErrorContainerSwipeModal: React.FC<ErrorContainerTypes> = (
@@ -24,7 +26,7 @@ const ErrorContainerSwipeModal: React.FC<ErrorContainerTypes> = (
   const { customTheme } = useContext(ThemeContext);
 
   const errorMessage = useMemo(() => {
-    if (error) {
+    if (error?.length === 0) {
       return(
         <>
           <DefaultText moreStyles={ts.errorTextHeading} text={"This is an Error!"}/>
@@ -34,12 +36,12 @@ const ErrorContainerSwipeModal: React.FC<ErrorContainerTypes> = (
     } else {
       return(
         <>
-          <DefaultText moreStyles={ts.errorTextHeading} text={error.message}/>
+          <DefaultText moreStyles={ts.errorTextHeading} text={error || defaultError}/>
           <DefaultText moreStyles={ts.errorTextMessage} text={`Feel free to report it.\nWe will fix it ASAP`}/>
         </>
       );
     }
-  }, [])
+  }, [error])
 
   const emailLinkingButton = useMemo(() => {
     return(

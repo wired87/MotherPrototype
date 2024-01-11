@@ -52,6 +52,7 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
     }
   }, []);
 
+
   const onSpeechError = useCallback((e: SpeechErrorEvent) => {
     if (e.error && e.error.message) {
       setError(e.error.message.toString());

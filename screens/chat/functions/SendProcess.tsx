@@ -1,7 +1,7 @@
 import firebase from "firebase/compat";
 import {JwtToken} from "../../Context";
 import {Dispatch, SetStateAction} from "react";
-import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions";
+import {checkExistingToken, getNewTokenProcess, getToken, getTokenInfoData} from "../../../AppFunctions";
 import {CHAT_REQUEST_URL} from "@env";
 
 export const getCurrentTime = () => {
@@ -16,6 +16,16 @@ export const getCurrentTime = () => {
   return(timeHoursNow + ":" + timeMinutesNow);
 }
 
+const errorCodes: string[] = [
+    "400",
+    "401",
+    "404",
+    "500",
+    "501"
+  ]
+
+
+
 export const postMessageObject = async (
   jwtToken: string,
   senderObject: any,
@@ -27,7 +37,6 @@ export const postMessageObject = async (
   const { timeout = 20000 } = options;
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-  console.log("JwtToken.access postMessageObject:", jwtToken);
   try {
     const response = await fetch(postUrl, {
       method: 'POST',
@@ -112,6 +121,8 @@ export const sendObject = async (
       if (!checkTokenAgain) {
         return null;
       }
+    }else if (errorCodes.includes(response.status.toString())) {
+      return null;
     }
     // Success
     console.log("Response", response);
@@ -131,14 +142,55 @@ export default function getDurationFormatted(milliseconds: any) {
 
 
 
-const sendErrorMessage = () => {
 
-}
-
-
-
-
-
+export const getResponse = async (
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  setError: Dispatch<SetStateAction<string>>,
+  setJwtToken: Dispatch<SetStateAction<JwtToken | null>>,
+  jwtToken: JwtToken | null,
+  body: object,
+  setResponse: Dispatch<SetStateAction<any>>,
+  customPostUrl?: string,
+) => {
+  setLoading(true);
+  let response;
+  try {
+    if (jwtToken && jwtToken.refresh && jwtToken.access) {
+      response = await sendObject(
+        body,
+        jwtToken,
+        setJwtToken,
+        customPostUrl
+      )
+    }else{
+      const newToken = await getToken(setJwtToken);
+      if (newToken) {
+        response = await sendObject(
+          body,
+          newToken,
+          setJwtToken,
+          customPostUrl
+        )
+      }else{
+        setError("Could not authenticate you. Please contact the support or try again later.")
+      }
+    }
+    if (response) {
+      console.log("response:" , response);
+      setResponse(response);
+    }else{
+      setError("The Server returned no response. Please Contact the support.");
+    }
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.log("Error while sending the chatCompletion request:", e.message)
+      setError(e.message);
+      console.log(e.message);
+    }
+  }finally {
+    setLoading(false);
+  }
+};
 
 
 

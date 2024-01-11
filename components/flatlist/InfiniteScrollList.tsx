@@ -45,7 +45,7 @@ const InfiniteScrollList = (
         offset: windowWidth * index,
         index
       })}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(index) => index.toString()}
       renderItem={({ item, index }) => (
         <View key={index} style={{...ts.pageScrollView}} >
           {item}

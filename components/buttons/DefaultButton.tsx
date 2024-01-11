@@ -2,11 +2,25 @@ import {ActivityIndicator, Pressable, Text} from "react-native";
 import React, {useContext, useMemo} from "react";
 import {userStyles} from "../../screens/user/userStyles";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
+import {StyleProps} from "react-native-reanimated";
 
 const buttonStyles = { color: "white", marginHorizontal: 5, fontSize: 16 }
+interface DefaultButtonStyles {
+  extraStyles?: StyleProps
+  onPressAction: (() => void);
+  text: string
+  secondIcon?: string
+}
 
-// @ts-ignore
-export const DefaultButton = ({ extraStyles, onPressAction, text, secondIcon }) => {
+
+export const DefaultButton: React.FC<DefaultButtonStyles> = (
+  {
+    extraStyles,
+    onPressAction,
+    text,
+    secondIcon
+  }
+) => {
   const { loading } = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
 

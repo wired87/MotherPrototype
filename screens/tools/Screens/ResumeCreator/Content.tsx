@@ -4,20 +4,20 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useRef,
   useState
 } from "react";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
-import {postMessageObject, sendObject} from "../../../chat/functions/SendProcess";
-import {JwtToken, PrimaryContext, ThemeContext} from "../../../Context";
+import {sendObject} from "../../../chat/functions/SendProcess";
+import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
 import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultText} from "../../../../components/text/DefaultText";
 import firebase from "firebase/compat";
 
 import {Vibration} from "react-native";
-import {getToken} from "../../../../AppFunctions";
+import {getCurrentLanguage, getToken} from "../../../../AppFunctions";
+import {toolStyles as ts} from "../../toolStyles";
+import {showToolAds} from "../../../chat/functions/AdLogic";
 
 // STRINGS
 const titlePlaceholder: string = "Job Title";
@@ -25,17 +25,17 @@ const skillsPlaceholder: string = "Your skills for the Job (optional)";
 const contactPlaceholder: string = "Contact Person (optional)";
 const languagePlaceholder: string = "Application Language (eng/de/fr/...";
 const personalDataPlaceholder: string = "Contact Information's (optional)";
+const workExperiencePlaceholder: string = "Work experience (optional)";
+
 
 const create: string = "Create";
 const filedErrorMessage: string = "This Field is required";
 const postUrl: string = "http://wired87.pythonanywhere.com/ai-creation/application-request/";
 
+
+
+
 // INTERFACE
-interface InputTypes {
-  value: string;
-  setState: Dispatch<SetStateAction<string>>;
-  numberOfLines?: number;
-}
 
 interface ResumeTypes {
   setError: Dispatch<SetStateAction<string>>;
@@ -53,18 +53,25 @@ const ResumeContent: React.FC<ResumeTypes> = (
   const [contactPerson, setContactPerson] = useState<string>("");
   const [personalData, setPersonalData] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
-
+  const [workExperience, setWorkExperience] = useState<string>("");
   const [fieldError, setFieldError] = useState<boolean>(false);
 
   // CONTEXT
   const { customTheme } = useContext(ThemeContext);
-  const { setLoading, jwtToken, setJwtToken, user } = useContext(PrimaryContext);
+  const { setToolActionValue, toolActionValue } = useContext(ToolContext);
 
-  // REFs
-  const jwtTokenRef = useRef<JwtToken | null>(null);
+  const { setLoading,
+    jwtToken,
+    setJwtToken,
+    user } = useContext(PrimaryContext);
 
   // STYLES
   const extraInputStyles = {backgroundColor: "transparent", borderColor: customTheme.text}
+  const workExperienceStyles = [ts.input, {minHeight: 100}];
+
+  const get_language = useCallback((language: string) => {
+    return language.length === 0? getCurrentLanguage() : language
+  }, [])
 
   const createApplicationObject = (
     user: firebase.User | null
@@ -74,36 +81,39 @@ const ResumeContent: React.FC<ResumeTypes> = (
       "skills": skills,
       "contactPerson": contactPerson,
       "personalData": personalData,
-      "language": language,
-      "user_id": user?.uid
+      "language": get_language(language),
+      "workExperience": workExperience,
+      "userId": user?.uid || "1"
     }
   }
 
-  useEffect(() => {
-    console.log("jwt changed in ChatNavigator:", jwtToken);
-    jwtTokenRef.current = jwtToken;
-    console.log("jwt ref:", jwtTokenRef.current);
-  }, [jwtToken]);
-
   const handleResumeCreatePress = useCallback(async () => {
+    console.log("jwtToken n Application Content:", jwtToken);
+    if (toolActionValue === "0") {
+      console.log("User has 0 Actions left. Init Ads...")
+      await showToolAds(toolActionValue, setToolActionValue);
+    }
     if (jobTitle.length == 0) {
       Vibration.vibrate();
       setFieldError(true);
     }else {
+      setToolActionValue("0");
       setError("");
       setFieldError(false);
       setLoading(true);
-      const fileObject = createApplicationObject(user);
+      const fileObject: object = createApplicationObject(user);
       let response;
       try {
-        if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
+        if (jwtToken?.refresh && jwtToken.access) {
+          console.log("Application data sent: ", fileObject);
           response = await sendObject(
             fileObject,
-            jwtTokenRef.current,
+            jwtToken,
             setJwtToken,
             postUrl
-          )
-        }else{
+          );
+        } else {
+          console.error("No token provided");
           const newToken = await getToken(setJwtToken);
           if (newToken) {
             response = await sendObject(
@@ -111,28 +121,30 @@ const ResumeContent: React.FC<ResumeTypes> = (
               newToken,
               setJwtToken,
               postUrl
-            )
-          }else{
-            setError("Could not authenticate you. Please contact the support or try again later.")
+            );
+          } else {
+            console.error("New Token request failed...");
+            setError("Authentication Error");
           }
         }
-        if (response && !(response.status === "500")) {
-          console.log("response:" , response.status);
-          setResume(response.message);
-        }else{
-          setError(response.message);
+        if (response) {
+          console.log("Application response Successfully:", response);
+          setResume(response);
+        } else {
+          console.error("Received no result:", response);
+          setError("Error occurred. Please try again or contact the support.");
         }
       } catch (e: unknown) {
         if (e instanceof Error) {
-          console.log("Error while sending the chatCompletion request:", e.message)
           setError(e.message);
-          console.log(e.message);
+          console.error("Error while contact submit occurred:", e.message);
         }
-      }finally{
+      } finally {
+        console.log("Application request finished without trouble...");
         setLoading(false);
       }
     }
-  }, [jobTitle]);
+  }, [jobTitle, jwtToken]);
 
   const FieldError = useMemo(() => {
     if (fieldError) {
@@ -148,13 +160,16 @@ const ResumeContent: React.FC<ResumeTypes> = (
         extraStyles={extraInputStyles}
         onChangeAction={setContactPerson}
       />
+
       <DefaultInput
         placeholder={titlePlaceholder}
         value={jobTitle}
         extraStyles={extraInputStyles}
         onChangeAction={setJobTitle}
       />
+
       {FieldError}
+
       <DefaultInput
         placeholder={skillsPlaceholder}
         value={skills}
@@ -162,6 +177,15 @@ const ResumeContent: React.FC<ResumeTypes> = (
         numberOfLines={5}
         extraStyles={extraInputStyles}
         onChangeAction={setSkills}
+      />
+
+      <DefaultInput
+        placeholder={workExperiencePlaceholder}
+        value={workExperience}
+        multiline
+        numberOfLines={10}
+        extraStyles={workExperienceStyles}
+        onChangeAction={setWorkExperience}
       />
 
       <DefaultInput

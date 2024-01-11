@@ -10,6 +10,7 @@ import {showAds} from "../../screens/chat/functions/AdLogic";
 import {FunctionContext, InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 import TranscribeButton from "../buttons/TranscribeButton";
 import {IconButton} from "react-native-paper";
+import ClearButton from "../buttons/ClearButton";
 
 
 interface ExtraData {
@@ -84,11 +85,7 @@ export const MessageInputContainer = (
     if (input?.trim().length > 0) {
       return(
         <>
-          <Pressable
-            onPress={() => setInput("")}
-            style={styles.clearInputFiledBtn}>
-            <MaterialCommunityIcons color={customTheme.text} name={"close"} size={17}/>
-          </Pressable>
+
           <IconButton
             onPress={send}
             style={extraSendStyles}
@@ -114,6 +111,8 @@ export const MessageInputContainer = (
       <View style={styles.secondContainer}>
         {typeIndicator}
       </View>
+
+      <ClearButton setValue={setInput} value={input} />
 
       <View style={styles.inputContainer}>
         <TextInput style={[styles.chatMessageInput,

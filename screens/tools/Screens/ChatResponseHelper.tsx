@@ -5,7 +5,7 @@ import {
 } from "react-native";
 
 import {toolStyles as ts} from "../toolStyles";
-import {JwtToken, PrimaryContext, ThemeContext} from "../../Context";
+import {PrimaryContext, ThemeContext} from "../../Context";
 import UniversalTextCreator from "../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../components/input/DefaultInput";
 import {DefaultButton} from "../../../components/buttons/DefaultButton";
@@ -16,46 +16,53 @@ import {sendObject} from "../../chat/functions/SendProcess";
 import {getToken} from "../../../AppFunctions";
 
 // Strings
-const placeholderTranscript: string = "The forward text responses will be shown here...";
-const heading: string = "Transcribe your thoughts..";
-const answerEndpoint: string = "";
+const placeholderTranscript:string = "The forward text responses will be shown here...";
+const heading:string = "Chat response helper...";
+const answerEndpoint:string = "http://wired87.pythonanywhere.com/ai-creation/cempletion-request/";
+
+const chatHistoryPlaceholder:string = "Provide me all context that could be relevant...";
+const extraInformationsPlaceholder:string = "What should i also may know?";
+const goalPlaceholder:string = "Goal of the Chat";
 
 const ChatResponseHelper: React.FC = () => {
   const [response, setResponse] = useState<string>("");
   const [editable, setEditable] = useState<boolean>(false);
-  const [input, setInput]= useState<string>("");
-  const [informationInput, setInformationInput]= useState<string>("");
+
   const [error, setError]= useState<string>("");
+
+  // INPUT
+  const [input, setInput]= useState<string>("");
+  const [context, setContext]= useState<string>("");
+  const [goal, setGoal]= useState<string>("");
 
   // Context
   const { customTheme } = useContext(ThemeContext);
-  const { jwtToken, setJwtToken } = useContext(PrimaryContext);
+  const {
+    jwtToken, setJwtToken,
+    setLoading } = useContext(PrimaryContext);
 
   const backgroundColor = {backgroundColor: customTheme.primary};
-   // REFS
+
+  // REFS
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
-  const jwtTokenRef = useRef<JwtToken | null>(null);
 
-
-  useEffect(() => {
-    console.log("jwt changed in ChatNavigator:", jwtToken);
-    jwtTokenRef.current = jwtToken;
-    console.log("jwt ref:", jwtTokenRef.current);
-  }, [jwtToken]);
-
+  // STYLES
+  const historyInputStyles = [ts.input, {minHeight: 100}];
+  const extraInfosInputStyles = [ts.input, {minHeight: 75}]
 
   const getAnswers = useCallback(async () => {
-    const body = {
+    setLoading(true);
+    const body: object = {
         "chat": input,
-        "informations": informationInput,
-        "goal": undefined
+        "context": context,
+        "goal": goal
       }
     let response;
     try {
-      if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
+      if (jwtToken && jwtToken.refresh && jwtToken.access) {
         response = await sendObject(
           body,
-          jwtTokenRef.current,
+          jwtToken,
           setJwtToken,
           answerEndpoint
         )
@@ -72,11 +79,11 @@ const ChatResponseHelper: React.FC = () => {
           setError("Could not authenticate you. Please contact the support or try again later.")
         }
       }
-      if (response && !(response.status === "500")) {
-        console.log("response:" , response.status);
-        setResponse(response.message);
+      if (response) {
+        console.log("response:" , response);
+        setResponse(response);
       }else{
-        setError(response.message);
+        setError("the Server returned no response. Please Contact the support.");
       }
     } catch (e: unknown) {
       if (e instanceof Error) {
@@ -84,11 +91,10 @@ const ChatResponseHelper: React.FC = () => {
         setError(e.message);
         console.log(e.message);
       }
+    }finally {
+      setLoading(false);
     }
-  }, [input, informationInput, jwtTokenRef, jwtToken]);
-
-
-
+  }, [input, context, jwtToken]);
 
 
   const updateModalIndex = () => {
@@ -102,31 +108,51 @@ const ChatResponseHelper: React.FC = () => {
   }, [error]);
 
 
-
   const Content = useMemo(() => {
-    const buttonText = "Generate Answers";
-    return(<>
-            <DefaultInput
-              value={input}
-              placeholder={"Provide me all context that could be relevant..."}
-              onChangeAction={setInput}
-              editable={true}
-              keyboardType={undefined}
-              extraStyles={undefined}
-              multiline={true}
-              numberOfLines={12}
-              max_length={2000}
-            />
-            <DefaultButton
-              extraStyles={undefined}
-              onPressAction={getAnswers}
-              text={buttonText}
-              secondIcon={undefined}
-            />
-          </>
+    const buttonText:string = "Generate Answers";
+    return(
+      <>
+        <DefaultInput
+          value={input}
+          placeholder={chatHistoryPlaceholder}
+          onChangeAction={(text:string) => setInput(text)}
+          editable={true}
+          keyboardType={"default"}
+          extraStyles={historyInputStyles}
+          multiline={true}
+          numberOfLines={6}
+          max_length={2000}
+        />
+        <DefaultInput
+          value={context}
+          placeholder={extraInformationsPlaceholder}
+          onChangeAction={(text:string) => setContext(text)}
+          editable={true}
+          keyboardType={undefined}
+          extraStyles={extraInfosInputStyles}
+          multiline={true}
+          numberOfLines={6}
+          max_length={300}
+          />
+        <DefaultInput
+          value={goal}
+          placeholder={goalPlaceholder}
+          onChangeAction={(text:string) => setGoal(text)}
+          editable={true}
+          keyboardType={undefined}
+          extraStyles={ts.input}
+          multiline={true}
+          max_length={300}
+        />
+        <DefaultButton
+          extraStyles={undefined}
+          onPressAction={getAnswers}
+          text={buttonText}
+          secondIcon={undefined}
+        />
+      </>
     );
-
-  }, []);
+  }, [goal, input, context]);
 
 
   return(

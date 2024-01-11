@@ -7,12 +7,17 @@ import {ThemeContext} from "../../screens/Context";
 interface DefaultTextTypes {
     text: string;
     moreStyles?: object;
-    error?: string;
+    error?: boolean;
 }
 
 
-// @ts-ignore
-export const DefaultText: react.FC<DefaultTextTypes> = ({ text, moreStyles, error }) => {
+export const DefaultText: React.FC<DefaultTextTypes> = (
+  {
+      text,
+      moreStyles,
+      error,
+  }
+) => {
     const { customTheme } = useContext(ThemeContext);
     const defaultTextStyles = [ textStyles.defaultText,
         {color: error? customTheme.errorText : customTheme.text}]

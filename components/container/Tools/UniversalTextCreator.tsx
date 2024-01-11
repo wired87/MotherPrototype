@@ -8,10 +8,11 @@ const clear = "close";
 
 import {memo} from "react";
 import {PrimaryContext, ThemeContext} from "../../../screens/Context";
-import {BottomImage} from "../../images/BottomImage";
+import BottomImage from "../../images/BottomImage";
 import * as Print from "expo-print";
 import {inputStyles} from "../../input/styles";
 import CopyButton from "../../buttons/CopyButton";
+import DefaultProgressBar from "../../animations/DefaultProgressBar";
 
 interface TextResultTypes {
   value: string;
@@ -44,14 +45,10 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
 
   const transcriptInputStyles = [
     ts.input, {
-      backgroundColor: "transparent", borderColor: buttonColor, color: buttonColor
+      backgroundColor: "transparent", borderWidth: 1, borderColor: buttonColor, color: buttonColor, minHeight: 200
     }
   ];
-  const loadingStyle = [
-    ts.loadingStyle, {
-      marginVertical: loading? 10 : 0
-    }
-  ];
+
 
   const backgroundColor = {
     backgroundColor: customTheme.primary
@@ -104,9 +101,10 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
       style={moreHeadingStreamInputStyles}>
       {streamedHeading}
     </Text>
+
       {Content}
 
-      <ProgressBar progress={.5} color={customTheme.primaryButton} style={loadingStyle} indeterminate={true} visible={loading} />
+      <DefaultProgressBar loading={loading} />
 
       <View style={ts.transcriptContainer}>
         <DefaultInput

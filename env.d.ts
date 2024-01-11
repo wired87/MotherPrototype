@@ -19,5 +19,6 @@ declare module '@env' {
   export const LOGIN_JWT: string;
   export const CHAT_REQUEST_URL: string;
   export const CONTACT_REQUEST_URL: string;
+  export const MEDIA_URL: string;
 
 }

@@ -142,7 +142,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
           console.log("sendPackage Response === null...")
           errorMessageAIResponse();
         }else{
-          console.log("Create Message with response:", response);
+          console.log("Create AI Message with response:", response);
           aiResponse = createMessageObject(
             response,
             "text",

@@ -44,19 +44,6 @@ export default function App() {
     bottomSheetLoaded, setBottomSheetLoaded
   };
 
-  const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
-
-  useEffect(() => {
-    if(bottomSheetLoaded) {
-      setTimeout(() => {
-        console.log("1 sec...")
-        updateWelcomeBottomSheetIndex(1);
-      }, 1000);
-      console.log("0 sec...")
-    }
-  }, [bottomSheetLoaded]);
-
-
   useEffect(() => {
     NetInfo.fetch().then((state) => {
       console.log("Internet Connection set:", state.isConnected);
@@ -120,11 +107,6 @@ export default function App() {
   }, [authenticated, user, setJwtToken]);
 
 
-  const updateWelcomeBottomSheetIndex = useCallback((number: number) => {
-    if(welcomeBottomSheetRef.current) {
-      welcomeBottomSheetRef.current.snapToIndex(number);
-    }
-  }, []);
 
   useEffect(() => {
     console.log("appIsReady", appIsReady);
@@ -168,8 +150,7 @@ export default function App() {
     }
   }, []);
 
-
-
+  
   useEffect(() => {
     console.log("darkmodeAPP.tsx", darkmode);
     const updateDarkMode = async () => {
@@ -188,7 +169,7 @@ export default function App() {
       updateDarkMode()
         .then(() => console.log("Alright"));
     }
-  }, [darkmode]);
+  }, [darkmode, appIsReady]);
 
 
   return (
@@ -200,7 +181,7 @@ export default function App() {
             <GestureHandlerRootView style={{ flex: 1 }}>
               <BottomSheetModalProvider>
                 <NavigationContainer>
-                  <NavigationMain welcomeBottomSheetRef={welcomeBottomSheetRef}/>
+                  <NavigationMain />
                 </NavigationContainer>
               </BottomSheetModalProvider>
             </GestureHandlerRootView>
@@ -210,6 +191,9 @@ export default function App() {
     </ReduxProvider>
   );
 }
+
+
+
 
 /*
 FIREBASE REVENUE CAT CHECK IFR A USER IS ON PAID PLAN

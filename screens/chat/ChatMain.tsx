@@ -5,16 +5,14 @@ import {
   SafeAreaView,
   Text,
   View,
-  StyleSheet,
-  Platform,
-  ListRenderItem
+  StyleSheet
 } from "react-native";
+
 import {chatStyles} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
 import {MessageInputContainer} from "../../components/container/MessageInputContainer";
 
 // @ts-ignore
-import {SingleAudio} from "../../components/container/chat/SingleAudio";
 import {InputContext, ThemeContext} from "../Context";
 
 const localStyles = StyleSheet.create(

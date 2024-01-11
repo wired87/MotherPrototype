@@ -185,7 +185,6 @@ export const showToolAds = async () => {
     unsubscribe();
   };
 }
-
         rewardedInterstitial.show()
           .then(
             async () => {
@@ -198,26 +197,3 @@ export const showToolAds = async () => {
       },
     );
  */
-
-
-
-
-
-
-
-
-/*
-export const set = async (setMessagesLeft: any) => {
-  await postMessageInfoData("5")
-    .then(() => {
-      setMessagesLeft("5")
-      console.log("UPDATED999999999")
-      }
-    )
-  }
-
-  useEffect(() => {
-    set(setMessagesLeft).then(() =>  console.log("HelloAds"))
-  }, []);
-
-*/

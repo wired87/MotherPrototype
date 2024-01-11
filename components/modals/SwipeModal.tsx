@@ -2,6 +2,7 @@ import React, {memo, useCallback, useContext, useEffect, useMemo} from "react";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetHandle } from '@gorhom/bottom-sheet';
 import {PrimaryContext, SettingsContext, ThemeContext} from "../../screens/Context";
 import { StyleSheet } from "react-native";
+import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
 /*
 ***IMPORTANT***
@@ -20,7 +21,7 @@ module.exports = function(api) {
 interface SwipeModalProps {
   Content: React.ReactNode;
   modalIndex: number;
-  bottomSheetRef: React.Ref<BottomSheet>
+  bottomSheetRef: React.RefObject<BottomSheetMethods>
 }
 
 const modalStyle = StyleSheet.create(
@@ -41,7 +42,6 @@ const SwipeModal: React.FC<SwipeModalProps> = (
 ) => {
 
   const { customTheme } = useContext(ThemeContext);
-  const { setBottomSheetLoaded, bottomSheetLoaded } = useContext(PrimaryContext);
   const {status, setStatus } = useContext(SettingsContext);
 
   const defaultSnapPoints = useMemo(() => ['25%', '50%', "75%", "90%"], [modalIndex]);
@@ -50,15 +50,7 @@ const SwipeModal: React.FC<SwipeModalProps> = (
     setStatus(0);
   }, [status]);
 
-  useEffect(() => {
-    if (!bottomSheetLoaded) {
-      setTimeout(() => {
-        console.log("Initialize Welcome Modal...")
-        setBottomSheetLoaded(true);
-      }, 100);
-      console.log("Value for Modal set...")
-    }
-  }, []);
+
 
   return(
     <BottomSheet
@@ -70,7 +62,7 @@ const SwipeModal: React.FC<SwipeModalProps> = (
        detached={false} // setup if the bottomSheet is attached to the bottom
        enableContentPanningGesture={true} // Enable content panning gesture interaction.
        enableHandlePanningGesture={true} // Enable handle panning gesture interaction.
-       enableOverDrag={true} // activate the overdraw effect (like you are at the bottom at a webpage and scrol more)
+       enableOverDrag={true} // activate the overdraw effect (like you are at the bottom at a webpage and scroll more)
        enablePanDownToClose={true} // able to wish the bs down so it closes
        enableDynamicSizing={false} // universal size
        animateOnMount={true} //

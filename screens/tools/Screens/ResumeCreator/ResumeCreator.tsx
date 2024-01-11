@@ -12,7 +12,7 @@ import ErrorContainerSwipeModal from "../../../../components/container/ErrorCont
 const heading: string = "AI Job Application \n creator"
 const placeholderResume: string = "Your written Application will be shown here.."
 
-const ResumeCreator = () => {
+const ResumeCreator: React.FC = () => {
   const [editable, setEditable] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
@@ -32,12 +32,13 @@ const ResumeCreator = () => {
   }, [])
 
   const updateModalIndex = useCallback((number:number) => {
-    bottomSheetRef?.current?.snapToIndex(number);
+      bottomSheetRef?.current?.snapToIndex(number);
   }, [])
 
   useEffect(() => {
     if (error.length > 0) {
-      updateModalIndex(2)
+      console.log("Error in ResumeCreator:", error);
+      updateModalIndex(2);
     }
   }, [error]);
 
@@ -53,10 +54,10 @@ const ResumeCreator = () => {
       />
       <SwipeModal
         bottomSheetRef={bottomSheetRef}
+        modalIndex={-1}
         Content={
           <ErrorContainerSwipeModal error={error}/>
       }
-        modalIndex={-1}
       />
     </ScrollView>
   );

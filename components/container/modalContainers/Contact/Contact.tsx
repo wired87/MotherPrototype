@@ -1,6 +1,6 @@
-import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {memo, useCallback, useContext, useMemo, useState} from 'react';
 import {BottomSheetScrollView} from "@gorhom/bottom-sheet";
-import {JwtToken, PrimaryContext, SettingsContext, ThemeContext} from "../../../../screens/Context";
+import {PrimaryContext, SettingsContext, ThemeContext} from "../../../../screens/Context";
 import {HeadingText} from "../../../text/HeadingText";
 import {DefaultText} from "../../../text/DefaultText";
 import {StyleSheet, Vibration} from "react-native";
@@ -15,14 +15,13 @@ import {sendObject} from "../../../../screens/chat/functions/SendProcess";
 import {getToken} from "../../../../AppFunctions";
 import {CONTACT_REQUEST_URL} from "@env";
 
-const options = [
+const options:string[] = [
   "Security",
   "Problem",
   "Questions",
   "Praise/Criticism",
   "Other"
 ]
-
 
 const localStyles = StyleSheet.create(
   {
@@ -79,15 +78,6 @@ const Contact: React.FC = () => {
   const textStyles = [localStyles.extraTextStyles, {color: customTheme.text}];
   const moreTextStyles = {fontWeight: "bold"};
 
-  const jwtTokenRef = useRef<JwtToken | null>(null);
-
-
-  useEffect(() => {
-    console.log("jwt changed in ChatNavigator:", jwtToken);
-    jwtTokenRef.current = jwtToken;
-    console.log("jwt ref:", jwtTokenRef.current);
-  }, [jwtToken]);
-
 
   const handleSubmit = useCallback(async () => {
     if (!(form as any)["message"] || (form as any)["message"].length === 0) {
@@ -101,7 +91,6 @@ const Contact: React.FC = () => {
 
 
   const onSubmit = useCallback(async(formData: object) => {
-    console.log("jwtToken11111111111111:", jwtToken)
     setLoading(true);
     setFieldError(false);
     let response;
@@ -185,6 +174,7 @@ const Contact: React.FC = () => {
         extraStyles={undefined}
         keyboardType={undefined}
         value={(form as any)["first_name"]}
+        noBorder
       />
 
       <DefaultInput
@@ -195,6 +185,7 @@ const Contact: React.FC = () => {
         extraStyles={/*{backgroundColor: customTheme.secondaryTextInput}*/undefined}
         keyboardType={undefined}
         value={(form as any)["last_name"]}
+        noBorder
       />
 
       <DefaultInput
@@ -205,6 +196,7 @@ const Contact: React.FC = () => {
         extraStyles={{backgroundColor: customTheme.secondaryTextInput}}
         keyboardType={"email-address"}
         value={(form as any)["e_mail"]}
+        noBorder
       />
 
       <Picker style={pickerStyles}

@@ -1,17 +1,14 @@
 import {Dimensions, StyleSheet} from "react-native";
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 export const toolStyles = StyleSheet.create(
   {
     redordButton: {},
     input: {
-      minHeight: 200,
-      paddingVertical: 10,
-      paddingHorizontal: 5,
+      paddingVertical: 12,
       justifyContent: "flex-start",
       textAlign: "justify",
       textAlignVertical: "top",
-      paddingRight: 20,
+      paddingRight: 15,
     },
     speechToTextMainContainer: {
       flexGrow: 1,
@@ -40,7 +37,7 @@ export const toolStyles = StyleSheet.create(
     clearButton: {
       position: "absolute",
       right: 2,
-      top: 2,
+      top: 5,
     },
     shareButton: {
       position: "absolute",
@@ -72,7 +69,8 @@ export const toolStyles = StyleSheet.create(
     },
     justifyAlign: {
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "center",
+
     },
     resumeInput: {
       borderWidth: 1
@@ -97,6 +95,7 @@ export const toolStyles = StyleSheet.create(
       bottom: 20,
     },
     modalToolErrorContainer: {
+      marginTop: 30,
       height: 350,
       flexDirection: "column",
       alignItems: "center",
@@ -110,7 +109,11 @@ export const toolStyles = StyleSheet.create(
     },
     main: {
       flex: 1,
+      paddingTop: 30,
+      justifyContent: "flex-start",
+      alignItems: "center",
     },
+
 
     flatListContainer: {
       marginTop: 40,

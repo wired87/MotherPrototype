@@ -10,7 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
 import {useDispatch} from "react-redux";
-import React, {memo, RefObject, useContext, useRef, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect, useRef, useState, useLayoutEffect } from "react";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
@@ -53,15 +53,11 @@ const localStyles = StyleSheet.create(
   }
 )
 
-export interface NavigationMainTypes {
-  welcomeBottomSheetRef: React.RefObject<BottomSheetMethods>;
-}
 
 
-const NavigationMain: React.FC<NavigationMainTypes> = (
-  {
-    welcomeBottomSheetRef
-  }
+
+const NavigationMain: React.FC = (
+
 ) => {
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
@@ -88,10 +84,6 @@ const NavigationMain: React.FC<NavigationMainTypes> = (
     userRecording, setUserRecording,
     currentRecording, setCurrentRecording
   }
-
-  //  TOOL CONTEXT
-  const [toolActionValue, setToolActionValue] = useState<string>("");
-
   const checkToolActionValueProcess = async (): Promise<boolean> => {
     const valueToolActions = await getToolActionValue();
     console.log("Try to get the user Tool Action Value", valueToolActions);
@@ -105,13 +97,16 @@ const NavigationMain: React.FC<NavigationMainTypes> = (
     return await checkToolActionValue(valueToolActions || "1", setToolActionValue);
   };
 
+  //  TOOL CONTEXT
+  const [toolActionValue, setToolActionValue] = useState<string>("");
+
   const toolElements = {
     toolActionValue,
     setToolActionValue,
     checkToolActionValueProcess
   }
-  const {
-    } = useContext(PrimaryContext);
+  const {bottomSheetLoaded
+  } = useContext(PrimaryContext);
 
   const {customTheme} = useContext(ThemeContext)
 
@@ -120,6 +115,31 @@ const NavigationMain: React.FC<NavigationMainTypes> = (
   theme.colors.secondaryContainer = "transparent"
 
   const dispatch = useDispatch();
+
+  const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
+
+  useEffect(() => {
+    if(welcomeBottomSheetRef) {
+      setTimeout(() => {
+        console.log("4 sec...")
+        updateWelcomeBottomSheetIndex(1);
+      }, 4000);
+      console.log("0 sec...")
+    }
+  }, [bottomSheetLoaded]);
+
+
+
+  const updateWelcomeBottomSheetIndex = useCallback((number: number) => {
+    if(welcomeBottomSheetRef.current) {
+      welcomeBottomSheetRef.current.snapToIndex(number);
+    }
+  }, []);
+
+
+
+
+
 
   const dispatchHistorySent = (value: boolean) => {
     dispatch({

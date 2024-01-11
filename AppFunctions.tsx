@@ -176,7 +176,7 @@ export const getTokenInfoData = (jwtToken: JwtToken) => {
 
 
 
-const getCurrentLanguage = () => {
+export const getCurrentLanguage = () => {
   const languages = RNLocalize.getLocales();
   if (languages.length > 0) return languages[0].languageCode;
   return null;
