@@ -51,13 +51,11 @@ const ResumeCreator: React.FC = () => {
   return(
     <ScrollView style={backgroundColor} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
-        value={resume}
         placeholder={placeholderResume}
         editable={editable}
-        changeText={setResume}
         heading={heading}
         Content={Content}
-      />
+        source={""}      />
       <SwipeModal
         bottomSheetRef={bottomSheetRef}
         modalIndex={-1}

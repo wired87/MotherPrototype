@@ -11,5 +11,6 @@ export const textStyles = StyleSheet.create({
   },
   defaultText: {
     lineHeight: 25,
+    marginHorizontal: 10,
   }
 })

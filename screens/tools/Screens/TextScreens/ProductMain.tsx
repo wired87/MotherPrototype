@@ -18,7 +18,7 @@ const placeholder:string = `Your written Tex will be shown here...`
 
 const ProductMain: React.FC  = () => {
 
-  const [category, setCategory] = useState<string>("");
+  const [kind, setKind] = useState<string>("");
   const [extraInfos, setExtraInfos] = useState<string>("");
   const [title, setTitle] = useState<string>("");
 
@@ -32,7 +32,7 @@ const ProductMain: React.FC  = () => {
       "input_type": "product",
       "title": title,
       "extraInfos": extraInfos,
-      "category": category
+      "kind": kind
     }
   }
 
@@ -47,8 +47,8 @@ const ProductMain: React.FC  = () => {
           <>
             <DefaultInput
               placeholder={"Description, Slogan,..."}
-              value={category}
-              onChangeAction={setCategory}
+              value={kind}
+              onChangeAction={setKind}
               extraStyles={{}}
               max_length= {maxLengthSmall}
               recordingOption

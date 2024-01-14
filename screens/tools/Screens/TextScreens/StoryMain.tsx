@@ -1,14 +1,16 @@
-import {memo, ReactNode, useCallback, useContext, useRef, useState} from "react";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-import {PrimaryContext, ToolContext} from "../../../Context";
+import {memo, useCallback, useContext, useState} from "react";
+import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
 import React from "react";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
+import StoryDefault from "../../../../assets/animations/StoryDefault.json";
+import {ScrollView, Vibration} from "react-native";
+import {TEXT_REQUEST_URL} from "@env";
+import {toolStyles as ts} from "../../toolStyles";
+import {themeColors} from "../../../../colors/theme";
+import {DefaultText} from "../../../../components/text/DefaultText";
 
 //STRINGS
-const clear:string = "close";
-const create:string = "create";
-const name:string = "";
 const heading:string = "Create Story's, Poems and much more...";
 
 // INT
@@ -25,69 +27,118 @@ const StoryMain: React.FC  = () => {
   const [storyAbout, setStoryAbout] = useState<string>("");
   const [extraInfos, setExtraInfos] = useState<string>("");
   const [genre, setGenre] = useState<string>("");
+  const [kind, setKind] = useState<string>("");
+  const [response , setResponse] = useState<string | object>("");
+  const [error , setError] = useState<string | object>("");
+  const [fieldError , setFieldError] = useState<string>("");
 
   const [editable, setEditable] = useState<boolean>(false);
 
 
   // Context
-  const {setResponse, response } = useContext(ToolContext);
-
-  const {user } = useContext(PrimaryContext);
-
-  const getCardPostObject = ():object => {
+  const {user, darkmode } = useContext(PrimaryContext);
+  const {toolPostRequest } = useContext(ToolContext);
+  const {customTheme } = useContext(ThemeContext);
+  const getStoryPostObject = ():object => {
     return {
       "user_id": user?.uid,
       "input_type": "story",
       "genre": genre,
       "extraInfos": extraInfos,
-      "storyAbout": storyAbout
+      "storyAbout": storyAbout,
+      "kind": kind
     }
   }
 
-  const handleClearField = useCallback(() => {
-    setResponse("");
-  }, [response])
+  const sendData = async () => {
+    if (kind.length == 0){
+      Vibration.vibrate();
+      setFieldError("Please provide a Card Type");
+      return;
+    }
+    await toolPostRequest(
+      TEXT_REQUEST_URL,
+      getStoryPostObject(),
+      setError,
+      setResponse
+    )
+  };
+
+  const fieldErrorText = useCallback(() => {
+    if (fieldError && fieldError.length > 0) {
+      return(
+        <DefaultText text={fieldError}/>
+      );
+    }
+  }, [fieldError])
+
+
 
   return(
-    <>
-      <UniversalTextCreator
+    <ScrollView
+      automaticallyAdjustsScrollIndicatorInsets
+      accessibilityIgnoresInvertColors={true}
+      indicatorStyle={"white"}
+       showsVerticalScrollIndicator
+      style={{backgroundColor: customTheme.primary}}
+      contentContainerStyle={ts.justifyAlign}>
+
+    <UniversalTextCreator
         placeholder={placeholder}
         editable={editable}
         heading={heading}
-        postObject={getCardPostObject}
+        source={StoryDefault}
+        response={response}
+        sendData={sendData}
+        setResponse={setResponse}
         Content={
-          <>
-            <DefaultInput
-              placeholder={"About... "}
-              value={storyAbout}
-              onChangeAction={setStoryAbout}
-              extraStyles={{}}
-              max_length= {maxLengthSmall}
-              recordingOption
-              showClearButton
-            />
-            <DefaultInput
-              placeholder={"Genre (Poem, Story,..."}
-              value={genre}
-              onChangeAction={setGenre}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton
-            />
-            <DefaultInput
-              placeholder={"Extra Information's to provide"}
-              value={extraInfos}
-              onChangeAction={setExtraInfos}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton
-            />
-          </>
-        }
+        <>
+          <DefaultInput
+            label={"Type"}
+            placeholder={"Poem, Story,... "}
+            value={kind}
+            onChangeAction={setKind}
+            extraStyles={{}}
+            max_length={maxLengthSmall}
+            recordingOption
+            showClearButton
+          />
+
+          {fieldErrorText()}
+
+          <DefaultInput
+            label={"About "}
+            placeholder={"A Spaceship (optional)"}
+            value={storyAbout}
+            onChangeAction={setStoryAbout}
+            extraStyles={{}}
+            max_length={maxLengthSmall}
+            recordingOption
+            showClearButton/>
+
+          <DefaultInput
+            label={"Genre"}
+            placeholder={"Action, Romantic,... (optional)"}
+            value={genre}
+            onChangeAction={setGenre}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton/>
+
+          <DefaultInput
+            label={"Extra Information's"}
+            placeholder={"Main figure,... (optional)"}
+            value={extraInfos}
+            onChangeAction={setExtraInfos}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton/>
+        </>
+      }
       />
-    </>
+    </ScrollView>
   );
 }
 

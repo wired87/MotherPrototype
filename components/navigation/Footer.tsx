@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-import React, {memo, useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useRef, useState} from "react";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
@@ -19,10 +19,18 @@ import {Recording} from "expo-av/build/Audio/Recording";
 
 import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
 import ToolsNavigator from "../../screens/tools/ToolsNavigation";
-import {checkToolActionValue, getToolActionValue, postToolActionValue} from "../../screens/chat/functions/AdLogic";
+import {
+  checkToolActionValue,
+  getToolActionValue,
+  postToolActionValue,
+  showToolAds
+} from "../../screens/chat/functions/AdLogic";
 import SwipeModal from "../modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
+import {sendObject} from "../../screens/chat/functions/SendProcess";
+import {getToken} from "../../AppFunctions";
+import {useRoute} from "@react-navigation/native";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -53,11 +61,7 @@ const localStyles = StyleSheet.create(
 )
 
 
-
-
-const NavigationMain: React.FC = (
-
-) => {
+const NavigationMain: React.FC = () => {
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
@@ -71,6 +75,14 @@ const NavigationMain: React.FC = (
   const [currentRecording, setCurrentRecording] = useState(false);
   const [userRecording, setUserRecording] = useState<Recording | null>(null);
 
+
+
+
+  const {customTheme} = useContext(ThemeContext)
+
+  // make Active Tabbar Shadow color transparent
+  const theme = useTheme();
+  theme.colors.secondaryContainer = "transparent"
 
   const elements = {
     input, setInput,
@@ -97,24 +109,88 @@ const NavigationMain: React.FC = (
     return await checkToolActionValue(valueToolActions || "1", setToolActionValue);
   };
 
-  //  TOOL CONTEXT
+  const {
+    bottomSheetLoaded,
+    jwtToken,
+    setJwtToken,
+    setLoading
+  } = useContext(PrimaryContext);
+
+
+  ////////////////////////////////////////////  TOOL CONTEXT
   const [toolActionValue, setToolActionValue] = useState<string>("");
-  const [response, setResponse] = useState<string>("");
+
+  const toolPostRequest = async (
+    postUrl: string,
+    postObject: object,
+    setError: Dispatch<SetStateAction<string | object>>,
+    setResponse: Dispatch<SetStateAction<string | object>>,
+  ):Promise<any> => {
+
+    console.log("jwtToken n Application Content:", jwtToken);
+
+    // just show if in one of the tool screens
+    if (toolActionValue === "0") {
+      console.log("User has 0 Actions left. Init Ads...")
+      await showToolAds(toolActionValue, setToolActionValue);
+    }
+
+    setToolActionValue("0");
+
+    setLoading(true);
+    let response;
+
+    try {
+      if (jwtToken?.refresh && jwtToken.access) {
+        console.log("Application data sent: ", postObject);
+        response = await sendObject(
+          postObject,
+          jwtToken,
+          setJwtToken,
+          postUrl
+        );
+      } else {
+        console.error("No token provided");
+        const newToken = await getToken(setJwtToken);
+        if (newToken) {
+          response = await sendObject(
+            postObject,
+            newToken,
+            setJwtToken,
+            postUrl
+          );
+        } else {
+          console.error("New Token request failed...");
+          setError("Authentication Error");
+        }
+      }
+      if (response) {
+        console.log("Application response Successfully:", response);
+        setResponse(response);
+      } else {
+        console.error("Received no result:", response);
+        setError("Error occurred. Please try again or contact the support.");
+      }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+        console.error("Error while contact submit occurred:", e.message);
+      }
+    } finally {
+      console.log("Application request finished without trouble...");
+      setLoading(false);
+    }
+  }
 
   const toolElements = {
     toolActionValue,
     setToolActionValue,
     checkToolActionValueProcess,
-    response, setResponse
+    toolPostRequest
   }
-  const {bottomSheetLoaded
-  } = useContext(PrimaryContext);
 
-  const {customTheme} = useContext(ThemeContext)
+  ////////////////////// !!! TOOL
 
-  // make Active Tabbar Shadow color transparent
-  const theme = useTheme();
-  theme.colors.secondaryContainer = "transparent"
 
 
   const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
@@ -242,6 +318,7 @@ const NavigationMain: React.FC = (
   );
 }
 export default memo(NavigationMain);
+
 /*
  <Tab.Navigator
         shifting={false}

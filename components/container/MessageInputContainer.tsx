@@ -104,6 +104,7 @@ export const MessageInputContainer = (
   return (
     <DefaultContainer
       extraStyles={styles.main}>
+
       <View style={styles.secondContainer}>
         {typeIndicator}
       </View>

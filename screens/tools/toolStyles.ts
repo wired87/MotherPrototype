@@ -10,6 +10,7 @@ export const toolStyles = StyleSheet.create(
       textAlignVertical: "top",
       paddingRight: 15,
     },
+
     speechToTextMainContainer: {
       flexGrow: 1,
       alignItems: "center",
@@ -191,6 +192,25 @@ export const toolStyles = StyleSheet.create(
       borderRadius: 14,
       justifyContent: "center",
       alignItems: "center"
-    }
+    },
+    resultContainer: {
+      flexDirection: "column",
+      paddingVertical: 20,
+      paddingHorizontal: 10,
+      width: windowWidth,
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: 300,
+    },
+    defaultLottieContainer: {
+      marginTop: 0,
+      justifyContent: "flex-start",
+      alignItems: "center",
+      marginBottom: 100,
+    },
+    lottie: {
+      position: "relative",
+      width: 200
+    },
   }
 )

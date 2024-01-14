@@ -162,8 +162,6 @@ export default function getDurationFormatted(milliseconds: any) {
 }
 
 
-
-
 export const getResponse = async (
   setLoading: Dispatch<SetStateAction<boolean>>,
   setError: Dispatch<SetStateAction<string>>,
@@ -173,8 +171,10 @@ export const getResponse = async (
   setResponse: Dispatch<SetStateAction<any>>,
   customPostUrl?: string,
 ) => {
+
   setLoading(true);
   let response;
+
   try {
     if (jwtToken && jwtToken.refresh && jwtToken.access) {
       response = await sendObject(

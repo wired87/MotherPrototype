@@ -3,16 +3,19 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import {Pressable} from "react-native";
 import React, {memo, useContext} from "react";
 import {ThemeContext} from "../../screens/Context";
+import {StyleProps} from "react-native-reanimated";
 
 interface ClearButtonTypes {
   setValue?: ((text: string) => void);
   value: string;
+  ms?: StyleProps;
 }
 
 const ClearButton: React.FC<ClearButtonTypes> = (
   {
     setValue,
-    value
+    value,
+    ms,
   }
 ) => {
 
@@ -21,7 +24,7 @@ const ClearButton: React.FC<ClearButtonTypes> = (
     return (
       <Pressable
         onPress={() => !(setValue) || setValue("") || undefined}
-        style={styles.clearInputFiledBtn}>
+        style={ms || styles.clearInputFiledBtn}>
         <MaterialCommunityIcons color={customTheme.text} name={"close"} size={17}/>
       </Pressable>
     );

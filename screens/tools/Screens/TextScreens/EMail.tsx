@@ -47,7 +47,8 @@ const EmailMain: React.FC  = () => {
         Content={
           <>
             <DefaultInput
-              placeholder={"Which kind of E-Mail?"}
+              label={"Kind of E-Mail"}
+              placeholder={"e.g. Business,..."}
               value={kind}
               onChangeAction={setKind}
               extraStyles={{}}
@@ -56,7 +57,8 @@ const EmailMain: React.FC  = () => {
               showClearButton
             />
             <DefaultInput
-              placeholder={"Goals?"}
+              label={"Goal of the E-Mail"}
+              placeholder={"e.g. Have a nice conversation"}
               value={goal}
               onChangeAction={setGoal}
               extraStyles={{}}
@@ -65,7 +67,8 @@ const EmailMain: React.FC  = () => {
               showClearButton
             />
             <DefaultInput
-              placeholder={"Extra Information's to provide?"}
+              label={"Extra Information's"}
+              placeholder={'e.g. "Be Happy" '}
               value={extraInfos}
               onChangeAction={setExtraInfos}
               extraStyles={{}}

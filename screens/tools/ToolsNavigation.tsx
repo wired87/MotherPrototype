@@ -1,7 +1,6 @@
 import React, {memo, useContext, useEffect, useMemo} from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
-
 import {PrimaryContext, ToolContext} from "../Context";
 import {showToolAds} from "../chat/functions/AdLogic";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
@@ -25,18 +24,16 @@ const ToolsNavigator: React.FC = () => {
 
   // Context
   const { setToolActionValue,
-    toolActionValue, setResponse} = useContext(ToolContext);
+    toolActionValue} = useContext(ToolContext);
 
   const {setFieldError, setError} = useContext(PrimaryContext);
 
   const route = useRoute();
 
   useEffect(() => {
-    setResponse("");
     setError("");
     setFieldError(false); // + bei closed bottomsheet
   }, [route.name]);
-
 
   // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {

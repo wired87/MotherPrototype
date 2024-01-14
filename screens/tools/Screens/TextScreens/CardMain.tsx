@@ -1,13 +1,15 @@
-import {memo, useCallback, useContext, useRef, useState} from "react";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-import {PrimaryContext, ToolContext} from "../../../Context";
+import {memo, useCallback, useContext, useEffect, useState} from "react";
+import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
 import React from "react";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
-
+import {MEDIA_URL, TEXT_REQUEST_URL} from "@env";
+import {ScrollView, Vibration} from "react-native";
+import {DefaultButton} from "../../../../components/buttons/DefaultButton";
+import cardLoading from "../../../../assets/animations/cardLoading.json";
+import {toolStyles as ts} from "../../toolStyles";
+import {DefaultText} from "../../../../components/text/DefaultText";
 //STRINGS
-const clear:string = "close";
-const create:string = "create";
 const placeholder:string = "Your written Card will be shown here";
 const heading:string = "Create Cards for every occasion";
 
@@ -21,22 +23,29 @@ const CardMain: React.FC  = () => {
   const [personFor, setPersonFor] = useState<string>("");
   const [extraInfos, setExtraInfos] = useState<string>("");
   const [moods, setMoods] = useState<string>("");
+  const [kind, setKind] = useState<string>("");
 
   const [editable, setEditable] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const bottomSheetRef = useRef<BottomSheetMethods>(null);
-
+  const [error, setError] = useState<string | object>();
+  const [response, setResponse] = useState<string | object>();
+  const [fieldError, setFieldError] = useState<string>("");
 
   // Context
-  const {setResponse, response } = useContext(ToolContext);
-
+  const {toolPostRequest } = useContext(ToolContext);
+  const {customTheme } = useContext(ThemeContext);
 
   const {user } = useContext(PrimaryContext);
+
+
+  const moreInfosInput = [
+    ts.input, {minHeight: 80}];
+
 
   const getCardPostObject = ():object => {
     return {
       "user_id": user?.uid,
       "input_type": "card",
+      "kind": kind,
       "personFor": personFor,
       "extraInfos": extraInfos,
       "moods": moods
@@ -47,38 +56,90 @@ const CardMain: React.FC  = () => {
     setResponse("");
   }, [response])
 
+
+  const sendData = async () => {
+    if (kind.length == 0){
+      Vibration.vibrate();
+      setFieldError("Please provide a Card Type");
+      return;
+    }
+    await toolPostRequest(
+      TEXT_REQUEST_URL,
+      getCardPostObject(),
+      setError,
+      setResponse
+    )
+  };
+
+  // FIELD ERROR LOGIC
+  useEffect(() => {
+    if (fieldError && fieldError.length > 0) {
+      const interval = setInterval(() => {
+        setFieldError("");
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [fieldError]);
+
+
+  const fieldErrorText = useCallback(() => {
+    if (fieldError && fieldError.length > 0) {
+      return(
+        <DefaultText text={fieldError}/>
+      );
+    }
+  }, [fieldError])
+
   return(
-    <>
+    <ScrollView style={{backgroundColor: customTheme.primary}} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
         placeholder={placeholder}
         editable={editable}
         heading={heading}
-        postObject={getCardPostObject}
+        source={cardLoading}
+        response={response}
+        sendData={sendData}
+        setResponse={setResponse}
         Content={
-          <>
-            <DefaultInput
-              placeholder={"The Card is for... "}
-              value={personFor}
-              onChangeAction={handleClearField}
-              extraStyles={{}}
-              max_length= {maxLengthSmall}
-              recordingOption
-              showClearButton
-            />
+        <>
+          <DefaultInput
+            label={"Card type:"}
+            placeholder={"e.g. Christmas Card,... "}
+            value={kind}
+            onChangeAction={setKind}
+            extraStyles={{}}
+            max_length={maxLengthSmall}
+            recordingOption
+            showClearButton/>
 
-            <DefaultInput
-              placeholder={"Extra Information's to provide?"}
-              value={extraInfos}
-              onChangeAction={setExtraInfos}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton
-            />
-          </>
-        }
+          {fieldErrorText()}
+
+          <DefaultInput
+            label={"The Card is for: "}
+            placeholder={"Grandma"}
+            value={personFor}
+            onChangeAction={setPersonFor}
+            extraStyles={{}}
+            max_length={maxLengthSmall}
+            recordingOption
+            showClearButton/>
+
+          <DefaultInput
+            label={"Extra Information's to provide?"}
+            placeholder={"Thank my grandma for the 50$"}
+            value={extraInfos}
+            onChangeAction={setExtraInfos}
+            extraStyles={moreInfosInput}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton
+            multiline
+            numberOfLines={3}
+          />
+
+        </>}
       />
-    </>
+    </ScrollView>
   );
 }
 

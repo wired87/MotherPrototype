@@ -14,7 +14,6 @@ export const inputStyles = StyleSheet.create({
         height: 50,
         minWidth: 250,
         marginHorizontal: 5,
-        marginTop: 15,
     },
     inputPicker: {
         fontFamily: "JetBrainsMono",

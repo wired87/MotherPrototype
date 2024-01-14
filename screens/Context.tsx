@@ -73,9 +73,7 @@ export const ToolContext= createContext(
     toolActionValue: "",
     setToolActionValue: (() => {}) as Dispatch<SetStateAction<string>>,
 
-    response: "",
-    setResponse: (() => {}) as Dispatch<SetStateAction<string>>,
-
+    toolPostRequest: async (postUrl: string, postObject: object, setError: Dispatch<SetStateAction<string | object>>, setResponse: Dispatch<SetStateAction<string | object>>) => Promise<any>,
 
     checkToolActionValueProcess: async (): Promise<boolean> => false,
   }

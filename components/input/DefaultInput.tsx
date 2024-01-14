@@ -27,13 +27,24 @@ export default interface DefaulttextInputTypes {
 const ls = StyleSheet.create(
   {
     main: {
+      marginTop: 15,
       padding: 0,
       flexDirection: "column",
+      justifyContent:"flex-end",
     },
     recordingButton: {
       position: "absolute",
-      right: -10,
-      top: 15
+      right: -5,
+      bottom: 0
+    },
+    labelText: {
+      fontSize: 13,
+      fontFamily: "JetBrainsMono"
+    },
+    clearContainer: {
+      position: "absolute",
+      bottom: 15,
+      right: 10,
     }
   }
 )
@@ -84,30 +95,19 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     }
   }, [recordingError])
 
-  const recordingButton = useMemo(() => {
-    if (recordingOption) {
-      return(
-        <TranscribeButton
-          setTranscript={(value) => onChangeAction}
-          setError={setRecordingError}
-          transcript={value}
-          buttonStyles={ls.recordingButton}
-        />
-      );
-    }
-  }, [recordingOption])
+
 
   const labelComponent = useCallback(() => {
     if (label && label.length > 0) {
-      return(
-        <DefaultText text={label} />
-      );
+      return <DefaultText text={label} moreStyles={ls.labelText} />
     }else {
       return <></>
     }
-  }, [])
+  }, [label]);
+
 
   return(
+    <>
     <View style={ls.main}>
       {
         labelComponent()
@@ -130,14 +130,19 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
         accessibilityLabel={label || ""}
       />
 
-      {recordingButton}
-      <ClearButton
-        value={value}
-        setValue={onChangeAction}
-      />
-      {recordingErrorMessage}
-
+      {label && label.length == 0?(
+        <TranscribeButton
+          setTranscript={(value) => onChangeAction}
+          setError={setRecordingError}
+          transcript={value}
+          buttonStyles={ls.recordingButton}
+        />
+      ): label && label.length > 0?(
+        <ClearButton value={value} setValue={onChangeAction} ms={ls.clearContainer} />
+      ):null}
     </View>
+    {recordingErrorMessage}
+    </>
   );
 }
 

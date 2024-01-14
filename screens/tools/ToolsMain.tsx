@@ -157,7 +157,7 @@ const lifeButtonList: DataItem[] = [
     navigation: "ChatNavigator",
     color: "rgba(7,40,65,0.36)",
     extraText: "Create Free Diet or training plans",
-    screen: "ChatMain"
+    screen: "FitnessWriter"
   },
   {
     text: "Chat response helper",

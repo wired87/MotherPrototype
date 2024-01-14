@@ -32,7 +32,7 @@ const LyricsMain: React.FC  = () => {
   const getLyricsPostObject = ():object => {
     return {
       "user_id": user?.uid,
-      "input_type": "fitness",
+      "input_type": "lyric",
       "genre": genre,
       "extraInfos": extraInfos,
     }

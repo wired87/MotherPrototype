@@ -85,12 +85,10 @@ const MovieFinder = () => {
     await Linking.openURL(videoLink);
   };
 
-
   const noInput =
     firstMedia.trim().length === 0 &&
     secondMedia.trim().length === 0 &&
     thirdMedia.trim().length === 0;
-
 
   const handleSearch = async () => {
     if (noInput) {
@@ -108,9 +106,41 @@ const MovieFinder = () => {
     setResponseError("");
     setSearchResult(null);
     setSuccessAnimationFinish(false);
-    const searchTerm: string = `${firstMedia}, ${secondMedia}, ${thirdMedia}`;
-    await sendData(searchTerm)
+    await sendData()
   };
+
+
+  const postObject = () => {
+    return {
+      "user_id": getAuth().currentUser,
+      "movies": `${firstMedia}, ${secondMedia}, ${thirdMedia}`,
+      "language": getDeviceLanguage() || "en-US"
+    }
+  }
+
+  const sendData = async () => {
+    const requestBody = postObject();
+    await getResponse(
+      setLoading,
+      setResponseError,
+      setJwtToken,
+      jwtToken,
+      requestBody,
+      setSearchResult,
+      MEDIA_URL
+      )
+    };
+
+
+  // FIELD ERROR LOGIC
+  useEffect(() => {
+    if (fieldError) {
+      const interval = setInterval(() => {
+        setFieldError(false);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [fieldError]);
 
 
   useEffect(() => {
@@ -126,37 +156,6 @@ const MovieFinder = () => {
       return "en-US";
     }
   };
-
-
-  const sendData = async (movieNames: string) => {
-    const endpoint = MEDIA_URL;
-    const requestBody = {
-      "user_id": getAuth().currentUser,
-      "movies": movieNames,
-      "language": getDeviceLanguage() || "en-US"
-    };
-    await getResponse(
-      setLoading,
-      setResponseError,
-      setJwtToken,
-      jwtToken,
-      requestBody,
-      setSearchResult,
-      endpoint
-      )
-    };
-
-
-  // FIELD ERROR LOGIC
-  useEffect(() => {
-    if (fieldError) {
-      const interval = setInterval(() => {
-        setFieldError(false);
-      }, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [fieldError]);
-
 
   const renderInputs = useCallback(() => {
     const inputStyles = [ts.input, textColor];
@@ -189,7 +188,9 @@ const MovieFinder = () => {
           placeholder={`Third Movie/Serie (optional)`}
           showClearButton
         />
+
         {fieldError? <DefaultText text={requiredText} /> :null}
+
       </View>
     );
   }, [firstMedia, secondMedia, thirdMedia, fieldError]);
@@ -210,6 +211,8 @@ const MovieFinder = () => {
       return () => clearInterval(interval);
     }
   }, [alreadyRunning]);
+
+
 
   const movieItem = useCallback((item: Movie) => {
     console.log("Image:", item.image);
@@ -235,7 +238,7 @@ const MovieFinder = () => {
 
 
   const defaultLottie = useCallback((source: string | AnimationObject | { uri: string; }) => {
-    return <LottieView speed={1} style={ls.lottie} source={source} autoPlay loop={false} onAnimationFinish={
+    return <LottieView speed={1} style={ts.lottie} source={source} autoPlay loop={false} onAnimationFinish={
       () => {
         setSuccessAnimationFinish(true);
         console.log("Animation finished...");
@@ -253,7 +256,7 @@ const MovieFinder = () => {
     }else if (!loading && !searchResult){
       return (
         <>
-          <LottieView style={ls.lottie} source={popcornDefault} autoPlay loop={false} />
+          <LottieView style={ts.lottie} source={popcornDefault} autoPlay loop={false} />
           <DefaultText text={defaultMoviePlaceholder} moreStyles={ls.awaitResultText} />
         </>
       )
@@ -276,11 +279,14 @@ const MovieFinder = () => {
 
       {renderInputs()}
 
-      <DefaultButton onPressAction={handleSearch} text={buttonText} />
+      <DefaultButton
+        text={buttonText}
+        onPressAction={handleSearch}
+      />
 
       <DefaultText error text={"Request already running."} moreStyles={errorTextStyles}/>
 
-      <View style={ls.resultContainer}>
+      <View style={ts.resultContainer}>
         {movieResults()}
       </View>
 
@@ -299,9 +305,9 @@ const MovieFinder = () => {
   );
 };
 
+
 export default memo(MovieFinder);
 
-const windowWidth = Dimensions.get('window').width;
 
 const ls = StyleSheet.create({
   input: {
@@ -349,19 +355,7 @@ const ls = StyleSheet.create({
     width: "67%",
     paddingLeft: 5,
   },
-  resultContainer: {
-    flexDirection: "column",
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    width: windowWidth,
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: 300,
-  },
-  lottie: {
-    position: "relative",
-    width: 200
-  },
+
   awaitResultText: {
     marginTop: 5,
   }
