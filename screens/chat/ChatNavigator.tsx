@@ -1,10 +1,9 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import React, {memo, MutableRefObject, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 // @ts-ignore
 import {ChatMain} from "./ChatMain";
-import {useDispatch} from "react-redux";
 import {StyleSheet, Vibration} from "react-native";
 
 // Context
@@ -21,9 +20,9 @@ import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import {IconButton} from "react-native-paper";
 import SwipeModal from "../../components/modals/SwipeModal";
 import ChatMenuModalContent from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
+import {CHAT_REQUEST_URL} from "@env";
 
 interface ChatNavigationTypes {
-  dispatchHistorySent: (value: boolean) => void,
   bottomSheetRef: React.RefObject<BottomSheetMethods>;//(number: number) => void;
 }
 
@@ -42,9 +41,8 @@ interface userMesssageObject {
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////// VARIABLES
 
+/////////////////////////////////////// VARIABLES
 
 const iconStyles = StyleSheet.create(
   {
@@ -60,7 +58,6 @@ const ChatStack = createNativeStackNavigator();
 const ChatNavigation: React.FC<ChatNavigationTypes> = (
   { bottomSheetRef }
 ) => {
-  const dispatch = useDispatch();
 
   const [history, setHistory] = useState(false);
 
@@ -82,7 +79,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     clearMessages,
     jwtToken,
     setJwtToken,
-    isConnected
   } = useContext(PrimaryContext);
 
   // REFS
@@ -97,7 +93,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {
     console.log("Real Messages Left:", messagesLeft)
-    showAds(dispatch, messagesLeft, setMessagesLeft)
+    showAds(messagesLeft, setMessagesLeft)
       .then(() => console.log("Ads successfully showed. Refilled the Messages"));
   }, [messagesLeft]);
 
@@ -114,7 +110,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     console.log("jwt ref:", jwtTokenRef.current);
   }, [jwtToken]);
 
-  const errorMessageAIResponse = useCallback(() => {
+  const errorMessageAIResponse = () => {
     console.log("Error AIResponse created.. ")
     const aiResponse =  createMessageObject(
       "We could not authenticate you. I have contacted the support Team, for you, to fix the problem." +
@@ -127,7 +123,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     )
     setMessageIndex((state: number) => state + 1);
     setMessages(prevMessages => [...prevMessages, aiResponse]);
-  }, [messageIndex, messages])
+  }
 
 
   const sendPackage = async (userMessage: any) => {
@@ -135,11 +131,12 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     try {
       console.log("Sending Message Object...")
       if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
-        console.log("jwtTokenRef:", jwtTokenRef);
+        console.log("jwtTokenRef sendPackage:", jwtTokenRef);
         const response = await sendObject(userMessage, jwtTokenRef.current , setJwtToken);
+
         if (!response) {
           // Error while sending the message. -> Send contact
-          console.log("sendPackage Response === null...")
+          console.log("sendObject Response === null... (in ChatNav)")
           errorMessageAIResponse();
         }else{
           console.log("Create AI Message with response:", response);

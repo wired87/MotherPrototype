@@ -2,7 +2,6 @@ import {DefaultContainer} from "../DefaultContainer";
 import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
 import {View} from "react-native";
-import {useSelector} from "react-redux";
 
 import React, {memo, useContext, useMemo} from "react";
 import {styles} from "../contiStyles";
@@ -31,11 +30,12 @@ const localStyles = StyleSheet.create(
   }
 )
 
+// STRINGS
+const notHere: string = "Do you have any ideas for future tools?";
+const contactFeatureText:string = "Please fill out the Contact Form with your wishes. \nWe will contact you ASAP.";
+const featuresInFuture: string = "Features in Future";
 
-// @ts-ignore
-const FeaturesInFuture = () => {
-  // @ts-ignore
-  const text = useSelector(state => state.text.value);
+const FeaturesInFuture: React.FC = () => {
 
   const { customTheme } = useContext(ThemeContext);
   const extraTextStyles = [localStyles.extraTextStyles, {color: customTheme.text}];
@@ -68,10 +68,11 @@ const FeaturesInFuture = () => {
   const sectionHeaderComponent = useMemo(() => {
     return () =>
       <HeadingText
-        text={text.featuresInFuture}
+        text={featuresInFuture}
         extraStyles={undefined}
       />
   }, []);
+
 
 
   return(
@@ -81,11 +82,11 @@ const FeaturesInFuture = () => {
 
         <View style={localStyles.footerMainContainer}>
           <DefaultText
-            text={text.notHere}
+            text={notHere}
             moreStyles={extraTextStyles}
           />
           <DefaultText
-            text={text.contactFeatureText}
+            text={contactFeatureText}
             moreStyles={extraTextStyles}/>
         </View>
 

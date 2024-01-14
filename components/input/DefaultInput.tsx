@@ -1,5 +1,5 @@
 import {KeyboardTypeOptions, TextInput, View,StyleSheet} from "react-native";
-import React, {useContext, useMemo, useState} from "react";
+import React, {useCallback, useContext, useMemo, useState} from "react";
 import {inputStyles} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import TranscribeButton from "../buttons/TranscribeButton";
@@ -21,6 +21,7 @@ export default interface DefaulttextInputTypes {
   noBorder?: boolean;
   recordingOption?: boolean;
   showClearButton?: boolean;
+  label?: string;
 }
 
 const ls = StyleSheet.create(
@@ -54,7 +55,8 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     max_length,
     noBorder,
     recordingOption,
-    showClearButton
+    showClearButton,
+    label
   }
 
 ) => {
@@ -95,9 +97,21 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     }
   }, [recordingOption])
 
+  const labelComponent = useCallback(() => {
+    if (label && label.length > 0) {
+      return(
+        <DefaultText text={label} />
+      );
+    }else {
+      return <></>
+    }
+  }, [])
 
   return(
     <View style={ls.main}>
+      {
+        labelComponent()
+      }
       <TextInput
         selectionColor={customTheme.errorText}
         multiline={multiline || false}
@@ -113,6 +127,7 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
         editable={editable || true}
         keyboardType={keyboardType}
         blurOnSubmit={true}
+        accessibilityLabel={label || ""}
       />
 
       {recordingButton}

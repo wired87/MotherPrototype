@@ -105,16 +105,12 @@ export const checkToolActionValue = async (value: string | boolean | null, setTo
   }
 }
 
-export const showAds = async (dispatch: any, messagesLeft: string, setMessagesLeft: any) => {
+export const showAds = async (messagesLeft: string, setMessagesLeft: any) => {
   if (messagesLeft === "0") {
     console.log("Ads initialized..")
     const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
       RewardedAdEventType.LOADED,
       () => {
-        dispatch({
-          type: "FULL_SCREEN_AD",
-          payload: true
-        });
         rewardedInterstitial.show()
       },
     );

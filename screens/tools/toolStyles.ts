@@ -110,10 +110,11 @@ export const toolStyles = StyleSheet.create(
     main: {
       flex: 1,
       paddingTop: 30,
-      justifyContent: "flex-start",
-      alignItems: "center",
     },
-
+  contentContainerMovie: {
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
 
     flatListContainer: {
       marginTop: 40,

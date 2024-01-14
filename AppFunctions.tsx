@@ -1,6 +1,5 @@
 import * as SecureStore from "expo-secure-store";
-import {Alert} from "react-native";
-import * as Linking from "expo-linking";
+import {Alert, Linking} from "react-native";
 import {JwtToken} from "./screens/Context";
 import RNRestart from 'react-native-restart';
 import {Dispatch, SetStateAction} from "react";
@@ -21,10 +20,10 @@ const errorUrl: string = `https://mail.google.com/mail/?view=cm&fs=1&to=codingWi
 export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
   try {
     const JwtToken = await SecureStore.getItemAsync("JwtData");
-    console.log("JWtToken:", JwtToken);
+    console.log("Token available...");
     if (JwtToken) {
       const parsedToken = JSON.parse(JwtToken);
-      console.log("parsedToken", parsedToken)
+      console.log("parsedToken checkTokenAvailability:", parsedToken)
       return parsedToken;
     }
   }catch(e: unknown){
@@ -36,12 +35,12 @@ export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
 
 export const saveJwtToken = async (data: JwtToken) => {
   const jsonData = JSON.stringify(data);
+  console.log("Data saved in Secure Store:", jsonData);
   await SecureStore.setItemAsync("JwtData", jsonData);
 }
 
 export const getToken = async (setJwtToken: Dispatch<SetStateAction<JwtToken | null>>) => {
   const userJwtTokenExist = await checkTokenAvailability();
-  console.log("userJwtTokenExist:", userJwtTokenExist);
   if (userJwtTokenExist) {
     try {
       await checkExistingToken(userJwtTokenExist, setJwtToken);
@@ -59,7 +58,6 @@ export const getToken = async (setJwtToken: Dispatch<SetStateAction<JwtToken | n
 
 export const checkExistingToken = async (token: JwtToken, setJwtToken: Dispatch<SetStateAction<JwtToken | null>>) => {
   // Generate here a new access token with sending the refresh token to the Backend
-  console.log("checkEndpoint:", checkEndpoint);
   const res = await fetch(checkEndpoint, {
     method: 'POST',
     headers: {
@@ -67,19 +65,22 @@ export const checkExistingToken = async (token: JwtToken, setJwtToken: Dispatch<
     },
     body: JSON.stringify({"refresh": token.refresh}),
   });
-  console.log("res checkEndpoint:", res);
   const response = await res.json();
 
   console.log("checkEndpoint Response:", response);
+
   if (response.refresh && response.refresh.access) {
-    console.log("accessToken received..");
+    console.log("AccessToken valid...");
+    console.log("AccessToken checkexistingToken:", response.refresh.access);
     token.access = response.refresh.access;
+    console.log("Updated Token.access checkexistingToken:", token.access);
     await saveJwtToken(token);
     setJwtToken(token);
-    console.log("Token was successfully Set..");
-    return response.refresh.access;
+    console.log("Token successfully Set...");
+
+    return response.refresh;
   }else {
-    console.log("response contains not refresh...")
+    console.log("response contains no valid token...")
     const tokenResponse = await getNewTokenProcess(setJwtToken);
     if (!tokenResponse) {
       return null;

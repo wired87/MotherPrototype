@@ -1,9 +1,8 @@
 import MasonryList from '@react-native-seoul/masonry-list';
 import {LinearGradient} from 'expo-linear-gradient';
-import React, {memo, useCallback, useContext, useEffect, useMemo, useState} from 'react';
-import {FlatList, Pressable, StyleProp, Text, View, ViewStyle, Image} from 'react-native';
+import React, {memo, useCallback, useContext, useMemo, useState} from 'react';
+import {FlatList, Pressable, StyleProp, Text, View, ViewStyle, Image, Linking} from 'react-native';
 import ToolItemButton from "../../components/buttons/ToolitemButton";
-import * as Linking from "expo-linking";
 import {ThemeContext} from "../Context";
 import {LINKMINK_AFFILIATE_URL, NEURONWRITER_AFFILIATE_LINK, ORIGIBNALITY_AFFILITE_UTR} from "@env";
 import {toolStyles as styles} from "./toolStyles";
@@ -66,21 +65,37 @@ const carouselData: CarouselDataTypes[] =
 ]
 
 const businessButtonList: DataItem[] = [
-  /*{
-    text: "Document Editor",
-    color: "rgba(255,255,0,.4)",
+  {
+    text: "Product Text writer",
+    color: "rgba(7,9,56,0.4)",
     icon: "sticker-text-outline",
     navigation: "ChatNavigator",
-    extraText: "Edit any documents",
-    screen: "DocumentEditor"
-  }*/
+    extraText: "Create Slogans, product Descriptions,...",
+    screen: "ProductWriter"
+  },
   {
     text: "Idea finder",
     color: "#232f44",
     icon: "lightbulb-on-outline",
     navigation: "ChatNavigator",
     extraText: "Share your ideas for feedback or create some for your next Business",
-    screen: "ideaFinder"
+    screen: "IdeaFinder"
+  },
+  {
+    text: "Resume creator",
+    color: "rgba(50,112,196,0.2)",
+    icon: "format-float-left",
+    navigation: "ChatNavigator",
+    extraText: "AI job Application writer",
+    screen: "ResumeCreator"
+  },
+  {
+    text: "E-Mail writer",
+    color: "rgba(50,112,196,0.2)",
+    icon: "gmail",
+    navigation: "ChatNavigator",
+    extraText: "Professional Email writer",
+    screen: "EmailWriter"
   },
 ]
 
@@ -94,21 +109,29 @@ const creativeButtonList: DataItem[] = [
     screen: "Speech-to-Text"
   },
   {
-    text: "Resume creator",
-    color: "rgba(50,112,196,0.2)",
-    icon: "format-float-left",
+    text: 'Card writer',
+    color: "rgba(0,43,72,0.7)",
+    icon: "map-outline",
     navigation: "ChatNavigator",
-    extraText: "AI job Application writer",
-    screen: "ResumeCreator"
+    extraText: "Create greeting Cards for Birthday, Christmas,...",
+    screen: "CardWriter"
   },
-  /*{
-    text: "Image editor",
-    color: 'rgba(127,0,255,0.6)',
-    icon: "wallpaper",
+  {
+    text: "Story writer",
+    color: "rgba(11,31,59,0.2)",
+    icon: "book-open-page-variant",
     navigation: "ChatNavigator",
-    extraText: "Dont like the Background of an image? Change it!",
-    screen: "ImageEditor"
-  }*/
+    extraText: "Write the next best seller...",
+    screen: "StoryWriter"
+  },
+  {
+    text: "Lyric writer",
+    color: "rgba(7,5,61,0.2)",
+    icon: "cellphone-text",
+    navigation: "ChatNavigator",
+    extraText: "Create Lyrics for every Music genre",
+    screen: "LyricWriter"
+  },
 ]
 
 const lifeButtonList: DataItem[] = [
@@ -126,16 +149,16 @@ const lifeButtonList: DataItem[] = [
     navigation: "ChatNavigator",
     color: "rgba(255,255,255,.2)",
     extraText: "Keep yourself informed!",
-    screen: "ImageExplanation"
+    screen: "ChatMain"
   },
-  /*{
-    text: "Image explanation",
-    color: "rgba(255,165,0,.4)",
-    icon: "tooltip-image-outline",
+  {
+    text: "Fitness Assistant",
+    icon: "food-apple",
     navigation: "ChatNavigator",
-    extraText: "What's on that image?",
-    screen: "ImageExplanation"
-  },*/
+    color: "rgba(7,40,65,0.36)",
+    extraText: "Create Free Diet or training plans",
+    screen: "ChatMain"
+  },
   {
     text: "Chat response helper",
     color: "rgba(50,112,196,0.2)",

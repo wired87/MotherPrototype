@@ -1,9 +1,7 @@
 import {DefaultContainer} from "./DefaultContainer";
 import {TextInput, View, Vibration, Pressable, ActivityIndicator} from "react-native";
 import {styles} from "./contiStyles";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import React, {useCallback, useContext, useMemo, useState} from "react";
-import { useDispatch } from "react-redux";
 import { TypeIndicator } from "../animations/TypeIndicator";
 
 import {showAds} from "../../screens/chat/functions/AdLogic";
@@ -52,7 +50,6 @@ export const MessageInputContainer = (
 
   const { sendMessageProcess } = useContext(FunctionContext);
   const recordingButtonStyles = {margin: 10}
-  const dispatch = useDispatch();
 
 
 
@@ -63,7 +60,7 @@ export const MessageInputContainer = (
       await sendMessageProcess()
     } else if (messagesLeft === "0") {
       console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
-      await showAds(dispatch, messagesLeft, setMessagesLeft)
+      await showAds(messagesLeft, setMessagesLeft)
     } else {
       console.log("Already Sent Message, length === 0 or just whitespace")
     }
@@ -85,7 +82,6 @@ export const MessageInputContainer = (
     if (input?.trim().length > 0) {
       return(
         <>
-
           <IconButton
             onPress={send}
             style={extraSendStyles}

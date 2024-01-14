@@ -68,6 +68,13 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
       "Speech-to-Text",
       "ResumeCreator",
       "ChatResponseHelper",
+      "MovieFinder",
+      "EmailWriter",
+      "CardWriter",
+      "ProductWriter",
+      "StoryWriter",
+      "FitnessWriter",
+
     ];
     return navigation.canGoBack() && screensToShowBackIcon.includes(route.name) &&
       !["ChatMain", "ChatNavigation"].includes(route.name);

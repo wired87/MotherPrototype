@@ -25,9 +25,11 @@ const DefaultImage: React.FC<DefaultImageTypes> = (
 
   const image = source? {uri: source} : {error_img}
 
+  console.log("Image received:", source);
+
   return (
     <View style={ls.main}>
-      {isLoading && <ActivityIndicator />}
+      {isLoading && <ActivityIndicator size={20} color={customTheme.text}/>}
       {hasError && (
         <>
           <MaterialCommunityIcons name={"close"} size={25} color={customTheme.placeholder} />
@@ -35,12 +37,14 @@ const DefaultImage: React.FC<DefaultImageTypes> = (
         </>
       )}
       <Image
+        style={ls.image}
         source={image}
         onLoadStart={() => {setIsLoading(true); setHasError(false);}}
         onLoad={() => setIsLoading(false)}
         onLoadEnd={() => setIsLoading(false)}
         onError={() => setHasError(true)}
       />
+      <MaterialCommunityIcons color={"rgba(255,255,255,.5)"}  size={80} style={ls.icon} name={"play-circle-outline"}/>
     </View>
   );
 }
@@ -59,8 +63,12 @@ const ls = StyleSheet.create(
       justifyContent: "center",
       alignItems: "center",
       flexDirection: "column",
-      width: "100%",
+      width: "33%",
       height: "100%",
     },
+    icon: {
+      position: "absolute",
+
+    }
   }
 )

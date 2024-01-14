@@ -3,7 +3,6 @@ import { View, StyleSheet } from 'react-native';
 
 import {ThemeContext} from "../Context";
 
-import LottieView from "lottie-react-native";
 
 export const PurchaseScreen = () => {
 

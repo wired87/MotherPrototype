@@ -14,6 +14,8 @@ import {MessageInputContainer} from "../../components/container/MessageInputCont
 
 // @ts-ignore
 import {InputContext, ThemeContext} from "../Context";
+import SingleErrorMessage from "../../components/container/chat/SingleErrorMessage";
+import {StyleProps} from "react-native-reanimated";
 
 const localStyles = StyleSheet.create(
   {
@@ -74,14 +76,15 @@ export const ChatMain = (
   const mainViewStyles =
     [localStyles.main, {backgroundColor: customTheme.primary}];
 
-  const primaryTextStyles = {textAlign: "justify", marginBottom: 15, color: customTheme.text}
-  const secondaryTextStylesText = {color: customTheme.text, fontSize: 10, position: "absolute", left: 10, bottom: 3}
+  const primaryTextStyles: StyleProps =
+    {textAlign: "justify", marginBottom: 15, color: customTheme.text}
+  const secondaryTextStylesText: StyleProps =
+    {color: customTheme.text, fontSize: 10, position: "absolute", left: 10, bottom: 3}
 
   const renderItem = useCallback(({ item }: { item: any }): JSX.Element => {
     if (item && item.type === "error") {
       return (
-        // here error Message Container with Contact and Refresh Button.
-        <></>
+        <SingleErrorMessage />
       );
     }else if (item && item.type === "text") {
       return(

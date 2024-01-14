@@ -37,6 +37,7 @@ export const postMessageObject = async (
   const { timeout = 20000 } = options;
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
+  console.log("POSTMESSAGEOBJECT JWT TOKEN:", jwtToken);
   try {
     const response = await fetch(postUrl, {
       method: 'POST',
@@ -48,7 +49,8 @@ export const postMessageObject = async (
       ...options,
       signal: controller.signal
     });
-    console.log("Response:", response);
+    console.log("Response postMessageObject:", response);
+
     clearTimeout(id);
     let data;
     try {
@@ -78,8 +80,8 @@ export const sendObject = async (
   setJwtToken: Dispatch<SetStateAction<JwtToken | null>>,
   customPostUrl?: string
 ) => {
-  const postUrl:string = CHAT_REQUEST_URL;
 
+  // CHECK TOKEN DATA FOR EXP
   const jwtTokenData = getTokenInfoData(jwtToken)
   if (jwtTokenData.refreshExp) {
     console.log("REFRESH Token expired. Creating a new one...");
@@ -103,23 +105,42 @@ export const sendObject = async (
     console.log("sendObject jwtToken.access old State:", jwtToken.access);
     jwtToken.access = newTokenObject.access;
   }
+  // POST THE MESSAGE
   try {
     console.log("Create the post Object with accessToken:", jwtToken.access)
     const response = await postMessageObject(
       jwtToken.access,
       senderObject,
-      customPostUrl || postUrl,
+      customPostUrl || CHAT_REQUEST_URL,
       {
         timeout: 20000
       }
     );
+
     console.log("sendObject res ===", response)
     if (!response) {
       return null;
     }else if (response.detail){
       const checkTokenAgain = await checkExistingToken(jwtToken, setJwtToken);
       if (!checkTokenAgain) {
+        console.log("Could not receive a valid Token postMessageObject...")
         return null;
+      }else {
+        console.log("TRY AGAIN TO SEND THE MESSAGE WITH UPDATED TOKEN:", checkTokenAgain);
+        const response = await postMessageObject(
+          checkTokenAgain.access,
+          senderObject,
+          customPostUrl || CHAT_REQUEST_URL,
+          {
+            timeout: 20000
+          }
+        );
+        console.log("sendObject res ===", response)
+        if (!response && !response.message) {
+          return;
+        }else{
+          return response.message;
+        }
       }
     }else if (errorCodes.includes(response.status.toString())) {
       return null;
@@ -192,62 +213,6 @@ export const getResponse = async (
   }
 };
 
-
-
-
-
-
-
-
-/*
-export const postMessageObject = (
-  senderObject: any,
-  options: any
-) => {
-
-  const { timeout = 8000 } = options
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  console.log("JSON.stringify(senderObject)", JSON.stringify(senderObject))
-  try {
-    const response = fetch("http://192.168.178.51:8080/open/chat-request/", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(senderObject),
-      ...options,
-      signal: controller.signal
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-
-    clearTimeout(id);
-    console.log("Chat Request response", response);
-    return response
-  } catch(e: any) {
-    console.log("error in postMessageObject- method:", e)
-    if (e.name == "AbortError") {
-      console.error("Timeout Limit reached or Error occurred in postMessageObject while post the senderObject", e)
-    }else if (e.name === "TypeError") {
-
-    }
-  }
-}
-
-return {
-        data: {
-          message: "Ups that request is taking too much time." +
-            "\nIf that issue is coming up again feel free to contact the support to fix it."
-        },
-        status: 200,
-      }
- */
 
 export const createMessageObject = (
   input: string,

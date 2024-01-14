@@ -9,8 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-import {useDispatch} from "react-redux";
-import React, {memo, useCallback, useContext, useEffect, useRef, useState, useLayoutEffect } from "react";
+import React, {memo, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
@@ -72,6 +71,7 @@ const NavigationMain: React.FC = (
   const [currentRecording, setCurrentRecording] = useState(false);
   const [userRecording, setUserRecording] = useState<Recording | null>(null);
 
+
   const elements = {
     input, setInput,
     messagesLeft, setMessagesLeft,
@@ -99,11 +99,13 @@ const NavigationMain: React.FC = (
 
   //  TOOL CONTEXT
   const [toolActionValue, setToolActionValue] = useState<string>("");
+  const [response, setResponse] = useState<string>("");
 
   const toolElements = {
     toolActionValue,
     setToolActionValue,
-    checkToolActionValueProcess
+    checkToolActionValueProcess,
+    response, setResponse
   }
   const {bottomSheetLoaded
   } = useContext(PrimaryContext);
@@ -114,7 +116,6 @@ const NavigationMain: React.FC = (
   const theme = useTheme();
   theme.colors.secondaryContainer = "transparent"
 
-  const dispatch = useDispatch();
 
   const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
 
@@ -136,18 +137,6 @@ const NavigationMain: React.FC = (
     }
   }, []);
 
-
-
-
-
-
-  const dispatchHistorySent = (value: boolean) => {
-    dispatch({
-      type: "HISTORY_SENT",
-      payload: value
-    })
-    console.log("Dispatched History Text.")
-  }
 
   // STYLES
   const footerIconColor = customTheme.text;
@@ -198,7 +187,6 @@ const NavigationMain: React.FC = (
                   value={elements}>
                   <ChatNavigation
                     bottomSheetRef={bottomSheetRef}
-                    dispatchHistorySent={dispatchHistorySent}
                   />
                 </InputContext.Provider>
               }

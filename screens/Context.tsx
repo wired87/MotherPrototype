@@ -32,8 +32,13 @@ export const PrimaryContext = createContext(
 
     bottomSheetLoaded: false,
     setBottomSheetLoaded: (() => {}) as Dispatch<SetStateAction<boolean>>,
-  });
 
+    error: "",
+    setError: (() => {}) as Dispatch<SetStateAction<string>>,
+
+    fieldError: false,
+    setFieldError: (() => {}) as Dispatch<SetStateAction<boolean>>,
+  });
 
 export const InputContext = createContext({
 
@@ -67,6 +72,11 @@ export const ToolContext= createContext(
   {
     toolActionValue: "",
     setToolActionValue: (() => {}) as Dispatch<SetStateAction<string>>,
+
+    response: "",
+    setResponse: (() => {}) as Dispatch<SetStateAction<string>>,
+
+
     checkToolActionValueProcess: async (): Promise<boolean> => false,
   }
 )
@@ -124,6 +134,7 @@ export interface Theme {
   aiTextMessage: string;
   mirageChatMainColor: string;
   categoryButton: string;
+  movieBox: string;
 }
 
 export const lightModeTheme: Theme = {
@@ -148,6 +159,7 @@ export const lightModeTheme: Theme = {
   aiTextMessage: "rgba(0,0,0,.2)",
   mirageChatMainColor: "rgba(1,21,42,0.42)",
   categoryButton: "rgba(0,0,0,0.76)",
+  movieBox: "rgba(0,0,0,0.76)"
 }
 
 export const darkModeTheme: Theme = {
@@ -172,6 +184,7 @@ export const darkModeTheme: Theme = {
   aiTextMessage: "rgba(215,215,215,0.2)",
   mirageChatMainColor: "rgba(255,255,255, .6)",
   categoryButton: "rgba(255,255,255,0.1)",
+  movieBox: "rgba(0,0,0,0.76)",
 
 }
 

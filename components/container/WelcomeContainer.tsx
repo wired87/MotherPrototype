@@ -9,7 +9,7 @@ import {ThemeContext} from "../../screens/Context";
 // STRINGS
 const headingText:string = "Welcome to the Beta!";
 const welcomeText:string = "I'm Happy you are here!";
-const reminder:string= "Please report any Bugs that you can find so I can make the experience best possible for you.";
+const reminder:string= "We would appreciate to report any Bug that you can find.";
 const wishes:string = "Have a great Time!"
 
 

@@ -1,47 +1,46 @@
 import {toolStyles as ts} from "../../../screens/tools/toolStyles";
 import {DefaultInput} from "../../input/DefaultInput";
-import {IconButton, ProgressBar} from "react-native-paper";
-import {KeyboardAvoidingView, Text, View} from "react-native";
-import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
-
-const clear = "close";
+import {IconButton} from "react-native-paper";
+import {KeyboardAvoidingView, View} from "react-native";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useState} from "react";
 
 import {memo} from "react";
 import {PrimaryContext, ThemeContext} from "../../../screens/Context";
 import BottomImage from "../../images/BottomImage";
-import * as Print from "expo-print";
-import {inputStyles} from "../../input/styles";
 import CopyButton from "../../buttons/CopyButton";
 import DefaultProgressBar from "../../animations/DefaultProgressBar";
+import TextStream from "../../text/TextStream";
+import {DefaultButton} from "../../buttons/DefaultButton";
+
+// STRINGS
+const clear:string = "close";
+const postUrl:string = "wired87.pythonanywhere.com/ai-creation/text-request";
 
 interface TextResultTypes {
-  value: string;
   placeholder: string;
   editable: boolean;
-  changeText: Dispatch<SetStateAction<string>>;
   heading: string;
-  Content: React.ReactElement
+  Content: React.ReactElement;
+  postObject: object
 }
 
 const UniversalTextCreator: React.FC<TextResultTypes> = (
   {
-    value,
     placeholder,
     editable,
-    changeText,
     heading,
     Content,
+    postObject
   }
 ) => {
-  const [ streamedHeading, setStreamedHeading ] = useState<string>("");
-  const [ currentHeadingIndex, setCurrentHeadingIndex ] = useState<number>(0);
-
   // Context
   const { customTheme } = useContext(ThemeContext);
   const { loading } = useContext(PrimaryContext);
+  const [ response, setResponse] = useState<string>("");
 
   // STYLES
   const buttonColor  = customTheme.text;
+
 
   const transcriptInputStyles = [
     ts.input, {
@@ -54,55 +53,34 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     backgroundColor: customTheme.primary
   };
 
+
   const mainContainerStyles =
     [
       ts.speechToTextMainContainer,
       backgroundColor
     ];
 
-  useEffect(() => {
-    if (currentHeadingIndex < heading.length) {
-      const timer: NodeJS.Timeout = setTimeout(() => {
-        setStreamedHeading(prevMessage => prevMessage + heading.charAt(currentHeadingIndex));
-        setCurrentHeadingIndex((prevIndex: number) => prevIndex + 1);
-      }, 50);
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentHeadingIndex, heading]);
-
-
 
   const handleClearField = useCallback(() => {
-    changeText("");
-  }, [value])
+    setResponse("");
+  }, [response])
 
-  const defaultTextColor = {color: customTheme.text};
 
-  const handleDownloadClick = useCallback(async () => {
-    try {
-      const htmlContent = `<html><body><p>${value}</p></body></html>`;
-      const { uri } = await Print.printToFileAsync({
-        html: htmlContent
-      });
-
-      console.log('PDF erstellt: ', uri);
-      //await sharePdf(uri, setError)
-    } catch (error) {
-      console.error('Fehler beim Erstellen des PDFs: ', error);
-    }
-  }, [value]);
-
-  const moreHeadingStreamInputStyles = [inputStyles.streamHeadingInput, defaultTextColor]
   return(
     <KeyboardAvoidingView style={mainContainerStyles}>
 
-    <Text
-      style={moreHeadingStreamInputStyles}>
-      {streamedHeading}
-    </Text>
+    <TextStream message={heading}/>
 
       {Content}
+
+      <DefaultButton
+        extraStyles={undefined}
+        onPressAction={undefined}
+        postUrl={postUrl}
+        setPostResponse={setResponse}
+        field={undefined}
+        postObject={postObject}
+      />
 
       <DefaultProgressBar loading={loading} />
 
@@ -111,16 +89,17 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
           numberOfLines={10}
           editable={editable}
           placeholder={placeholder}
-          value={value}
-          onChangeAction={changeText}
+          value={response}
+          onChangeAction={setResponse}
           extraStyles={transcriptInputStyles}
           multiline={true}
         />
 
         <IconButton size={20} iconColor={buttonColor} style={ts.clearButton} onPress={handleClearField} icon={clear} />
-        <CopyButton value={value} />
+        <CopyButton value={response} />
 
       </View>
+
       <BottomImage />
     </KeyboardAvoidingView>
   );

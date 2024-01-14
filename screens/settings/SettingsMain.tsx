@@ -5,9 +5,9 @@ import {
   StyleSheet,
   Text,
   SectionList,
+  Linking,
 } from 'react-native'
 
-import * as Linking from 'expo-linking';
 
 import {styles} from "../../components/styles"
 import SwipeModal from '../../components/modals/SwipeModal';
@@ -119,16 +119,20 @@ const localStyles = StyleSheet.create(
 export const  SettingsMain = () => {
   const [data, setData] = useState(null);
 
+
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const setNewData = useCallback((value: any) => setData(value), []);
+
 
   const { loading } = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
   const {status} = useContext(SettingsContext);
 
+
   const updateModalIndex = useCallback((number: number) => {
     bottomSheetRef.current?.snapToIndex(number);
   }, []);
+
 
   const statusData = useMemo(() => {
     if (loading) {
@@ -155,7 +159,6 @@ export const  SettingsMain = () => {
       return React.createElement(data);
     }
   }, [status, data, loading])
-
 
 
   const sections = [

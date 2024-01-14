@@ -6,7 +6,7 @@ import failLottie from "../../assets/animations/failLottie.json";
 import {BottomSheetView} from "@gorhom/bottom-sheet";
 import {DefaultButton} from "../buttons/DefaultButton";
 import {ThemeContext} from "../../screens/Context";
-import * as Linking from "expo-linking";
+import {Linking} from "react-native";
 
 // STRINGS
 const message:string = "I have detected an Error in the Job Application Tool: >>>Description Here<<<. \nPlease fix it asap!";

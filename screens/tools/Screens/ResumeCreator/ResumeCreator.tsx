@@ -18,22 +18,27 @@ const ResumeCreator: React.FC = () => {
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const [resume, setResume] = useState<string>("");
 
+  
   // Context
   const { customTheme } = useContext(ThemeContext);
 
+
   // STYLES
   const backgroundColor = {backgroundColor: customTheme.primary};
+
 
   const Content = useMemo(() => {
     return <ResumeContent
               setError={setError}
               setResume={setResume}
     />
-  }, [])
+  }, []);
+
 
   const updateModalIndex = useCallback((number:number) => {
       bottomSheetRef?.current?.snapToIndex(number);
   }, [])
+
 
   useEffect(() => {
     if (error.length > 0) {
@@ -41,6 +46,7 @@ const ResumeCreator: React.FC = () => {
       updateModalIndex(2);
     }
   }, [error]);
+
 
   return(
     <ScrollView style={backgroundColor} contentContainerStyle={ts.justifyAlign}>

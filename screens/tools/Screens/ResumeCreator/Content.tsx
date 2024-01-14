@@ -18,6 +18,8 @@ import {Vibration} from "react-native";
 import {getCurrentLanguage, getToken} from "../../../../AppFunctions";
 import {toolStyles as ts} from "../../toolStyles";
 import {showToolAds} from "../../../chat/functions/AdLogic";
+import {Style} from "react-native-paper/lib/typescript/components/List/utils";
+import {StyleProps} from "react-native-reanimated";
 
 // STRINGS
 const titlePlaceholder: string = "Job Title";
@@ -66,12 +68,12 @@ const ResumeContent: React.FC<ResumeTypes> = (
     user } = useContext(PrimaryContext);
 
   // STYLES
-  const extraInputStyles = {backgroundColor: "transparent", borderColor: customTheme.text}
-  const workExperienceStyles = [ts.input, {minHeight: 100}];
+  const extraInputStyles: StyleProps = {backgroundColor: "transparent", borderColor: customTheme.text}
+  const workExperienceStyles: StyleProps = [ts.input, {minHeight: 100}];
 
   const get_language = useCallback((language: string) => {
     return language.length === 0? getCurrentLanguage() : language
-  }, [])
+  }, []);
 
   const createApplicationObject = (
     user: firebase.User | null

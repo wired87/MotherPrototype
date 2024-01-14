@@ -4,7 +4,6 @@ import DefaultPageNavigationBtn from "../buttons/DefaultPageNavigationBtn";
 import {View, StyleSheet} from "react-native";
 import {DefaultButton} from "../buttons/DefaultButton";
 import React, {memo, useCallback, useContext, useMemo} from "react";
-import {useSelector} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
 
@@ -46,14 +45,11 @@ const AreYouSureContainer = () => {
 
   const moreTextStyles = [styles.modalH4, {color: customTheme.text}];
 
-  // @ts-ignore
-  const screen = useSelector(state => state.screens.value)
-
   const onPressRegister = () => // @ts-ignore
-    navigation.navigate("Chat", {screen: 'AuthNavigator', params: {screen: screen.register}});
+    navigation.navigate("Chat", {screen: 'AuthNavigator', params: {screen: "Register"}});
 
   const onPressLogin = () => // @ts-ignore
-    navigation.navigate("Chat", {screen: 'AuthNavigator', params: {screen: screen.login}});
+    navigation.navigate("Chat", {screen: 'AuthNavigator', params: {screen: "Login"}});
 
   const deleteHistory = useCallback(async() => {
     setLoading(true);

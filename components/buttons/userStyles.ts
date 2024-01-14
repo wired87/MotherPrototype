@@ -107,17 +107,7 @@ export const userStyles = StyleSheet.create({
         color:"white",
         marginVertical: 5,
     },
-    changeInfoBtn: {
-        borderRadius: 9,
-        flexDirection: "row",
-        paddingVertical: 10,
-        paddingHorizontal: 0,
-        width: 350,
-        textAlign: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
+
     authNavHeaderContainerText: {
         fontSize: 20,
         textAlign: 'center',

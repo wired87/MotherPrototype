@@ -1,13 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { Provider as ReduxProvider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import * as SplashScreen from 'expo-splash-screen';
 
 import {PrimaryContext, Theme, ThemeContext, lightModeTheme, darkModeTheme, JwtToken} from "./screens/Context";
-import { store } from "./Redux/store";
 import NavigationMain from "./components/navigation/Footer";
 import { getDarkmode } from "./components/container/modalContainers/DarkMode";
 import * as SecureStore from "expo-secure-store";
@@ -19,9 +17,6 @@ import {FIREBASE_AUTH} from "./firebase.config";
 import {connectionAlert, getToken} from "./AppFunctions";
 
 import NetInfo from "@react-native-community/netinfo";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-
-
 
 export default function App() {
   // PrimaryContext definitions
@@ -35,13 +30,15 @@ export default function App() {
   const [jwtToken, setJwtToken] = useState<JwtToken | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [bottomSheetLoaded, setBottomSheetLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [fieldError, setFieldError] = useState<boolean>(false);
 
   const toggleTheme = () => setDarkmode(!darkmode);
 
   const contextValue = {
     darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
     clearMessages, setClearMessages, jwtToken, setJwtToken, isConnected, setIsConnected,
-    bottomSheetLoaded, setBottomSheetLoaded
+    bottomSheetLoaded, setBottomSheetLoaded, error, setError, fieldError, setFieldError
   };
 
   useEffect(() => {
@@ -104,8 +101,7 @@ export default function App() {
           () => setAuthenticated(false)
         );
     }
-  }, [authenticated, user, setJwtToken]);
-
+  }, [authenticated, user]);
 
 
   useEffect(() => {
@@ -173,22 +169,20 @@ export default function App() {
 
 
   return (
-    <ReduxProvider store={store}>
-      <ThemeContext.Provider value={{customTheme}}>
-        <PrimaryContext.Provider
-          value={contextValue}>
-          <PaperProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <BottomSheetModalProvider>
-                <NavigationContainer>
-                  <NavigationMain />
-                </NavigationContainer>
-              </BottomSheetModalProvider>
-            </GestureHandlerRootView>
-          </PaperProvider>
-        </PrimaryContext.Provider>
-      </ThemeContext.Provider>
-    </ReduxProvider>
+    <ThemeContext.Provider value={{customTheme}}>
+      <PrimaryContext.Provider
+        value={contextValue}>
+        <PaperProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <BottomSheetModalProvider>
+              <NavigationContainer>
+                <NavigationMain />
+              </NavigationContainer>
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </PaperProvider>
+      </PrimaryContext.Provider>
+    </ThemeContext.Provider>
   );
 }
 

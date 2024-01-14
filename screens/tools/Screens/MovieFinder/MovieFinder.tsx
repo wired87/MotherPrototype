@@ -4,41 +4,47 @@ import {
   View,
   StyleSheet,
   Pressable,
-  FlatList,
   Linking,
-  Text, KeyboardAvoidingView, Vibration
+  Vibration, Dimensions, ActivityIndicator, ScrollView
 } from 'react-native';
 
 import * as RNLocalize from 'react-native-localize';
 import {PrimaryContext, ThemeContext} from "../../../Context";
-import {HeadingText} from "../../../../components/text/HeadingText";
 import {toolStyles as ts} from "../../toolStyles";
 import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {getAuth} from "firebase/auth";
 import {getResponse} from "../../../chat/functions/SendProcess";
 import {MEDIA_URL} from "@env";
-import DefaultProgressBar from "../../../../components/animations/DefaultProgressBar";
 import SwipeModal from "../../../../components/modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import ErrorContainerSwipeModal from "../../../../components/container/ErrorContainerSwipeModal";
 import {DefaultText} from "../../../../components/text/DefaultText";
 import DefaultImage from "../../../../components/images/DefaultImage";
+import TextStream from "../../../../components/text/TextStream";
+
+// Lotie
+import LottieView, {AnimationObject} from "lottie-react-native";
+import popcornDefault from "../../../../assets/animations/Movie/popcornDefault.json";
+import failPopcorn from "../../../../assets/animations/Movie/failPopcorn.json";
+import successPopcorn from "../../../../assets/animations/Movie/successPopcorn.json";
+import BottomImage from "../../../../components/images/BottomImage";
+import {StyleProps} from "react-native-reanimated";
+
 
 // STRINGS
-const buttonText = "Search Movie";
-const requiredText = "Please provide minimum one Movie or Serie";
-
-
-
+const buttonText:string = "Search Movie";
+const requiredText:string = "Please provide minimum one Movie or Serie";
+const heading:string = "Movie/Serie finder";
+const defaultMoviePlaceholder = "Your Movies will be shown here";
 
 export interface Movie {
   id: string;
   title: string;
   description: string;
-  rating: string | number;
+  runtime: string | number;
   image: string;
-  videoLink: string;
+  videoUrl: string;
 }
 
 
@@ -49,7 +55,9 @@ const MovieFinder = () => {
 
   const [fieldError, setFieldError] = useState<boolean>(false);
   const [responseError, setResponseError] = useState<string>("");
+
   const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
+  const [successAnimationFinish, setSuccessAnimationFinish] = useState<boolean>(false);
 
   const [searchResult, setSearchResult] = useState<Movie[] | null>(null);
 
@@ -59,11 +67,12 @@ const MovieFinder = () => {
 
 
   // STYLES
-  const backgroundColor = {backgroundColor: customTheme.primary};
-  const mainContainerStyles = [ts.main, backgroundColor];
-  const errorTextStyles = {opacity: alreadyRunning? 1:0};
-  const textColor = { color: customTheme.text }
-  const pressableTextStyles = [styles.movieTitle, textColor];
+  const backgroundColor: StyleProps = {backgroundColor: customTheme.primary};
+  const mainContainerStyles: StyleProps[] = [ts.main, backgroundColor];
+  const errorTextStyles: StyleProps = {opacity: alreadyRunning? 1:0};
+  const textColor: StyleProps = { color: customTheme.text }
+  const pressableTextStyles: StyleProps[] = [ls.movieTitle, textColor];
+  const movieBoxStyles: StyleProps[] = [ls.card, {backgroundColor: "transparent"}];
 
   const {
     loading,
@@ -76,13 +85,14 @@ const MovieFinder = () => {
     await Linking.openURL(videoLink);
   };
 
+
   const noInput =
     firstMedia.trim().length === 0 &&
     secondMedia.trim().length === 0 &&
     thirdMedia.trim().length === 0;
 
+
   const handleSearch = async () => {
-    setResponseError("");
     if (noInput) {
       console.log("No Movie/Serie provided")
       setFieldError(true);
@@ -92,6 +102,12 @@ const MovieFinder = () => {
       setAlreadyRunning(true);
       return;
     }
+    setFirstMedia("");
+    setSecondMedia("");
+    setThirdMedia("");
+    setResponseError("");
+    setSearchResult(null);
+    setSuccessAnimationFinish(false);
     const searchTerm: string = `${firstMedia}, ${secondMedia}, ${thirdMedia}`;
     await sendData(searchTerm)
   };
@@ -174,7 +190,6 @@ const MovieFinder = () => {
           showClearButton
         />
         {fieldError? <DefaultText text={requiredText} /> :null}
-
       </View>
     );
   }, [firstMedia, secondMedia, thirdMedia, fieldError]);
@@ -196,46 +211,68 @@ const MovieFinder = () => {
     }
   }, [alreadyRunning]);
 
-
-  const movieResults = useCallback(() => {
-    if (searchResult && searchResult.length > 0) {
+  const movieItem = useCallback((item: Movie) => {
+    console.log("Image:", item.image);
+    if (successAnimationFinish) {
       return(
-        <FlatList
-          style={styles.cardContainer}
-          data={searchResult}
-          keyExtractor={(index, item) => index.toString()}
-          renderItem={({item, index} ) => (
-            <Pressable
-              key={index}
-              onPress={() => handleCardPress(item.videoLink)}
-              style={styles.card}>
-              <DefaultImage
-                source={item.image}
-              />
-              <View style={styles.cardTextContainer}>
-                <Text style={pressableTextStyles}>
-                  {item.title}
-                </Text>
-                <Text style={[styles.moviePara]} numberOfLines={4}>
-                  {item.description}
-                </Text>
-              </View>
-            </Pressable>
-          )}
-        />
-      );
-    }else {
+        <Pressable
+          key={item.id}
+          onPress={() => handleCardPress(item.videoUrl)}
+          style={movieBoxStyles}>
+          <DefaultImage
+            source={item.image}
+          />
+          <View style={ls.cardTextContainer}>
+            <DefaultText text={item.title} moreStyles={pressableTextStyles} />
+            <DefaultText moreStyles={ls.descriptionText} text={item.description} ellipsizeMode={"tail"} />
+          </View>
+        </Pressable>
+      )
+    }else{
       return <></>
     }
-  }, [searchResult])
+  }, [successAnimationFinish, searchResult])
+
+
+  const defaultLottie = useCallback((source: string | AnimationObject | { uri: string; }) => {
+    return <LottieView speed={1} style={ls.lottie} source={source} autoPlay loop={false} onAnimationFinish={
+      () => {
+        setSuccessAnimationFinish(true);
+        console.log("Animation finished...");
+      }
+    }/>
+  }, [])
+
+
+  const movieResults = useCallback(() => {
+    if (searchResult && responseError.length == 0 && successAnimationFinish && !loading) {
+        return searchResult.map((item) => {
+          return movieItem(item)
+        }
+      );
+    }else if (!loading && !searchResult){
+      return (
+        <>
+          <LottieView style={ls.lottie} source={popcornDefault} autoPlay loop={false} />
+          <DefaultText text={defaultMoviePlaceholder} moreStyles={ls.awaitResultText} />
+        </>
+      )
+    }else if (loading) {
+      return <ActivityIndicator size={60} color={customTheme.text} />
+    }else if (!loading && searchResult && !successAnimationFinish && responseError.length == 0) {
+      return defaultLottie(successPopcorn);
+    }else if (responseError.length > 0 && !loading && !successAnimationFinish && !searchResult) {
+      return defaultLottie(failPopcorn);
+    }else{
+      return <></>
+    }
+  }, [searchResult, loading, successAnimationFinish, responseError])
 
 
   return (
-    <KeyboardAvoidingView style={mainContainerStyles} >
-      <HeadingText
-        text={"Movie Finder"}
-         extraStyles={undefined}
-      />
+    <ScrollView style={mainContainerStyles} contentContainerStyle={ts.contentContainerMovie}>
+
+      <TextStream  message={heading} />
 
       {renderInputs()}
 
@@ -243,11 +280,11 @@ const MovieFinder = () => {
 
       <DefaultText error text={"Request already running."} moreStyles={errorTextStyles}/>
 
-      <DefaultProgressBar loading={loading} />
-
-      <View>
+      <View style={ls.resultContainer}>
         {movieResults()}
       </View>
+
+      <BottomImage />
 
       <SwipeModal
         bottomSheetRef={bottomSheetRef}
@@ -258,14 +295,15 @@ const MovieFinder = () => {
           />
         }
       />
-    </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
 export default memo(MovieFinder);
 
+const windowWidth = Dimensions.get('window').width;
 
-const styles = StyleSheet.create({
+const ls = StyleSheet.create({
   input: {
     flex: 0.8,
     height: 40,
@@ -285,35 +323,46 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
   },
-  cardContainer: {
-    marginTop: 20,
-    width: '90%',
-  },
   card: {
     borderRadius: 8,
-    padding: 20,
-    marginBottom: 10,
     height: 140,
+    width: "95%",
     flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: "grey",
+    marginVertical: 10,
+    flex: 1,
+    overflow: "hidden",
   },
   movieTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     marginTop: 5,
   },
-  image: {
-    width: 130,
-    height: 110,
-    resizeMode: 'cover',
-    borderRadius: 30,
-  },
-  moviePara: {
-    fontSize: 16,
+  descriptionText: {
+    fontSize: 12,
     fontWeight: "400",
-
+    textAlign: "left",
+    lineHeight: 12
   },
   cardTextContainer: {
-    flex: 1,
-    marginLeft: 12,
+    width: "67%",
+    paddingLeft: 5,
   },
+  resultContainer: {
+    flexDirection: "column",
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    width: windowWidth,
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 300,
+  },
+  lottie: {
+    position: "relative",
+    width: 200
+  },
+  awaitResultText: {
+    marginTop: 5,
+  }
 });
