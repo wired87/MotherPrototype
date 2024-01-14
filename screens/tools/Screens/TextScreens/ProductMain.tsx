@@ -1,9 +1,9 @@
 import {memo, useContext, useState} from "react";
 
-import {PrimaryContext} from "../../../../Context";
+import {PrimaryContext} from "../../../Context";
 import React from "react";
-import UniversalTextCreator from "../../../../../components/container/Tools/UniversalTextCreator";
-import {DefaultInput} from "../../../../../components/input/DefaultInput";
+import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
+import {DefaultInput} from "../../../../components/input/DefaultInput";
 
 //STRINGS
 const heading:string = "Create Story's, Poems and much more...";

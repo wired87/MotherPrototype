@@ -1,53 +1,25 @@
-import React, {memo, useCallback, useContext, useEffect, useMemo} from "react";
+import React, {memo, useContext, useEffect, useMemo} from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
 
-import {PrimaryContext, ThemeContext, ToolContext} from "../Context";
+import {PrimaryContext, ToolContext} from "../Context";
 import {showToolAds} from "../chat/functions/AdLogic";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 
-import UniversalCardScreens from "./Screens/TextScreens/Cards/CardContent";
-import {sendObject} from "../chat/functions/SendProcess";
-import {getToken} from "../../AppFunctions";
 import {useRoute} from "@react-navigation/native";
-import CardMain from "./Screens/TextScreens/Cards/CardMain";
+import CardMain from "./Screens/TextScreens/CardMain";
 import ToolsMain from "./ToolsMain";
 import SpeechToText from "./Screens/SpeechToText";
 import ResumeCreator from "./Screens/ResumeCreator/ResumeCreator";
 import ChatResponseHelper from "./Screens/ChatResponseHelper";
 import MovieFinder from "./Screens/MovieFinder/MovieFinder";
-import StoryMain from "./Screens/TextScreens/Story/StoryMain";
+import StoryMain from "./Screens/TextScreens/StoryMain";
 import LyricsMain from "./Screens/TextScreens/Lyrics";
 import EmailMain from "./Screens/TextScreens/EMail";
-import ProductMain from "./Screens/TextScreens/Product/ProductMain";
+import ProductMain from "./Screens/TextScreens/ProductMain";
 import FitnessMain from "./Screens/TextScreens/Fitness";
 
 const ToolStack = createNativeStackNavigator();
-
-
-interface Screens {
-  id: string;
-  name: string;
-  type: string;
-  heading: string;
-}
-
-
-const screenFields: Screens[] = [
-  {
-    id: "CardWriter",
-    name: "Christmas Card",
-    heading: "Christmas Card creator",
-    type: "christmasCard",
-  }
-]
-
-/*
- content,
-    placeholder,
-    extraContent,
-    type
- */
 
 const ToolsNavigator: React.FC = () => {
 
@@ -64,7 +36,6 @@ const ToolsNavigator: React.FC = () => {
     setError("");
     setFieldError(false); // + bei closed bottomsheet
   }, [route.name]);
-
 
 
   // GOOGLE MOBILE AD LOGIC ////////////////////

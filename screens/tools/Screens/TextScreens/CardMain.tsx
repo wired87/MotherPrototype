@@ -1,46 +1,45 @@
-import {memo, ReactNode, useCallback, useContext, useRef, useState} from "react";
+import {memo, useCallback, useContext, useRef, useState} from "react";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-import {PrimaryContext, ToolContext} from "../../../../Context";
+import {PrimaryContext, ToolContext} from "../../../Context";
 import React from "react";
-import UniversalTextCreator from "../../../../../components/container/Tools/UniversalTextCreator";
-import {DefaultInput} from "../../../../../components/input/DefaultInput";
+import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
+import {DefaultInput} from "../../../../components/input/DefaultInput";
 
 //STRINGS
 const clear:string = "close";
 const create:string = "create";
-const name:string = "";
-const heading:string = "Create Story's, Poems and much more...";
+const placeholder:string = "Your written Card will be shown here";
+const heading:string = "Create Cards for every occasion";
 
 // INT
-const maxLengthSmall:number = 100;
-const maxLengthBig:number = 200;
+const maxLengthSmall = 100;
+const maxLengthBig = 200;
 
 
-const placeholder:string = `Your written Tex will be shown here...`
+const CardMain: React.FC  = () => {
 
-
-
-const StoryMain: React.FC  = () => {
-
-  const [storyAbout, setStoryAbout] = useState<string>("");
+  const [personFor, setPersonFor] = useState<string>("");
   const [extraInfos, setExtraInfos] = useState<string>("");
-  const [genre, setGenre] = useState<string>("");
+  const [moods, setMoods] = useState<string>("");
 
   const [editable, setEditable] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
 
   // Context
   const {setResponse, response } = useContext(ToolContext);
+
 
   const {user } = useContext(PrimaryContext);
 
   const getCardPostObject = ():object => {
     return {
       "user_id": user?.uid,
-      "input_type": "story",
-      "genre": genre,
+      "input_type": "card",
+      "personFor": personFor,
       "extraInfos": extraInfos,
-      "storyAbout": storyAbout
+      "moods": moods
     }
   }
 
@@ -58,25 +57,17 @@ const StoryMain: React.FC  = () => {
         Content={
           <>
             <DefaultInput
-              placeholder={"About... "}
-              value={storyAbout}
-              onChangeAction={setStoryAbout}
+              placeholder={"The Card is for... "}
+              value={personFor}
+              onChangeAction={handleClearField}
               extraStyles={{}}
               max_length= {maxLengthSmall}
               recordingOption
               showClearButton
             />
+
             <DefaultInput
-              placeholder={"Genre (Poem, Story,..."}
-              value={genre}
-              onChangeAction={setGenre}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton
-            />
-            <DefaultInput
-              placeholder={"Extra Information's to provide"}
+              placeholder={"Extra Information's to provide?"}
               value={extraInfos}
               onChangeAction={setExtraInfos}
               extraStyles={{}}
@@ -92,4 +83,4 @@ const StoryMain: React.FC  = () => {
 }
 
 
-export default memo(StoryMain);
+export default memo(CardMain)
