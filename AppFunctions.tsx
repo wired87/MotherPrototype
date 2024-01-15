@@ -1,5 +1,5 @@
 import * as SecureStore from "expo-secure-store";
-import {Alert, Linking} from "react-native";
+import {Alert} from "react-native";
 import {JwtToken} from "./screens/Context";
 import RNRestart from 'react-native-restart';
 import {Dispatch, SetStateAction} from "react";
@@ -15,7 +15,12 @@ const getEndpoint: string = LOGIN_JWT;
 const eMailBody: string = "Hey, i detected a security Problem while try set the JwtToken!"
 const errorUrl: string = `https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=${eMailBody}`
 
-
+export const getLanguage = () => {
+  const locales = RNLocalize.getLocales();
+  if (locales.length > 0) {
+    return locales[0].languageTag;
+  }
+}
 
 export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
   try {
@@ -190,25 +195,6 @@ export const getCurrentLanguage = () => {
 
 
 // ALERTS
-
-export const alert = () => {
-  Alert.alert(
-    'Too many requests',
-    'Please contact the Support-Team ASAP to solve it!',
-    [
-      {
-        text: 'close',
-        onPress: () => console.log('Ask me later pressed'),
-        style: 'cancel',
-      },
-      {
-        text: 'Contact us',
-        onPress: () => Linking.openURL(errorUrl),
-        style: 'destructive',
-      },
-    ]
-  );
-}
 
 export const connectionAlert = () => {
   Alert.alert(

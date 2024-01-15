@@ -16,14 +16,6 @@ export const getCurrentTime = () => {
   return(timeHoursNow + ":" + timeMinutesNow);
 }
 
-const errorCodes: string[] = [
-    "400",
-    "401",
-    "404",
-    "500",
-    "501"
-  ]
-
 
 
 export const postMessageObject = async (
@@ -65,13 +57,6 @@ export const postMessageObject = async (
     console.log("Error in postMessageObject:", e);
     return null;
   }
-}
-
-interface SenderObjectTypes {
-  senderObject: any,
-  messageIndex: number | string,
-  user: firebase.User | null,
-  jwtToken: JwtToken
 }
 
 export const sendObject = async (
@@ -136,18 +121,16 @@ export const sendObject = async (
           }
         );
         console.log("sendObject res ===", response)
-        if (!response && !response.message) {
+        if (!response || response.detail) {
           return;
         }else{
-          return response.message;
+          return response;
         }
       }
-    }else if (errorCodes.includes(response.status.toString())) {
-      return null;
     }
     // Success
     console.log("Response", response);
-    return response.message;
+    return response;
 
   }catch(e) {
     console.log('Error in "sendObject":', e)

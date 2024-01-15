@@ -30,7 +30,7 @@ import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
 import {sendObject} from "../../screens/chat/functions/SendProcess";
 import {getToken} from "../../AppFunctions";
-import {useRoute} from "@react-navigation/native";
+
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -123,8 +123,8 @@ const NavigationMain: React.FC = () => {
   const toolPostRequest = async (
     postUrl: string,
     postObject: object,
-    setError: Dispatch<SetStateAction<string | object>>,
-    setResponse: Dispatch<SetStateAction<string | object>>,
+    setError: Dispatch<SetStateAction<string>>,
+    setResponse: Dispatch<SetStateAction<string>>,
   ):Promise<any> => {
 
     console.log("jwtToken n Application Content:", jwtToken);
@@ -165,11 +165,13 @@ const NavigationMain: React.FC = () => {
         }
       }
       if (response) {
+        if (response.message && !response.error){
         console.log("Application response Successfully:", response);
-        setResponse(response);
-      } else {
-        console.error("Received no result:", response);
-        setError("Error occurred. Please try again or contact the support.");
+        setResponse(response.message);
+        }else if(!response.message && response.error) {
+          console.error("Received no result:", response);
+          setError(response.error);
+        }
       }
     } catch (e: unknown) {
       if (e instanceof Error) {

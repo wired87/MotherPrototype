@@ -74,7 +74,7 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
       "ProductWriter",
       "StoryWriter",
       "FitnessWriter",
-
+      "LyricWriter"
     ];
     return navigation.canGoBack() && screensToShowBackIcon.includes(route.name) &&
       !["ChatMain", "ChatNavigation"].includes(route.name);

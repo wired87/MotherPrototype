@@ -170,78 +170,7 @@ const lifeButtonList: DataItem[] = [
 ]
 
 const textButtonList: DataItem[] = [
-  {
-    text: "Birthday Card",
-    color: "#232f44",
-    icon: "television-shimmer",
-    navigation: "ChatNavigator",
-    extraText: undefined,
-    screen: "MediaFinder"
-  },
-  {
-    text: "Christmas Card",
-    icon: "comment-multiple-outline",
-    navigation: "ChatNavigator",
-    color: "rgba(50,112,196,0.2)",
-    extraText: undefined,
-    screen: "ImageExplanation"
-  },
-  {
-    text: "New Year Wishes",
-    color: "#232f44",
-    icon: "tooltip-image-outline",
-    navigation: "ChatNavigator",
-    extraText: undefined,
-    screen: "ImageExplanation"
-  },
-  {
-    text: "E-Mail writer",
-    color: "rgba(110,0,0,.7)",
-    icon: "tooltip-image-outline",
-    navigation: "ChatNavigator",
-    extraText: undefined,
-    screen: "ImageExplanation"
-  },
-  {
-    text: "Greeting Card",
-    color: "rgba(50,112,196,0.2)",
-    icon: "tooltip-image-outline",
-    navigation: "ChatNavigator",
-    extraText: undefined,
-    screen: "ImageExplanation"
-  },
-  {
-    text: "Product Text writer",
-    color: "rgba(110,0,0,.7)",
-    icon: "tooltip-image-outline",
-    navigation: "ChatNavigator",
-    extraText: undefined,
-    screen: "ImageExplanation"
-  },
-  {
-    text: "Story writer",
-    color: "#232f44",
-    icon: "tooltip-image-outline",
-    navigation: "ChatNavigator",
-    extraText: undefined,
-    screen: "ImageExplanation"
-  },
-  {
-    text: "Poem writer",
-    color: "rgba(50,112,196,0.2)",
-    icon: "tooltip-image-outline",
-    navigation: "ChatNavigator",
-    extraText: undefined,
-    screen: "ImageExplanation"
-  },
-  {
-    text: "",
-    color: "#232f44",
-    icon: "tooltip-image-outline",
-    navigation: "ChatNavigator",
-    extraText: undefined,
-    screen: "ImageExplanation"
-  }
+
 ]
 
 interface ToolItemProps {
@@ -282,7 +211,7 @@ const ToolsMain: React.FC = () => {
     { key: "1", title: 'Assistant', onPress: () => handleCategoryChange(1) },
     { key: "2", title: 'Business', onPress: () => handleCategoryChange(2) },
     { key: "3", title: 'Creative', onPress: () => handleCategoryChange(3) },
-    { key: "4", title: 'Text', onPress: () => handleCategoryChange(4) },
+    { key: "4", title: 'Partners', onPress: () => handleCategoryChange(4) },
   ];
 
   const getItemLayout = useCallback((_: any, index: number) => ({

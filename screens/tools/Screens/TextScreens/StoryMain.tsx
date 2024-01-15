@@ -7,7 +7,6 @@ import StoryDefault from "../../../../assets/animations/StoryDefault.json";
 import {ScrollView, Vibration} from "react-native";
 import {TEXT_REQUEST_URL} from "@env";
 import {toolStyles as ts} from "../../toolStyles";
-import {themeColors} from "../../../../colors/theme";
 import {DefaultText} from "../../../../components/text/DefaultText";
 
 //STRINGS
@@ -28,15 +27,14 @@ const StoryMain: React.FC  = () => {
   const [extraInfos, setExtraInfos] = useState<string>("");
   const [genre, setGenre] = useState<string>("");
   const [kind, setKind] = useState<string>("");
-  const [response , setResponse] = useState<string | object>("");
-  const [error , setError] = useState<string | object>("");
+  const [response , setResponse] = useState<string>("");
+  const [error , setError] = useState<string>("");
   const [fieldError , setFieldError] = useState<string>("");
 
   const [editable, setEditable] = useState<boolean>(false);
 
-
   // Context
-  const {user, darkmode } = useContext(PrimaryContext);
+  const {user } = useContext(PrimaryContext);
   const {toolPostRequest } = useContext(ToolContext);
   const {customTheme } = useContext(ThemeContext);
   const getStoryPostObject = ():object => {
@@ -53,9 +51,10 @@ const StoryMain: React.FC  = () => {
   const sendData = async () => {
     if (kind.length == 0){
       Vibration.vibrate();
-      setFieldError("Please provide a Card Type");
+      setFieldError("Please provide a Type");
       return;
     }
+    setError("");
     await toolPostRequest(
       TEXT_REQUEST_URL,
       getStoryPostObject(),
@@ -64,6 +63,7 @@ const StoryMain: React.FC  = () => {
     )
   };
 
+
   const fieldErrorText = useCallback(() => {
     if (fieldError && fieldError.length > 0) {
       return(
@@ -71,7 +71,6 @@ const StoryMain: React.FC  = () => {
       );
     }
   }, [fieldError])
-
 
 
   return(
@@ -84,60 +83,59 @@ const StoryMain: React.FC  = () => {
       contentContainerStyle={ts.justifyAlign}>
 
     <UniversalTextCreator
-        placeholder={placeholder}
-        editable={editable}
-        heading={heading}
-        source={StoryDefault}
-        response={response}
-        sendData={sendData}
-        setResponse={setResponse}
-        Content={
-        <>
-          <DefaultInput
-            label={"Type"}
-            placeholder={"Poem, Story,... "}
-            value={kind}
-            onChangeAction={setKind}
-            extraStyles={{}}
-            max_length={maxLengthSmall}
-            recordingOption
-            showClearButton
-          />
+      placeholder={placeholder}
+      editable={editable}
+      heading={heading}
+      source={StoryDefault}
+      response={response}
+      sendData={sendData}
+      setResponse={setResponse}
+      error={error}
+      Content={<>
+        <DefaultInput
+          label={"Type"}
+          placeholder={"Poem, Story,... "}
+          value={kind}
+          onChangeAction={setKind}
+          extraStyles={{}}
+          max_length={maxLengthSmall}
+          recordingOption
+          showClearButton/>
 
-          {fieldErrorText()}
+        {fieldErrorText()}
 
-          <DefaultInput
-            label={"About "}
-            placeholder={"A Spaceship (optional)"}
-            value={storyAbout}
-            onChangeAction={setStoryAbout}
-            extraStyles={{}}
-            max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
+        <DefaultInput
+          label={"About "}
+          placeholder={"A Spaceship (optional)"}
+          value={storyAbout}
+          onChangeAction={setStoryAbout}
+          extraStyles={{}}
+          max_length={maxLengthSmall}
+          recordingOption
+          showClearButton/>
 
-          <DefaultInput
-            label={"Genre"}
-            placeholder={"Action, Romantic,... (optional)"}
-            value={genre}
-            onChangeAction={setGenre}
-            extraStyles={{}}
-            max_length={maxLengthBig}
-            recordingOption
-            showClearButton/>
+        <DefaultInput
+          label={"Genre"}
+          placeholder={"Action, Romantic,... (optional)"}
+          value={genre}
+          onChangeAction={setGenre}
+          extraStyles={{}}
+          max_length={maxLengthBig}
+          recordingOption
+          showClearButton/>
 
-          <DefaultInput
-            label={"Extra Information's"}
-            placeholder={"Main figure,... (optional)"}
-            value={extraInfos}
-            onChangeAction={setExtraInfos}
-            extraStyles={{}}
-            max_length={maxLengthBig}
-            recordingOption
-            showClearButton/>
-        </>
-      }
-      />
+        <DefaultInput
+          label={"Extra Information's"}
+          placeholder={"Main figure,... (optional)"}
+          value={extraInfos}
+          onChangeAction={setExtraInfos}
+          extraStyles={{}}
+          max_length={maxLengthBig}
+          recordingOption
+          showClearButton/>
+      </>
+    }
+    />
     </ScrollView>
   );
 }

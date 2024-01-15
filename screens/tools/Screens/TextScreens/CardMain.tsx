@@ -3,19 +3,20 @@ import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
 import React from "react";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
-import {MEDIA_URL, TEXT_REQUEST_URL} from "@env";
+import {TEXT_REQUEST_URL} from "@env";
 import {ScrollView, Vibration} from "react-native";
-import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import cardLoading from "../../../../assets/animations/cardLoading.json";
 import {toolStyles as ts} from "../../toolStyles";
 import {DefaultText} from "../../../../components/text/DefaultText";
+import {getLanguage} from "../../../../AppFunctions";
+
 //STRINGS
 const placeholder:string = "Your written Card will be shown here";
 const heading:string = "Create Cards for every occasion";
 
 // INT
-const maxLengthSmall = 100;
-const maxLengthBig = 200;
+const maxLengthSmall:number = 100;
+const maxLengthBig:number = 200;
 
 
 const CardMain: React.FC  = () => {
@@ -26,8 +27,8 @@ const CardMain: React.FC  = () => {
   const [kind, setKind] = useState<string>("");
 
   const [editable, setEditable] = useState<boolean>(false);
-  const [error, setError] = useState<string | object>();
-  const [response, setResponse] = useState<string | object>();
+  const [error, setError] = useState<string>("");
+  const [response, setResponse] = useState<string>("");
   const [fieldError, setFieldError] = useState<string>("");
 
   // Context
@@ -48,13 +49,10 @@ const CardMain: React.FC  = () => {
       "kind": kind,
       "personFor": personFor,
       "extraInfos": extraInfos,
-      "moods": moods
+      "moods": moods,
+      "language": getLanguage(),
     }
   }
-
-  const handleClearField = useCallback(() => {
-    setResponse("");
-  }, [response])
 
 
   const sendData = async () => {
@@ -100,8 +98,8 @@ const CardMain: React.FC  = () => {
         response={response}
         sendData={sendData}
         setResponse={setResponse}
-        Content={
-        <>
+        error={error}
+        Content={<>
           <DefaultInput
             label={"Card type:"}
             placeholder={"e.g. Christmas Card,... "}
@@ -136,8 +134,8 @@ const CardMain: React.FC  = () => {
             multiline
             numberOfLines={3}
           />
-
-        </>}
+        </>
+        }
       />
     </ScrollView>
   );

@@ -142,6 +142,9 @@ export const toolStyles = StyleSheet.create(
       fontSize: 15,
       marginVertical: 5,
     },
+    text: {
+      textAlign: "center",
+    },
 
     categoryListContainer: {
       display: 'flex',

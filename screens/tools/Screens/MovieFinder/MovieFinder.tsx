@@ -5,20 +5,16 @@ import {
   StyleSheet,
   Pressable,
   Linking,
-  Vibration, Dimensions, ActivityIndicator, ScrollView
+  Vibration, ActivityIndicator, ScrollView
 } from 'react-native';
 
 import * as RNLocalize from 'react-native-localize';
-import {PrimaryContext, ThemeContext} from "../../../Context";
+import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
 import {toolStyles as ts} from "../../toolStyles";
 import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {getAuth} from "firebase/auth";
-import {getResponse} from "../../../chat/functions/SendProcess";
 import {MEDIA_URL} from "@env";
-import SwipeModal from "../../../../components/modals/SwipeModal";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-import ErrorContainerSwipeModal from "../../../../components/container/ErrorContainerSwipeModal";
 import {DefaultText} from "../../../../components/text/DefaultText";
 import DefaultImage from "../../../../components/images/DefaultImage";
 import TextStream from "../../../../components/text/TextStream";
@@ -63,7 +59,6 @@ const MovieFinder = () => {
 
   const {customTheme} = useContext(ThemeContext);
 
-  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
 
   // STYLES
@@ -74,11 +69,9 @@ const MovieFinder = () => {
   const pressableTextStyles: StyleProps[] = [ls.movieTitle, textColor];
   const movieBoxStyles: StyleProps[] = [ls.card, {backgroundColor: "transparent"}];
 
-  const {
-    loading,
-    setLoading,
-    jwtToken,
-    setJwtToken} = useContext(PrimaryContext);
+  const {loading} = useContext(PrimaryContext);
+
+  const {toolPostRequest} = useContext(ToolContext);
 
 
   const handleCardPress = async (videoLink: string) => {
@@ -106,7 +99,13 @@ const MovieFinder = () => {
     setResponseError("");
     setSearchResult(null);
     setSuccessAnimationFinish(false);
-    await sendData()
+
+    await toolPostRequest(
+      MEDIA_URL,
+      postObject(),
+      setResponseError,
+      setSearchResult
+    )
   };
 
 
@@ -118,18 +117,7 @@ const MovieFinder = () => {
     }
   }
 
-  const sendData = async () => {
-    const requestBody = postObject();
-    await getResponse(
-      setLoading,
-      setResponseError,
-      setJwtToken,
-      jwtToken,
-      requestBody,
-      setSearchResult,
-      MEDIA_URL
-      )
-    };
+
 
 
   // FIELD ERROR LOGIC
@@ -197,13 +185,6 @@ const MovieFinder = () => {
 
 
   useEffect(() => {
-    if (responseError.length > 0 && bottomSheetRef && bottomSheetRef.current) {
-      bottomSheetRef.current.snapToIndex(1);
-    }
-  }, [responseError]);
-
-
-  useEffect(() => {
     if (alreadyRunning) {
       const interval = setInterval(() => {
         setAlreadyRunning(false);
@@ -248,7 +229,13 @@ const MovieFinder = () => {
 
 
   const movieResults = useCallback(() => {
-    if (searchResult && responseError.length == 0 && successAnimationFinish && !loading) {
+    if (
+      searchResult &&
+      searchResult.length > 0 &&
+      responseError.length == 0 &&
+      successAnimationFinish &&
+      !loading
+    ) {
         return searchResult.map((item) => {
           return movieItem(item)
         }
@@ -292,15 +279,7 @@ const MovieFinder = () => {
 
       <BottomImage />
 
-      <SwipeModal
-        bottomSheetRef={bottomSheetRef}
-        modalIndex={-1}
-        Content={
-          <ErrorContainerSwipeModal
-            error={responseError}
-          />
-        }
-      />
+
     </ScrollView>
   );
 };

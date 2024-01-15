@@ -1,7 +1,7 @@
 import {toolStyles as ts} from "../../../screens/tools/toolStyles";
 import {DefaultInput} from "../../input/DefaultInput";
 import {IconButton} from "react-native-paper";
-import {KeyboardAvoidingView, View} from "react-native";
+import {KeyboardAvoidingView, View, StyleSheet} from "react-native";
 import React, {Dispatch, SetStateAction, useCallback, useContext} from "react";
 
 import {memo} from "react";
@@ -10,12 +10,14 @@ import BottomImage from "../../images/BottomImage";
 import CopyButton from "../../buttons/CopyButton";
 import DefaultProgressBar from "../../animations/DefaultProgressBar";
 import TextStream from "../../text/TextStream";
-import LottieView, {AnimationObject} from "lottie-react-native";
-import {DefaultText} from "../../text/DefaultText";
+import {AnimationObject} from "lottie-react-native";
 import {DefaultButton} from "../../buttons/DefaultButton";
+import toolError from "../../../assets/animations/toolError.json";
+import LottieContainer from "../LottieContainer";
 
 // STRINGS
 const clear:string = "close";
+const reFreshIcon:string = "refresh";
 
 
 interface TextResultTypes {
@@ -26,7 +28,8 @@ interface TextResultTypes {
   source: string | AnimationObject | { uri: string; };
   response: string;
   setResponse: Dispatch<SetStateAction<string>>;
-  sendData: (() => void)
+  sendData: (() => void);
+  error: string;
 }
 
 const UniversalTextCreator: React.FC<TextResultTypes> = (
@@ -39,7 +42,8 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     source,
     response,
     setResponse,
-    sendData
+    sendData,
+    error
   }
 
 ) => {
@@ -50,7 +54,6 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
 
   // STYLES
   const buttonColor  = customTheme.text;
-
 
   const transcriptInputStyles = [
     ts.input, {
@@ -75,9 +78,10 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     setResponse("");
   }, [response])
 
+
   const resultContainer = useCallback(() => {
     if (response && response.length > 0) {
-      return(
+      return (
         <View style={ts.transcriptContainer}>
           <DefaultInput
             numberOfLines={10}
@@ -88,20 +92,26 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
             extraStyles={transcriptInputStyles}
             multiline={true}
           />
-
-          <IconButton size={20} iconColor={buttonColor} style={ts.clearButton} onPress={handleClearField} icon={clear} />
-          <CopyButton value={response} />
+          <IconButton size={20} iconColor={buttonColor} style={ts.clearButton} onPress={handleClearField} icon={clear}/>
+          <CopyButton value={response}/>
         </View>
+      );
+    }else if (error && error.length > 0) {
+      return(
+        <LottieContainer
+          source={toolError}
+          text={error}
+          extraChild={
+            <IconButton iconColor={customTheme.primaryButton} icon={reFreshIcon} onPress={sendData} />
+          }
+        />
       );
     }else {
       return(
-        <View style={ts.defaultLottieContainer}>
-          <LottieView style={ts.lottie} source={source} autoPlay loop={false} />
-          <DefaultText moreStyles={{marginTop: 0}} text={placeholder} />
-        </View>
+        <LottieContainer source={source} text={placeholder} />
       );
     }
-  }, [response]);
+  }, [response, error]);
 
   return(
     <KeyboardAvoidingView style={mainContainerStyles}>
@@ -120,3 +130,4 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
 }
 
 export default memo(UniversalTextCreator);
+

@@ -21,5 +21,6 @@ declare module '@env' {
   export const CONTACT_REQUEST_URL: string;
   export const MEDIA_URL: string;
   export const TEXT_REQUEST_URL: string;
+  export const CHAT_COMPLETION_REQUEST: string;
 
 }
