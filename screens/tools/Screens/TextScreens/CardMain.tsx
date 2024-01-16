@@ -35,8 +35,7 @@ const CardMain: React.FC  = () => {
   const {toolPostRequest } = useContext(ToolContext);
   const {customTheme } = useContext(ThemeContext);
 
-  const {user } = useContext(PrimaryContext);
-
+  const {user, loading } = useContext(PrimaryContext);
 
   const moreInfosInput = [
     ts.input, {minHeight: 80}];
@@ -55,7 +54,7 @@ const CardMain: React.FC  = () => {
   }
 
 
-  const sendData = async () => {
+  const sendData = useCallback(async () => {
     if (kind.length == 0){
       Vibration.vibrate();
       setFieldError("Please provide a Card Type");
@@ -67,7 +66,8 @@ const CardMain: React.FC  = () => {
       setError,
       setResponse
     )
-  };
+  }, [kind, loading]);
+
 
   // FIELD ERROR LOGIC
   useEffect(() => {
@@ -87,6 +87,7 @@ const CardMain: React.FC  = () => {
       );
     }
   }, [fieldError])
+
 
   return(
     <ScrollView style={{backgroundColor: customTheme.primary}} contentContainerStyle={ts.justifyAlign}>
@@ -142,4 +143,4 @@ const CardMain: React.FC  = () => {
 }
 
 
-export default memo(CardMain)
+export default memo(CardMain);

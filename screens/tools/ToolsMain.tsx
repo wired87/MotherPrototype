@@ -67,7 +67,7 @@ const carouselData: CarouselDataTypes[] =
 const businessButtonList: DataItem[] = [
   {
     text: "Product Text writer",
-    color: "rgba(7,9,56,0.4)",
+    color: "rgb(49,239,0)",
     icon: "sticker-text-outline",
     navigation: "ChatNavigator",
     extraText: "Create Slogans, product Descriptions,...",
@@ -75,7 +75,7 @@ const businessButtonList: DataItem[] = [
   },
   {
     text: "Idea finder",
-    color: "#232f44",
+    color: "#decb13",
     icon: "lightbulb-on-outline",
     navigation: "ChatNavigator",
     extraText: "Share your ideas for feedback or create some for your next Business",
@@ -83,7 +83,7 @@ const businessButtonList: DataItem[] = [
   },
   {
     text: "Resume creator",
-    color: "rgba(50,112,196,0.2)",
+    color: "rgb(0,103,239)",
     icon: "format-float-left",
     navigation: "ChatNavigator",
     extraText: "AI job Application writer",
@@ -91,7 +91,7 @@ const businessButtonList: DataItem[] = [
   },
   {
     text: "E-Mail writer",
-    color: "rgba(50,112,196,0.2)",
+    color: "rgb(218,97,78)",
     icon: "gmail",
     navigation: "ChatNavigator",
     extraText: "Professional Email writer",
@@ -101,8 +101,8 @@ const businessButtonList: DataItem[] = [
 
 const creativeButtonList: DataItem[] = [
   {
-    text: 'Speech-to-Text',
-    color: "rgba(110,0,0,.7)",
+    text: 'Speech-to- Text',
+    color: "rgba(178,8,8,0.7)",
     icon: "text-to-speech",
     navigation: "ChatNavigator",
     extraText: "Transcribe your thoughts",
@@ -110,7 +110,7 @@ const creativeButtonList: DataItem[] = [
   },
   {
     text: 'Card writer',
-    color: "rgba(0,43,72,0.7)",
+    color: "rgba(12,170,225,0.62)",
     icon: "map-outline",
     navigation: "ChatNavigator",
     extraText: "Create greeting Cards for Birthday, Christmas,...",
@@ -118,7 +118,7 @@ const creativeButtonList: DataItem[] = [
   },
   {
     text: "Story writer",
-    color: "rgba(11,31,59,0.2)",
+    color: "rgba(245,85,29,0.82)",
     icon: "book-open-page-variant",
     navigation: "ChatNavigator",
     extraText: "Write the next best seller...",
@@ -126,7 +126,7 @@ const creativeButtonList: DataItem[] = [
   },
   {
     text: "Lyric writer",
-    color: "rgba(7,5,61,0.2)",
+    color: "rgba(158,25,245,0.71)",
     icon: "cellphone-text",
     navigation: "ChatNavigator",
     extraText: "Create Lyrics for every Music genre",
@@ -137,7 +137,7 @@ const creativeButtonList: DataItem[] = [
 const lifeButtonList: DataItem[] = [
   {
     text: "Movie/Series-\nfinder",
-    color: "#232f44",
+    color: "#c72e2e",
     icon: "television-shimmer",
     navigation: "ChatNavigator",
     extraText: "Find the best Movie for your Movie night",
@@ -147,7 +147,7 @@ const lifeButtonList: DataItem[] = [
     text: "Chat",
     icon: "comment-multiple-outline",
     navigation: "ChatNavigator",
-    color: "rgba(255,255,255,.2)",
+    color: "rgb(255,255,255)",
     extraText: "Keep yourself informed!",
     screen: "ChatMain"
   },
@@ -155,13 +155,13 @@ const lifeButtonList: DataItem[] = [
     text: "Fitness Assistant",
     icon: "food-apple",
     navigation: "ChatNavigator",
-    color: "rgba(7,40,65,0.36)",
+    color: "rgba(0,255,4,0.75)",
     extraText: "Create Free Diet or training plans",
     screen: "FitnessWriter"
   },
   {
     text: "Chat response helper",
-    color: "rgba(50,112,196,0.2)",
+    color: "rgba(148,184,234,0.76)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: "Dont know how to answer to an Text Message? Our Model does!",

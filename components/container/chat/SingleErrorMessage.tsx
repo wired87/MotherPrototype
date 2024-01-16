@@ -1,8 +1,10 @@
-import {memo, useContext} from "react";
+import React, {memo, useContext} from "react";
 import {View, StyleSheet} from "react-native";
 import {ThemeContext} from "../../../screens/Context";
+import {SingleMessageTypes} from "./SingleMessage";
+import {StyleProps} from "react-native-reanimated";
 
-const ls = StyleSheet.create(
+const ls: StyleProps = StyleSheet.create(
   {
     main: {
       width: 100,
@@ -12,13 +14,15 @@ const ls = StyleSheet.create(
   }
 )
 
-const SingleErrorMessage = () => {
+
+const SingleErrorMessage: React.FC<SingleMessageTypes> = (
+
+) => {
 
   const { customTheme } = useContext(ThemeContext);
 
   return(
     <View style={ls.main}>
-
     </View>
   );
 }

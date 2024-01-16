@@ -59,7 +59,7 @@ const FitnessMain: React.FC  = () => {
     }
   }
 
-  const handleSearch = async () => {
+  const sendData = useCallback(async () => {
     if (planType.length == 0 || gender.length == 0) {
       Vibration.vibrate();
       console.log("No planType or gender provided...")
@@ -70,6 +70,7 @@ const FitnessMain: React.FC  = () => {
       setAlreadyRunning(true);
       return;
     }
+
     setWeight("")
     setExtraInfos("")
     setPhysique("")
@@ -86,7 +87,7 @@ const FitnessMain: React.FC  = () => {
       setError,
       setSearchResult
     )
-  };
+  }, [loading, planType, gender]);
 
 
   useEffect(() => {
@@ -119,7 +120,7 @@ const FitnessMain: React.FC  = () => {
         source={fitness}
         response={searchResult}
         setResponse={setSearchResult}
-        sendData={handleSearch}
+        sendData={sendData}
         error={error}
         Content={
           <>
@@ -144,7 +145,7 @@ const FitnessMain: React.FC  = () => {
               showClearButton/>
 
             <DefaultInput
-              label={"Gender"}
+              label={"Your Gender"}
               placeholder={"e.g Male..."}
               value={gender}
               onChangeAction={setGender}

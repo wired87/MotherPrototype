@@ -16,6 +16,7 @@ import {MessageInputContainer} from "../../components/container/MessageInputCont
 import {InputContext, ThemeContext} from "../Context";
 import SingleErrorMessage from "../../components/container/chat/SingleErrorMessage";
 import {StyleProps} from "react-native-reanimated";
+import {userMesssageObject} from "./ChatNavigator";
 
 const localStyles = StyleSheet.create(
   {
@@ -78,21 +79,19 @@ export const ChatMain = (
 
   const primaryTextStyles: StyleProps =
     {textAlign: "justify", marginBottom: 15, color: customTheme.text}
+
   const secondaryTextStylesText: StyleProps =
     {color: customTheme.text, fontSize: 10, position: "absolute", left: 10, bottom: 3}
 
-  const renderItem = useCallback(({ item }: { item: any }): JSX.Element => {
-    if (item && item.type === "error") {
-      return (
-        <SingleErrorMessage />
-      );
-    }else if (item && item.type === "text") {
+  const renderItem = useCallback(({ item }: { item: userMesssageObject }) => {
+
+    if (item && item.type === "text") {
       return(
         <SingleMessageMemo
           item={item}
           styles={chatStyles}
           primaryTextStyles={primaryTextStyles}
-          secondaryTextStyles={secondaryTextStylesText}
+          secondaryTextStylesText={secondaryTextStylesText}
         />
       )
     }else{
@@ -100,7 +99,12 @@ export const ChatMain = (
     }
   }, [customTheme, messages]);
 
-
+/*
+if (item && item.type === "error") {
+      return (
+        <SingleErrorMessage />
+      );
+ */
   const miracleText = useMemo(() => {
     const aixTextStyles =
       [localStyles.centeredText, {color: customTheme.mirageChatMainColor}];

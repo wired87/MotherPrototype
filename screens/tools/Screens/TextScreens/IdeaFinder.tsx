@@ -9,9 +9,11 @@ import {toolStyles as ts} from "../../toolStyles";
 import cardLoading from "../../../../assets/animations/cardLoading.json";
 import {TEXT_REQUEST_URL} from "@env";
 import {DefaultText} from "../../../../components/text/DefaultText";
+import {getLanguage} from "../../../../AppFunctions";
+
 
 //STRINGS
-const heading:string = "Create easy and fast \n professional E-Mail...";
+const heading:string = "Create creative business Ideas...";
 
 // INT
 const maxLengthSmall:number = 100;
@@ -21,14 +23,14 @@ const maxLengthBig:number = 200;
 const placeholder:string = `Your written Tex will be shown here...`
 
 
-const EmailMain: React.FC  = () => {
+const IdeaFinder: React.FC  = () => {
   const [error, setError] = useState<string>("");
   const [response, setResponse] = useState<string>("");
-  const [fieldError, setFieldError] = useState<string>("");
+  const [fieldError, setFieldError] = useState<boolean>(false);
 
-  const [kind, setKind] = useState<string>("");
-  const [extraInfos, setExtraInfos] = useState<string>("");
-  const [goal, setGoal] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [thoughts, setThoughts] = useState<string>("");
+  const [niche, setNiche] = useState<string>("");
 
   const [editable, setEditable] = useState<boolean>(false);
 
@@ -40,34 +42,35 @@ const EmailMain: React.FC  = () => {
   const moreInfosInput = [
     ts.input, {minHeight: 80}];
 
-  const getCardPostObject = ():object => {
+  const getIdeaPostObject = ():object => {
     return {
       "user_id": user?.uid,
-      "input_type": "email",
-      "kind": kind,
-      "extraInfos": extraInfos,
-      "goal": goal
+      "input_type": "idea",
+      "language": getLanguage(),
+      "niche": niche,
+      "thoughts": thoughts,
+      "category": category
     }
   }
 
   const sendData = useCallback(async () => {
-    if (kind.length == 0){
+    if (niche.length == 0){
       Vibration.vibrate();
-      setFieldError("Please provide a Card Type");
+      setFieldError(true);
       return;
     }
     await toolPostRequest(
       TEXT_REQUEST_URL,
-      getCardPostObject(),
+      getIdeaPostObject(),
       setError,
       setResponse
     )
-  }, [kind, loading]);
+  }, [niche, loading]);
 
   const fieldErrorText = useCallback(() => {
-    if (fieldError && fieldError.length > 0) {
+    if (fieldError) {
       return(
-        <DefaultText text={fieldError}/>
+        <DefaultText text={"Please provide the niche for the ideas"}/>
       );
     }
   }, [fieldError])
@@ -83,34 +86,37 @@ const EmailMain: React.FC  = () => {
         sendData={sendData}
         setResponse={setResponse}
         error={error}
-        Content={<>
+        Content={
+        <>
           <DefaultInput
-            label={"E-Mail type:"}
-            placeholder={"e.g. Business, Resume,... "}
-            value={kind}
-            onChangeAction={setKind}
+            label={"Category"}
+            placeholder={"e.g. Software"}
+            value={category}
+            onChangeAction={setCategory}
             extraStyles={{}}
             max_length={maxLengthSmall}
             recordingOption
-            showClearButton/>
+            showClearButton
+          />
+
+          <DefaultInput
+            label={"Niche:"}
+            placeholder={"e.g. Games, ... "}
+            value={niche}
+            onChangeAction={setNiche}
+            extraStyles={{}}
+            max_length={maxLengthSmall}
+            recordingOption
+            showClearButton
+          />
 
           {fieldErrorText()}
 
           <DefaultInput
-            label={"Goal"}
-            placeholder={"Have a nice conversation"}
-            value={goal}
-            onChangeAction={setGoal}
-            extraStyles={{}}
-            max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
-
-          <DefaultInput
-            label={"Extra Information's to provide?"}
-            placeholder={"Contact Person: Mr. Example"}
-            value={extraInfos}
-            onChangeAction={setExtraInfos}
+            label={"Thoughts"}
+            placeholder={"New cool Games"}
+            value={thoughts}
+            onChangeAction={setThoughts}
             extraStyles={moreInfosInput}
             max_length={maxLengthBig}
             recordingOption
@@ -126,4 +132,4 @@ const EmailMain: React.FC  = () => {
 }
 
 
-export default memo(EmailMain);
+export default memo(IdeaFinder);

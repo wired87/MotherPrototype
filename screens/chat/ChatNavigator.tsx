@@ -29,7 +29,7 @@ interface ChatNavigationTypes {
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// INTERFACE#
 
-interface userMesssageObject {
+export interface userMesssageObject {
   id: number | string,
   message: string,
   timeToken: string | number
@@ -141,7 +141,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
         }else{
           console.log("Create AI Message with response:", response);
           aiResponse = createMessageObject(
-            response,
+            response.message,
             "text",
             messageIndex,
             user,
@@ -229,7 +229,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
       } else {
         console.log("0 input try again")
         const response = createMessageObject(
-          "There was no input addet please try again :)",
+          "Im here to help. How can i do that?",
           "text",
           messageIndex,
           user,

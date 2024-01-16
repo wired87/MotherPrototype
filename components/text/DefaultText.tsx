@@ -10,6 +10,7 @@ interface DefaultTextTypes {
     error?: boolean;
     ellipsizeMode?: "head" | "middle" | "tail" | "clip";
     numberOfLines?: number;
+    selectable?: boolean;
 }
 
 
@@ -19,14 +20,19 @@ export const DefaultText: React.FC<DefaultTextTypes> = (
     moreStyles,
     error,
     ellipsizeMode,
-    numberOfLines
+    numberOfLines,
+    selectable
   }
 ) => {
+
     const { customTheme } = useContext(ThemeContext);
     const defaultTextStyles = [ textStyles.defaultText,
-        {color: error? customTheme.errorText : customTheme.text}]
+        {color: error? customTheme.errorText : customTheme.text}];
+
+    const textSelectable = selectable || false;
+
     return(
-        <Text style={[moreStyles || null, defaultTextStyles]} ellipsizeMode={ellipsizeMode} numberOfLines={numberOfLines}>
+        <Text selectable={textSelectable} style={[moreStyles || null, defaultTextStyles]} ellipsizeMode={ellipsizeMode} numberOfLines={numberOfLines}>
             {text}
         </Text>
     );

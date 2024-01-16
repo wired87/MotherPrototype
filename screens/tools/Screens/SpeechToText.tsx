@@ -9,8 +9,6 @@ import {ThemeContext} from "../../Context";
 import UniversalTextCreator from "../../../components/container/Tools/UniversalTextCreator";
 import TranscribeButton from "../../../components/buttons/TranscribeButton";
 
-
-
 // Strings
 const placeholderTranscript: string = "Your generated transcript will be shown here";
 
@@ -26,16 +24,11 @@ const SpeechToText: React.FC = () => {
 
   const backgroundColor = {backgroundColor: customTheme.primary};
 
-
-
-
   return(
     <ScrollView style={backgroundColor} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
-        value={transcript}
         placeholder={placeholderTranscript}
         editable={editable}
-        changeText={setTranscript}
         heading={heading}
         Content={
           <TranscribeButton
@@ -44,7 +37,11 @@ const SpeechToText: React.FC = () => {
             setError={setError}
             transcript={transcript}
           />
-        }
+      }
+        source={""}
+        response={transcript}
+        setResponse={setTranscript}
+        error={error}
       />
     </ScrollView>
   );

@@ -30,13 +30,14 @@ const StoryMain: React.FC  = () => {
   const [response , setResponse] = useState<string>("");
   const [error , setError] = useState<string>("");
   const [fieldError , setFieldError] = useState<string>("");
-
   const [editable, setEditable] = useState<boolean>(false);
+  const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
 
   // Context
-  const {user } = useContext(PrimaryContext);
+  const {user,loading } = useContext(PrimaryContext);
   const {toolPostRequest } = useContext(ToolContext);
   const {customTheme } = useContext(ThemeContext);
+
   const getStoryPostObject = ():object => {
     return {
       "user_id": user?.uid,
@@ -48,10 +49,14 @@ const StoryMain: React.FC  = () => {
     }
   }
 
-  const sendData = async () => {
+  const sendData = useCallback(async () => {
     if (kind.length == 0){
       Vibration.vibrate();
       setFieldError("Please provide a Type");
+      return;
+    }else if (loading) {
+      Vibration.vibrate();
+      setAlreadyRunning(true);
       return;
     }
     setError("");
@@ -61,7 +66,7 @@ const StoryMain: React.FC  = () => {
       setError,
       setResponse
     )
-  };
+  }, [kind])
 
 
   const fieldErrorText = useCallback(() => {

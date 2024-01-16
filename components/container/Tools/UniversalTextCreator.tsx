@@ -14,6 +14,7 @@ import {AnimationObject} from "lottie-react-native";
 import {DefaultButton} from "../../buttons/DefaultButton";
 import toolError from "../../../assets/animations/toolError.json";
 import LottieContainer from "../LottieContainer";
+import {DefaultText} from "../../text/DefaultText";
 
 // STRINGS
 const clear:string = "close";
@@ -28,8 +29,9 @@ interface TextResultTypes {
   source: string | AnimationObject | { uri: string; };
   response: string;
   setResponse: Dispatch<SetStateAction<string>>;
-  sendData: (() => void);
+  sendData?: (() => void);
   error: string;
+  alreadyRunning?: boolean;
 }
 
 const UniversalTextCreator: React.FC<TextResultTypes> = (
@@ -43,7 +45,8 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     response,
     setResponse,
     sendData,
-    error
+    error,
+    alreadyRunning
   }
 
 ) => {
@@ -73,10 +76,24 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
       backgroundColor
     ];
 
+  const alreadyRunningComponent = useCallback(() => {
+    if (alreadyRunning) {
+      return <DefaultText error text={"Process already in progress..."} />
+    }else {
+      return <></>
+    }
+  }, [alreadyRunning])
+
 
   const handleClearField = useCallback(() => {
     setResponse("");
   }, [response])
+
+  const sendButton = useCallback(() => {
+    if (sendData) {
+      return <DefaultButton onPressAction={sendData}/>
+    }else return <></>
+  }, [sendData])
 
 
   const resultContainer = useCallback(() => {
@@ -84,7 +101,7 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
       return (
         <View style={ts.transcriptContainer}>
           <DefaultInput
-            numberOfLines={10}
+            numberOfLines={15}
             editable={editable}
             placeholder={placeholder}
             value={response}
@@ -119,12 +136,17 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     <TextStream message={heading}/>
 
       {Content}
-      <DefaultButton onPressAction={sendData}/>
+
+      {sendButton()}
+
+      {alreadyRunningComponent()}
+
       <DefaultProgressBar loading={loading} />
 
       {resultContainer()}
 
       <BottomImage />
+
     </KeyboardAvoidingView>
   );
 }

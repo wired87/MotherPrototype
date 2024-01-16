@@ -1,5 +1,5 @@
 import {KeyboardTypeOptions, TextInput, View,StyleSheet} from "react-native";
-import React, {useCallback, useContext, useMemo, useState} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useMemo, useState} from "react";
 import {inputStyles} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import TranscribeButton from "../buttons/TranscribeButton";
@@ -10,7 +10,7 @@ import ClearButton from "../buttons/ClearButton";
 export default interface DefaulttextInputTypes {
   placeholder?: string;
   value: string;
-  onChangeAction?: ((text: string) => void);
+  onChangeAction?: ((text: string) => void) | Dispatch<SetStateAction<string>>;
   secure?: boolean;
   editable?: boolean;
   keyboardType?: KeyboardTypeOptions;
@@ -80,7 +80,6 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     inputStyles.defaultInput,
     extraStyles || null,
       {
-        backgroundColor: customBackground,
         color: customTheme.text,
         borderWidth: noBorder? 0:1,
         borderColor: noBorder? "transparent" : customTheme.text

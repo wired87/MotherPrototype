@@ -92,7 +92,8 @@ const ChatResponseHelper: React.FC = () => {
         <DefaultText
           error
           text={"Provide some Chat history and context for good results."}
-          moreStyles={ts.text}/>
+          moreStyles={ts.text}
+        />
       );
     }else {
       return(

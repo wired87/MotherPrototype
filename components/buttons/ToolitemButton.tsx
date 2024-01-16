@@ -26,7 +26,6 @@ const ls = StyleSheet.create(
     },
     icon:{
       marginBottom: 10,
-      color: "white",
       opacity: .9
     },
     text:  {
@@ -34,7 +33,8 @@ const ls = StyleSheet.create(
       fontSize: 19,
       textAlign: "center",
       lineHeight: 25,
-      opacity: .9
+      opacity: .9,
+      fontFamily: "JetBrainsMono"
     },
     extraText: {
       color: "white",
@@ -45,12 +45,21 @@ const ls = StyleSheet.create(
   }
 )
 
+let coolColors = [
+  "#232f44",
+  "rgba(7,32,68,0.51)",// "rgba(7,40,65,0.36)", "rgba(7,5,61,0.2)", "rgba(7,9,56,0.4)" "rgba(0,43,72,0.7)", "rgb(43,33,84)",
+]
+
+function randomChoice(array: string[]) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 interface ToolitemButton {
   text?: string;
   color: string;
   extraText?: string;
   icon: string,
-  navigationScreen?: string
+  navigationScreen?: string;
 }
 
 const ToolitemButton: React.FC<ToolitemButton> = (
@@ -60,6 +69,7 @@ const ToolitemButton: React.FC<ToolitemButton> = (
     extraText,
     icon,
     navigationScreen
+
   }
 ) => {
 
@@ -91,10 +101,10 @@ const ToolitemButton: React.FC<ToolitemButton> = (
     <Pressable style={finalButton(ls.bgView)} onPress={navigate}>
       <LinearGradient
         style={[finalButton(ls.button), {height: getRandomBoolean() ? 150 : 200}]}
-        colors={[color, "black"]}
+        colors={[randomChoice(coolColors), "black"]}
         start={{ x: 0, y: 0 }}
         end={{ x: .1, y: .8 }}>
-        <MaterialCommunityIcons size={30} style={ls.icon} name={icon}/>
+        <MaterialCommunityIcons size={30} style={ls.icon} color={color} name={icon} />
           <Text style={ls.text}>{text}</Text>
       </LinearGradient>
     </Pressable>

@@ -32,7 +32,6 @@ export const toolStyles = StyleSheet.create(
       position: "absolute",
       right: 2,
       bottom: -2,
-
       padding:0,
     },
     clearButton: {

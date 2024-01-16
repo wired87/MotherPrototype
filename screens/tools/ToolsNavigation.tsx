@@ -17,6 +17,7 @@ import LyricsMain from "./Screens/TextScreens/Lyrics";
 import EmailMain from "./Screens/TextScreens/EMail";
 import ProductMain from "./Screens/TextScreens/ProductMain";
 import FitnessMain from "./Screens/TextScreens/Fitness";
+import IdeaFinder from "./Screens/TextScreens/IdeaFinder";
 
 const ToolStack = createNativeStackNavigator();
 
@@ -65,6 +66,11 @@ const ToolsNavigator: React.FC = () => {
       <ToolStack.Screen
         name="ResumeCreator"
         component={ResumeCreator}
+      />
+
+      <ToolStack.Screen
+        name="IdeaFinder"
+        component={IdeaFinder}
       />
 
       <ToolStack.Screen

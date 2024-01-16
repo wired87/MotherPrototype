@@ -193,34 +193,3 @@ export interface ThemeContextType {
 export const ThemeContext = createContext<ThemeContextType>({
   customTheme: lightModeTheme
 });
-
-
-
-/*
-{
-primary: "#f0f3f7",
-    secondary: themeColors.sexyBlue,
-    borderColor: "rgba(37,38,38,0.76)",
-    text: "#000000",
-    navigatorColor: "#f0f3f7",
-    modalColor: "rgba(241,236,236,0.75)",
-    secondaryContainerBackground: "rgba(250,250,250,0.75)",
-    switchedSecondaryContainerBackground: "rgb(37,38,38)",
-    headerIconColors: "rgb(3,4,21)",
-    messageContainer: "#e1e4e7",
-    view: "#dfe3e8",
-    primary: colors.primary_darkLight[darkMode.primary ? 1 : 0],
-    secondary: colors.secondary_darkLight[darkMode.secondary ? 1 : 0],
-    navigatorColor: colors.navigatorColor[darkMode.navigatorColor ? 1 : 0],
-    headerIconColors: colors.headerIconColors[darkMode.headerIconColors ? 1 : 0],
-    switchTextColorLD: colors.switchTextColorLD[darkMode.switchTextColorLD ? 1 : 0],
-    secondaryContainerBackground: colors.secondaryContainerBackground[darkMode.secondaryContainerBackground ? 1 : 0],
-    view: colors.view[darkMode.view ? 1 : 0],
-    switchedSecondaryContainerBackground: colors.switchedSecondaryContainerBackground[darkMode.switchedSecondaryContainerBackground ? 1 : 0],
-    bool: !darkMode.bool,
-    messageContainer: colors.messageContainer[darkMode.messageContainer ? 1 : 0],
-    text: colors.text[darkMode.text ? 1 : 0],
-    borderColor: colors.borderColor[darkMode.borderColor ? 1 : 0],
-    modalColor: colors.modalColor[darkMode.modalColor ? 1 : 0],
-  }
- */
