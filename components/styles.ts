@@ -1,8 +1,6 @@
 import {Dimensions, StyleSheet} from "react-native";
-import {themeColors} from "../colors/theme";
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 export const styles = StyleSheet.create({
     container: {
@@ -138,26 +136,7 @@ export const styles = StyleSheet.create({
         fontFamily: "Roboto",
     },
 
-    mainUserInfoContainer: {
-        marginBottom: 80,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: themeColors.sexyBlue,
-        borderWidth: 1,
-        borderRadius: 14,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
 
-    },
-    purchasePlanContainer: {
-        backgroundColor: themeColors.bg,
-        marginTop: 50,
-        marginBottom: 100,
-        width: 350,
-        height: 300,
-        borderRadius: 14,
-    },
     purchaseButtonAccountMain: {
         borderRadius: 20,
         width: 200,
@@ -341,17 +320,7 @@ export const styles = StyleSheet.create({
         borderRadius:10,
         marginTop:15
     },
-    buttonDeleteContainer: {
-        borderRadius: 30,
-        paddingVertical: 8,
-        paddingHorizontal: 0,
-        backgroundColor: themeColors.deleteRed,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop:30,
-        flexDirection: 'row',
-        width: 250,
-    },
+
     buttonTextProfile:{
         color:"white",
         fontSize:18,

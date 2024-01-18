@@ -1,5 +1,4 @@
 import {StyleSheet} from "react-native";
-import {themeColors} from "../../colors/theme";
 
 export const settingStyles = StyleSheet.create({
     box2: {
@@ -110,7 +109,6 @@ export const settingStyles = StyleSheet.create({
     },
     BottomLastBtn: {
         opacity: .6,
-        backgroundColor: themeColors.sexyBlue,
         paddingVertical: 15,
         paddingHorizontal: 20,
         marginLeft: 5,
@@ -122,7 +120,6 @@ export const settingStyles = StyleSheet.create({
         justifyContent: "center",
         display: "flex",
         flexDirection: "row",
-        color: themeColors.headerText,
         marginBottom: 100,
     },
     BottomLastBtnText: {

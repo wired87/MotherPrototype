@@ -1,5 +1,5 @@
 import {DefaultContainer} from "./DefaultContainer";
-import {TextInput, View, Vibration, Pressable, ActivityIndicator} from "react-native";
+import {TextInput, View, Vibration, ActivityIndicator} from "react-native";
 import {styles} from "./contiStyles";
 import React, {useCallback, useContext, useMemo, useState} from "react";
 import { TypeIndicator } from "../animations/TypeIndicator";

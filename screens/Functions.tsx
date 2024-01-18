@@ -1,5 +1,7 @@
 import {Share} from "react-native";
-import {Dispatch, SetStateAction} from "react";
+import React from "react";
+import {DefaultText} from "../components/text/DefaultText";
+import {toolStyles as ts} from "./tools/toolStyles";
 
 export const share = async(
   customTheme: any,
@@ -29,5 +31,14 @@ export const share = async(
     }
   } catch (error: any) {
     console.log(error.message);
+  }
+}
+
+
+export const fieldErrorText = (fieldError: string) => {
+  if (fieldError.length > 0) {
+    return(
+      <DefaultText text={fieldError} moreStyles={ts.text}/>
+    );
   }
 }

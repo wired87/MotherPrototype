@@ -1,7 +1,5 @@
 import {Dimensions, StyleSheet} from "react-native";
-import {themeColors} from "../../colors/theme";
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 export const chatStyles = StyleSheet.create({
     inputContainer: {
         width: windowWidth,
@@ -20,15 +18,7 @@ export const chatStyles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#01152a',
     },
-    maintextInput: {
-        width: windowWidth * .8,
-        borderColor: "#01152a",
-        borderRightWidth: 1,
-        marginLeft: 20,
-        fontWeight: "bold",
-        color: themeColors.white,
-        fontSize: 17,
-    },
+
     aiMessageContainer: {
         width: "auto",
         position: "relative",

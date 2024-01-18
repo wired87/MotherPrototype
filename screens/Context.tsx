@@ -1,7 +1,5 @@
 import {createContext, Dispatch, SetStateAction} from "react";
 
-import {themeColors} from "../colors/theme";
-import {Recording} from "expo-av/build/Audio/Recording";
 import firebase from "firebase/compat";
 
 export interface JwtToken {
@@ -33,11 +31,17 @@ export const PrimaryContext = createContext(
     bottomSheetLoaded: false,
     setBottomSheetLoaded: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
-    error: "",
-    setError: (() => {}) as Dispatch<SetStateAction<string>>,
+    defaultPostRequest: async (
+      postUrl: string,
+      postObject: object,
+      setError: Dispatch<SetStateAction<string>>,
+      setResponse: Dispatch<SetStateAction<any>>,
+      setStatus?: Dispatch<SetStateAction<number>>,
+      toolAction?:boolean
+      ) => Promise<any>,
 
-    fieldError: false,
-    setFieldError: (() => {}) as Dispatch<SetStateAction<boolean>>,
+    alreadyRunning: false,
+    setAlreadyRunning: (() => {}) as Dispatch<SetStateAction<boolean>>,
   });
 
 export const InputContext = createContext({
@@ -63,9 +67,6 @@ export const InputContext = createContext({
   currentRecording: false,
   setCurrentRecording: (() => {}) as Dispatch<SetStateAction<boolean>>,
 
-  userRecording: null as Recording | null,
-  setUserRecording: (() => {}) as Dispatch<SetStateAction<any>>
-
 });
 
 export const ToolContext= createContext(
@@ -73,27 +74,10 @@ export const ToolContext= createContext(
     toolActionValue: "",
     setToolActionValue: (() => {}) as Dispatch<SetStateAction<string>>,
 
-    toolPostRequest: async (postUrl: string, postObject: object, setError: Dispatch<SetStateAction<string>>, setResponse: Dispatch<SetStateAction<any>>) => Promise<any>,
-
     checkToolActionValueProcess: async (): Promise<boolean> => false,
   }
 )
 
-export const AuthContext = createContext({
-  password: "",
-  setPassword: (() => {}) as Dispatch<SetStateAction<string>>,
-
-  email: "",
-  setEmail: (() => {}) as Dispatch<SetStateAction<string>>,
-
-  error: "",
-  setError: (() => {}) as Dispatch<SetStateAction<string>>,
-
-  modalVisible: false,
-  setModalVisible: (() => {}) as Dispatch<SetStateAction<boolean>>,
-
-
-});
 
 export const FunctionContext = createContext(
   {
@@ -137,7 +121,7 @@ export interface Theme {
 
 export const lightModeTheme: Theme = {
   primary: "#f0f3f7",
-  secondary: themeColors.sexyBlue,
+  secondary: "#01152a",
   borderColor: "rgba(37,38,38,0.76)",
   text: "#000000",
   navigatorColor: "#f0f3f7",
@@ -170,7 +154,7 @@ export const darkModeTheme: Theme = {
   secondaryContainerBackground: "rgba(255,255,255,0.2)",
   switchedSecondaryContainerBackground: "rgb(24,24,24)",
   headerIconColors: "rgb(255,255,255)",
-  messageContainer: "rgba(105,103,103,0.4)",
+  messageContainer: "rgba(164,163,163,0.7)",
   view: "rgba(66,66,66,0.1)",
   bottomSheetBg: "rgba(189,189,189,0.24)",
   placeholder: "rgba(255, 255, 255, .6)",

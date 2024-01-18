@@ -4,7 +4,6 @@ import {DefaultText} from "../../text/DefaultText";
 
 import React, {memo, useContext, useMemo} from "react";
 import { ActivityIndicator } from "react-native-paper";
-import {themeColors} from "../../../colors/theme";
 import {uniStyles} from "../../../screens/universalStyles"
 import {InputContext, PrimaryContext, ThemeContext} from "../../../screens/Context";
 import {HistoryItem} from "./HistoryItem";
@@ -44,7 +43,7 @@ const ChatMenuModalContent = (
       return <ModalContentNoLog />;
     }*/
     if (loading) {
-      return <ActivityIndicator color={themeColors.sexyBlue} size={indicatorSize} />;
+      return <ActivityIndicator color={customTheme.primaryButton} size={indicatorSize} />;
     }
     else if (lastItems?.length > 0 && user) {
       return (

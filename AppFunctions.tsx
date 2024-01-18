@@ -12,8 +12,6 @@ import * as RNLocalize from "react-native-localize";
 // URLS
 const checkEndpoint: string = CHECK_JWT;
 const getEndpoint: string = LOGIN_JWT;
-const eMailBody: string = "Hey, i detected a security Problem while try set the JwtToken!"
-const errorUrl: string = `https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=${eMailBody}`
 
 export const getLanguage = () => {
   const locales = RNLocalize.getLocales();

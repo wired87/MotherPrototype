@@ -9,27 +9,20 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 
-import {PrimaryContext, InputContext, ThemeContext, ToolContext} from "../../screens/Context";
-import {Recording} from "expo-av/build/Audio/Recording";
+import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context";
 
 import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
 import ToolsNavigator from "../../screens/tools/ToolsNavigation";
-import {
-  checkToolActionValue,
-  getToolActionValue,
-  postToolActionValue,
-  showToolAds
-} from "../../screens/chat/functions/AdLogic";
+
 import SwipeModal from "../modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
-import {sendObject} from "../../screens/chat/functions/SendProcess";
-import {getToken} from "../../AppFunctions";
+
 
 
 const adUnitIdBannerAdFooter = __DEV__
@@ -73,7 +66,6 @@ const NavigationMain: React.FC = () => {
   const [messageBreakOption, setMessageBreakOption] = useState(false);
   const [typing, setTyping] = useState(false); // typing indicator
   const [currentRecording, setCurrentRecording] = useState(false);
-  const [userRecording, setUserRecording] = useState<Recording | null>(null);
 
 
 
@@ -93,109 +85,15 @@ const NavigationMain: React.FC = () => {
     messageBreakOption,
     setMessageBreakOption,
     typing, setTyping,
-    userRecording, setUserRecording,
     currentRecording, setCurrentRecording
   }
-  const checkToolActionValueProcess = async (): Promise<boolean> => {
-    const valueToolActions = await getToolActionValue();
-    console.log("Try to get the user Tool Action Value", valueToolActions);
-    if (!valueToolActions) {
-      await postToolActionValue("1").then(async () => {
-        setToolActionValue("1");
-      });
-    } else {
-      setToolActionValue(valueToolActions);
-    }
-    return await checkToolActionValue(valueToolActions || "1", setToolActionValue);
-  };
-
-  const {
-    bottomSheetLoaded,
-    jwtToken,
-    setJwtToken,
-    setLoading
-  } = useContext(PrimaryContext);
 
 
-  ////////////////////////////////////////////  TOOL CONTEXT
-  const [toolActionValue, setToolActionValue] = useState<string>("");
-
-  const toolPostRequest = async (
-    postUrl: string,
-    postObject: object,
-    setError: Dispatch<SetStateAction<string>>,
-    setResponse: Dispatch<SetStateAction<string>>,
-  ):Promise<any> => {
-
-    console.log("jwtToken n Application Content:", jwtToken);
-
-    // just show if in one of the tool screens
-    if (toolActionValue === "0") {
-      console.log("User has 0 Actions left. Init Ads...")
-      await showToolAds(toolActionValue, setToolActionValue);
-    }
-
-    setToolActionValue("0");
-
-    setLoading(true);
-    let response;
-
-    try {
-      if (jwtToken?.refresh && jwtToken.access) {
-        console.log("Application data sent: ", postObject);
-        response = await sendObject(
-          postObject,
-          jwtToken,
-          setJwtToken,
-          postUrl
-        );
-      } else {
-        console.error("No token provided");
-        const newToken = await getToken(setJwtToken);
-        if (newToken) {
-          response = await sendObject(
-            postObject,
-            newToken,
-            setJwtToken,
-            postUrl
-          );
-        } else {
-          console.error("New Token request failed...");
-          setError("Authentication Error");
-        }
-      }
-      if (response) {
-        if (response.message && !response.error){
-        console.log("Application response Successfully:", response);
-        setResponse(response.message);
-        }else if(!response.message && response.error) {
-          console.error("Received no result:", response);
-          setError(response.error);
-        }
-      }
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e.message);
-        console.error("Error while contact submit occurred:", e.message);
-      }
-    } finally {
-      console.log("Application request finished without trouble...");
-      setLoading(false);
-    }
-  }
-
-  const toolElements = {
-    toolActionValue,
-    setToolActionValue,
-    checkToolActionValueProcess,
-    toolPostRequest
-  }
-
-  ////////////////////// !!! TOOL
-
+  const {bottomSheetLoaded,} = useContext(PrimaryContext);
 
 
   const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
+
 
   useEffect(() => {
     if(welcomeBottomSheetRef) {
@@ -206,7 +104,6 @@ const NavigationMain: React.FC = () => {
       console.log("0 sec...")
     }
   }, [bottomSheetLoaded]);
-
 
 
   const updateWelcomeBottomSheetIndex = useCallback((number: number) => {
@@ -280,12 +177,7 @@ const NavigationMain: React.FC = () => {
           />
         <Tab.Screen
           name="ToolsNavigator"
-          children={
-            () =>
-            <ToolContext.Provider value={toolElements}>
-              <ToolsNavigator />
-            </ToolContext.Provider>
-          }
+          component={ToolsNavigator}
           options={{
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons name={focused ? "view-dashboard" : "view-dashboard-outline"} color={color} size={29} />
@@ -322,6 +214,21 @@ const NavigationMain: React.FC = () => {
 export default memo(NavigationMain);
 
 /*
+
+
+
+
+
+
+
+footr
+
+
+
+
+
+
+
  <Tab.Navigator
         shifting={false}
         labeled={false}

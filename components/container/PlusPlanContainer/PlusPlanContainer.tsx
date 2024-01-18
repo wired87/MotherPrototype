@@ -10,8 +10,8 @@ const localStyles = StyleSheet.create(
     text: {
       color: 'white',
       fontSize: 20,
-      fontWeight: "bold",
-      marginBottom: 5
+      marginBottom: 5,
+      fontFamily: "JetBrainsMono"
     },
     moreTextStyles: {
       fontSize: 18,
@@ -28,8 +28,12 @@ let optionsData = [
   {
     text: "Unlimited Access and Messages"
   },
-]
-const BOTTOM_COLORS = ['#0e198c', '#1d155e', '#7F00FF', '#0e198c'];
+  {
+    text: "Many AI based Tools"
+  },
+];
+
+// const BOTTOM_COLORS = ['#0e198c', '#1d155e', '#7F00FF', '#0e198c'];
 
 export const PlusAdContainer = () => {
 

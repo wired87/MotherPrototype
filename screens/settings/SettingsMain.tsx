@@ -8,7 +8,7 @@ import {
   Linking,
 } from 'react-native'
 
-
+import InAppReview from 'react-native-in-app-review';
 import {styles} from "../../components/styles"
 import SwipeModal from '../../components/modals/SwipeModal';
 import AreYouSureContainer from "../../components/container/AreYouSureContainer";
@@ -33,6 +33,27 @@ const termsUrl: string = "https://www.app-privacy-policy.com/live.php?token=NWq1
 const privacyUrl: string = "https://www.app-privacy-policy.com/live.php?token=1imlqB2AjBzWW6xCk201qYMelCw2TQm5"
 const StatusContainer =
   lazy(() => import("../../components/container/modalContainers/StatusContainer"));
+
+
+const showInAppReview = async () => {
+  if (InAppReview.isAvailable()) {
+    try {
+      await InAppReview.RequestInAppReview();
+      console.log("Review Process successfully finished...");
+    }catch(e:unknown) {
+      if (e instanceof Error){
+        console.log("Error while open Review Container:", e);
+      }
+      console.log("Error occurred while try open in App reviews. Open Google Play Store Listing...")
+      await Linking.openURL("https://play.google.com/store/apps/developer?id=codingWizard");
+    }
+  }else {
+    console.log("In App review is not available on this device. Open Google Play Store Listing...")
+    await Linking.openURL("https://play.google.com/store/apps/developer?id=codingWizard");
+  }
+};
+
+
 
 
 
@@ -138,6 +159,7 @@ export const  SettingsMain = () => {
     if (loading) {
       return <ActivityIndicator size={20} />
     } else if (status == 201 || status == 200) {
+      console.log("Settings Staus == 201...")
       return <StatusContainer
                 source={successSent}
                 text={"Success!"}
@@ -149,7 +171,7 @@ export const  SettingsMain = () => {
         text={"Failed!\n"}
         helpText={"Please try again or send us your E-Mail directly at info@sales-detective.live."}
       />;
-    } else if (status == 300){
+    } else if (status == 300) {
       return <StatusContainer
         source={failLottie}
         text={"Authentication Error\n"}
@@ -177,20 +199,23 @@ export const  SettingsMain = () => {
   ];
 
 
-  const handleAction = useCallback((item: any) => {
+  const handleAction = useCallback( (item: any) => {
     return () => {
       console.log("item title", item.title);
-      if (item.title.includes("Share")) {
-        share(customTheme)
-          .then(() => console.log("Shared successfully.."));
+      if (item.title.includes("Rate")) {
+        showInAppReview()
+          .then(() => console.log("Review function finished..."));
+      }else if (item.title.includes("Share")) {
+          share(customTheme)
+            .then(() => console.log("Shared successfully.."));
       }else if (item.title.includes("Terms")){
          Linking.openURL(termsUrl)
            .then(() => console.log("Terms successfully linked"))
            .catch(e => console.log("Error while linking Terms:", e));
-      }else if (item.title.includes("Privacy")){
-         Linking.openURL(privacyUrl)
-           .then(() => console.log("Privacy successfully linked"))
-           .catch(e => console.log("Error while linking Privacy:", e));
+      }else if (item.title.includes("Privacy")) {
+        Linking.openURL(privacyUrl)
+          .then(() => console.log("Privacy successfully linked"))
+          .catch(e => console.log("Error while linking Privacy:", e));
       } else {
         updateModalIndex(2);
         setNewData(item.component);

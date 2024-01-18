@@ -1,14 +1,14 @@
-import {memo, useCallback, useContext, useState} from "react";
+import {memo, useCallback, useContext, useEffect, useState} from "react";
 
 import React from "react";
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
+import {PrimaryContext, ThemeContext} from "../../../Context";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {ScrollView, Vibration} from "react-native";
 import {toolStyles as ts} from "../../toolStyles";
-import cardLoading from "../../../../assets/animations/cardLoading.json";
 import {TEXT_REQUEST_URL} from "@env";
 import {DefaultText} from "../../../../components/text/DefaultText";
+import lottieEmail from "../../../../assets/animations/lottieEmail.json";
 
 //STRINGS
 const heading:string = "Create easy and fast \n professional E-Mail...";
@@ -26,15 +26,16 @@ const EmailMain: React.FC  = () => {
   const [response, setResponse] = useState<string>("");
   const [fieldError, setFieldError] = useState<string>("");
 
-  const [kind, setKind] = useState<string>("");
-  const [extraInfos, setExtraInfos] = useState<string>("");
-  const [goal, setGoal] = useState<string>("");
+  const [keyPoints, setKeyPoints] = useState<string>("");
 
-  const [editable, setEditable] = useState<boolean>(false);
+  const [purpose, setPurpose] = useState<string>("");
+  const [recipeName, setRecipeName] = useState<string>("");
+  const [relationShip, setRelationShip] = useState<string>("");
+  const [tone, setTone] = useState<string>("");
 
-  const {user, loading } = useContext(PrimaryContext);
+
+  const {user, defaultPostRequest, loading } = useContext(PrimaryContext);
   // Context
-  const {toolPostRequest } = useContext(ToolContext);
   const {customTheme } = useContext(ThemeContext);
 
   const moreInfosInput = [
@@ -44,25 +45,39 @@ const EmailMain: React.FC  = () => {
     return {
       "user_id": user?.uid,
       "input_type": "email",
-      "kind": kind,
-      "extraInfos": extraInfos,
-      "goal": goal
+      "keyPoints": keyPoints,
+      "purpose": purpose,
+      "tone": tone,
+      "recipient": recipeName
     }
   }
 
+  // FIELD ERROR LOGIC
+  useEffect(() => {
+    if (fieldError) {
+      const interval = setInterval(() => {
+        setFieldError("");
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [fieldError]);
+
   const sendData = useCallback(async () => {
-    if (kind.length == 0){
+    if (purpose.length == 0 || keyPoints.length == 0){
       Vibration.vibrate();
       setFieldError("Please provide a Card Type");
       return;
     }
-    await toolPostRequest(
+    await defaultPostRequest(
       TEXT_REQUEST_URL,
       getCardPostObject(),
       setError,
-      setResponse
+      setResponse,
+    undefined,
+      true
     )
-  }, [kind, loading]);
+  }, [purpose, loading, keyPoints]);
+
 
   const fieldErrorText = useCallback(() => {
     if (fieldError && fieldError.length > 0) {
@@ -72,54 +87,80 @@ const EmailMain: React.FC  = () => {
     }
   }, [fieldError])
 
+
   return(
     <ScrollView style={{backgroundColor: customTheme.primary}} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
+        successAnimation={lottieEmail}
         placeholder={placeholder}
-        editable={editable}
         heading={heading}
-        source={cardLoading}
+        source={lottieEmail}
         response={response}
         sendData={sendData}
         setResponse={setResponse}
         error={error}
-        Content={<>
-          <DefaultInput
-            label={"E-Mail type:"}
-            placeholder={"e.g. Business, Resume,... "}
-            value={kind}
-            onChangeAction={setKind}
-            extraStyles={{}}
-            max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
+        Content={
+          <>
+            <DefaultInput
+              label={"Purpose"}
+              placeholder={"e.g., Inquiry, Feedback, Invitation, ... (required)"}
+              value={purpose}
+              onChangeAction={setPurpose}
+              extraStyles={{}}
+              max_length={maxLengthSmall}
+              recordingOption
+              showClearButton
+            />
 
-          {fieldErrorText()}
+            <DefaultInput
+              label={"Recipients Name"}
+              placeholder={"(optional)"}
+              value={recipeName}
+              onChangeAction={setRecipeName}
+              extraStyles={{}}
+              max_length={maxLengthSmall}
+              recordingOption
+              showClearButton
+            />
 
-          <DefaultInput
-            label={"Goal"}
-            placeholder={"Have a nice conversation"}
-            value={goal}
-            onChangeAction={setGoal}
-            extraStyles={{}}
-            max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
+            {fieldErrorText()}
 
-          <DefaultInput
-            label={"Extra Information's to provide?"}
-            placeholder={"Contact Person: Mr. Example"}
-            value={extraInfos}
-            onChangeAction={setExtraInfos}
-            extraStyles={moreInfosInput}
-            max_length={maxLengthBig}
-            recordingOption
-            showClearButton
-            multiline
-            numberOfLines={3}
-          />
-        </>
-        }
+            <DefaultInput
+              label={"Relationship Recipient"}
+              placeholder={"Friends, Business,... (optional)"}
+              value={relationShip}
+              onChangeAction={setRelationShip}
+              extraStyles={{}}
+              max_length={maxLengthSmall}
+              recordingOption
+              showClearButton
+            />
+
+            <DefaultInput
+              label={"Desired Tone"}
+              placeholder={"Formal, Casual, Professional, ... (optional)"}
+              value={tone}
+              onChangeAction={setTone}
+              extraStyles={{}}
+              max_length={maxLengthSmall}
+              recordingOption
+              showClearButton
+            />
+
+            <DefaultInput
+              label={"Key Points"}
+              placeholder={"Any information's about the E-Mail content (required)"}
+              value={keyPoints}
+              onChangeAction={setKeyPoints}
+              extraStyles={moreInfosInput}
+              max_length={maxLengthBig}
+              recordingOption
+              showClearButton
+              multiline
+              numberOfLines={3}
+            />
+          </>
+          }
       />
     </ScrollView>
   );

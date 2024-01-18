@@ -46,11 +46,6 @@ const ls = StyleSheet.create(
   }
 )
 
-/*
-borderWidth: 1,
-borderColor: "red"
- */
-
 const WelcomeContainer: React.FC = () => {
   const { customTheme } = useContext(ThemeContext);
 

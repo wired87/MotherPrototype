@@ -8,18 +8,15 @@ import React, {
   useState
 } from "react";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
-import {sendObject} from "../../../chat/functions/SendProcess";
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
+import {PrimaryContext, ThemeContext} from "../../../Context";
 import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultText} from "../../../../components/text/DefaultText";
-import firebase from "firebase/compat";
 
 import {Vibration} from "react-native";
-import {getCurrentLanguage, getToken} from "../../../../AppFunctions";
+import {getCurrentLanguage} from "../../../../AppFunctions";
 import {toolStyles as ts} from "../../toolStyles";
-import {showToolAds} from "../../../chat/functions/AdLogic";
-import {Style} from "react-native-paper/lib/typescript/components/List/utils";
 import {StyleProps} from "react-native-reanimated";
+import { RESUME_URL } from "@env";
 
 // STRINGS
 const titlePlaceholder: string = "Job Title";
@@ -32,7 +29,7 @@ const workExperiencePlaceholder: string = "Work experience (optional)";
 
 const create: string = "Create";
 const filedErrorMessage: string = "This Field is required";
-const postUrl: string = "http://wired87.pythonanywhere.com/ai-creation/application-request/";
+
 
 
 
@@ -60,12 +57,8 @@ const ResumeContent: React.FC<ResumeTypes> = (
 
   // CONTEXT
   const { customTheme } = useContext(ThemeContext);
-  const { setToolActionValue, toolActionValue } = useContext(ToolContext);
 
-  const { setLoading,
-    jwtToken,
-    setJwtToken,
-    user } = useContext(PrimaryContext);
+  const {user,defaultPostRequest } = useContext(PrimaryContext);
 
   // STYLES
   const extraInputStyles: StyleProps = {backgroundColor: "transparent", borderColor: customTheme.text}
@@ -76,7 +69,6 @@ const ResumeContent: React.FC<ResumeTypes> = (
   }, []);
 
   const createApplicationObject = (
-    user: firebase.User | null
   ) => {
     return {
       "jobTitle": jobTitle,
@@ -89,64 +81,41 @@ const ResumeContent: React.FC<ResumeTypes> = (
     }
   }
 
-  const handleResumeCreatePress = useCallback(async () => {
-    console.log("jwtToken n Application Content:", jwtToken);
-    if (toolActionValue === "0") {
-      console.log("User has 0 Actions left. Init Ads...")
-      await showToolAds(toolActionValue, setToolActionValue);
-    }
+
+
+  const handleSearch = async () => {
     if (jobTitle.length == 0) {
       Vibration.vibrate();
       setFieldError(true);
-    }else {
-      setToolActionValue("0");
-      setError("");
-      setFieldError(false);
-      setLoading(true);
-      const fileObject: object = createApplicationObject(user);
-      let response;
-      try {
-        if (jwtToken?.refresh && jwtToken.access) {
-          console.log("Application data sent: ", fileObject);
-          response = await sendObject(
-            fileObject,
-            jwtToken,
-            setJwtToken,
-            postUrl
-          );
-        } else {
-          console.error("No token provided");
-          const newToken = await getToken(setJwtToken);
-          if (newToken) {
-            response = await sendObject(
-              fileObject,
-              newToken,
-              setJwtToken,
-              postUrl
-            );
-          } else {
-            console.error("New Token request failed...");
-            setError("Authentication Error");
-          }
-        }
-        if (response) {
-          console.log("Application response Successfully:", response);
-          setResume(response);
-        } else {
-          console.error("Received no result:", response);
-          setError("Error occurred. Please try again or contact the support.");
-        }
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          setError(e.message);
-          console.error("Error while contact submit occurred:", e.message);
-        }
-      } finally {
-        console.log("Application request finished without trouble...");
-        setLoading(false);
-      }
+      return;
     }
-  }, [jobTitle, jwtToken]);
+    await defaultPostRequest(
+      RESUME_URL,
+      createApplicationObject(),
+      setError,
+      setResume,
+      undefined,
+      true
+    )
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const FieldError = useMemo(() => {
     if (fieldError) {
@@ -207,7 +176,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
 
       <DefaultButton
         extraStyles={undefined}
-        onPressAction={handleResumeCreatePress}
+        onPressAction={handleSearch}
         text={create}
         secondIcon={undefined}
       />

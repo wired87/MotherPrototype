@@ -7,7 +7,9 @@ interface SingleproContainerTypes {
   text: string;
 }
 const SingleProContainer: React.FC<SingleproContainerTypes> = (
-    { text }
+    {
+      text
+    }
 ) => {
   return(
     <View style={styles.singleProtextContainer}>

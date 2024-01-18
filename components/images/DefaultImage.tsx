@@ -1,6 +1,6 @@
 import {ActivityIndicator, Image, View, StyleSheet} from "react-native";
 import React, {memo, useContext, useState} from "react";
-import error_img from "../../assets/images/error_img.png";
+import iconFinal from "../../assets/icons/iconFinal.png";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {ThemeContext} from "../../screens/Context";
 import {DefaultText} from "../text/DefaultText";
@@ -23,7 +23,7 @@ const DefaultImage: React.FC<DefaultImageTypes> = (
   const [hasError, setHasError] = useState<boolean>(false);
   const {customTheme} = useContext(ThemeContext);
 
-  const image = source? {uri: source} : {error_img}
+  const image = source? {uri: source} : {iconFinal}
 
   console.log("Image received:", source);
 

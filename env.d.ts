@@ -11,7 +11,6 @@ declare module '@env' {
   export const BANNER_FOOTER_IOS: string;
   export const BANNER_FOOTER_ANDORID: string;
   export const NEURONWRITER_AFFILIATE_LINK: string;
-  export const LINKMINK_AFFILIATE_URL: string;
   export const ORIGIBNALITY_AFFILITE_UTR: string;
   export const TOOLS_IOS_INTERSITIAL: string;
   export const TOOLS_ANDROID_INTERSITIAL: string;
@@ -22,5 +21,7 @@ declare module '@env' {
   export const MEDIA_URL: string;
   export const TEXT_REQUEST_URL: string;
   export const CHAT_COMPLETION_REQUEST: string;
+  export const RESUME_URL: string;
+  export const DEEP_SWAP_AFFILIATE_URL: string;
 
 }

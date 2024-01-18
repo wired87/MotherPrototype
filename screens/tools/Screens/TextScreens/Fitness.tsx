@@ -1,7 +1,7 @@
 import {memo, useCallback, useContext, useEffect, useState} from "react";
 
 import React from "react";
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
+import {PrimaryContext, ThemeContext} from "../../../Context";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {toolStyles as ts} from "../../toolStyles";
@@ -21,23 +21,21 @@ const maxLengthBig:number = 200;
 const placeholder:string = `Your custom Plan will be shown here...`;
 
 const FitnessMain: React.FC  = () => {
+
   const [weight, setWeight] = useState<string>("");
   const [extraInfos, setExtraInfos] = useState<string>("");
   const [planType, setPlanType] = useState<string>("");
   const [goal, setGoal] = useState<string>("");
   const [physique, setPhysique] = useState<string>("");
   const [gender, setGender] = useState<string>("");
-  const [fieldError, setFieldError] = useState<boolean>(false);
-  const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
+  const [fieldError, setFieldError] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [editable, setEditable] = useState<boolean>(false);
   const [searchResult, setSearchResult] = useState<string>("");
   const [height, setHeight] = useState<string>("");
 
   // Context
   const { customTheme } = useContext(ThemeContext);
-  const {user, loading } = useContext(PrimaryContext);
-  const {toolPostRequest } = useContext(ToolContext);
+  const {user, loading, defaultPostRequest } = useContext(PrimaryContext);
 
   // STYLES
   const backgroundColor = {backgroundColor: customTheme.primary};
@@ -63,25 +61,11 @@ const FitnessMain: React.FC  = () => {
     if (planType.length == 0 || gender.length == 0) {
       Vibration.vibrate();
       console.log("No planType or gender provided...")
-      setFieldError(true);
-      return;
-    }else if (loading) {
-      Vibration.vibrate();
-      setAlreadyRunning(true);
+      setFieldError("No planType or gender provided...");
       return;
     }
 
-    setWeight("")
-    setExtraInfos("")
-    setPhysique("")
-    setGoal("")
-    setPlanType("")
-    setFieldError(false)
-    setAlreadyRunning(false)
-    setError("");
-    setSearchResult("");
-
-    await toolPostRequest(
+    await defaultPostRequest(
       TEXT_REQUEST_URL,
       getFitnessPostObject(),
       setError,
@@ -93,7 +77,7 @@ const FitnessMain: React.FC  = () => {
   useEffect(() => {
     if(fieldError) {
       setTimeout(() => {
-        setFieldError(false);
+        setFieldError("");
       }, 4000);
     }
   }, [fieldError]);
@@ -115,94 +99,89 @@ const FitnessMain: React.FC  = () => {
     <ScrollView style={backgroundColor} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
         placeholder={placeholder}
-        editable={editable}
         heading={heading}
         source={fitness}
         response={searchResult}
         setResponse={setSearchResult}
         sendData={sendData}
         error={error}
-        Content={
-          <>
-            <DefaultInput
-              label={"Plan Type"}
-              placeholder={"e.g. Diet, Training, ..."}
-              value={planType}
-              onChangeAction={setPlanType}
-              extraStyles={{}}
-              max_length={maxLengthSmall}
-              recordingOption
-              showClearButton
-            />
+        successAnimation={fitness}
+        Content={<>
+          <DefaultInput
+            label={"Plan Type"}
+            placeholder={"e.g. Diet, Training, ..."}
+            value={planType}
+            onChangeAction={setPlanType}
+            extraStyles={{}}
+            max_length={maxLengthSmall}
+            recordingOption
+            showClearButton/>
 
-            <DefaultInput
-              placeholder={"Goal..."}
-              value={goal}
-              onChangeAction={setGoal}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton/>
+          <DefaultInput
+            placeholder={"Goal..."}
+            value={goal}
+            onChangeAction={setGoal}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton/>
 
-            <DefaultInput
-              label={"Your Gender"}
-              placeholder={"e.g Male..."}
-              value={gender}
-              onChangeAction={setGender}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton/>
+          <DefaultInput
+            label={"Your Gender"}
+            placeholder={"e.g Male..."}
+            value={gender}
+            onChangeAction={setGender}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton/>
 
-            <DefaultInput
-              label={"Current Weight"}
-              placeholder={"in kg"}
-              value={weight}
-              onChangeAction={setWeight}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton
-              keyboardType={"decimal-pad"}
-            />
+          <DefaultInput
+            label={"Current Weight"}
+            placeholder={"in kg"}
+            value={weight}
+            onChangeAction={setWeight}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton
+            keyboardType={"decimal-pad"}/>
 
-            <DefaultInput
-              label={"Current height"}
-              placeholder={"in cm"}
-              value={height}
-              onChangeAction={setHeight}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton
-              keyboardType={"number-pad"}
-            />
+          <DefaultInput
+            label={"Current height"}
+            placeholder={"in cm"}
+            value={height}
+            onChangeAction={setHeight}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton
+            keyboardType={"number-pad"}/>
 
-            <DefaultInput
-              label={"How you would describe yourself?"}
-              placeholder={"Normal, Muscular, ..."}
-              value={physique}
-              onChangeAction={setPhysique}
-              extraStyles={{}}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton/>
+          <DefaultInput
+            label={"How you would describe yourself?"}
+            placeholder={"Normal, Muscular, ..."}
+            value={physique}
+            onChangeAction={setPhysique}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton/>
 
-            <DefaultInput
-              placeholder={"Extra Information's to provide"}
-              value={extraInfos}
-              onChangeAction={setExtraInfos}
-              extraStyles={moreInfosInput}
-              max_length={maxLengthBig}
-              recordingOption
-              showClearButton
-              numberOfLines={4}
-            />
+          <DefaultInput
+            placeholder={"Extra Information's to provide"}
+            value={extraInfos}
+            onChangeAction={setExtraInfos}
+            extraStyles={moreInfosInput}
+            max_length={maxLengthBig}
+            recordingOption
+            showClearButton
+            numberOfLines={4}/>
 
-            {fieldErrorComp()}
+          {fieldErrorComp()}
 
-          </>
-        }
+        </>
+      }
       />
     </ScrollView>
   );

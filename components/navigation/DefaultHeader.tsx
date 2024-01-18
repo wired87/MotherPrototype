@@ -58,7 +58,6 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
 
   const shouldShowBackIcon = useCallback(() => {
     const screensToShowBackIcon = [
-      "PurchaseScreen",
       "AccountMain",
       "PasswordChange",
       "EmailChange",

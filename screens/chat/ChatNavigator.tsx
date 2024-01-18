@@ -182,7 +182,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   ///////////////////////////////////////////////////////////////////////////////////
   //////////////////////// MESSAGE SENT PROCESS /////////////////////////////////////
 
-  //////////////////////// TEXT SENT START
   const textMessageStart = useCallback(() => {
     Vibration.vibrate();
     setInput("");
@@ -314,43 +313,3 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   );
 }
 export default memo(ChatNavigation);
-
-/*
-
-  // Auth Provider
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [password, setPassword] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-
-childrenRight={
-                    <IconButton
-                      icon="account-circle-outline"
-                      iconColor={customTheme.headerIconColors}
-                      style={iconStyles.headerIcon}
-                      // @ts-ignore
-                      onPress={() => navigation.navigate("AuthNavigator", {screen: authPressScreen})}
-                      size={30}
-                    />
-                  }
-
-
- <ChatStack.Screen
-          name={"AuthNavigator"}
-          children={
-            () =>
-              <AuthContext.Provider
-                value={{
-                  password, setPassword,
-                  email, setEmail,
-                  error, setError,
-                  modalVisible, setModalVisible,
-                }}>
-                <AuthNavigator />
-              </AuthContext.Provider>
-          }
-          options={{
-            headerShown: false
-          }}
-        />
- */

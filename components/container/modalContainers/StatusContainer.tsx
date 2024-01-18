@@ -19,13 +19,17 @@ const localStyles = StyleSheet.create(
 
 interface StatusContainer {
   source: string | any;
-  text?: string;
-  helpText?: string;
+  text: string;
+  helpText: string;
 }
 
 const StatusContainer: React.FC<StatusContainer> = (
 
-  { source, text,helpText }
+  {
+    source,
+    text,
+    helpText
+  }
 ) => {
   const textStyles = {fontSize: 22, fontFamily: "JetBrainsMono", textAlign: "center", gap: 10, marginBottom: 10};
   const helpTextStyles = {fontSize: 16, fontWeight: "bold", textAlign: "center", gap: 10}

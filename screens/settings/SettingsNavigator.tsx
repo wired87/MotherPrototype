@@ -1,5 +1,4 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import {PurchaseScreen} from "./PurchaseScreen"
 import { SettingsMain } from "./SettingsMain";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 import React, {useMemo, useState} from "react";
@@ -17,11 +16,6 @@ export const SettingNavigation = () => {
     <SettingStack.Navigator
       initialRouteName="SettingsMain"
       screenOptions={screenHeaderOptions} >
-
-      <SettingStack.Screen
-        name="PurchaseScreen"
-        component={PurchaseScreen}
-      />
 
         <SettingStack.Screen
           name="SettingsMain"

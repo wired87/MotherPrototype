@@ -8,12 +8,12 @@ import ResumeContent from "./Content";
 import SwipeModal from "../../../../components/modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import ErrorContainerSwipeModal from "../../../../components/container/ErrorContainerSwipeModal";
+import cardLoading from "../../../../assets/animations/cardLoading.json";
 
 const heading: string = "AI Job Application \n creator"
 const placeholderResume: string = "Your written Application will be shown here.."
 
 const ResumeCreator: React.FC = () => {
-  const [editable, setEditable] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const [resume, setResume] = useState<string>("");
@@ -52,10 +52,14 @@ const ResumeCreator: React.FC = () => {
     <ScrollView style={backgroundColor} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
         placeholder={placeholderResume}
-        editable={editable}
         heading={heading}
         Content={Content}
-        source={""}      />
+        source={cardLoading}
+        response={resume}
+        setResponse={setResume}
+        error={error}
+        successAnimation={cardLoading}
+      />
       <SwipeModal
         bottomSheetRef={bottomSheetRef}
         modalIndex={-1}

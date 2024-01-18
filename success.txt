@@ -1,8 +1,0 @@
-
-hat openAI auch = (X)
-hat openAI nicht = (---)
-
-zentraler ort (X)
-bessere ux (könnte jeder sagen, ich mag das shclichte design von open ai)
-nicht nur eigene technologien sondern werbung für andere eine art affiliate marketing (---)
-eigene technologien einbinden wie website scanner (gibt es schon), code generator mit debug (---),

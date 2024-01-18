@@ -1,24 +1,25 @@
-import React, {memo, useCallback, useContext, useMemo, useRef, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect, useMemo, useState} from "react";
 
 import {
   ScrollView, Vibration,
 } from "react-native";
 
-import {toolStyles as ts} from "../toolStyles";
-import {PrimaryContext, ThemeContext, ToolContext} from "../../Context";
+import {toolStyles, toolStyles as ts} from "../toolStyles";
+import {PrimaryContext, ThemeContext} from "../../Context";
 import UniversalTextCreator from "../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../components/input/DefaultInput";
-import {DefaultButton} from "../../../components/buttons/DefaultButton";
-import ErrorContainerSwipeModal from "../../../components/container/ErrorContainerSwipeModal";
-import SwipeModal from "../../../components/modals/SwipeModal";
-import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
-import chatResponse from "../../../assets/animations/chatResponse.json";
+
+
 import {CHAT_COMPLETION_REQUEST} from "@env";
+
+// LOTTIE
+import chatDefault from "../../../assets/animations/chatDefault.json";
+import chatSuccess from "../../../assets/animations/chatSuccess.json";
 import {DefaultText} from "../../../components/text/DefaultText";
 
 // Strings
-const placeholderTranscript:string = "The forward text responses will be shown here...";
-const heading:string = "Chat response helper...";
+const placeholderTranscript:string = "The suggestions will be shown here...";
+const heading:string = "Chat response helper";
 
 
 const chatHistoryPlaceholder:string = "Provide me all context that could be relevant...";
@@ -27,11 +28,9 @@ const goalPlaceholder:string = "Goal of the Chat";
 
 const ChatResponseHelper: React.FC = () => {
   const [response, setResponse] = useState<string>("");
-  const [editable, setEditable] = useState<boolean>(false);
 
   const [error, setError]= useState<string>("");
   const [fieldError, setFieldError] = useState<boolean>(false);
-  const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
 
   // INPUT
   const [input, setInput]= useState<string>("");
@@ -40,14 +39,10 @@ const ChatResponseHelper: React.FC = () => {
 
   // Context
   const { customTheme } = useContext(ThemeContext);
-  const { toolPostRequest } = useContext(ToolContext);
 
-  const {loading } = useContext(PrimaryContext);
+  const { defaultPostRequest } = useContext(PrimaryContext);
 
   const backgroundColor = {backgroundColor: customTheme.primary};
-
-  // REFS
-  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
   // STYLES
   const historyInputStyles = [ts.input, {minHeight: 100}];
@@ -59,54 +54,38 @@ const ChatResponseHelper: React.FC = () => {
       "context": context,
       "goal": goal
     }
-
   }
 
-  const handleSearch = async () => {
-    if (input.length == 0 || context.length == 0) {
+  useEffect(() => {
+    console.log("Error response helper:", error)
+  }, [error]);
+
+  useEffect(() => {
+    if(fieldError) {
+      setTimeout(() => {
+        setFieldError(false);
+      }, 4000);
+    }
+  }, [fieldError]);
+
+
+  const handleSearch = useCallback(async () => {
+    if (input.length == 0) {
       Vibration.vibrate();
       console.log("No input or Chat context provided...")
       setFieldError(true);
       return;
-    }else if (loading) {
-      Vibration.vibrate();
-      setAlreadyRunning(true);
-      return;
     }
-    setFieldError(false)
-    setAlreadyRunning(false)
-    setError("");
-    setResponse("");
-
-    await toolPostRequest(
+    await defaultPostRequest(
       CHAT_COMPLETION_REQUEST,
       getChatResponseObject(),
       setError,
       setResponse
     )
-  };
-
-  const fieldErrorComp = useCallback(() => {
-    if (fieldError) {
-      return(
-        <DefaultText
-          error
-          text={"Provide some Chat history and context for good results."}
-          moreStyles={ts.text}
-        />
-      );
-    }else {
-      return(
-        <></>
-      );
-    }
-  }, [fieldError])
-
-
+  }, [input, context]);
 
 
   const Content = useMemo(() => {
-    const buttonText:string = "Generate Answers";
     return(
       <>
         <DefaultInput
@@ -118,8 +97,9 @@ const ChatResponseHelper: React.FC = () => {
           extraStyles={historyInputStyles}
           multiline={true}
           numberOfLines={6}
-          max_length={2000}
+          max_length={1100}
         />
+
         <DefaultInput
           value={context}
           placeholder={extraInformationsPlaceholder}
@@ -131,48 +111,48 @@ const ChatResponseHelper: React.FC = () => {
           numberOfLines={6}
           max_length={300}
           />
+
         <DefaultInput
           value={goal}
           placeholder={goalPlaceholder}
           onChangeAction={(text:string) => setGoal(text)}
           editable={true}
           keyboardType={undefined}
-          extraStyles={ts.input}
+          extraStyles={[ts.input, {marginBottom: 20,}]}
           multiline={true}
           max_length={300}
         />
-        <DefaultButton
-          extraStyles={undefined}
-          onPressAction={handleSearch}
-          text={buttonText}
-          secondIcon={undefined}
-        />
-        {fieldErrorComp()}
+        {fieldError?(
+          <DefaultText
+            error
+            text={"No Chat History and Context provided "}
+            moreStyles={toolStyles.text}
+          />
+          ):null}
       </>
     );
-  }, [goal, input, context]);
+  }, [goal, input, context, fieldError]);
+
 
 
   return(
-    <ScrollView style={backgroundColor} contentContainerStyle={ts.justifyAlign}>
+    <ScrollView
+      style={backgroundColor}
+      contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
-        source={chatResponse}
+        source={chatSuccess}
         response={response}
         setResponse={setResponse}
         sendData={handleSearch}
         error={error}
         placeholder={placeholderTranscript}
-        editable={editable}
+        successAnimation={chatDefault}
         heading={heading}
         Content={
+
           Content
+
         }
-      />
-      <SwipeModal
-        bottomSheetRef={bottomSheetRef}
-        Content={
-          <ErrorContainerSwipeModal error={error}/>}
-        modalIndex={-1}
       />
     </ScrollView>
   );

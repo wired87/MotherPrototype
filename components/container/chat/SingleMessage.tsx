@@ -1,5 +1,5 @@
 import {DefaultText} from "../../text/DefaultText";
-import {Dimensions, StyleSheet, View} from "react-native";
+import {Dimensions, View} from "react-native";
 import React, {useContext} from "react";
 import {ThemeContext} from "../../../screens/Context";
 import CopyButton from "../../buttons/CopyButton";
@@ -10,26 +10,6 @@ import {userMesssageObject} from "../../../screens/chat/ChatNavigator";
 const windowWidth = Dimensions.get('window').width;
 
 
-const ls = StyleSheet.create(
-  {
-    input: {
-      width: "auto",
-      height: "auto",
-      backgroundColor: "white",
-      textAlign: "justify",
-      textAlignVertical: "top",
-    },
-    infoContainer: {
-      flexDirection: "row",
-    },
-    timeTokenStyles: {
-      fontSize: 10,
-      position: "absolute",
-      left: 10,
-      bottom: 3
-    }
-  }
-)
 
 
 export interface SingleMessageTypes {
@@ -61,17 +41,13 @@ export const SingleMessage: React.FC<SingleMessageTypes> =
     /*IOS Props:*/shadowColor: customTheme.text, shadowOpacity: .2, shadowRadius: 14, width: windowWidth * .8
   };
 
-  /*const secondaryTextStylesText: StyleProps =
-    [{
-      color: customTheme.text,
-    }, ls.timeTokenStyles];*/
 
-  const messageText = item.timeToken;
+  const messageTime = item.timeToken;
 
   return(
     <View style={[containerStyles, extraStyles]}>
       <DefaultText text={item.message} moreStyles={primaryTextStyles}/>
-      <DefaultText text={messageText.toString()} moreStyles={secondaryTextStylesText}/>
+      <DefaultText text={messageTime.toString()} moreStyles={secondaryTextStylesText}/>
       <CopyButton value={item.message} size={15}/>
     </View>
   );

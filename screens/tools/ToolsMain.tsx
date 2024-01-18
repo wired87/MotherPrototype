@@ -4,16 +4,14 @@ import React, {memo, useCallback, useContext, useMemo, useState} from 'react';
 import {FlatList, Pressable, StyleProp, Text, View, ViewStyle, Image, Linking} from 'react-native';
 import ToolItemButton from "../../components/buttons/ToolitemButton";
 import {ThemeContext} from "../Context";
-import {LINKMINK_AFFILIATE_URL, NEURONWRITER_AFFILIATE_LINK, ORIGIBNALITY_AFFILITE_UTR} from "@env";
+import {DEEP_SWAP_AFFILIATE_URL, NEURONWRITER_AFFILIATE_LINK, ORIGIBNALITY_AFFILITE_UTR} from "@env";
 import {toolStyles as styles} from "./toolStyles";
-
 
 //Affiliate Images
 import neuronNoBg from "../../assets/affiliateImages/neuronNoBg.png";
 import originalityNoBg from "../../assets/affiliateImages/originalityNoBg.png";
-import linkMinkNoBg from "../../assets/affiliateImages/linkMinkNoBg.png";
+import ds_noBg from "../../assets/affiliateImages/ds_noBg.png";
 import CategoryButton from "../../components/buttons/CategoryNavigationButton";
-
 
 //////////////////////////////////////// IN APP RECENSION BUILD IN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -41,9 +39,14 @@ interface CategoryTypes {
   onPress: () => void
 }
 
-
 const carouselData: CarouselDataTypes[] =
 [
+  {
+    text: "Advanced Deep \nFakes",
+    image: ds_noBg,
+    backgroundColor: "rgb(0,0,0)",
+    url: DEEP_SWAP_AFFILIATE_URL
+  },
   {
     text: "Optimize your Website content",
     image: neuronNoBg,
@@ -56,13 +59,8 @@ const carouselData: CarouselDataTypes[] =
     backgroundColor: "rgb(43,33,84)",
     url: ORIGIBNALITY_AFFILITE_UTR
   },
-  {
-    text: "Grow Your SaaS Revenue",
-    image: linkMinkNoBg,
-    backgroundColor: "rgb(85,194,191)",
-    url: LINKMINK_AFFILIATE_URL
-  },
 ]
+
 
 const businessButtonList: DataItem[] = [
   {
@@ -75,7 +73,7 @@ const businessButtonList: DataItem[] = [
   },
   {
     text: "Idea finder",
-    color: "#decb13",
+    color: "#eed919",
     icon: "lightbulb-on-outline",
     navigation: "ChatNavigator",
     extraText: "Share your ideas for feedback or create some for your next Business",
@@ -90,19 +88,23 @@ const businessButtonList: DataItem[] = [
     screen: "ResumeCreator"
   },
   {
-    text: "E-Mail writer",
-    color: "rgb(218,97,78)",
+    text: "E-Mail \nwriter",
+    color: "rgb(229,94,0)",
     icon: "gmail",
     navigation: "ChatNavigator",
     extraText: "Professional Email writer",
     screen: "EmailWriter"
   },
-]
+];
+
+// grau settings weg
+// font umstellen
+// weiße linie settings item
 
 const creativeButtonList: DataItem[] = [
   {
     text: 'Speech-to- Text',
-    color: "rgba(178,8,8,0.7)",
+    color: "rgb(178,8,8)",
     icon: "text-to-speech",
     navigation: "ChatNavigator",
     extraText: "Transcribe your thoughts",
@@ -110,7 +112,7 @@ const creativeButtonList: DataItem[] = [
   },
   {
     text: 'Card writer',
-    color: "rgba(12,170,225,0.62)",
+    color: "rgb(12,170,225)",
     icon: "map-outline",
     navigation: "ChatNavigator",
     extraText: "Create greeting Cards for Birthday, Christmas,...",
@@ -118,7 +120,7 @@ const creativeButtonList: DataItem[] = [
   },
   {
     text: "Story writer",
-    color: "rgba(245,85,29,0.82)",
+    color: "rgb(245,85,29)",
     icon: "book-open-page-variant",
     navigation: "ChatNavigator",
     extraText: "Write the next best seller...",
@@ -126,7 +128,7 @@ const creativeButtonList: DataItem[] = [
   },
   {
     text: "Lyric writer",
-    color: "rgba(158,25,245,0.71)",
+    color: "rgb(158,25,245)",
     icon: "cellphone-text",
     navigation: "ChatNavigator",
     extraText: "Create Lyrics for every Music genre",
@@ -155,22 +157,18 @@ const lifeButtonList: DataItem[] = [
     text: "Fitness Assistant",
     icon: "food-apple",
     navigation: "ChatNavigator",
-    color: "rgba(0,255,4,0.75)",
+    color: "rgb(0,255,4)",
     extraText: "Create Free Diet or training plans",
     screen: "FitnessWriter"
   },
   {
     text: "Chat response helper",
-    color: "rgba(148,184,234,0.76)",
+    color: "rgb(148,184,234)",
     icon: "tooltip-image-outline",
     navigation: "ChatNavigator",
     extraText: "Dont know how to answer to an Text Message? Our Model does!",
     screen: "ChatResponseHelper"
   }
-]
-
-const textButtonList: DataItem[] = [
-
 ]
 
 interface ToolItemProps {
@@ -185,8 +183,6 @@ const ToolItem: React.FC<ToolItemProps> = ({ item, index}) => {
     </View>
   );
 };
-
-
 
 
 
@@ -211,7 +207,7 @@ const ToolsMain: React.FC = () => {
     { key: "1", title: 'Assistant', onPress: () => handleCategoryChange(1) },
     { key: "2", title: 'Business', onPress: () => handleCategoryChange(2) },
     { key: "3", title: 'Creative', onPress: () => handleCategoryChange(3) },
-    { key: "4", title: 'Partners', onPress: () => handleCategoryChange(4) },
+    //{ key: "4", title: 'Partners', onPress: () => handleCategoryChange(4) },
   ];
 
   const getItemLayout = useCallback((_: any, index: number) => ({
@@ -242,8 +238,8 @@ const ToolsMain: React.FC = () => {
     const data =
       category === 1 ? lifeButtonList :
         category === 2 ? creativeButtonList :
-          category === 3 ? businessButtonList :
-            textButtonList
+          businessButtonList
+
 
     return (
       <MasonryList
@@ -282,9 +278,9 @@ const ToolsMain: React.FC = () => {
         <Text style={categoryTextStyles}>Categories</Text>
       </View>
 
-      <View style={{overflow: "visible"}} >
+      <View style={{overflow: "visible", paddingHorizontal: 15}} >
         <FlatList
-          style={{overflow: "visible", paddingHorizontal: 0, paddingVertical: 5,}}
+          style={{overflow: "visible", paddingHorizontal: 0, paddingTop: 5, paddingBottom: 10}}
           data={items}
           initialScrollIndex={0}
           horizontal

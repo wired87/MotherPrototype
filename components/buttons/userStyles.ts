@@ -1,7 +1,5 @@
-import {themeColors} from "../../colors/theme";
-import {Dimensions, StyleSheet} from "react-native";
+import {StyleSheet} from "react-native";
 
-const windowWidth = Dimensions.get('window').width;
 
 export const userStyles = StyleSheet.create({
     loginContainer: {
@@ -13,11 +11,6 @@ export const userStyles = StyleSheet.create({
         marginVertical: 50,
         borderBottomWidth: 1,
 
-    },
-    errormessageStyles: {
-        marginBottom: 30,
-        color: themeColors.deleteRed,
-        fontSize: 17
     },
     authTextInfo: {
         marginTop: 20,
@@ -80,15 +73,7 @@ export const userStyles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 30,
     },
-    profileSection: {
-        borderWidth: 1,
-        paddingVertical: 10,
-        borderColor: themeColors.borderThin,
-        borderRadius: 20,
-        backgroundColor: "transparent",
-        borderBottomWidth: 1,
-        marginVertical: 10
-    },
+
     inputSection: {
         gap: 10,
         marginVertical: 30,

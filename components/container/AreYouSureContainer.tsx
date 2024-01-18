@@ -2,19 +2,19 @@ import {DefaultText} from "../text/DefaultText";
 import {styles} from "./contiStyles";
 import DefaultPageNavigationBtn from "../buttons/DefaultPageNavigationBtn";
 import {View, StyleSheet} from "react-native";
-import {DefaultButton} from "../buttons/DefaultButton";
-import React, {memo, useCallback, useContext, useMemo} from "react";
+import React, {memo, useCallback, useContext, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
-
-
-
-const localStyles = StyleSheet.create(
+import ToolIndIcator from "../indicators/ToolIndIcator";
+import LottieContainer from "./LottieContainer";
+import successLottie from "../../assets/animations/successLottie.json"
+;
+const ls = StyleSheet.create(
   {
     main: {
       paddingHorizontal: 20,
       paddingVertical: 50,
-      alignItems: "flex-start",
+      alignItems: "center",
       justifyContent: "flex-start"
     },
     deleteCheckContainer: {
@@ -27,20 +27,24 @@ const localStyles = StyleSheet.create(
     deleteCheckButtonContainer: {
       marginVertical: 30,
       flexDirection: "row"
+    },
+    text: {
+      fontSize: 18,
+      fontFamily: "JetBrainsMono",
     }
   }
 )
 
-const AreYouSureContainer = () => {
+const AreYouSureContainer: React.FC = () => {
 
   const {
     user,
     setLoading,
-    setClearMessages
+    setClearMessages, loading
   } = useContext(PrimaryContext);
 
   const { customTheme } = useContext(ThemeContext);
-
+  const [finish, setFinish] = useState<boolean>(false);
   const navigation = useNavigation();
 
   const moreTextStyles = [styles.modalH4, {color: customTheme.text}];
@@ -59,31 +63,56 @@ const AreYouSureContainer = () => {
       console.log("error: " + error);
     } finally {
       setLoading(false);
+      setFinish(true);
     }
   }, []);
 
 
-  const mainContent = useMemo(() => {
-    if (user) {
-      return(
+  const mainContent = useCallback(() => {
+    if (!loading && !finish) {
+      return (
         <View
-          style={localStyles.deleteCheckContainer} >
+          style={ls.deleteCheckContainer}>
           <DefaultText
             text={"Delete your whole History"}
             moreStyles={moreTextStyles}
           />
-          <View style={localStyles.deleteCheckButtonContainer}>
+          <View style={ls.deleteCheckButtonContainer}>
             <DefaultPageNavigationBtn
               text={"Do it!"}
-              onPressAction={deleteHistory}
+              onPressAction={() => deleteHistory()}
               extraTextStyles={undefined}
               extraBtnStyles={undefined}
             />
           </View>
         </View>
       );
-    }else {
+
+    } else if (loading && !finish) {
+      return <ToolIndIcator />
+    } else if (!loading && finish) {
       return(
+        <LottieContainer
+          source={successLottie}
+          text={"History successfully deleted!"}
+          extraStylesMore={ls.text}
+        />
+      )
+    }
+    return <></>
+  }, [loading, finish])
+
+    return(
+      <View style={ls.main}>
+        {mainContent()}
+      </View>
+    );
+}
+export default memo(AreYouSureContainer);
+
+
+/*
+return(
         <View style={{alignItems: "center"}}>
           <DefaultText
             text={"You are not logged in."}
@@ -102,15 +131,4 @@ const AreYouSureContainer = () => {
             secondIcon={undefined}
           />
         </View>
-      );
-    }
-  }, [user])
-
-    return(
-      <View
-          style={localStyles.main}>
-        {mainContent}
-      </View>
-    );
-}
-export default memo(AreYouSureContainer);
+ */

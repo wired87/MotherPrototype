@@ -84,19 +84,20 @@ export const ChatMain = (
     {color: customTheme.text, fontSize: 10, position: "absolute", left: 10, bottom: 3}
 
   const renderItem = useCallback(({ item }: { item: userMesssageObject }) => {
-
-    if (item && item.type === "text") {
-      return(
-        <SingleMessageMemo
-          item={item}
-          styles={chatStyles}
-          primaryTextStyles={primaryTextStyles}
-          secondaryTextStylesText={secondaryTextStylesText}
-        />
-      )
-    }else{
-      return <></>
+    if (item)
+      if (item.type === "text") {
+        return (
+          <SingleMessageMemo
+            item={item}
+            styles={chatStyles}
+            primaryTextStyles={primaryTextStyles}
+            secondaryTextStylesText={secondaryTextStylesText}
+          />
+        )
+      }else if (item.type == "error") {
+        return <SingleErrorMessage item={item} />
     }
+    return <></>
   }, [customTheme, messages]);
 
 /*

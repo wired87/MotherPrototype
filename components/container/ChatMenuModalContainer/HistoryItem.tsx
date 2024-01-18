@@ -9,7 +9,11 @@ interface HistoryitemTypes {
   onPress: void | (() => {}) | any;
 }
 
-export const HistoryItem: React.FC<HistoryitemTypes> = memo(({ item, onPress }) => {
+export const HistoryItem: React.FC<HistoryitemTypes> = memo((
+  {
+    item, onPress
+  }
+) => {
 
   const { customTheme } = useContext(ThemeContext);
   const buttonStyles = [uniStyles.historyItem, {backgroundColor: customTheme.primaryButton}]

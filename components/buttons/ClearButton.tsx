@@ -20,11 +20,12 @@ const ClearButton: React.FC<ClearButtonTypes> = (
 ) => {
 
   const { customTheme } = useContext(ThemeContext);
+  const pressableStyles = [styles.clearInputFiledBtn, {borderColor: customTheme.borderColor}]
   if (value.length > 0) {
     return (
       <Pressable
         onPress={() => !(setValue) || setValue("") || undefined}
-        style={ms || styles.clearInputFiledBtn}>
+        style={ms || pressableStyles}>
         <MaterialCommunityIcons color={customTheme.text} name={"close"} size={17}/>
       </Pressable>
     );

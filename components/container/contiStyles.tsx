@@ -1,5 +1,4 @@
 import {Dimensions, StyleSheet} from "react-native";
-import {themeColors} from "../../colors/theme";
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -27,16 +26,9 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         borderWidth: 1,
         backgroundColor: "transparent",
+        minHeight: 60,
     },
-    container: {
-        right: 0,
-        backgroundColor: 'transparent',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderTopWidth: 1,
-        borderRightWidth: 1,
-        borderTopRightRadius: 14,
-    },
+
     row: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -68,8 +60,10 @@ export const styles = StyleSheet.create({
     },
     inputContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-end",
         paddingLeft: 12,
+        alignItems: "flex-end"
+
     },
     indicatorContainer: {
         justifyContent: "flex-start",
@@ -86,13 +80,25 @@ export const styles = StyleSheet.create({
         right: 45,
         borderWidth: 1,
         borderRadius: 50,
-        borderColor: themeColors.borderThin,
         paddingVertical: 0,
         paddingHorizontal: 0,
     },
     sendIcon: {
         margin: 10,
+        bottom: 5,
         transform: [{rotate: '90deg'}]
-    }
+    },
+    container: {
+        maxHeight: 60,
+        bottom: 0,
+        right: 0,
+        backgroundColor: 'transparent',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderTopWidth: 1,
+        borderRightWidth: 1,
+        borderTopRightRadius: 14,
+
+    },
 })
 

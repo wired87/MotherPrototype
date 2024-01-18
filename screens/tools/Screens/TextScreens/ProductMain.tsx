@@ -1,6 +1,6 @@
 import {memo, useCallback, useContext, useEffect, useState} from "react";
 
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
+import {PrimaryContext, ThemeContext} from "../../../Context";
 import React from "react";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
@@ -8,8 +8,8 @@ import {toolStyles as ts} from "../../toolStyles";
 import {getLanguage} from "../../../../AppFunctions";
 import {ScrollView, Vibration} from "react-native";
 import {TEXT_REQUEST_URL} from "@env";
-import {DefaultText} from "../../../../components/text/DefaultText";
 import cardLoading from "../../../../assets/animations/cardLoading.json";
+import {fieldErrorText} from "../../../Functions";
 
 //STRINGS
 const heading:string = "Create product descriptions, Slogans amd much more...";
@@ -29,17 +29,15 @@ const ProductMain: React.FC  = () => {
   const [kind, setKind] = useState<string>("");
   const [title, setTitle] = useState<string>("");
 
-  const [editable, setEditable] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [response, setResponse] = useState<string>("");
-  const [fieldError, setFieldError] = useState<boolean>(false);
-  const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
+  const [fieldError, setFieldError] = useState<string>("");
 
   // Context
-  const {toolPostRequest} = useContext(ToolContext);
   const {customTheme} = useContext(ThemeContext);
 
-  const {user, loading} = useContext(PrimaryContext);
+  const {user, loading,
+    defaultPostRequest} = useContext(PrimaryContext);
 
 
   const moreInfosInput = [
@@ -62,18 +60,14 @@ const ProductMain: React.FC  = () => {
   const sendData = useCallback(async () => {
     if (kind.length == 0 && title.length == 0) {
       Vibration.vibrate();
-      setFieldError(true);
-      return;
-    }else if (loading) {
-      Vibration.vibrate();
-      setAlreadyRunning(true);
+      setFieldError("No Type and Product/Company Name provided");
       return;
     }
-    await toolPostRequest(
+    await defaultPostRequest(
       TEXT_REQUEST_URL,
       getProductPostObject(),
       setError,
-      setResponse
+      setResponse,
     )
   }, [loading, kind, title]);
 
@@ -82,42 +76,25 @@ const ProductMain: React.FC  = () => {
   useEffect(() => {
     if (fieldError) {
       const interval = setInterval(() => {
-        setFieldError(false);
+        setFieldError("");
       }, 5000);
       return () => clearInterval(interval);
     }
   }, [fieldError]);
 
 
-  const fieldErrorText = useCallback(() => {
-    if (fieldError) {
-      return (
-        <DefaultText
-          error
-          moreStyles={ts.text}
-          text={"Please provide a Type or a product(for descriptions) \n or Company Name(for Slogans)."}
-        />
-      );
-    }else{
-      return <></>
-    }
-  }, [fieldError])
-
-
   return (
     <ScrollView style={{backgroundColor: customTheme.primary}} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
+        successAnimation={cardLoading}
         placeholder={placeholder}
-        editable={editable}
         heading={heading}
         source={cardLoading}
         response={response}
         sendData={sendData}
         setResponse={setResponse}
         error={error}
-        alreadyRunning={alreadyRunning}
-        Content={
-        <>
+        Content={<>
           <DefaultInput
             label={"Type"}
             placeholder={"e.g. Product Description"}
@@ -138,7 +115,7 @@ const ProductMain: React.FC  = () => {
             recordingOption
             showClearButton/>
 
-          {fieldErrorText()}
+          {fieldErrorText(fieldError)}
 
           <DefaultInput
             label={"Data"}
@@ -148,8 +125,7 @@ const ProductMain: React.FC  = () => {
             extraStyles={{}}
             max_length={maxLengthSmall}
             recordingOption
-            showClearButton
-          />
+            showClearButton/>
 
           <DefaultInput
             label={"Extra Information's to provide?"}
@@ -163,8 +139,11 @@ const ProductMain: React.FC  = () => {
             multiline
             numberOfLines={3}
           />
+
+
+
         </>
-        }
+      }
       />
     </ScrollView>
   )

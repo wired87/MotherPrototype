@@ -1,5 +1,5 @@
 import {memo, useCallback, useContext, useEffect, useState} from "react";
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
+import {PrimaryContext, ThemeContext} from "../../../Context";
 import React from "react";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
@@ -20,22 +20,18 @@ const maxLengthBig:number = 200;
 
 
 const CardMain: React.FC  = () => {
-
   const [personFor, setPersonFor] = useState<string>("");
   const [extraInfos, setExtraInfos] = useState<string>("");
-  const [moods, setMoods] = useState<string>("");
   const [kind, setKind] = useState<string>("");
 
-  const [editable, setEditable] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [response, setResponse] = useState<string>("");
   const [fieldError, setFieldError] = useState<string>("");
 
   // Context
-  const {toolPostRequest } = useContext(ToolContext);
   const {customTheme } = useContext(ThemeContext);
 
-  const {user, loading } = useContext(PrimaryContext);
+  const {user, loading, defaultPostRequest } = useContext(PrimaryContext);
 
   const moreInfosInput = [
     ts.input, {minHeight: 80}];
@@ -48,7 +44,6 @@ const CardMain: React.FC  = () => {
       "kind": kind,
       "personFor": personFor,
       "extraInfos": extraInfos,
-      "moods": moods,
       "language": getLanguage(),
     }
   }
@@ -60,7 +55,7 @@ const CardMain: React.FC  = () => {
       setFieldError("Please provide a Card Type");
       return;
     }
-    await toolPostRequest(
+    await defaultPostRequest(
       TEXT_REQUEST_URL,
       getCardPostObject(),
       setError,
@@ -83,7 +78,7 @@ const CardMain: React.FC  = () => {
   const fieldErrorText = useCallback(() => {
     if (fieldError && fieldError.length > 0) {
       return(
-        <DefaultText text={fieldError}/>
+        <DefaultText error text={fieldError}/>
       );
     }
   }, [fieldError])
@@ -92,8 +87,8 @@ const CardMain: React.FC  = () => {
   return(
     <ScrollView style={{backgroundColor: customTheme.primary}} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
+        successAnimation={cardLoading}
         placeholder={placeholder}
-        editable={editable}
         heading={heading}
         source={cardLoading}
         response={response}
@@ -133,10 +128,8 @@ const CardMain: React.FC  = () => {
             recordingOption
             showClearButton
             multiline
-            numberOfLines={3}
-          />
-        </>
-        }
+            numberOfLines={3}/>
+        </>}
       />
     </ScrollView>
   );

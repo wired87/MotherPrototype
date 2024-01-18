@@ -4,7 +4,8 @@ export const styles = StyleSheet.create({
     topBtnTxt: {
         marginLeft: 10,
         textAlign: 'left',
-        fontSize: 16,
+        fontSize: 14,
+        fontFamily: "JetBrainsMono",
         color:"rgba(255,255,255,1)"
     },
     singleProtextContainer: {

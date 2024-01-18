@@ -1,15 +1,15 @@
-import React, {useState, useContext, useCallback, memo, useRef, useEffect} from 'react';
+import React, {useState, useContext, useCallback, memo, useEffect } from 'react';
 
 import {
   View,
   StyleSheet,
   Pressable,
   Linking,
-  Vibration, ActivityIndicator, ScrollView
+  Vibration, ScrollView
 } from 'react-native';
 
 import * as RNLocalize from 'react-native-localize';
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
+import {PrimaryContext, ThemeContext} from "../../../Context";
 import {toolStyles as ts} from "../../toolStyles";
 import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
@@ -19,20 +19,25 @@ import {DefaultText} from "../../../../components/text/DefaultText";
 import DefaultImage from "../../../../components/images/DefaultImage";
 import TextStream from "../../../../components/text/TextStream";
 
-// Lotie
-import LottieView, {AnimationObject} from "lottie-react-native";
+// Lottie
+import LottieView from "lottie-react-native";
 import popcornDefault from "../../../../assets/animations/Movie/popcornDefault.json";
-import failPopcorn from "../../../../assets/animations/Movie/failPopcorn.json";
 import successPopcorn from "../../../../assets/animations/Movie/successPopcorn.json";
 import BottomImage from "../../../../components/images/BottomImage";
 import {StyleProps} from "react-native-reanimated";
+import {defaultLottie} from "../../Functions";
 
+import toolError from "../../../../assets/animations/toolError.json";
+import {IconButton} from "react-native-paper";
+import LottieContainer from "../../../../components/container/LottieContainer";
+import ToolIndicator from "../../../../components/indicators/ToolIndIcator";
 
 // STRINGS
 const buttonText:string = "Search Movie";
 const requiredText:string = "Please provide minimum one Movie or Serie";
-const heading:string = "Movie/Serie finder";
-const defaultMoviePlaceholder = "Your Movies will be shown here";
+const heading:string = "Movie/Series finder";
+const defaultMoviePlaceholder:string = "Your Movies will be shown here";
+const reFreshIcon:string = "refresh";
 
 export interface Movie {
   id: string;
@@ -59,8 +64,6 @@ const MovieFinder = () => {
 
   const {customTheme} = useContext(ThemeContext);
 
-
-
   // STYLES
   const backgroundColor: StyleProps = {backgroundColor: customTheme.primary};
   const mainContainerStyles: StyleProps[] = [ts.main, backgroundColor];
@@ -69,9 +72,7 @@ const MovieFinder = () => {
   const pressableTextStyles: StyleProps[] = [ls.movieTitle, textColor];
   const movieBoxStyles: StyleProps[] = [ls.card, {backgroundColor: "transparent"}];
 
-  const {loading} = useContext(PrimaryContext);
-
-  const {toolPostRequest} = useContext(ToolContext);
+  const {loading, defaultPostRequest} = useContext(PrimaryContext);
 
 
   const handleCardPress = async (videoLink: string) => {
@@ -97,14 +98,15 @@ const MovieFinder = () => {
     setSecondMedia("");
     setThirdMedia("");
     setResponseError("");
-    setSearchResult(null);
     setSuccessAnimationFinish(false);
-
-    await toolPostRequest(
+    await defaultPostRequest(
       MEDIA_URL,
       postObject(),
       setResponseError,
-      setSearchResult
+      setSearchResult,
+      undefined,
+      true
+
     )
   };
 
@@ -116,8 +118,6 @@ const MovieFinder = () => {
       "language": getDeviceLanguage() || "en-US"
     }
   }
-
-
 
 
   // FIELD ERROR LOGIC
@@ -147,9 +147,6 @@ const MovieFinder = () => {
 
   const renderInputs = useCallback(() => {
     const inputStyles = [ts.input, textColor];
-
-
-    console.log("222")
     return (
       <View style={ts.justifyAlign}>
 
@@ -193,7 +190,9 @@ const MovieFinder = () => {
     }
   }, [alreadyRunning]);
 
-
+  useEffect(() => {
+    console.log("RESPONSE ERROR:", responseError, responseError.length);
+  }, [responseError]);
 
   const movieItem = useCallback((item: Movie) => {
     console.log("Image:", item.image);
@@ -218,16 +217,6 @@ const MovieFinder = () => {
   }, [successAnimationFinish, searchResult])
 
 
-  const defaultLottie = useCallback((source: string | AnimationObject | { uri: string; }) => {
-    return <LottieView speed={1} style={ts.lottie} source={source} autoPlay loop={false} onAnimationFinish={
-      () => {
-        setSuccessAnimationFinish(true);
-        console.log("Animation finished...");
-      }
-    }/>
-  }, [])
-
-
   const movieResults = useCallback(() => {
     if (
       searchResult &&
@@ -236,11 +225,13 @@ const MovieFinder = () => {
       successAnimationFinish &&
       !loading
     ) {
-        return searchResult.map((item) => {
+      console.log("success ani must be shown...")
+      return searchResult.map((item) => {
           return movieItem(item)
         }
       );
-    }else if (!loading && !searchResult){
+    }else if (!loading && !searchResult && responseError.length == 0){
+      console.log("default ani must be shown...")
       return (
         <>
           <LottieView style={ts.lottie} source={popcornDefault} autoPlay loop={false} />
@@ -248,14 +239,27 @@ const MovieFinder = () => {
         </>
       )
     }else if (loading) {
-      return <ActivityIndicator size={60} color={customTheme.text} />
+      console.log("loading spinner mnus t be shown...")
+      return <ToolIndicator />
+
     }else if (!loading && searchResult && !successAnimationFinish && responseError.length == 0) {
-      return defaultLottie(successPopcorn);
-    }else if (responseError.length > 0 && !loading && !successAnimationFinish && !searchResult) {
-      return defaultLottie(failPopcorn);
-    }else{
-      return <></>
+      console.log("success...")
+      return defaultLottie(successPopcorn, setSuccessAnimationFinish);
+
+    }else if (responseError.length > 0 && !loading && !searchResult) {
+      console.log("error ani must be shown...")
+      return(
+        <LottieContainer
+          source={toolError}
+          text={responseError}
+          extraChild={
+            <IconButton size={40} iconColor={customTheme.primaryButton} icon={reFreshIcon} onPress={handleSearch} />
+          }
+        />
+      );
     }
+    console.log("nothing must be shown...")
+    return <></>
   }, [searchResult, loading, successAnimationFinish, responseError])
 
 

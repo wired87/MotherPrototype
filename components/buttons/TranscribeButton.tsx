@@ -13,7 +13,6 @@ const defaultIcon = "microphone";
 interface TranscribeButtonTypes {
   setTranscript: Dispatch<SetStateAction<string>>;
   setError: Dispatch<SetStateAction<string>>;
-  setEditable?: Dispatch<SetStateAction<boolean>>;
   buttonIcon?: string;
   buttonStyles?: any;
   transcript: string;
@@ -25,7 +24,6 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   {
     setTranscript,
     setError,
-    setEditable,
     buttonIcon,
     buttonStyles,
     transcript
@@ -87,7 +85,6 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   }
 
   const stopSpeech = async () => {
-    if (setEditable) setEditable(true);
     await Voice.stop();
   }
 

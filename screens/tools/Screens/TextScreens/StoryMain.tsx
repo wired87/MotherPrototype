@@ -1,5 +1,5 @@
 import {memo, useCallback, useContext, useState} from "react";
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
+import { PrimaryContext, ThemeContext } from "../../../Context";
 import React from "react";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
@@ -8,6 +8,7 @@ import {ScrollView, Vibration} from "react-native";
 import {TEXT_REQUEST_URL} from "@env";
 import {toolStyles as ts} from "../../toolStyles";
 import {DefaultText} from "../../../../components/text/DefaultText";
+import cardLoading from "../../../../assets/animations/cardLoading.json";
 
 //STRINGS
 const heading:string = "Create Story's, Poems and much more...";
@@ -20,7 +21,6 @@ const maxLengthBig:number = 200;
 const placeholder:string = `Your written Tex will be shown here...`
 
 
-
 const StoryMain: React.FC  = () => {
 
   const [storyAbout, setStoryAbout] = useState<string>("");
@@ -30,12 +30,9 @@ const StoryMain: React.FC  = () => {
   const [response , setResponse] = useState<string>("");
   const [error , setError] = useState<string>("");
   const [fieldError , setFieldError] = useState<string>("");
-  const [editable, setEditable] = useState<boolean>(false);
-  const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
 
   // Context
-  const {user,loading } = useContext(PrimaryContext);
-  const {toolPostRequest } = useContext(ToolContext);
+  const {user, defaultPostRequest } = useContext(PrimaryContext);
   const {customTheme } = useContext(ThemeContext);
 
   const getStoryPostObject = ():object => {
@@ -54,13 +51,8 @@ const StoryMain: React.FC  = () => {
       Vibration.vibrate();
       setFieldError("Please provide a Type");
       return;
-    }else if (loading) {
-      Vibration.vibrate();
-      setAlreadyRunning(true);
-      return;
     }
-    setError("");
-    await toolPostRequest(
+    await defaultPostRequest(
       TEXT_REQUEST_URL,
       getStoryPostObject(),
       setError,
@@ -83,13 +75,13 @@ const StoryMain: React.FC  = () => {
       automaticallyAdjustsScrollIndicatorInsets
       accessibilityIgnoresInvertColors={true}
       indicatorStyle={"white"}
-       showsVerticalScrollIndicator
+      showsVerticalScrollIndicator
       style={{backgroundColor: customTheme.primary}}
       contentContainerStyle={ts.justifyAlign}>
 
     <UniversalTextCreator
+      successAnimation={cardLoading}
       placeholder={placeholder}
-      editable={editable}
       heading={heading}
       source={StoryDefault}
       response={response}

@@ -1,11 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import * as SplashScreen from 'expo-splash-screen';
 
-import {PrimaryContext, Theme, ThemeContext, lightModeTheme, darkModeTheme, JwtToken} from "./screens/Context";
+import {
+  PrimaryContext,
+  ToolContext,
+  Theme,
+  ThemeContext,
+  lightModeTheme,
+  darkModeTheme,
+  JwtToken
+} from "./screens/Context";
+
 import NavigationMain from "./components/navigation/Footer";
 import { getDarkmode } from "./components/container/modalContainers/DarkMode";
 import * as SecureStore from "expo-secure-store";
@@ -17,9 +26,28 @@ import {FIREBASE_AUTH} from "./firebase.config";
 import {connectionAlert, getToken} from "./AppFunctions";
 
 import NetInfo from "@react-native-community/netinfo";
+import {
+  checkToolActionValue,
+  getToolActionValue,
+  postToolActionValue,
+  showToolAds
+} from "./screens/chat/functions/AdLogic";
+import {sendObject} from "./screens/chat/functions/SendProcess";
+
+
+let errorCodes = [
+  "400",
+  "401",
+  "404",
+  "505",
+  "500",
+  "300",
+]
+
 
 export default function App() {
-  // PrimaryContext definitions
+
+  /////////// PRIMARY CONTEXT STATE VARIABLES
   const [darkmode, setDarkmode] = useState(false);
   const [user, setUser] = useState<firebase.User | null>(null);
   const [customTheme, setCustomTheme] = useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
@@ -30,17 +58,120 @@ export default function App() {
   const [jwtToken, setJwtToken] = useState<JwtToken | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [bottomSheetLoaded, setBottomSheetLoaded] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [fieldError, setFieldError] = useState<boolean>(false);
+  const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
+
+  // TOOL CONTEXT STATE VARIABLES
+  const [toolActionValue, setToolActionValue] = useState<string>("");
+
 
   const toggleTheme = () => setDarkmode(!darkmode);
+
+
+  const defaultPostRequest = async (
+    postUrl: string,
+    postObject: object,
+    setError: Dispatch<SetStateAction<string>>,
+    setResponse: Dispatch<SetStateAction<string>>,
+    setStatus?:Dispatch<SetStateAction<number>>,
+    toolAction?: boolean
+  ):Promise<any> => {
+
+    console.log("jwtToken n Application Content:", jwtToken);
+
+    // just show if in one of the tool screens
+    if (toolActionValue === "0" && toolAction) {
+      console.log("User has 0 Actions left. Init Ads...")
+      await showToolAds(toolActionValue, setToolActionValue);
+    }
+    if (toolAction) {
+      setToolActionValue("0");
+    }
+
+    setLoading(true);
+    setError("");
+    let response;
+    try {
+      if (jwtToken?.refresh && jwtToken.access) {
+        console.log("Application data sent: ", postObject);
+        response = await sendObject(
+          postObject,
+          jwtToken,
+          setJwtToken,
+          postUrl
+        );
+      } else {
+        console.error("No token provided");
+        const newToken = await getToken(setJwtToken);
+        if (newToken) {
+          response = await sendObject(
+            postObject,
+            newToken,
+            setJwtToken,
+            postUrl
+          );
+        } else {
+          console.error("New Token request failed...");
+          setError("Authentication Error");
+        }
+      }
+      if (response) {
+        if (response.message && !response.error && !errorCodes.includes(response.status)){
+          console.log("Response Successfully:", response);
+          setResponse(response.message);
+        }else if(!response.message && response.error || errorCodes.includes(response.status)) {
+          console.error("Received no result:", response);
+          setError(response.error);
+          if (setStatus){
+            setStatus(Number(response.status));
+          }
+        }else{
+          try{
+            setError(response.message)
+          }catch(e:unknown){
+            if (e instanceof Error) {
+              console.error("Could nat classify the response:", e)
+              setError("An unexpected error occurred. Please try again or contact the Support.")
+            }
+            if (setStatus){
+              setStatus(500);
+            }
+          }
+        }
+      }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+        console.error("Error while contact submit occurred:", e.message);
+      }
+      if (setStatus){
+        setStatus(500);
+      }
+    } finally {
+      console.log("Application request finished without trouble...");
+      setLoading(false);
+
+    }
+  }
+
+  useEffect(() => {
+    if (alreadyRunning) {
+      setTimeout(() => {
+        console.log("4 sec...")
+        setAlreadyRunning(false);
+      }, 3000);
+      console.log("0 sec...")
+    }
+  }, []);
+
+
 
   const contextValue = {
     darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
     clearMessages, setClearMessages, jwtToken, setJwtToken, isConnected, setIsConnected,
-    bottomSheetLoaded, setBottomSheetLoaded, error, setError, fieldError, setFieldError
+    bottomSheetLoaded, setBottomSheetLoaded, defaultPostRequest, alreadyRunning, setAlreadyRunning
   };
 
+  //////////// INIT THE APPLICATION
   useEffect(() => {
     NetInfo.fetch().then((state) => {
       console.log("Internet Connection set:", state.isConnected);
@@ -168,19 +299,42 @@ export default function App() {
   }, [darkmode, appIsReady]);
 
 
+  // TOOL CONTEXT STUFF
+  const checkToolActionValueProcess = async (): Promise<boolean> => {
+    const valueToolActions = await getToolActionValue();
+    console.log("Try to get the user Tool Action Value", valueToolActions);
+    if (!valueToolActions) {
+      await postToolActionValue("1").then(async () => {
+        setToolActionValue("1");
+      });
+    } else {
+      setToolActionValue(valueToolActions);
+    }
+    return await checkToolActionValue(valueToolActions || "1", setToolActionValue);
+  };
+
+
+  const toolElements = {
+    toolActionValue,
+    setToolActionValue,
+    checkToolActionValueProcess,
+  }
+
   return (
     <ThemeContext.Provider value={{customTheme}}>
       <PrimaryContext.Provider
         value={contextValue}>
-        <PaperProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <BottomSheetModalProvider>
-              <NavigationContainer>
-                <NavigationMain />
-              </NavigationContainer>
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
-        </PaperProvider>
+        <ToolContext.Provider value={toolElements}>
+          <PaperProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <BottomSheetModalProvider>
+                <NavigationContainer>
+                  <NavigationMain />
+                </NavigationContainer>
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
+          </PaperProvider>
+        </ToolContext.Provider>
       </PrimaryContext.Provider>
     </ThemeContext.Provider>
   );

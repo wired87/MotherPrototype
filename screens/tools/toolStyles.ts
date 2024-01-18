@@ -70,7 +70,9 @@ export const toolStyles = StyleSheet.create(
     justifyAlign: {
       justifyContent: "center",
       alignItems: "center",
-
+    },
+    marginV: {
+      marginVertical: 30,
     },
     resumeInput: {
       borderWidth: 1
@@ -104,6 +106,7 @@ export const toolStyles = StyleSheet.create(
       height: 100,
       width: 100,
     },
+
     mV: {
       marginVertical: 10
     },
@@ -117,7 +120,7 @@ export const toolStyles = StyleSheet.create(
   },
 
     flatListContainer: {
-      marginTop: 40,
+      marginTop: 20,
     },
 
     item: {
@@ -175,7 +178,7 @@ export const toolStyles = StyleSheet.create(
 
     affiliateImage: {
       position: "absolute",
-      width: "90%",
+      width: "80%",
       height: "20%",
       bottom: 30,
     },
@@ -214,5 +217,6 @@ export const toolStyles = StyleSheet.create(
       position: "relative",
       width: 200
     },
+
   }
 )

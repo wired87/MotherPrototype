@@ -1,42 +1,40 @@
-import {memo, useCallback, useContext, useState} from "react";
+import {memo, useCallback, useContext, useEffect, useState} from "react";
 
 import React from "react";
-import {PrimaryContext, ThemeContext, ToolContext} from "../../../Context";
+import {PrimaryContext, ThemeContext} from "../../../Context";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {ScrollView, Vibration} from "react-native";
-import {toolStyles as ts} from "../../toolStyles";
+import {toolStyles, toolStyles as ts} from "../../toolStyles";
 import cardLoading from "../../../../assets/animations/cardLoading.json";
 import {TEXT_REQUEST_URL} from "@env";
-import {DefaultText} from "../../../../components/text/DefaultText";
 import {getLanguage} from "../../../../AppFunctions";
+import {fieldErrorText} from "../../../Functions";
+import {DefaultText} from "../../../../components/text/DefaultText";
 
 
 //STRINGS
-const heading:string = "Create creative business Ideas...";
+const heading:string = "Create creative Ideas for your Business...";
 
 // INT
 const maxLengthSmall:number = 100;
 const maxLengthBig:number = 200;
 
 
-const placeholder:string = `Your written Tex will be shown here...`
+const placeholder:string = `Your Ideas will be shown here...`
 
 
 const IdeaFinder: React.FC  = () => {
   const [error, setError] = useState<string>("");
   const [response, setResponse] = useState<string>("");
-  const [fieldError, setFieldError] = useState<boolean>(false);
+  const [fieldError, setFieldError] = useState<string>("");
 
   const [category, setCategory] = useState<string>("");
   const [thoughts, setThoughts] = useState<string>("");
   const [niche, setNiche] = useState<string>("");
 
-  const [editable, setEditable] = useState<boolean>(false);
-
-  const {user, loading } = useContext(PrimaryContext);
+  const {user, loading, defaultPostRequest } = useContext(PrimaryContext);
   // Context
-  const {toolPostRequest } = useContext(ToolContext);
   const {customTheme } = useContext(ThemeContext);
 
   const moreInfosInput = [
@@ -56,10 +54,10 @@ const IdeaFinder: React.FC  = () => {
   const sendData = useCallback(async () => {
     if (niche.length == 0){
       Vibration.vibrate();
-      setFieldError(true);
+      setFieldError("Please Provide minimum a Niche. (More information's gain better results)");
       return;
     }
-    await toolPostRequest(
+    await defaultPostRequest(
       TEXT_REQUEST_URL,
       getIdeaPostObject(),
       setError,
@@ -68,18 +66,29 @@ const IdeaFinder: React.FC  = () => {
   }, [niche, loading]);
 
   const fieldErrorText = useCallback(() => {
-    if (fieldError) {
+    if (fieldError && fieldError.length > 0) {
       return(
-        <DefaultText text={"Please provide the niche for the ideas"}/>
+        <DefaultText moreStyles={toolStyles.text} error text={fieldError}/>
       );
     }
-  }, [fieldError])
+  }, [fieldError]);
+
+
+  // FIELD ERROR LOGIC
+  useEffect(() => {
+    if (fieldError) {
+      const interval = setInterval(() => {
+        setFieldError("");
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [fieldError]);
 
   return(
     <ScrollView style={{backgroundColor: customTheme.primary}} contentContainerStyle={ts.justifyAlign}>
       <UniversalTextCreator
+        successAnimation={cardLoading}
         placeholder={placeholder}
-        editable={editable}
         heading={heading}
         source={cardLoading}
         response={response}
@@ -110,8 +119,6 @@ const IdeaFinder: React.FC  = () => {
             showClearButton
           />
 
-          {fieldErrorText()}
-
           <DefaultInput
             label={"Thoughts"}
             placeholder={"New cool Games"}
@@ -124,6 +131,7 @@ const IdeaFinder: React.FC  = () => {
             multiline
             numberOfLines={3}
           />
+          {fieldErrorText()}
         </>
         }
       />

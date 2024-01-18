@@ -1,4 +1,3 @@
-import {themeColors} from "../colors/theme";
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -6,7 +5,7 @@ const windowWidth = Dimensions.get('window').width;
 import {Dimensions, StyleSheet} from "react-native";
 
 export const uniStyles = StyleSheet.create({
-    headerContainer: {                                                       // Header
+    headerContainer: {
         flexDirection: "row",
         zIndex: 100,
         justifyContent: "center",
@@ -58,8 +57,6 @@ export const uniStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 20,
-        backgroundColor: themeColors.sexyBlue,
-        color: themeColors.headerText,
         marginHorizontal: 20,
         width: 100,
         marginTop: 100,
@@ -116,9 +113,9 @@ export const uniStyles = StyleSheet.create({
         alignItems: "center",
         paddingBottom: 5,
         borderBottomWidth: 1,
-        borderBottomColor: themeColors.borderThin,
         marginTop: 40
     },
+
     main: {
         flex: 1,
         justifyContent: "center",

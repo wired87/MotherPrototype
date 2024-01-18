@@ -1,5 +1,4 @@
 import {Dimensions, StyleSheet} from "react-native";
-import {themeColors} from "../../colors/theme";
 
 const windowWidth = Dimensions.get('window').width;
 export const inputStyles = StyleSheet.create({
@@ -15,12 +14,7 @@ export const inputStyles = StyleSheet.create({
         minWidth: 250,
         marginHorizontal: 5,
     },
-    inputPicker: {
-        fontFamily: "JetBrainsMono",
-        width: windowWidth * .8,
-        height: 300,
-        backgroundColor: themeColors.dotNineWhite
-    },
+
     streamHeadingInput: {
         textAlign: "center",
         fontSize: 21,

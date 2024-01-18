@@ -1,9 +1,0 @@
-// removed add from pckg.json
-"auth": "^0.0.9",
- "eas-cli": "^5.7.0",
-"ios": "^0.0.1",
-"module": "^1.2.5",
-"global": "^4.4.0",
-
-
-
