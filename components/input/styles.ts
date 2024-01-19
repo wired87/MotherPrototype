@@ -12,7 +12,6 @@ export const inputStyles = StyleSheet.create({
         color: '#000000',
         height: 50,
         minWidth: 250,
-        marginHorizontal: 5,
     },
 
     streamHeadingInput: {

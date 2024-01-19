@@ -23,8 +23,6 @@ import SwipeModal from "../modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
 
-
-
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
   : Platform.OS === "ios" ?

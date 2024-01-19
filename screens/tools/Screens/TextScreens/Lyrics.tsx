@@ -56,6 +56,8 @@ const LyricsMain: React.FC  = () => {
       getLyricsPostObject(),
       setError,
       setResponse,
+      undefined,
+      true,
     )
   };
 

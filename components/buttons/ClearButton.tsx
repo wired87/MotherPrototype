@@ -26,7 +26,7 @@ const ClearButton: React.FC<ClearButtonTypes> = (
       <Pressable
         onPress={() => !(setValue) || setValue("") || undefined}
         style={ms || pressableStyles}>
-        <MaterialCommunityIcons color={customTheme.text} name={"close"} size={17}/>
+        <MaterialCommunityIcons color={customTheme.text} name={"close"} size={17} />
       </Pressable>
     );
   }

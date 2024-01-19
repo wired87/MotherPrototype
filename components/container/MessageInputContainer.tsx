@@ -10,36 +10,13 @@ import TranscribeButton from "../buttons/TranscribeButton";
 import {IconButton} from "react-native-paper";
 import ClearButton from "../buttons/ClearButton";
 
-
-interface ExtraData {
-  id: string;
-  timeToken: string;
-  publisher: string;
-  class: string;
-  file_id: string;
-  user_id: string;
-  soundAudio: any; // oder ersetzen Sie `any` durch den passenden Typ, falls bekannt
-  type: string,
-  start: string,
-  duration: string;
-}
-
-interface aiResponseType {
-  id: string | number,
-  message: string,
-  timeToken: string,
-  publisher: string,
-  class: string,
-  user_id: string,
-  type: string
-}
-
-export const MessageInputContainer = (
+export const MessageInputContainer: React.FC = (
 ) => {
 
-  const {darkmode, user, jwtToken} = useContext(PrimaryContext);
+  const {darkmode} = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
   const [error, setError] = useState<string>("");
+
 
   const {
     messages,
@@ -48,16 +25,23 @@ export const MessageInputContainer = (
     typing,
     } = useContext(InputContext);
 
+
   const { sendMessageProcess } = useContext(FunctionContext);
   const recordingButtonStyles = {margin: 10}
 
-
+  // Styles
+  const extraInputStyles = [styles.chatMessageInput,
+    {
+      color: customTheme.text,
+      borderColor: customTheme.text,
+    }
+  ];
 
   const send = useCallback(async () => {
     console.log("real messages", messages)
     if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
       Vibration.vibrate()
-      await sendMessageProcess()
+      await sendMessageProcess();
     } else if (messagesLeft === "0") {
       console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
       await showAds(messagesLeft, setMessagesLeft)
@@ -112,12 +96,7 @@ export const MessageInputContainer = (
       <ClearButton setValue={setInput} value={input} />
 
       <View style={styles.inputContainer}>
-        <TextInput style={[styles.chatMessageInput,
-          {
-            color: customTheme.text,
-            borderColor: customTheme.text,
-          }
-          ]}
+        <TextInput style={extraInputStyles}
            maxLength={2000}
            placeholder={"Ask something!"}
            placeholderTextColor={customTheme.text}

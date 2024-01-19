@@ -31,6 +31,7 @@ const ls = StyleSheet.create(
       padding: 0,
       flexDirection: "column",
       justifyContent:"flex-end",
+
     },
     recordingButton: {
       position: "absolute",
@@ -74,7 +75,6 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
 
   const [recordingError, setRecordingError] = useState<string>("");
   const { customTheme } = useContext(ThemeContext);
-  const customBackground = customTheme.primary
 
   const mainStyles = [ //->account no mb!!!<-
     inputStyles.defaultInput,
@@ -131,7 +131,7 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
 
       {label && label.length == 0?(
         <TranscribeButton
-          setTranscript={(value) => onChangeAction}
+          setTranscript={() => onChangeAction}
           setError={setRecordingError}
           transcript={value}
           buttonStyles={ls.recordingButton}

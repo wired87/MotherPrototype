@@ -9,13 +9,6 @@
     "userInterfaceStyle": "light",
     "plugins": [
       [
-        "expo-av",
-        {
-          "microphonePermission": "Allow MIRACLE AI to access your microphone.",
-          "speechRecognitionPermission": "Allow MIRACLE AI to securely transcribe your Audio input."
-        }
-      ],
-      [
         "@react-native-voice/voice",
         {
           "microphonePermission": "Allow MIRACLE AI to access your microphone.",

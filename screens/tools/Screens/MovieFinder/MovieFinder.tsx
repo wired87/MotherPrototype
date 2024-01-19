@@ -94,9 +94,7 @@ const MovieFinder = () => {
       setAlreadyRunning(true);
       return;
     }
-    setFirstMedia("");
-    setSecondMedia("");
-    setThirdMedia("");
+
     setResponseError("");
     setSuccessAnimationFinish(false);
     await defaultPostRequest(
@@ -260,7 +258,7 @@ const MovieFinder = () => {
     }
     console.log("nothing must be shown...")
     return <></>
-  }, [searchResult, loading, successAnimationFinish, responseError])
+  }, [searchResult, loading, successAnimationFinish, responseError, firstMedia, secondMedia, thirdMedia])
 
 
   return (

@@ -20,7 +20,6 @@ import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import {IconButton} from "react-native-paper";
 import SwipeModal from "../../components/modals/SwipeModal";
 import ChatMenuModalContent from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
-import {CHAT_REQUEST_URL} from "@env";
 
 interface ChatNavigationTypes {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;//(number: number) => void;
@@ -69,7 +68,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     setTyping, typing,
     setMessages,
     setMessageIndex,
-    messages,
   }  = useContext(InputContext);
 
   const { customTheme } = useContext(ThemeContext);
@@ -188,7 +186,8 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     setTyping(true);
     }, [])
 
-  const sendMessageProcess = useCallback(async() => {
+  const sendMessageProcess = useCallback(async(
+  ) => {
     textMessageStart();
     console.log("inputRef.current", inputRef.current);
     console.log("typing", typing);
@@ -238,7 +237,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
         setMessages(prevMessages => [...prevMessages, response]);
         setTyping(false);
       }
-    } else {
+    }else {
       // Ads in useEffect above will be showed
       setTyping(false);
     }

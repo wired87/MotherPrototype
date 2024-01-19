@@ -9,7 +9,6 @@ import {toolStyles, toolStyles as ts} from "../../toolStyles";
 import cardLoading from "../../../../assets/animations/cardLoading.json";
 import {TEXT_REQUEST_URL} from "@env";
 import {getLanguage} from "../../../../AppFunctions";
-import {fieldErrorText} from "../../../Functions";
 import {DefaultText} from "../../../../components/text/DefaultText";
 
 
@@ -61,7 +60,9 @@ const IdeaFinder: React.FC  = () => {
       TEXT_REQUEST_URL,
       getIdeaPostObject(),
       setError,
-      setResponse
+      setResponse,
+      undefined,
+      true,
     )
   }, [niche, loading]);
 

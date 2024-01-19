@@ -59,7 +59,9 @@ const CardMain: React.FC  = () => {
       TEXT_REQUEST_URL,
       getCardPostObject(),
       setError,
-      setResponse
+      setResponse,
+      undefined,
+      true,
     )
   }, [kind, loading]);
 

@@ -68,6 +68,8 @@ const ProductMain: React.FC  = () => {
       getProductPostObject(),
       setError,
       setResponse,
+      undefined,
+      true,
     )
   }, [loading, kind, title]);
 

@@ -1,9 +1,13 @@
 import * as SecureStore from "expo-secure-store";
 // Ad config
-import {RewardedInterstitialAd, TestIds, InterstitialAd, RewardedAdEventType} from 'react-native-google-mobile-ads';
+import {
+  RewardedAdEventType,
+  RewardedInterstitialAd,
+  TestIds
+} from 'react-native-google-mobile-ads';
 import {Platform} from "react-native";
 
-import {FULL_SCREEN_ANDROID, FULL_SCREEN_IOS, TOOLS_ANDROID_INTERSITIAL, TOOLS_IOS_INTERSITIAL} from "@env";
+import {FULL_SCREEN_ANDROID, FULL_SCREEN_IOS} from "@env";
 
 const adUnitIdFullScreenAd = __DEV__
   ? TestIds.REWARDED_INTERSTITIAL
@@ -15,18 +19,19 @@ const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitIdF
   requestNonPersonalizedAdsOnly: true,
   keywords: ['fashion', 'clothing'],
 });
-
+/*
 // FullScreen interstitial
 const intersitialAdUnitId = __DEV__
-  ? TestIds.REWARDED_INTERSTITIAL
+  ? TestIds.INTERSTITIAL
   : Platform.OS === "ios"
     ? TOOLS_IOS_INTERSITIAL
     : TOOLS_ANDROID_INTERSITIAL;
 
-const interstitial = InterstitialAd.createForAdRequest(intersitialAdUnitId, {
+
+export const interstitial = InterstitialAd.createForAdRequest(intersitialAdUnitId, {
   keywords: ['fashion', 'clothing'],
 });
-
+*/
 
 export async function postMessageInfoData(value: string) {
   try {
@@ -147,7 +152,6 @@ export const showToolAds = async (actionsLeft: string, setActionsLeft: any) => {
     const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
       (reward: any) => {
-        console.log("Full screen ad is showing right now..")
         postToolActionValue("1")
           .then(() => setActionsLeft("1"))
           .catch(() => setActionsLeft("1"))
@@ -164,32 +168,3 @@ export const showToolAds = async (actionsLeft: string, setActionsLeft: any) => {
     };
   }
 }
-
-
-
-
-/*
-
-export const showToolAds = async () => {
-  console.log("Ads initialized..")
-  interstitial.load();
-  const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-    interstitial.show()
-    },
-  );
-  return () => {
-    unsubscribe();
-  };
-}
-        rewardedInterstitial.show()
-          .then(
-            async () => {
-              console.log("Full screen ad is showing right now..")
-              await postMessageInfoData("5")
-                .then(() => setMessagesLeft("5"))
-                .catch(() => setMessagesLeft("5"))
-            }
-          )
-      },
-    );
- */

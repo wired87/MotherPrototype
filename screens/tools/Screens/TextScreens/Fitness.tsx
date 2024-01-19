@@ -69,7 +69,9 @@ const FitnessMain: React.FC  = () => {
       TEXT_REQUEST_URL,
       getFitnessPostObject(),
       setError,
-      setSearchResult
+      setSearchResult,undefined,
+      true,
+
     )
   }, [loading, planType, gender]);
 
@@ -115,16 +117,19 @@ const FitnessMain: React.FC  = () => {
             extraStyles={{}}
             max_length={maxLengthSmall}
             recordingOption
-            showClearButton/>
+            showClearButton
+          />
 
           <DefaultInput
-            placeholder={"Goal..."}
+            label={"Your Goal"}
+            placeholder={"e.g. Build Muscle..."}
             value={goal}
             onChangeAction={setGoal}
             extraStyles={{}}
             max_length={maxLengthBig}
             recordingOption
-            showClearButton/>
+            showClearButton
+          />
 
           <DefaultInput
             label={"Your Gender"}
@@ -134,7 +139,8 @@ const FitnessMain: React.FC  = () => {
             extraStyles={{}}
             max_length={maxLengthBig}
             recordingOption
-            showClearButton/>
+            showClearButton
+          />
 
           <DefaultInput
             label={"Current Weight"}
@@ -145,7 +151,8 @@ const FitnessMain: React.FC  = () => {
             max_length={maxLengthBig}
             recordingOption
             showClearButton
-            keyboardType={"decimal-pad"}/>
+            keyboardType={"decimal-pad"}
+          />
 
           <DefaultInput
             label={"Current height"}
@@ -156,7 +163,8 @@ const FitnessMain: React.FC  = () => {
             max_length={maxLengthBig}
             recordingOption
             showClearButton
-            keyboardType={"number-pad"}/>
+            keyboardType={"number-pad"}
+          />
 
           <DefaultInput
             label={"How you would describe yourself?"}
@@ -166,7 +174,8 @@ const FitnessMain: React.FC  = () => {
             extraStyles={{}}
             max_length={maxLengthBig}
             recordingOption
-            showClearButton/>
+            showClearButton
+          />
 
           <DefaultInput
             placeholder={"Extra Information's to provide"}
@@ -176,7 +185,8 @@ const FitnessMain: React.FC  = () => {
             max_length={maxLengthBig}
             recordingOption
             showClearButton
-            numberOfLines={4}/>
+            numberOfLines={4}
+          />
 
           {fieldErrorComp()}
 

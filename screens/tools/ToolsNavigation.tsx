@@ -2,7 +2,6 @@ import React, {memo, useContext, useEffect, useMemo} from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
 import {ToolContext} from "../Context";
-import {showToolAds} from "../chat/functions/AdLogic";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 import CardMain from "./Screens/TextScreens/CardMain";
@@ -17,14 +16,14 @@ import EmailMain from "./Screens/TextScreens/EMail";
 import ProductMain from "./Screens/TextScreens/ProductMain";
 import FitnessMain from "./Screens/TextScreens/Fitness";
 import IdeaFinder from "./Screens/TextScreens/IdeaFinder";
+import {showToolAds} from "../chat/functions/AdLogic";
 
 const ToolStack = createNativeStackNavigator();
 
 const ToolsNavigator: React.FC = () => {
 
   // Context
-  const { setToolActionValue,
-    toolActionValue} = useContext(ToolContext);
+  const { setToolActionValue, toolActionValue} = useContext(ToolContext);
 
 
   // GOOGLE MOBILE AD LOGIC ////////////////////
@@ -33,6 +32,7 @@ const ToolsNavigator: React.FC = () => {
     showToolAds(toolActionValue, setToolActionValue)
       .then(() => console.log("Ads successfully showed. Refilled the Messages"));
   }, [toolActionValue]);
+
 
   const screenHeaderOptions = useMemo(() => ({
     header: () => <DefaultHeader />,

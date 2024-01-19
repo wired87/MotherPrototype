@@ -5,10 +5,10 @@ import {
   StyleSheet,
   Text,
   SectionList,
-  Linking,
+  Platform,
+  Linking
 } from 'react-native'
 
-import InAppReview from 'react-native-in-app-review';
 import {styles} from "../../components/styles"
 import SwipeModal from '../../components/modals/SwipeModal';
 import AreYouSureContainer from "../../components/container/AreYouSureContainer";
@@ -28,33 +28,15 @@ import {share} from "../Functions";
 
 import failLottie from "../../assets/animations/failLottie.json";
 
+const itunesItemId:string = "" /////////////////////////////////////////////////////////////////////////////////////////
+const androidPackageName:string = "com.wired87.AiChat501"; //////////////////////////////////////////////////////////!!!
+
+
 // STINGS
 const termsUrl: string = "https://www.app-privacy-policy.com/live.php?token=NWq13bWUVgAMJFLBRIlHlsxdsSasqurJ";
 const privacyUrl: string = "https://www.app-privacy-policy.com/live.php?token=1imlqB2AjBzWW6xCk201qYMelCw2TQm5"
 const StatusContainer =
   lazy(() => import("../../components/container/modalContainers/StatusContainer"));
-
-
-const showInAppReview = async () => {
-  if (InAppReview.isAvailable()) {
-    try {
-      await InAppReview.RequestInAppReview();
-      console.log("Review Process successfully finished...");
-    }catch(e:unknown) {
-      if (e instanceof Error){
-        console.log("Error while open Review Container:", e);
-      }
-      console.log("Error occurred while try open in App reviews. Open Google Play Store Listing...")
-      await Linking.openURL("https://play.google.com/store/apps/developer?id=codingWizard");
-    }
-  }else {
-    console.log("In App review is not available on this device. Open Google Play Store Listing...")
-    await Linking.openURL("https://play.google.com/store/apps/developer?id=codingWizard");
-  }
-};
-
-
-
 
 
 let settingsData = [
@@ -203,19 +185,26 @@ export const  SettingsMain = () => {
     return () => {
       console.log("item title", item.title);
       if (item.title.includes("Rate")) {
-        showInAppReview()
-          .then(() => console.log("Review function finished..."));
+        Linking.openURL(
+          Platform.OS === "ios" ?
+            `itms-apps://itunes.apple.com/app/viewContentsUserReviews/id${itunesItemId}?action=write-review` :
+            `market://details?id=${androidPackageName}&showAllReviews=true`
+        ).then(() => console.log("Review function finished..."));
+
       }else if (item.title.includes("Share")) {
           share(customTheme)
             .then(() => console.log("Shared successfully.."));
+
       }else if (item.title.includes("Terms")){
          Linking.openURL(termsUrl)
            .then(() => console.log("Terms successfully linked"))
            .catch(e => console.log("Error while linking Terms:", e));
+
       }else if (item.title.includes("Privacy")) {
         Linking.openURL(privacyUrl)
           .then(() => console.log("Privacy successfully linked"))
           .catch(e => console.log("Error while linking Privacy:", e));
+
       } else {
         updateModalIndex(2);
         setNewData(item.component);
@@ -269,25 +258,3 @@ export const  SettingsMain = () => {
     </View>
     );
 }
-/*
-import { A } from '@expo/html-elements';
-import {userStyles} from "../user/userStyles";
-import {memo, useContext} from "react";
-import {ThemeContext} from "../Context";
-
-
-const TermsOfUse = () => {
-
-  const {customTheme} = useContext(ThemeContext);
-
-  const pressableStyles = [userStyles.changeInfoBtn,
-    {backgroundColor: customTheme.primaryButton, color: customTheme.text}]
-
-  return(
-    <>
-      <A style={pressableStyles} href={termsUrl}>Terms and Conditions</A>
-    </>
-  );
-}
-export default memo(TermsOfUse)
- */

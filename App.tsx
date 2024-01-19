@@ -29,8 +29,7 @@ import NetInfo from "@react-native-community/netinfo";
 import {
   checkToolActionValue,
   getToolActionValue,
-  postToolActionValue,
-  showToolAds
+  postToolActionValue, showToolAds,
 } from "./screens/chat/functions/AdLogic";
 import {sendObject} from "./screens/chat/functions/SendProcess";
 
@@ -63,9 +62,7 @@ export default function App() {
   // TOOL CONTEXT STATE VARIABLES
   const [toolActionValue, setToolActionValue] = useState<string>("");
 
-
   const toggleTheme = () => setDarkmode(!darkmode);
-
 
   const defaultPostRequest = async (
     postUrl: string,
@@ -81,12 +78,12 @@ export default function App() {
     // just show if in one of the tool screens
     if (toolActionValue === "0" && toolAction) {
       console.log("User has 0 Actions left. Init Ads...")
-      await showToolAds(toolActionValue, setToolActionValue);
+      await showToolAds( toolActionValue, setToolActionValue);
     }
     if (toolAction) {
+      console.log("SET TOOL ACTION VALUE TO 0...")
       setToolActionValue("0");
     }
-
     setLoading(true);
     setError("");
     let response;
@@ -149,7 +146,6 @@ export default function App() {
     } finally {
       console.log("Application request finished without trouble...");
       setLoading(false);
-
     }
   }
 

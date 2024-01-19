@@ -56,7 +56,9 @@ const StoryMain: React.FC  = () => {
       TEXT_REQUEST_URL,
       getStoryPostObject(),
       setError,
-      setResponse
+      setResponse,
+      undefined,
+      true,
     )
   }, [kind])
 
