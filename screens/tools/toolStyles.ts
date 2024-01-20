@@ -10,7 +10,9 @@ export const toolStyles = StyleSheet.create(
       textAlignVertical: "top",
       paddingRight: 15,
     },
-
+    postBUttoneMovie: {
+      paddingVertical: 17,
+    },
     speechToTextMainContainer: {
       flexGrow: 1,
       alignItems: "center",

@@ -88,7 +88,7 @@ export const styles = StyleSheet.create(
     changeInfoBtn: {
       borderRadius: 9,
       flexDirection: "row",
-      paddingVertical: 10,
+      paddingVertical: 15,
       paddingHorizontal: 0,
       width: 350,
       textAlign: 'center',

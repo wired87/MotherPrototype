@@ -30,6 +30,8 @@ const ls = StyleSheet.create(
     buttonContainer: {
       flexDirection: "row",
       width: "100%",
+      justifyContent: "center",
+      alignItems:"center",
       paddingVertical: 10,
       paddingHorizontal: 0,
       marginHorizontal: 0,

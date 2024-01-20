@@ -46,6 +46,8 @@ const ls = StyleSheet.create(
       position: "absolute",
       bottom: 15,
       right: 10,
+      height: 48,
+      width: 48
     }
   }
 )

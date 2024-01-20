@@ -53,7 +53,7 @@ const IdeaFinder: React.FC  = () => {
   const sendData = useCallback(async () => {
     if (niche.length == 0){
       Vibration.vibrate();
-      setFieldError("Please Provide minimum a Niche. (More information's gain better results)");
+      setFieldError("Please Provide minimum a Niche. \n(More information's gain better results)");
       return;
     }
     await defaultPostRequest(

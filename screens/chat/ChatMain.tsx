@@ -108,7 +108,7 @@ if (item && item.type === "error") {
  */
   const miracleText = useMemo(() => {
     const aixTextStyles =
-      [localStyles.centeredText, {color: customTheme.mirageChatMainColor}];
+      [localStyles.centeredText, {color: "transparent", opacity: 0}];
     return <View style={
       [
         chatStyles.chatBackground,
@@ -128,7 +128,9 @@ if (item && item.type === "error") {
       <KeyboardAvoidingView
         style={mainViewStyles}>
         <View style={localStyles.defaultContainer}>
+
           {miracleText}
+
           <FlatList
             inverted
             style={localStyles.fullPercent}
@@ -138,9 +140,11 @@ if (item && item.type === "error") {
             renderItem={renderItem}
           />
         </View>
+
         <View style={localStyles.messageInputView}>
           <MessageInputContainer />
         </View>
+
       </KeyboardAvoidingView>
     </SafeAreaView>
   )

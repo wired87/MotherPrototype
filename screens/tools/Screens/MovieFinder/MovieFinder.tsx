@@ -270,6 +270,7 @@ const MovieFinder = () => {
 
       <DefaultButton
         text={buttonText}
+        extraStyles={ts.postBUttoneMovie}
         onPressAction={handleSearch}
       />
 
