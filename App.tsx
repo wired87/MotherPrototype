@@ -47,7 +47,7 @@ let errorCodes = [
 export default function App() {
 
   /////////// PRIMARY CONTEXT STATE VARIABLES
-  const [darkmode, setDarkmode] = useState(false);
+  const [darkmode, setDarkmode] = useState<boolean>(false);
   const [user, setUser] = useState<firebase.User | null>(null);
   const [customTheme, setCustomTheme] = useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
   const [loading, setLoading] = useState(false);

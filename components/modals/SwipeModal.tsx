@@ -1,6 +1,6 @@
-import React, {memo, useCallback, useContext, useEffect, useMemo} from "react";
+import React, {memo, useCallback, useContext, useMemo} from "react";
 import BottomSheet, { BottomSheetBackdrop, BottomSheetHandle } from '@gorhom/bottom-sheet';
-import {PrimaryContext, SettingsContext, ThemeContext} from "../../screens/Context";
+import {SettingsContext, ThemeContext} from "../../screens/Context";
 import { StyleSheet } from "react-native";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 

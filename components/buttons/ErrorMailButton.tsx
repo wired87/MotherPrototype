@@ -1,10 +1,9 @@
 import React, {memo, useCallback, useContext} from "react";
 import {Linking, Pressable, StyleSheet} from "react-native";
-import {StyleProps} from "react-native-reanimated";
 import {DefaultText} from "../text/DefaultText";
 import {ThemeContext} from "../../screens/Context";
 
-const ls: StyleProps = StyleSheet.create(
+const ls = StyleSheet.create(
   {
     main: {
       paddingVertical: 3,
@@ -17,7 +16,7 @@ const ls: StyleProps = StyleSheet.create(
       justifyContent: "space-between",
       shadowOpacity: .2,
       shadowRadius: 14,
-
+      color: "white"
     }
   }
 )
@@ -39,7 +38,7 @@ const ErrorMailButton: React.FC<errorMailButton> = (
   const sendMail = useCallback(() => {
     const errorUrl: string =
       `https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=${problem}`
-    Linking.openURL(errorUrl)
+      Linking.openURL(errorUrl)
   }, [problem]);
 
   return(

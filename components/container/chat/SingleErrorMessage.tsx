@@ -1,7 +1,6 @@
 import React, {memo, useCallback, useContext, useState} from "react";
 import {View, StyleSheet, Dimensions} from "react-native";
 import {ThemeContext} from "../../../screens/Context";
-import {StyleProps} from "react-native-reanimated";
 import ContactAutoButton from "../../buttons/ContactAutoButton";
 import {ContactFormTypes} from "../modalContainers/Contact/Contact";
 import {getAuth} from "firebase/auth";
@@ -13,7 +12,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 const windowWidth = Dimensions.get('window').width;
 
-const ls: StyleProps = StyleSheet.create(
+const ls = StyleSheet.create(
   {
     main: {
       paddingVertical: 3,
@@ -85,7 +84,7 @@ const SingleErrorMessage: React.FC<SingleErrorTypes> = (
         <View style={ls.singleButtonContainer}>
           <DefaultText text={"Could not send the Message"} />
           <MaterialCommunityIcons color={customTheme.errorText} name={"close"}/>
-          <View style={ls.singleButtonContainewr}>
+          <View style={ls.singleButtonContainer}>
             <ErrorMailButton problem={item.message} />
           </View>
         </View>
@@ -101,10 +100,10 @@ const SingleErrorMessage: React.FC<SingleErrorTypes> = (
     }else {
       return (
         <View style={ls.buttonContainer}>
-          <View style={ls.singleButtonContainewr}>
+          <View style={ls.singleButtonContainer}>
             <ErrorMailButton problem={item.message}/>
           </View>
-          <View style={ls.singleButtonContainewr}>
+          <View style={ls.singleButtonContainer}>
             <DefaultText text={"Inform us by one click"}/>
             <ContactAutoButton
               form={form}

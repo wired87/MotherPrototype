@@ -179,7 +179,7 @@ interface ToolItemProps {
 const ToolItem: React.FC<ToolItemProps> = ({ item, index}) => {
   return (
     <View key={index}>
-      <ToolItemButton text={item.text} color={item.color} extraText={item.extraText} icon={item.icon} navigationScreen={item.screen}/>
+      <ToolItemButton text={item.text} color={item.color} icon={item.icon} navigationScreen={item.screen}/>
     </View>
   );
 };

@@ -12,7 +12,9 @@ const ls =  StyleSheet.create(
 
     },
     button: {
-
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+      borderRadius: 25
     }
   }
 )

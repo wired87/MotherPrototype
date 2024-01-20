@@ -1,4 +1,10 @@
 
+#  new Expo Project
+npx create-expo-app myApp -t expo-template-blank-typescript
+
+# integrate from nom to yarn
+npm i -g yarn
+
 # fix deps
 npx expo install --fix
 
