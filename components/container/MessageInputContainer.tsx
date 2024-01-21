@@ -83,7 +83,7 @@ export const MessageInputContainer: React.FC = (
           transcript={input}
         />
       )}
-  }, [input, error, darkmode]);
+  }, [input, error, darkmode, typing]);
 
   return (
     <DefaultContainer
