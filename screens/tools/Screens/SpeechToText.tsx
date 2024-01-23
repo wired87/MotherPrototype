@@ -8,6 +8,7 @@ import {toolStyles as ts} from "../toolStyles";
 import {ThemeContext} from "../../Context";
 import UniversalTextCreator from "../../../components/container/Tools/UniversalTextCreator";
 import TranscribeButton from "../../../components/buttons/TranscribeButton";
+import succSpeechToText from "../../../assets/animations/succSpeechToText.json";
 
 // Strings
 const placeholderTranscript: string = "Your generated transcript will be shown here";
@@ -28,14 +29,18 @@ const SpeechToText: React.FC = () => {
       <UniversalTextCreator
         placeholder={placeholderTranscript}
         heading={heading}
-        Content={<TranscribeButton
-          setTranscript={setTranscript}
-          setError={setError}
-          transcript={transcript}/>}
         source={""}
         response={transcript}
         setResponse={setTranscript}
-        error={error} successAnimation={""}
+        error={error}
+        successAnimation={succSpeechToText}
+        Content={
+          <TranscribeButton
+            setTranscript={setTranscript}
+            setError={setError}
+            transcript={transcript}
+          />
+        }
       />
     </ScrollView>
   );

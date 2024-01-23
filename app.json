@@ -14,6 +14,19 @@
           "microphonePermission": "Allow MIRACLE AI to access your microphone.",
           "speechRecognitionPermission": "Allow MIRACLE AI to securely transcribe your Audio input."
         }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow MIRACLE AI to access your camera.",
+          "microphonePermission": "Allow MIRACLE AI to access your microphone"
+        }
       ]
     ],
     "splash": {
@@ -24,6 +37,7 @@
       "**/*"
     ],
     "ios": {
+      "usesIcloudStorage": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.wired87.AiChat501",
       "config": {
@@ -31,6 +45,7 @@
       }
     },
     "android": {
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/screen.png",
         "backgroundColor": "#ffffff"

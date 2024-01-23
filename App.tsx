@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {NavigationContainer} from '@react-navigation/native';
@@ -12,7 +12,7 @@ import {
   ThemeContext,
   lightModeTheme,
   darkModeTheme,
-  JwtToken
+  JwtToken, MediaContext
 } from "./screens/Context";
 
 import NavigationMain from "./components/navigation/Footer";
@@ -32,6 +32,7 @@ import {
   postToolActionValue, showToolAds,
 } from "./screens/chat/functions/AdLogic";
 import {sendObject} from "./screens/chat/functions/SendProcess";
+import CameraView from "./components/container/CameraView";
 
 
 let errorCodes = [
@@ -61,6 +62,26 @@ export default function App() {
 
   // TOOL CONTEXT STATE VARIABLES
   const [toolActionValue, setToolActionValue] = useState<string>("");
+
+  // MEDIA PRESSED CONTEXT
+  const [cameraClicked, setCameraClicked] = useState<boolean>(false);
+
+  const closeCam1 = () => {
+    console.log("Cam bool:", cameraClicked);
+    setCameraClicked(!cameraClicked);
+  }
+  const closeCam = ():void => {
+    console.log("were inside...");
+    try {
+      closeCam1();
+    }catch(e:unknown) {
+       console.log("ERROR IN CLOSE:",e);
+      }
+    }
+
+  const mediaContextValues = {
+    cameraClicked, closeCam
+  }
 
   const toggleTheme = () => setDarkmode(!darkmode);
 
@@ -236,7 +257,6 @@ export default function App() {
     const loadPreferences = async () => {
       try {
         await SplashScreen.preventAutoHideAsync();
-
         console.log("Splashscreen initialized..");
         await Font.loadAsync({
           'JetBrainsMono': require('./assets/fonts/codeFont/JetBrainsMono.ttf'),
@@ -316,24 +336,30 @@ export default function App() {
     checkToolActionValueProcess,
   }
 
-  return (
-    <ThemeContext.Provider value={{customTheme}}>
-      <PrimaryContext.Provider
-        value={contextValue}>
-        <ToolContext.Provider value={toolElements}>
-          <PaperProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <BottomSheetModalProvider>
-                <NavigationContainer>
-                  <NavigationMain />
-                </NavigationContainer>
-              </BottomSheetModalProvider>
-            </GestureHandlerRootView>
-          </PaperProvider>
-        </ToolContext.Provider>
-      </PrimaryContext.Provider>
-    </ThemeContext.Provider>
-  );
+  if (cameraClicked){
+    return <CameraView />
+  }else{
+    return (
+      <ThemeContext.Provider value={{customTheme}}>
+        <MediaContext.Provider value={mediaContextValues}>
+          <PrimaryContext.Provider
+            value={contextValue}>
+            <ToolContext.Provider value={toolElements}>
+              <PaperProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <BottomSheetModalProvider>
+                    <NavigationContainer>
+                      <NavigationMain />
+                    </NavigationContainer>
+                  </BottomSheetModalProvider>
+                </GestureHandlerRootView>
+              </PaperProvider>
+            </ToolContext.Provider>
+          </PrimaryContext.Provider>
+        </MediaContext.Provider>
+      </ThemeContext.Provider>
+    );
+  }
 }
 
 

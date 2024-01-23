@@ -1,16 +1,17 @@
 import {KeyboardTypeOptions, TextInput, View,StyleSheet} from "react-native";
-import React, {Dispatch, SetStateAction, useCallback, useContext, useMemo, useState} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {inputStyles} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import TranscribeButton from "../buttons/TranscribeButton";
 import {DefaultText} from "../text/DefaultText";
 import ClearButton from "../buttons/ClearButton";
+import {toolStyles} from "../../screens/tools/toolStyles";
 
 
 export default interface DefaulttextInputTypes {
   placeholder?: string;
   value: string;
-  onChangeAction?: ((text: string) => void) | Dispatch<SetStateAction<string>>;
+  onChangeAction?: Dispatch<SetStateAction<string>>;
   secure?: boolean;
   editable?: boolean;
   keyboardType?: KeyboardTypeOptions;
@@ -19,43 +20,11 @@ export default interface DefaulttextInputTypes {
   numberOfLines?: number;
   max_length?: number;
   noBorder?: boolean;
-  recordingOption?: boolean;
-  showClearButton?: boolean;
   label?: string;
+  recordingButton?: boolean
 }
 
-const ls = StyleSheet.create(
-  {
-    main: {
-      marginTop: 15,
-      padding: 0,
-      flexDirection: "column",
-      justifyContent:"flex-end",
 
-    },
-    recordingButton: {
-      position: "absolute",
-      right: -5,
-      bottom: 0
-    },
-    labelText: {
-      fontSize: 13,
-      fontFamily: "JetBrainsMono"
-    },
-    clearContainer: {
-      position: "absolute",
-      bottom: 15,
-      right: 10,
-      height: 48,
-      width: 48
-    }
-  }
-)
-
-
-
-
-// @ts-ignore
 export const DefaultInput: React.FC<DefaulttextInputTypes> = (
   {
     placeholder,
@@ -68,9 +37,8 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     numberOfLines,
     max_length,
     noBorder,
-    recordingOption,
-    showClearButton,
-    label
+    label,
+    recordingButton
   }
 
 ) => {
@@ -78,6 +46,7 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
   const [recordingError, setRecordingError] = useState<string>("");
   const { customTheme } = useContext(ThemeContext);
 
+  const mainContainerStyles: object[] = [toolStyles.justifyAlign, {flexDirection: "column"}];
   const mainStyles = [ //->account no mb!!!<-
     inputStyles.defaultInput,
     extraStyles || null,
@@ -88,7 +57,19 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
       }
     ];
 
-  const recordingErrorMessage = useMemo(() => {
+
+  useEffect(() => {
+    if (recordingError.length > 0) {
+      setTimeout(() => {
+        console.log("4 sec...")
+        setRecordingError("");
+      }, 3000);
+      console.log("0 sec...")
+    }
+  }, [recordingError]);
+
+
+  const recordingErrorMessage = useCallback(() => {
     if (recordingError.length > 0) {
       return(
         <DefaultText error text={recordingError}/>
@@ -106,48 +87,93 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     }
   }, [label]);
 
-
   return(
-    <>
-    <View style={ls.main}>
+    <View style={mainContainerStyles}>
+      <View style={ls.main}>
+        {
+          labelComponent()
+        }
+        <TextInput
+          cursorColor={customTheme.placeholder}
+          selectionColor={customTheme.errorText}
+          multiline={multiline || false}
+          numberOfLines={numberOfLines || 1}
+          style={mainStyles}
+          placeholder={placeholder}
+          placeholderTextColor={customTheme.placeholder}
+          secureTextEntry={false}
+          autoCapitalize={"none"}
+          value={value}
+          maxLength={max_length || undefined}
+          onChangeText={onChangeAction}
+          editable={editable || true}
+          keyboardType={keyboardType}
+          blurOnSubmit={true}
+          accessibilityLabel={label || ""}
+        />
+        {value && value.length > 0?(
+          <ClearButton value={value} setValue={onChangeAction} ms={ls.clearContainer} />
+        ): recordingButton?(
+          <TranscribeButton
+            setTranscript={onChangeAction}
+            setError={setRecordingError}
+            transcript={value}
+            buttonStyles={ls.recordingButton}
+          />
+        ):null}
+      </View>
       {
-        labelComponent()
+        recordingErrorMessage()
       }
-      <TextInput
-        selectionColor={customTheme.errorText}
-        multiline={multiline || false}
-        numberOfLines={numberOfLines || 1}
-        style={mainStyles}
-        placeholder={placeholder}
-        placeholderTextColor={customTheme.placeholder}
-        secureTextEntry={false}
-        autoCapitalize={"none"}
-        value={value}
-        maxLength={max_length || undefined}
-        onChangeText={onChangeAction}
-        editable={editable || true}
-        keyboardType={keyboardType}
-        blurOnSubmit={true}
-        accessibilityLabel={label || ""}
-      />
+    </View>
+  );
+}
 
-      {label && label.length == 0?(
+
+const ls = StyleSheet.create(
+  {
+    main: {
+      flexDirection: "column",
+      justifyContent:"flex-end",
+    },
+    recordingButton: {
+      position: "absolute",
+      right: -5,
+      bottom: 0
+    },
+    labelText: {
+      fontSize: 13,
+      fontFamily: "JetBrainsMono"
+    },
+    clearContainer: {
+      position: "absolute",
+      right: -30,
+      height: 48,
+      width: 48
+    }
+  }
+)
+/* KEYBOARD TYPES
+
+{value && value.length == 0?(
         <TranscribeButton
           setTranscript={() => onChangeAction}
           setError={setRecordingError}
           transcript={value}
           buttonStyles={ls.recordingButton}
         />
-      ): label && label.length > 0?(
+      ): value && value.length > 0?(
         <ClearButton value={value} setValue={onChangeAction} ms={ls.clearContainer} />
       ):null}
-    </View>
-    {recordingErrorMessage}
-    </>
-  );
-}
 
-/* KEYBOARD TYPES
+
+
+
+
+
+
+
+
 "default",
 'numeric',
 'email-address',

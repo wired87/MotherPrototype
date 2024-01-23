@@ -1,12 +1,18 @@
 import * as SecureStore from "expo-secure-store";
-import {Alert} from "react-native";
+import {Alert, Pressable, View, StyleSheet} from "react-native";
 import {JwtToken} from "./screens/Context";
 import RNRestart from 'react-native-restart';
-import {Dispatch, SetStateAction} from "react";
+import {Dispatch, memo, SetStateAction, useState} from "react";
 import {CHECK_JWT, LOGIN_JWT} from "@env";
 import {getAuth} from "firebase/auth";
 import { Buffer } from 'buffer';
 import * as RNLocalize from "react-native-localize";
+import React from "react";
+// EXPO COOL STUFF
+import { Camera, CameraType } from 'expo-camera';
+import {DefaultText} from "./components/text/DefaultText";
+
+
 
 
 // URLS
@@ -212,6 +218,64 @@ export const connectionAlert = () => {
     ]
   );
 }
+
+const handleCameraClick = () => {
+
+}
+
+const handleImageClick = () => {
+
+}
+
+const handleDocumentClick = () => {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*

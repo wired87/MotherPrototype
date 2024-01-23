@@ -68,7 +68,7 @@ const MovieFinder = () => {
   const backgroundColor: StyleProps = {backgroundColor: customTheme.primary};
   const mainContainerStyles: StyleProps[] = [ts.main, backgroundColor];
   const errorTextStyles: StyleProps = {opacity: alreadyRunning? 1:0};
-  const textColor: StyleProps = { color: customTheme.text }
+  const textColor: StyleProps = { color: customTheme.text };
   const pressableTextStyles: StyleProps[] = [ls.movieTitle, textColor];
   const movieBoxStyles: StyleProps[] = [ls.card, {backgroundColor: "transparent"}];
 
@@ -143,6 +143,18 @@ const MovieFinder = () => {
     }
   };
 
+
+  useEffect(() => {
+    if (fieldError) {
+      setTimeout(() => {
+        console.log("4 sec...")
+        setFieldError(false);
+      }, 3000);
+      console.log("0 sec...")
+    }
+  }, [fieldError]);
+  
+
   const renderInputs = useCallback(() => {
     const inputStyles = [ts.input, textColor];
     return (
@@ -153,7 +165,6 @@ const MovieFinder = () => {
           onChangeAction={setFirstMedia}
           value={firstMedia}
           placeholder={`First Movie/Serie (required)`}
-          showClearButton
         />
 
         <DefaultInput
@@ -161,7 +172,6 @@ const MovieFinder = () => {
           onChangeAction={setSecondMedia}
           value={secondMedia}
           placeholder={'Second Movie/Serie (optional)'}
-          showClearButton
         />
 
         <DefaultInput
@@ -169,14 +179,16 @@ const MovieFinder = () => {
           onChangeAction={setThirdMedia}
           value={thirdMedia}
           placeholder={`Third Movie/Serie (optional)`}
-          showClearButton
         />
 
         {fieldError? <DefaultText text={requiredText} /> :null}
 
       </View>
     );
-  }, [firstMedia, secondMedia, thirdMedia, fieldError]);
+  }, [
+    firstMedia, secondMedia, thirdMedia,
+    setFirstMedia, setSecondMedia, setThirdMedia,
+    fieldError]);
 
 
   useEffect(() => {

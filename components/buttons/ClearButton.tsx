@@ -1,12 +1,12 @@
 import {styles} from "../container/contiStyles";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {Pressable} from "react-native";
-import React, {memo, useContext} from "react";
+import React, {Dispatch, memo, SetStateAction, useContext} from "react";
 import {ThemeContext} from "../../screens/Context";
 import {StyleProps} from "react-native-reanimated";
 
 interface ClearButtonTypes {
-  setValue?: ((text: string) => void);
+  setValue?: Dispatch<SetStateAction<string>>, //((text: string) => void);
   value: string;
   ms?: StyleProps;
 }
@@ -20,6 +20,7 @@ const ClearButton: React.FC<ClearButtonTypes> = (
 ) => {
 
   const { customTheme } = useContext(ThemeContext);
+
   const pressableStyles = [styles.clearInputFiledBtn, {borderColor: customTheme.borderColor}]
   if (value.length > 0) {
     return (

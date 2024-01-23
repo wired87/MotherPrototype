@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from "react";
-import {View} from "react-native";
 import {DefaultText} from "./DefaultText";
 import {inputStyles} from "../input/styles";
 import {ThemeContext} from "../../screens/Context";

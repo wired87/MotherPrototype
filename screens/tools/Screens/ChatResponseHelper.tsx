@@ -91,7 +91,7 @@ const ChatResponseHelper: React.FC = () => {
         <DefaultInput
           value={input}
           placeholder={chatHistoryPlaceholder}
-          onChangeAction={(text:string) => setInput(text)}
+          onChangeAction={setInput}
           editable={true}
           keyboardType={"default"}
           extraStyles={historyInputStyles}
@@ -103,7 +103,7 @@ const ChatResponseHelper: React.FC = () => {
         <DefaultInput
           value={context}
           placeholder={extraInformationsPlaceholder}
-          onChangeAction={(text:string) => setContext(text)}
+          onChangeAction={setContext}
           editable={true}
           keyboardType={undefined}
           extraStyles={extraInfosInputStyles}
@@ -115,7 +115,7 @@ const ChatResponseHelper: React.FC = () => {
         <DefaultInput
           value={goal}
           placeholder={goalPlaceholder}
-          onChangeAction={(text:string) => setGoal(text)}
+          onChangeAction={setGoal}
           editable={true}
           keyboardType={undefined}
           extraStyles={[ts.input, {marginBottom: 20,}]}

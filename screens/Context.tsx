@@ -69,6 +69,19 @@ export const InputContext = createContext({
 
 });
 
+
+export const MediaContext= createContext(
+  {
+    cameraClicked: false,
+    closeCam: (): void => {}
+  }
+)
+
+
+
+
+
+
 export const ToolContext= createContext(
   {
     toolActionValue: "",

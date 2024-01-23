@@ -13,10 +13,12 @@ import {SingleMessage} from "../../components/container/chat/SingleMessage";
 import {MessageInputContainer} from "../../components/container/MessageInputContainer";
 
 // @ts-ignore
-import {InputContext, ThemeContext} from "../Context";
+import {InputContext, MediaContext, ThemeContext} from "../Context";
 import SingleErrorMessage from "../../components/container/chat/SingleErrorMessage";
 import {StyleProps} from "react-native-reanimated";
 import {userMesssageObject} from "./ChatNavigator";
+import FloatingMediaButton from "../../components/buttons/FloatingMediaButton";
+import CameraView from "../../components/container/CameraView";
 
 const localStyles = StyleSheet.create(
   {
@@ -40,7 +42,7 @@ const localStyles = StyleSheet.create(
       flex: 1,
     },
     fullPercent: {
-      marginTop: 50
+     // marginTop: 50
     },
     columnReverse: {
       flexDirection: 'column-reverse'
@@ -71,6 +73,8 @@ export const ChatMain = (
 
   const { messages } = useContext(InputContext);
   const { customTheme } = useContext(ThemeContext);
+  const { cameraClicked, setCameraClicked } = useContext(MediaContext);
+
   const keyExtractor = (item: object, index: number) => String(index);
 
   // Styles
@@ -100,12 +104,7 @@ export const ChatMain = (
     return <></>
   }, [customTheme, messages]);
 
-/*
-if (item && item.type === "error") {
-      return (
-        <SingleErrorMessage />
-      );
- */
+
   const miracleText = useMemo(() => {
     const aixTextStyles =
       [localStyles.centeredText, {color: "transparent", opacity: 0}];
@@ -121,7 +120,6 @@ if (item && item.type === "error") {
       <Text style={aixTextStyles}>MIRACLE</Text>
     </View>
   },[customTheme])
-
 
   return(
     <SafeAreaView style={mainViewStyles}>
@@ -142,6 +140,7 @@ if (item && item.type === "error") {
         </View>
 
         <View style={localStyles.messageInputView}>
+
           <MessageInputContainer />
         </View>
 

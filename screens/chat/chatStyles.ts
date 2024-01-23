@@ -67,7 +67,7 @@ export const chatStyles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         width: windowWidth * .85,
-        height: "80%",
+        height: "77%",
         marginVertical: "50%",
         borderRadius: 14
     }

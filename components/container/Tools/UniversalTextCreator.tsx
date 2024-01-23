@@ -147,7 +147,8 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
       !loading &&
       response &&
       !successAnimationFinish &&
-      error.length == 0
+      error.length == 0 &&
+      successAnimation
     ) {
         return(
           <>
@@ -176,7 +177,7 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
         <LottieContainer source={source} text={placeholder} />
       );
     }
-  }, [response, error, successAnimationFinish, loading]);
+  }, [response, error, successAnimationFinish, loading, successAnimation]);
 
 
 

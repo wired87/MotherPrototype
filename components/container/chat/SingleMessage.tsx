@@ -41,7 +41,6 @@ export const SingleMessage: React.FC<SingleMessageTypes> =
     /*IOS Props:*/shadowColor: customTheme.text, shadowOpacity: .2, shadowRadius: 14, width: windowWidth * .8
   };
 
-
   const messageTime = item.timeToken;
 
   return(

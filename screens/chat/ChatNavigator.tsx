@@ -55,10 +55,14 @@ const iconStyles = StyleSheet.create(
 const ChatStack = createNativeStackNavigator();
 
 const ChatNavigation: React.FC<ChatNavigationTypes> = (
-  { bottomSheetRef }
+  {
+    bottomSheetRef
+  }
 ) => {
 
   const [history, setHistory] = useState(false);
+
+
 
   // Context //////////////////////////
   const {
@@ -87,6 +91,11 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     if (!(input === "" || input.trim().length === 0))
       inputRef.current = input;
   }, [input]);
+
+
+
+
+
 
   // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {
@@ -311,4 +320,5 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     </>
   );
 }
+
 export default memo(ChatNavigation);

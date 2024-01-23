@@ -1,14 +1,16 @@
 import {DefaultContainer} from "./DefaultContainer";
-import {TextInput, View, Vibration, ActivityIndicator} from "react-native";
+import {View, Vibration, ActivityIndicator} from "react-native";
 import {styles} from "./contiStyles";
 import React, {useCallback, useContext, useMemo, useState} from "react";
 import { TypeIndicator } from "../animations/TypeIndicator";
 
 import {showAds} from "../../screens/chat/functions/AdLogic";
 import {FunctionContext, InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
-import TranscribeButton from "../buttons/TranscribeButton";
 import {IconButton} from "react-native-paper";
-import ClearButton from "../buttons/ClearButton";
+import {DefaultInput} from "../input/DefaultInput";
+import FloatingMediaButton from "../buttons/FloatingMediaButton";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 
 export const MessageInputContainer: React.FC = (
 ) => {
@@ -27,15 +29,20 @@ export const MessageInputContainer: React.FC = (
 
 
   const { sendMessageProcess } = useContext(FunctionContext);
-  const recordingButtonStyles = {margin: 10}
 
-  // Styles
+    // Styles
   const extraInputStyles = [styles.chatMessageInput,
     {
       color: customTheme.text,
       borderColor: customTheme.text,
-    }
+    },
+
   ];
+  const moreContainerInputStyles:object = [styles.inputContainer,
+    {
+      justifyContent: input?.trim().length == 0 ?  "center" : "flex-end"
+
+    }];
 
   const send = useCallback(async () => {
     console.log("real messages", messages)
@@ -65,24 +72,16 @@ export const MessageInputContainer: React.FC = (
     const extraSendStyles = styles.sendIcon;
     if (input?.trim().length > 0) {
       return(
-        <>
-          <IconButton
-            onPress={send}
-            style={extraSendStyles}
-            iconColor={customTheme.headerIconColors}
-           icon={"atlassian"}/>
-        </>
-      )
-    }else {
-      return(
-        <TranscribeButton
-          buttonIcon={"microphone-outline"}
-          setTranscript={setInput}
-          setError={setError}
-          buttonStyles={recordingButtonStyles}
-          transcript={input}
+        <MaterialCommunityIcons
+          color={customTheme.headerIconColors}
+          style={extraSendStyles}
+          name={"atlassian"}
+          onPress={send}
+          size={30}
         />
-      )}
+      )
+    }
+    return <></>
   }, [input, error, darkmode, typing]);
 
   return (
@@ -93,19 +92,20 @@ export const MessageInputContainer: React.FC = (
         {typeIndicator}
       </View>
 
-      <ClearButton setValue={setInput} value={input} />
-
-      <View style={styles.inputContainer}>
-        <TextInput style={extraInputStyles}
-           maxLength={2000}
-           placeholder={"Ask something!"}
-           placeholderTextColor={customTheme.text}
-           cursorColor={customTheme.placeholder}
-           value={input}
-           onChangeText={setInput}
-           multiline={true}
+      <View style={moreContainerInputStyles}>
+        <FloatingMediaButton />
+        <DefaultInput
+          placeholder={"Ask something!"}
+          value={input}
+          onChangeAction={setInput}
+          keyboardType={"default"}
+          extraStyles={extraInputStyles}
+          numberOfLines={10}
+          max_length={2000}
+          multiline
+          editable
+          recordingButton
         />
-
         <View style={[styles.container, {borderColor: customTheme.borderColor}]}>
           {sendButton}
         </View>
@@ -116,3 +116,14 @@ export const MessageInputContainer: React.FC = (
 }
 
 
+/*
+ <TextInput style={extraInputStyles}
+           maxLength={2000}
+           placeholder={"Ask something!"}
+           placeholderTextColor={customTheme.text}
+           cursorColor={customTheme.placeholder}
+           value={input}
+           onChangeText={setInput}
+           multiline={true}
+        />
+ */

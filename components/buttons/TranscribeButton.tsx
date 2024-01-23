@@ -11,7 +11,7 @@ const defaultIcon = "microphone";
 
 
 interface TranscribeButtonTypes {
-  setTranscript: Dispatch<SetStateAction<string>>;
+  setTranscript?: Dispatch<SetStateAction<string>>;
   setError: Dispatch<SetStateAction<string>>;
   buttonIcon?: string;
   buttonStyles?: any;
@@ -61,9 +61,9 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
 
 
   const onSpeechResults = useCallback((r: any) => {
-    console.log("onSpeechResults r.value", r.value)
-    setTranscript((prevTranscript) => prevTranscript + r.value[0] + " ");
-  }, [transcript]);
+    const newTranscript:string = transcript + " " + r.value[0] + " ";
+    setTranscript? setTranscript(newTranscript) : null;
+  }, []);
 
 
   useEffect(() => {

@@ -41,7 +41,6 @@ export const styles = StyleSheet.create({
         margin: 15
     },
     main: {
-        marginTop: 20,
         backgroundColor: "transparent",
         position: "relative",
         justifyContent: "center",
@@ -49,21 +48,21 @@ export const styles = StyleSheet.create({
         flexDirection: "column",
         bottom: -5,
         padding: 0,
-        marginBottom: 0,
+
+
     },
     secondContainer: {
         flexDirection: "row",
         width: windowWidth,
         justifyContent: "space-between",
         marginBottom: 7,
-        alignItems: "center"
+        alignItems: "center",
     },
     inputContainer: {
         flexDirection: "row",
-        justifyContent: "flex-end",
-        paddingLeft: 12,
-        alignItems: "flex-end"
-
+        alignItems: "center",
+        padding: 0,
+        width: "100%",
     },
     indicatorContainer: {
         justifyContent: "flex-start",
@@ -84,21 +83,16 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 0,
     },
     sendIcon: {
-        margin: 10,
-        bottom: 5,
         transform: [{rotate: '90deg'}]
     },
     container: {
-        maxHeight: 60,
+        maxHeight: 40,
         bottom: 0,
         right: 0,
         backgroundColor: 'transparent',
         alignItems: 'center',
         justifyContent: 'center',
-        borderTopWidth: 1,
-        borderRightWidth: 1,
-        borderTopRightRadius: 14,
-
+        paddingHorizontal: 2,
     },
 })
 

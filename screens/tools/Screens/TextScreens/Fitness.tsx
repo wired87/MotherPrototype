@@ -114,10 +114,7 @@ const FitnessMain: React.FC  = () => {
             placeholder={"e.g. Diet, Training, ..."}
             value={planType}
             onChangeAction={setPlanType}
-            extraStyles={{}}
             max_length={maxLengthSmall}
-            recordingOption
-            showClearButton
           />
 
           <DefaultInput
@@ -125,10 +122,7 @@ const FitnessMain: React.FC  = () => {
             placeholder={"e.g. Build Muscle..."}
             value={goal}
             onChangeAction={setGoal}
-            extraStyles={{}}
             max_length={maxLengthBig}
-            recordingOption
-            showClearButton
           />
 
           <DefaultInput
@@ -136,10 +130,7 @@ const FitnessMain: React.FC  = () => {
             placeholder={"e.g Male..."}
             value={gender}
             onChangeAction={setGender}
-            extraStyles={{}}
             max_length={maxLengthBig}
-            recordingOption
-            showClearButton
           />
 
           <DefaultInput
@@ -147,10 +138,7 @@ const FitnessMain: React.FC  = () => {
             placeholder={"in kg"}
             value={weight}
             onChangeAction={setWeight}
-            extraStyles={{}}
             max_length={maxLengthBig}
-            recordingOption
-            showClearButton
             keyboardType={"decimal-pad"}
           />
 
@@ -159,10 +147,7 @@ const FitnessMain: React.FC  = () => {
             placeholder={"in cm"}
             value={height}
             onChangeAction={setHeight}
-            extraStyles={{}}
             max_length={maxLengthBig}
-            recordingOption
-            showClearButton
             keyboardType={"number-pad"}
           />
 
@@ -171,10 +156,7 @@ const FitnessMain: React.FC  = () => {
             placeholder={"Normal, Muscular, ..."}
             value={physique}
             onChangeAction={setPhysique}
-            extraStyles={{}}
             max_length={maxLengthBig}
-            recordingOption
-            showClearButton
           />
 
           <DefaultInput
@@ -183,13 +165,9 @@ const FitnessMain: React.FC  = () => {
             onChangeAction={setExtraInfos}
             extraStyles={moreInfosInput}
             max_length={maxLengthBig}
-            recordingOption
-            showClearButton
             numberOfLines={4}
           />
-
           {fieldErrorComp()}
-
         </>
       }
       />
