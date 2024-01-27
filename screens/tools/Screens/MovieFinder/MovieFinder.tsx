@@ -161,6 +161,7 @@ const MovieFinder = () => {
       <View style={ts.justifyAlign}>
 
         <DefaultInput
+          label={"First"}
           extraStyles={inputStyles}
           onChangeAction={setFirstMedia}
           value={firstMedia}
@@ -168,6 +169,7 @@ const MovieFinder = () => {
         />
 
         <DefaultInput
+          label={"Second"}
           extraStyles={inputStyles}
           onChangeAction={setSecondMedia}
           value={secondMedia}
@@ -175,6 +177,7 @@ const MovieFinder = () => {
         />
 
         <DefaultInput
+          label={"Third"}
           extraStyles={inputStyles}
           onChangeAction={setThirdMedia}
           value={thirdMedia}

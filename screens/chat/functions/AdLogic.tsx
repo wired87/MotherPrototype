@@ -8,6 +8,7 @@ import {
 import {Platform} from "react-native";
 
 import {FULL_SCREEN_ANDROID, FULL_SCREEN_IOS} from "@env";
+import {Dispatch, SetStateAction} from "react";
 
 const adUnitIdFullScreenAd = __DEV__
   ? TestIds.REWARDED_INTERSTITIAL
@@ -112,6 +113,7 @@ export const checkToolActionValue = async (value: string | boolean | null, setTo
 
 export const showAds = async (messagesLeft: string, setMessagesLeft: any) => {
   if (messagesLeft === "0") {
+
     console.log("Ads initialized..")
     const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
       RewardedAdEventType.LOADED,
@@ -119,14 +121,18 @@ export const showAds = async (messagesLeft: string, setMessagesLeft: any) => {
         rewardedInterstitial.show()
       },
     );
+
     const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
        (reward: any) => {
         console.log("Full screen ad is showing right now..")
         postMessageInfoData("3")
-          .then(() => setMessagesLeft("3"))
+          .then(() => {
+            setMessagesLeft("3");
+            console.log('User finished the Ad and earned reward of ', reward);
+          })
           .catch(() => setMessagesLeft("3"))
-      console.log('User finished the Ad and earned reward of ', reward);
+
       },
     );
     // Start loading the rewarded interstitial ad straight away

@@ -3,7 +3,7 @@
     "scheme": "aichat501",
     "name": "AiChat501",
     "slug": "AiChat501",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icons/iconFinal.png",
     "userInterfaceStyle": "light",
@@ -19,6 +19,12 @@
         "expo-document-picker",
         {
           "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Give MIRACLE AI access to your Gallery."
         }
       ],
       [
@@ -45,7 +51,7 @@
       }
     },
     "android": {
-      "versionCode": 2,
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/screen.png",
         "backgroundColor": "#ffffff"

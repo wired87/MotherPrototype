@@ -160,6 +160,7 @@ const FitnessMain: React.FC  = () => {
           />
 
           <DefaultInput
+            label={"Extra information's"}
             placeholder={"Extra Information's to provide"}
             value={extraInfos}
             onChangeAction={setExtraInfos}
@@ -167,7 +168,10 @@ const FitnessMain: React.FC  = () => {
             max_length={maxLengthBig}
             numberOfLines={4}
           />
-          {fieldErrorComp()}
+
+          {
+            fieldErrorComp()
+          }
         </>
       }
       />

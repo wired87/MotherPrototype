@@ -1,6 +1,9 @@
 import {createContext, Dispatch, SetStateAction} from "react";
 
 import firebase from "firebase/compat";
+import {CameraCapturedPicture} from "expo-camera";
+import {ImagePickerResult} from "expo-image-picker";
+import {DocumentPickerResult} from "expo-document-picker";
 
 export interface JwtToken {
   access: string;
@@ -41,7 +44,7 @@ export const PrimaryContext = createContext(
       ) => Promise<any>,
 
     alreadyRunning: false,
-    setAlreadyRunning: (() => {}) as Dispatch<SetStateAction<boolean>>,
+    updateAlreadyRunning: (value:boolean) :void => {}
   });
 
 export const InputContext = createContext({
@@ -73,9 +76,44 @@ export const InputContext = createContext({
 export const MediaContext= createContext(
   {
     cameraClicked: false,
-    closeCam: (): void => {}
+    closeCam: (): void => {},
+
+    picture: undefined as CameraCapturedPicture | undefined,
+    updatePicture: (image:CameraCapturedPicture | undefined):void => {},
+
+    video: undefined as {uri: string} | undefined,
+    updateVideo: (video:{uri: string} | undefined):void => {},
+
+    pickedImage: undefined as ImagePickerResult | undefined,
+    updatePickedImage: (image:ImagePickerResult | undefined):void => {},
+
+    doc: undefined as DocumentPickerResult | undefined,
+    updateDoc: (doc:DocumentPickerResult | undefined):void => {},
+
   }
 )
+
+/*
+ImagePickerResult:
+{
+  "assets": [
+    {
+      "assetId": "C166F9F5-B5FE-4501-9531",
+      "base64": null,
+      "duration": null,
+      "exif": null,
+      "fileName": "IMG.HEIC",
+      "fileSize": 6018901,
+      "height": 3025,
+      "type": "image",
+      "uri": "file:///data/user/0/host.exp.exponent/cache/cropped1814158652.jpg"
+      "width": 3024
+    }
+  ],
+  "canceled": false,
+  "cancelled": false
+}
+ */
 
 
 

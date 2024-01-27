@@ -6,6 +6,7 @@ import TranscribeButton from "../buttons/TranscribeButton";
 import {DefaultText} from "../text/DefaultText";
 import ClearButton from "../buttons/ClearButton";
 import {toolStyles} from "../../screens/tools/toolStyles";
+import {useRoute} from "@react-navigation/native";
 
 
 export default interface DefaulttextInputTypes {
@@ -43,6 +44,8 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
 
 ) => {
 
+  const route = useRoute();
+
   const [recordingError, setRecordingError] = useState<string>("");
   const { customTheme } = useContext(ThemeContext);
 
@@ -53,7 +56,8 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
       {
         color: customTheme.text,
         borderWidth: noBorder? 0:1,
-        borderColor: noBorder? "transparent" : customTheme.text
+        borderColor: noBorder? "transparent" : customTheme.text,
+
       }
     ];
 
@@ -143,16 +147,19 @@ const ls = StyleSheet.create(
     },
     labelText: {
       fontSize: 13,
-      fontFamily: "JetBrainsMono"
+      fontFamily: "JetBrainsMono",
+      marginTop: 10,
     },
     clearContainer: {
       position: "absolute",
       right: -30,
-      height: 48,
-      width: 48
+      top: 10,
+      height: 55,
+      width: 55
     }
   }
 )
+
 /* KEYBOARD TYPES
 
 {value && value.length == 0?(

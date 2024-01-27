@@ -1,9 +1,10 @@
-import React, {Dispatch, SetStateAction, useCallback, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {NavigationContainer} from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import * as SplashScreen from 'expo-splash-screen';
+
 
 import {
   PrimaryContext,
@@ -12,27 +13,38 @@ import {
   ThemeContext,
   lightModeTheme,
   darkModeTheme,
-  JwtToken, MediaContext
+  JwtToken,
+  MediaContext,
+  InputContext
 } from "./screens/Context";
+
 
 import NavigationMain from "./components/navigation/Footer";
 import { getDarkmode } from "./components/container/modalContainers/DarkMode";
 import * as SecureStore from "expo-secure-store";
 import * as Font from "expo-font";
 
+
 import {getAuth, signInAnonymously} from "firebase/auth";
 import firebase from "firebase/compat";
 import {FIREBASE_AUTH} from "./firebase.config";
 import {connectionAlert, getToken} from "./AppFunctions";
 
+
 import NetInfo from "@react-native-community/netinfo";
+
+
 import {
   checkToolActionValue,
   getToolActionValue,
   postToolActionValue, showToolAds,
 } from "./screens/chat/functions/AdLogic";
+
+
 import {sendObject} from "./screens/chat/functions/SendProcess";
-import CameraView from "./components/container/CameraView";
+import {CameraCapturedPicture} from "expo-camera";
+import {DocumentPickerResult} from "expo-document-picker";
+import {ImagePickerResult} from "expo-image-picker";
 
 
 let errorCodes = [
@@ -50,38 +62,90 @@ export default function App() {
   /////////// PRIMARY CONTEXT STATE VARIABLES
   const [darkmode, setDarkmode] = useState<boolean>(false);
   const [user, setUser] = useState<firebase.User | null>(null);
-  const [customTheme, setCustomTheme] = useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
+  const [customTheme, setCustomTheme] =
+    useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
   const [loading, setLoading] = useState(false);
   const [appIsReady, setAppIsReady] = useState(false);
   const [clearMessages, setClearMessages] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [jwtToken, setJwtToken] = useState<JwtToken | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [bottomSheetLoaded, setBottomSheetLoaded] = useState<boolean>(false);
+  const [bottomSheetLoaded, setBottomSheetLoaded] =
+    useState<boolean>(false);
   const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
+  const [firstContact, setFirstContact] = useState<boolean>(true);
+
+  const updateAlreadyRunning = (value:boolean) => {
+    setAlreadyRunning(value);
+  }
+
 
   // TOOL CONTEXT STATE VARIABLES
   const [toolActionValue, setToolActionValue] = useState<string>("");
 
+
+
   // MEDIA PRESSED CONTEXT
   const [cameraClicked, setCameraClicked] = useState<boolean>(false);
 
-  const closeCam1 = () => {
+  const [pickedImage, setPickedImage] =
+    useState<ImagePickerResult | undefined>(undefined);
+
+  const [video, setVideo] =
+    useState<{uri: string} | undefined>(undefined);
+
+  const [doc, setDoc] =
+    useState<DocumentPickerResult | undefined>(undefined);
+
+  const [picture, setPicture] =
+    useState<CameraCapturedPicture | undefined>(undefined);
+
+
+  const updatePickedImage = (image:ImagePickerResult | undefined) => {
+    setPickedImage(image);
+  }
+  const updateDoc = (doc:DocumentPickerResult | undefined) => {
+    setDoc(doc);
+  }
+
+  const closeCam = ():void => {
     console.log("Cam bool:", cameraClicked);
     setCameraClicked(!cameraClicked);
   }
-  const closeCam = ():void => {
-    console.log("were inside...");
-    try {
-      closeCam1();
-    }catch(e:unknown) {
-       console.log("ERROR IN CLOSE:",e);
-      }
-    }
 
-  const mediaContextValues = {
-    cameraClicked, closeCam
+  const updatePicture = (image: CameraCapturedPicture | undefined):void => {
+    console.log("updatePicture...");
+    setPicture(image);
   }
+
+  const updateVideo = (video: {uri: string} | undefined):void => {
+    console.log("updateVideo...");
+    setVideo(video);
+  }
+
+
+  // INPUT CONTEXT
+  // InputContext definitions
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [input, setInput] = useState("");
+  const [messagesLeft, setMessagesLeft] = useState("");
+  const [messages, setMessages] = useState<any[]>([]);
+  const [messageBreakOption, setMessageBreakOption] = useState(false);
+  const [typing, setTyping] = useState(false); // typing indicator
+  const [currentRecording, setCurrentRecording] = useState(false);
+
+  const elements = {
+    input, setInput,
+    messagesLeft, setMessagesLeft,
+    messages, setMessages,
+    messageIndex,
+    setMessageIndex,
+    messageBreakOption,
+    setMessageBreakOption,
+    typing, setTyping,
+    currentRecording, setCurrentRecording
+  }
+
 
   const toggleTheme = () => setDarkmode(!darkmode);
 
@@ -107,6 +171,7 @@ export default function App() {
     }
     setLoading(true);
     setError("");
+
     let response;
     try {
       if (jwtToken?.refresh && jwtToken.access) {
@@ -117,6 +182,7 @@ export default function App() {
           setJwtToken,
           postUrl
         );
+
       } else {
         console.error("No token provided");
         const newToken = await getToken(setJwtToken);
@@ -127,6 +193,7 @@ export default function App() {
             setJwtToken,
             postUrl
           );
+
         } else {
           console.error("New Token request failed...");
           setError("Authentication Error");
@@ -170,22 +237,11 @@ export default function App() {
     }
   }
 
-  useEffect(() => {
-    if (alreadyRunning) {
-      setTimeout(() => {
-        console.log("4 sec...")
-        setAlreadyRunning(false);
-      }, 3000);
-      console.log("0 sec...")
-    }
-  }, []);
-
-
 
   const contextValue = {
     darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
     clearMessages, setClearMessages, jwtToken, setJwtToken, isConnected, setIsConnected,
-    bottomSheetLoaded, setBottomSheetLoaded, defaultPostRequest, alreadyRunning, setAlreadyRunning
+    bottomSheetLoaded, setBottomSheetLoaded, defaultPostRequest, alreadyRunning, updateAlreadyRunning
   };
 
   //////////// INIT THE APPLICATION
@@ -230,6 +286,7 @@ export default function App() {
     }
   }
 
+
   useEffect(() => {
     getAuth().onAuthStateChanged((userObject) => {
       if (userObject) {
@@ -273,11 +330,13 @@ export default function App() {
         if (storedThemePreference !== null) {
           console.log("storedThemePreference !== null");
           setDarkmode(storedThemePreference === "true");
+
         }else {
           setDarkmode(false);
         }
         setAppIsReady(true);
-      } catch (e: unknown) {
+
+      }catch(e: unknown) {
         if (e instanceof Error) console.error("Cant load preferences", e.message);
 
       } finally {
@@ -336,30 +395,43 @@ export default function App() {
     checkToolActionValueProcess,
   }
 
-  if (cameraClicked){
-    return <CameraView />
-  }else{
+
+  useEffect(() => {
+    if (picture && picture.uri || video && video.uri){
+      console.log("NEW URI SET:", picture?.uri || video?.uri)
+      setLoading(false)
+    }
+  }, [picture?.uri, video?.uri]);
+
+
     return (
       <ThemeContext.Provider value={{customTheme}}>
-        <MediaContext.Provider value={mediaContextValues}>
-          <PrimaryContext.Provider
-            value={contextValue}>
-            <ToolContext.Provider value={toolElements}>
-              <PaperProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <BottomSheetModalProvider>
-                    <NavigationContainer>
-                      <NavigationMain />
-                    </NavigationContainer>
-                  </BottomSheetModalProvider>
-                </GestureHandlerRootView>
-              </PaperProvider>
-            </ToolContext.Provider>
-          </PrimaryContext.Provider>
+        <MediaContext.Provider value={{
+          cameraClicked, closeCam,
+          video, updateVideo,
+          picture, updatePicture,
+          pickedImage, updatePickedImage,
+          doc, updateDoc}}>
+          <InputContext.Provider value={elements}>
+            <PrimaryContext.Provider
+              value={contextValue}>
+              <ToolContext.Provider value={toolElements}>
+                <PaperProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <BottomSheetModalProvider>
+                      <NavigationContainer>
+                        <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact}/>
+                      </NavigationContainer>
+                    </BottomSheetModalProvider>
+                  </GestureHandlerRootView>
+                </PaperProvider>
+              </ToolContext.Provider>
+            </PrimaryContext.Provider>
+          </InputContext.Provider>
         </MediaContext.Provider>
       </ThemeContext.Provider>
     );
-  }
+
 }
 
 

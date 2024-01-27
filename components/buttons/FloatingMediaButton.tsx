@@ -11,7 +11,10 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import {MediaContext, ThemeContext} from "../../screens/Context";
-import CameraView from "../container/CameraView";
+import * as ImagePicker from 'expo-image-picker';
+import {ImagePickerResult} from "expo-image-picker";
+import * as DocumentPicker from 'expo-document-picker';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface FloatingButtonProps extends ViewProps {
 }
@@ -25,11 +28,10 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
   const [modalOpen, setModalOpen] = useState(false);
   const animation = useSharedValue(0);
   const { customTheme } = useContext(ThemeContext);
-  const { cameraClicked, closeCam } = useContext(MediaContext);
-
 
   const iconColor:string = customTheme.text
 
+  const { updateDoc, updatePickedImage, pickedImage, doc } = useContext(MediaContext);
 
   const rotationAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -125,6 +127,29 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
     };
   });
 
+  const getDocument = async () => {
+    const document = await DocumentPicker.getDocumentAsync(
+      {
+        multiple: false,
+        type: ['image/*', 'application/pdf', 'application/msword', // 'video/*', for + members
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'application/vnd.ms-excel',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/vnd.ms-powerpoint',
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+          'text/plain']
+      }
+    )
+    console.log("Doc picked:", document);
+    if (document) {
+      if (pickedImage) {
+        updatePickedImage(undefined);
+      }
+      updateDoc(document);
+    }
+  }
+
+
 
   function onPress() {
     setModalOpen((curr) => !curr);
@@ -139,13 +164,29 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
     });
   }
 
+  const pickImage = async () => {
+    let result: ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
+    console.log(result);
+
+    if (result && result.assets && !result.canceled) {
+      if (doc) {
+        updateDoc(undefined);
+      }
+      updatePickedImage(result)
+    }
+  };
 
 
 
   return (
     <View style={[styles.container]} {...rest}>
-      <Pressable>
+      <Pressable onPress={getDocument}>
         <Animated.View
           style={[
             styles.button,
@@ -154,11 +195,11 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
             opacityAnimatedStyle,
           ]}
         >
-          <Entypo name="document" size={24} color={iconColor} />
+          <MaterialCommunityIcons name="file-outline" size={26} color={iconColor} />
         </Animated.View>
       </Pressable>
 
-      <Pressable>
+      <Pressable onPress={pickImage}>
         <Animated.View
           style={[
             styles.button,
@@ -168,19 +209,6 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
           ]}
         >
           <Entypo name="image" size={24} color={iconColor} />
-        </Animated.View>
-      </Pressable>
-
-      <Pressable onPress={closeCam}>
-        <Animated.View
-          style={[
-            styles.button,
-            styles.secondary,
-            pinAnimatedStyle,
-            opacityAnimatedStyle,
-          ]}
-        >
-          <Entypo name="camera" size={24} color={iconColor} />
         </Animated.View>
       </Pressable>
 
@@ -224,6 +252,20 @@ const styles = StyleSheet.create({
 
 
 /*
+<Pressable onPress={closeCam}>
+    <Animated.View
+      style={[
+        styles.button,
+        styles.secondary,
+        pinAnimatedStyle,
+        opacityAnimatedStyle,
+      ]}
+    >
+      <Entypo name="camera" size={24} color={iconColor} />
+    </Animated.View>
+  </Pressable>
+
+
 SHADOW
  shadowOpacity: 0.3,
     shadowOffset: { height: 10, width: 10 },

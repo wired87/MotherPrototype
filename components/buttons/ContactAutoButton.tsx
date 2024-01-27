@@ -1,10 +1,10 @@
-import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useState} from "react";
-import {StyleSheet, Vibration} from "react-native";
-import {DefaultButton} from "./DefaultButton";
+import React, {Dispatch, memo, SetStateAction, useCallback, useContext} from "react";
+import {Pressable, StyleSheet, Text, Vibration} from "react-native";
 import {ContactFormTypes} from "../container/modalContainers/Contact/Contact";
 import {CONTACT_REQUEST_URL} from "@env";
-import {PrimaryContext} from "../../screens/Context";
+import {PrimaryContext, ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {DefaultText} from "../text/DefaultText";
 
 const ls =  StyleSheet.create(
   {
@@ -13,8 +13,11 @@ const ls =  StyleSheet.create(
     },
     button: {
       paddingVertical: 5,
-      paddingHorizontal: 10,
-      borderRadius: 25
+      width: 130,
+      borderRadius: 9,
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "row"
     }
   }
 )
@@ -38,7 +41,9 @@ const ContactAutoButton: React.FC<ContactButtonType> = (
 ) => {
 
   const { defaultPostRequest } = useContext(PrimaryContext);
-
+  const { customTheme } = useContext(ThemeContext);
+  const color:object = {color: "white"};
+  const buttonText = [{marginVertical: 5, marginHorizontal: 7, fontsize: 13}, color]
   const sendData = useCallback(async () => {
     if (form && form["message"].length == 0 && form["last_name"].length == 0 && form["first_name"].length == 0){
       Vibration.vibrate();
@@ -53,16 +58,14 @@ const ContactAutoButton: React.FC<ContactButtonType> = (
     )
   }, [form]);
 
-
+  const buttonStyles = [ls.button, {backgroundColor: customTheme.primaryButton}];
   return(
-    <DefaultButton
-      onPressAction={sendData}
-      extraStyles={ls.button}
-      text={"Send"}
-      secondIcon={
-        <MaterialCommunityIcons name={"email-open-multiple-outline"} size={18} color="white" />
-      }
-    />
+    <Pressable
+      onPress={sendData}
+      style={buttonStyles}>
+      <Text style={buttonText}>Send report</Text>
+      <MaterialCommunityIcons name={"email-open-multiple-outline"} size={18} color="white" />
+    </Pressable>
   );
 }
 

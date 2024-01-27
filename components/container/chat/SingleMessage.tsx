@@ -1,5 +1,5 @@
 import {DefaultText} from "../../text/DefaultText";
-import {Dimensions, View} from "react-native";
+import {Dimensions, Image, StyleSheet, View} from "react-native";
 import React, {useContext} from "react";
 import {ThemeContext} from "../../../screens/Context";
 import CopyButton from "../../buttons/CopyButton";
@@ -45,14 +45,22 @@ export const SingleMessage: React.FC<SingleMessageTypes> =
 
   return(
     <View style={[containerStyles, extraStyles]}>
-      <DefaultText text={item.message} moreStyles={primaryTextStyles}/>
+      {item.image? (
+        <Image style={ls.image} source={{uri: item.image}} />
+      ):null}
+      <DefaultText text={item.message.toString()} moreStyles={primaryTextStyles}/>
       <DefaultText text={messageTime.toString()} moreStyles={secondaryTextStylesText}/>
-      <CopyButton value={item.message} size={15}/>
+      <CopyButton value={item.message.toString()} size={15}/>
     </View>
   );
 }
 
 
-
-
-
+const ls = StyleSheet.create(
+  {
+    image: {
+      resizeMode: "cover",
+      width: "90%",
+    }
+  }
+)

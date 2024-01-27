@@ -21,7 +21,7 @@ const maxLengthBig:number = 200;
 const placeholder:string = `Your written Tex will be shown here...`
 
 
-const StoryMain: React.FC  = () => {
+const StoryMain: React.FC = () => {
 
   const [storyAbout, setStoryAbout] = useState<string>("");
   const [extraInfos, setExtraInfos] = useState<string>("");
@@ -90,51 +90,47 @@ const StoryMain: React.FC  = () => {
       sendData={sendData}
       setResponse={setResponse}
       error={error}
-      Content={<>
-        <DefaultInput
-          label={"Type"}
-          placeholder={"Poem, Story,... "}
-          value={kind}
-          onChangeAction={setKind}
-          extraStyles={{}}
-          max_length={maxLengthSmall}
-          recordingOption
-          showClearButton/>
+      Content={
+        <>
+          <DefaultInput
+            label={"Type"}
+            placeholder={"Poem, Story,... "}
+            value={kind}
+            onChangeAction={setKind}
+            extraStyles={{}}
+            max_length={maxLengthSmall}
+            />
 
-        {fieldErrorText()}
+          {fieldErrorText()}
 
-        <DefaultInput
-          label={"About "}
-          placeholder={"A Spaceship (optional)"}
-          value={storyAbout}
-          onChangeAction={setStoryAbout}
-          extraStyles={{}}
-          max_length={maxLengthSmall}
-          recordingOption
-          showClearButton/>
+          <DefaultInput
+            label={"About "}
+            placeholder={"A Spaceship (optional)"}
+            value={storyAbout}
+            onChangeAction={setStoryAbout}
+            extraStyles={{}}
+            max_length={maxLengthSmall}
+            />
 
-        <DefaultInput
-          label={"Genre"}
-          placeholder={"Action, Romantic,... (optional)"}
-          value={genre}
-          onChangeAction={setGenre}
-          extraStyles={{}}
-          max_length={maxLengthBig}
-          recordingOption
-          showClearButton/>
+          <DefaultInput
+            label={"Genre"}
+            placeholder={"Action, Romantic,... (optional)"}
+            value={genre}
+            onChangeAction={setGenre}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            />
 
-        <DefaultInput
-          label={"Extra Information's"}
-          placeholder={"Main figure,... (optional)"}
-          value={extraInfos}
-          onChangeAction={setExtraInfos}
-          extraStyles={{}}
-          max_length={maxLengthBig}
-          recordingOption
-          showClearButton/>
-      </>
-    }
-    />
+          <DefaultInput
+            label={"Extra Information's"}
+            placeholder={"Main figure,... (optional)"}
+            value={extraInfos}
+            onChangeAction={setExtraInfos}
+            extraStyles={{}}
+            max_length={maxLengthBig}
+            />
+        </>
+      }/>
     </ScrollView>
   );
 }

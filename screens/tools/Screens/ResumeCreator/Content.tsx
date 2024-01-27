@@ -81,8 +81,6 @@ const ResumeContent: React.FC<ResumeTypes> = (
     }
   }
 
-
-
   const handleSearch = async () => {
     if (jobTitle.length == 0) {
       Vibration.vibrate();
@@ -99,24 +97,6 @@ const ResumeContent: React.FC<ResumeTypes> = (
     )
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const FieldError = useMemo(() => {
     if (fieldError) {
       return <DefaultText text={filedErrorMessage} moreStyles={undefined} error={fieldError} />
@@ -126,13 +106,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
   return(
     <>
       <DefaultInput
-        placeholder={contactPlaceholder}
-        value={contactPerson}
-        extraStyles={extraInputStyles}
-        onChangeAction={setContactPerson}
-      />
-
-      <DefaultInput
+        label={"Job Title"}
         placeholder={titlePlaceholder}
         value={jobTitle}
         extraStyles={extraInputStyles}
@@ -142,6 +116,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
       {FieldError}
 
       <DefaultInput
+        label={"Skills"}
         placeholder={skillsPlaceholder}
         value={skills}
         multiline={true}
@@ -151,6 +126,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
       />
 
       <DefaultInput
+        label={"Work Experience"}
         placeholder={workExperiencePlaceholder}
         value={workExperience}
         multiline
@@ -160,6 +136,15 @@ const ResumeContent: React.FC<ResumeTypes> = (
       />
 
       <DefaultInput
+        label={"Contact Person"}
+        placeholder={contactPlaceholder}
+        value={contactPerson}
+        extraStyles={extraInputStyles}
+        onChangeAction={setContactPerson}
+      />
+
+      <DefaultInput
+        label={"Personal Data"}
         placeholder={personalDataPlaceholder}
         value={personalData}
         extraStyles={extraInputStyles}
@@ -168,6 +153,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
       />
 
       <DefaultInput
+        label={"Language"}
         placeholder={languagePlaceholder}
         value={language}
         extraStyles={extraInputStyles}

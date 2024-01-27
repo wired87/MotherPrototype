@@ -2,7 +2,7 @@ import {toolStyles as ts} from "../../../screens/tools/toolStyles";
 import {DefaultInput} from "../../input/DefaultInput";
 import {IconButton} from "react-native-paper";
 import {KeyboardAvoidingView, View, ActivityIndicator} from "react-native";
-import React, {Dispatch, SetStateAction, useCallback, useContext, useState} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 
 import {memo} from "react";
 import {PrimaryContext, ThemeContext} from "../../../screens/Context";
@@ -19,7 +19,7 @@ import ToolIndicator from "../../indicators/ToolIndIcator";
 import {StyleSheet} from "react-native";
 
 // STRINGS
-const clear:string = "close";
+
 const reFreshIcon:string = "refresh";
 
 
@@ -41,7 +41,6 @@ interface TextResultTypes {
   sendData?: (() => void);
   error: string;
   successAnimation: string | AnimationObject | { uri: string; };
-
 }
 
 const UniversalTextCreator: React.FC<TextResultTypes> = (
@@ -63,14 +62,30 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
 
   // Context
   const { customTheme } = useContext(ThemeContext);
-  const { loading, alreadyRunning, setAlreadyRunning } = useContext(PrimaryContext);
-
+  const { loading } = useContext(PrimaryContext);
+  const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
   // STYLES
   const buttonColor  = customTheme.text;
 
+
+  useEffect(() => {
+    if (alreadyRunning) {
+      setTimeout(() => {
+        console.log("3 sec...")
+        setAlreadyRunning(false);
+      }, 3000);
+      console.log("0 sec...")
+    }
+  }, [alreadyRunning]);
+
+
   const transcriptInputStyles = [
     ts.input, {
-      backgroundColor: "transparent", borderWidth: 1, borderColor: buttonColor, color: buttonColor, minHeight: 200
+      backgroundColor: "transparent",
+      borderWidth: 1,
+      borderColor: buttonColor,
+      color: buttonColor,
+      minHeight: 200,
     }
   ];
 
@@ -92,12 +107,7 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     }else {
       return <></>
     }
-  }, [alreadyRunning])
-
-
-  const handleClearField = useCallback(() => {
-    setResponse("");
-  }, [response])
+  }, [alreadyRunning, loading]);
 
 
   const handleClick = useCallback(() => {
@@ -115,8 +125,7 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
     if (sendData) {
       return <DefaultButton onPressAction={handleClick}/>
     }
-    return <></>
-  }, [sendData])
+  }, [sendData, loading])
 
 
   const resultContainer = useCallback(() => {
@@ -135,7 +144,6 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
             extraStyles={transcriptInputStyles}
             multiline={true}
           />
-          <IconButton size={20} iconColor={buttonColor} style={ts.clearButton} onPress={handleClearField} icon={clear}/>
           <CopyButton value={response}/>
         </View>
       );

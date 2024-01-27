@@ -35,12 +35,13 @@ export const postMessageObject = async (
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(senderObject),
       ...options,
       signal: controller.signal
     });
+
     console.log("Response postMessageObject:", response);
 
     clearTimeout(id);
@@ -138,13 +139,7 @@ export const sendObject = async (
   }
 }
 
-export default function getDurationFormatted(milliseconds: any) {
-  const minutes = milliseconds / 1000 / 60;
-  const sec = Math.round((minutes - Math.floor(minutes)) * 60);
-  return sec < 10 ? `${Math.floor(minutes)}:0${sec}` : `${Math.floor(minutes)}:${sec}`
-}
-
-
+/*
 export const getResponse = async (
   setLoading: Dispatch<SetStateAction<boolean>>,
   setError: Dispatch<SetStateAction<string>>,
@@ -195,7 +190,7 @@ export const getResponse = async (
     setLoading(false);
   }
 };
-
+*/
 
 export const createMessageObject = (
   input: string,

@@ -13,67 +13,17 @@ import {SingleMessage} from "../../components/container/chat/SingleMessage";
 import {MessageInputContainer} from "../../components/container/MessageInputContainer";
 
 // @ts-ignore
-import {InputContext, MediaContext, ThemeContext} from "../Context";
+import {InputContext, ThemeContext} from "../Context";
 import SingleErrorMessage from "../../components/container/chat/SingleErrorMessage";
 import {StyleProps} from "react-native-reanimated";
 import {userMesssageObject} from "./ChatNavigator";
-import FloatingMediaButton from "../../components/buttons/FloatingMediaButton";
-import CameraView from "../../components/container/CameraView";
-
-const localStyles = StyleSheet.create(
-  {
-    messageInputView: {
-      bottom: 10,
-      flexDirection: "row",
-      justifyContent:"center",
-      alignItems: "center"
-    },
-    centeredText: {
-      gap: 20,
-      fontFamily: "wizardFont",
-      fontSize: 20,
-    },
-    bgText: {
-      fontSize: 160,
-    },
-    defaultContainer: {
-      justifyContent: "center",
-      alignItems: "center",
-      flex: 1,
-    },
-    fullPercent: {
-     // marginTop: 50
-    },
-    columnReverse: {
-      flexDirection: 'column-reverse'
-    },
-    customFontSize: {
-      fontSize: 10,
-    },
-    main: {
-      paddingTop: 0,
-      flex: 1,
-      marginBottom: 0,
-      flexDirection: "column"
-    },
-    aiContainer: {
-      justifyContent: "flex-start",
-      alignItems: "center",
-      position: "absolute",
-      width: 200,
-      height: 200,
-    }
-  }
-)
 
 const SingleMessageMemo = memo(SingleMessage);
 
-export const ChatMain = (
-) => {
+export const ChatMain = () => {
 
-  const { messages } = useContext(InputContext);
+  const { messages, messagesLeft } = useContext(InputContext);
   const { customTheme } = useContext(ThemeContext);
-  const { cameraClicked, setCameraClicked } = useContext(MediaContext);
 
   const keyExtractor = (item: object, index: number) => String(index);
 
@@ -89,7 +39,7 @@ export const ChatMain = (
 
   const renderItem = useCallback(({ item }: { item: userMesssageObject }) => {
     if (item)
-      if (item.type === "text") {
+      if (item.type === "text" || item.type == "IMAGE") {
         return (
           <SingleMessageMemo
             item={item}
@@ -119,9 +69,10 @@ export const ChatMain = (
     }>
       <Text style={aixTextStyles}>MIRACLE</Text>
     </View>
-  },[customTheme])
+  },[customTheme]);
 
-  return(
+
+  return (
     <SafeAreaView style={mainViewStyles}>
       <KeyboardAvoidingView
         style={mainViewStyles}>
@@ -140,11 +91,59 @@ export const ChatMain = (
         </View>
 
         <View style={localStyles.messageInputView}>
-
-          <MessageInputContainer />
+          <MessageInputContainer messagesLeft={messagesLeft}/>
         </View>
 
       </KeyboardAvoidingView>
     </SafeAreaView>
-  )
+  );
 }
+
+
+const localStyles = StyleSheet.create(
+  {
+    messageInputView: {
+      bottom: 10,
+      flexDirection: "row",
+      justifyContent:"center",
+      alignItems: "center"
+    },
+    centeredText: {
+      gap: 20,
+      fontFamily: "wizardFont",
+      fontSize: 20,
+    },
+    bgText: {
+      fontSize: 160,
+    },
+    defaultContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+      flex: 1,
+    },
+    fullPercent: {
+      marginTop: 20,
+      marginBottom: 10,
+    },
+    columnReverse: {
+      flexDirection: 'column-reverse'
+    },
+    customFontSize: {
+      fontSize: 10,
+    },
+    main: {
+      paddingTop: 0,
+      flex: 1,
+      marginBottom: 0,
+      flexDirection: "column"
+    },
+    aiContainer: {
+      justifyContent: "flex-start",
+      alignItems: "center",
+      position: "absolute",
+      width: 200,
+      height: 200,
+    }
+  }
+)
+

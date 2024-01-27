@@ -9,6 +9,36 @@ export const styles = StyleSheet.create({
         gap: 40,
         lineHeight: 40,
     },
+
+    messageContainer: {
+      borderWidth: 1,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "flex-end",
+      borderRadius: 15,
+      overflow: "visible",
+      height: "auto",
+    },
+    singleImageMessageContainer: {
+        justifyContent: "flex-start",
+        alignItems: "flex-end",
+        padding: 0,
+        backgroundColor: "transparent"
+    },
+    singleImageClearIcon: {
+        position: "absolute",
+        right: -5,
+        top: -5,
+        borderRadius: 20,
+        borderWidth: 1
+    },
+    messageContainerImage: {
+        width: 80,
+        height: 80,
+        borderRadius: 12,
+        marginVertical: 7,
+        marginHorizontal: 7
+    },
     featuresContainer: {
         width: windowWidth * .85,
         borderWidth: 1,
@@ -24,7 +54,6 @@ export const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderRadius: 20,
-        borderWidth: 1,
         backgroundColor: "transparent",
         minHeight: 60,
     },
@@ -83,7 +112,8 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 0,
     },
     sendIcon: {
-        transform: [{rotate: '90deg'}]
+        transform: [{rotate: '90deg'}],
+        bottom: 15
     },
     container: {
         maxHeight: 40,
@@ -94,5 +124,8 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 2,
     },
+  sendIconContainer: {
+      position: "absolute"
+  }
 })
 

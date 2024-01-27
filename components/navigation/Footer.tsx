@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-import React, {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useRef, useState} from "react";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
@@ -51,19 +51,19 @@ const localStyles = StyleSheet.create(
   }
 )
 
+interface NavMainTypes{
+  firstContact: boolean;
+  setFirstContact: Dispatch<SetStateAction<boolean>>;
+}
 
-const NavigationMain: React.FC = () => {
+const NavigationMain: React.FC<NavMainTypes> = (
+  {
+    firstContact,
+    setFirstContact
+  }
+) => {
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
-
-  // InputContext definitions
-  const [messageIndex, setMessageIndex] = useState(0);
-  const [input, setInput] = useState("");
-  const [messagesLeft, setMessagesLeft] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
-  const [messageBreakOption, setMessageBreakOption] = useState(false);
-  const [typing, setTyping] = useState(false); // typing indicator
-  const [currentRecording, setCurrentRecording] = useState(false);
 
 
 
@@ -74,17 +74,6 @@ const NavigationMain: React.FC = () => {
   const theme = useTheme();
   theme.colors.secondaryContainer = "transparent"
 
-  const elements = {
-    input, setInput,
-    messagesLeft, setMessagesLeft,
-    messages, setMessages,
-    messageIndex,
-    setMessageIndex,
-    messageBreakOption,
-    setMessageBreakOption,
-    typing, setTyping,
-    currentRecording, setCurrentRecording
-  }
 
 
   const {bottomSheetLoaded,} = useContext(PrimaryContext);
@@ -94,7 +83,7 @@ const NavigationMain: React.FC = () => {
 
 
   useEffect(() => {
-    if(welcomeBottomSheetRef) {
+    if(welcomeBottomSheetRef && firstContact ) {
       setTimeout(() => {
         console.log("4 sec...")
         updateWelcomeBottomSheetIndex(1);
@@ -105,10 +94,12 @@ const NavigationMain: React.FC = () => {
 
 
   const updateWelcomeBottomSheetIndex = useCallback((number: number) => {
-    if(welcomeBottomSheetRef.current) {
+    if(welcomeBottomSheetRef.current && firstContact) {
+      welcomeBottomSheetRef.current.snapToIndex(-1);
       welcomeBottomSheetRef.current.snapToIndex(number);
+      setFirstContact(false);
     }
-  }, []);
+  }, [firstContact]);
 
 
   // STYLES
@@ -156,12 +147,7 @@ const NavigationMain: React.FC = () => {
             name="Chat"
             children={
               () =>
-                <InputContext.Provider
-                  value={elements}>
-                  <ChatNavigation
-                    bottomSheetRef={bottomSheetRef}
-                  />
-                </InputContext.Provider>
+                  <ChatNavigation bottomSheetRef={bottomSheetRef}/>
               }
             options={{
               tabBarIcon: ({ color, focused }) => (
@@ -213,19 +199,7 @@ export default memo(NavigationMain);
 
 /*
 
-
-
-
-
-
-
 footr
-
-
-
-
-
-
 
  <Tab.Navigator
         shifting={false}

@@ -1,61 +1,85 @@
 import {DefaultContainer} from "./DefaultContainer";
-import {View, Vibration, ActivityIndicator} from "react-native";
+import {View, Vibration, ActivityIndicator, Image} from "react-native";
 import {styles} from "./contiStyles";
-import React, {useCallback, useContext, useMemo, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import { TypeIndicator } from "../animations/TypeIndicator";
 
 import {showAds} from "../../screens/chat/functions/AdLogic";
-import {FunctionContext, InputContext, PrimaryContext, ThemeContext} from "../../screens/Context";
-import {IconButton} from "react-native-paper";
+import {FunctionContext, InputContext, MediaContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 import {DefaultInput} from "../input/DefaultInput";
-import FloatingMediaButton from "../buttons/FloatingMediaButton";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MediaPreview from "./imageContainers/MediaPreview";
+import FilePreviewContainer from "./FilePreviewContainer";
 
 
-export const MessageInputContainer: React.FC = (
+interface MessageInputTypes {
+  messagesLeft: string;
+}
+
+export const MessageInputContainer: React.FC<MessageInputTypes> = (
+  {
+    messagesLeft
+  }
 ) => {
 
   const {darkmode} = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
   const [error, setError] = useState<string>("");
 
-
   const {
     messages,
-    input, setInput, messagesLeft,
+    input, setInput,
     setMessagesLeft,
     typing,
     } = useContext(InputContext);
 
+  const messageRef = useRef(messagesLeft)
+
+  useEffect(() => {
+    messageRef.current = messagesLeft;
+  }, [messagesLeft]);
+
+
+
+  const { pickedImage, updatePickedImage, doc } = useContext(MediaContext);
 
   const { sendMessageProcess } = useContext(FunctionContext);
 
     // Styles
-  const extraInputStyles = [styles.chatMessageInput,
+  const extraInputStyles = [
+    styles.chatMessageInput,
     {
       color: customTheme.text,
-      borderColor: customTheme.text,
+      maxHeight: 400,
+      textAlignVertical: "center"
     },
-
   ];
+
+  const extraMessageContainerStyles = [styles.messageContainer, {
+    borderColor: customTheme.text,
+  }];
+
   const moreContainerInputStyles:object = [styles.inputContainer,
     {
-      justifyContent: input?.trim().length == 0 ?  "center" : "flex-end"
-
+      justifyContent: input?.trim().length == 0 ?  "center" : "flex-end",
+      alignItems: "flex-end"
     }];
 
-  const send = useCallback(async () => {
+
+  const send = async () => {
     console.log("real messages", messages)
     if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
-      Vibration.vibrate()
+      Vibration.vibrate();
       await sendMessageProcess();
-    } else if (messagesLeft === "0") {
+    } else if (messageRef.current === "0") {
+
+      console.log("MESSAGES LEFT IN SEND:",  messageRef.current);
       console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
-      await showAds(messagesLeft, setMessagesLeft)
+      showAds(messageRef.current, setMessagesLeft).then(() => setInput(""))
     } else {
       console.log("Already Sent Message, length === 0 or just whitespace")
     }
-  }, [messagesLeft, typing, input, messages]);
+  }//, [messagesLeft, typing, input, messages]);
 
 
   const typeIndicator = useMemo(() => {
@@ -67,6 +91,9 @@ export const MessageInputContainer: React.FC = (
     }
   },[typing]);
 
+  useEffect(() => {
+    console.log("MESSAGESLEFT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:", messagesLeft)
+  }, [messagesLeft]);
 
   const sendButton = useMemo(() => {
     const extraSendStyles = styles.sendIcon;
@@ -84,6 +111,26 @@ export const MessageInputContainer: React.FC = (
     return <></>
   }, [input, error, darkmode, typing]);
 
+
+
+  const media = useCallback(() => {
+    if (pickedImage && pickedImage.assets?.[0].uri && !doc) {
+      return(
+        <MediaPreview>
+          <Image style={styles.messageContainerImage} source={{uri: pickedImage.assets?.[0].uri}} />
+        </MediaPreview>
+      );
+    }else if (!pickedImage && doc) {
+      return(
+        <MediaPreview>
+          <FilePreviewContainer document={doc}/>
+        </MediaPreview>
+      );
+    }
+  }, [pickedImage, input, doc]);
+
+  // <FloatingMediaButton />
+
   return (
     <DefaultContainer
       extraStyles={styles.main}>
@@ -93,19 +140,23 @@ export const MessageInputContainer: React.FC = (
       </View>
 
       <View style={moreContainerInputStyles}>
-        <FloatingMediaButton />
-        <DefaultInput
-          placeholder={"Ask something!"}
-          value={input}
-          onChangeAction={setInput}
-          keyboardType={"default"}
-          extraStyles={extraInputStyles}
-          numberOfLines={10}
-          max_length={2000}
-          multiline
-          editable
-          recordingButton
-        />
+
+        <View style={extraMessageContainerStyles}>
+          {media()}
+          <DefaultInput
+            placeholder={"Ask something!"}
+            value={input}
+            onChangeAction={setInput}
+            keyboardType={"default"}
+            extraStyles={extraInputStyles}
+            max_length={2000}
+            multiline={true}
+            editable
+            recordingButton
+            noBorder
+          />
+        </View>
+
         <View style={[styles.container, {borderColor: customTheme.borderColor}]}>
           {sendButton}
         </View>
@@ -116,7 +167,9 @@ export const MessageInputContainer: React.FC = (
 }
 
 
+
 /*
+
  <TextInput style={extraInputStyles}
            maxLength={2000}
            placeholder={"Ask something!"}

@@ -34,7 +34,7 @@ const CardMain: React.FC  = () => {
   const {user, loading, defaultPostRequest } = useContext(PrimaryContext);
 
   const moreInfosInput = [
-    ts.input, {minHeight: 80}];
+    ts.input, {minHeight: 80, textAlignVertical: "top",}];
 
 
   const getCardPostObject = ():object => {
@@ -105,8 +105,7 @@ const CardMain: React.FC  = () => {
             onChangeAction={setKind}
             extraStyles={{}}
             max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
+            />
 
           {fieldErrorText()}
 
@@ -115,10 +114,8 @@ const CardMain: React.FC  = () => {
             placeholder={"Grandma"}
             value={personFor}
             onChangeAction={setPersonFor}
-            extraStyles={{}}
             max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
+            />
 
           <DefaultInput
             label={"Extra Information's to provide?"}
@@ -127,8 +124,6 @@ const CardMain: React.FC  = () => {
             onChangeAction={setExtraInfos}
             extraStyles={moreInfosInput}
             max_length={maxLengthBig}
-            recordingOption
-            showClearButton
             multiline
             numberOfLines={3}/>
         </>}

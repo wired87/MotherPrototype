@@ -1,22 +1,22 @@
 import React, {memo, useCallback, useContext} from "react";
-import {Linking, Pressable, StyleSheet} from "react-native";
-import {DefaultText} from "../text/DefaultText";
+import {Linking, Pressable, StyleSheet, Text} from "react-native";
 import {ThemeContext} from "../../screens/Context";
 
 const ls = StyleSheet.create(
   {
     main: {
-      paddingVertical: 3,
       paddingHorizontal: 5,
       backgroundColor: "transparent",
-      marginTop: 12,
-      borderRadius: 20,
       bottom: 0,
-      borderWidth: 1,
-      justifyContent: "space-between",
       shadowOpacity: .2,
       shadowRadius: 14,
-      color: "white"
+      color: "white",
+      paddingVertical: 5,
+      width: 130,
+      borderRadius: 9,
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "row"
     }
   }
 )
@@ -33,17 +33,18 @@ const ErrorMailButton: React.FC<errorMailButton> = (
   const { customTheme }  = useContext(ThemeContext)
   const styles = [ls.main, {backgroundColor: customTheme.primaryButton}]
 
-
+  const color:object = {color: "white"}
+  const buttonText = [{marginVertical: 5, marginHorizontal: 7, fontsize: 13}, color]
 
   const sendMail = useCallback(() => {
     const errorUrl: string =
       `https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=${problem}`
-      Linking.openURL(errorUrl)
+      Linking.openURL(errorUrl).then(r => {})
   }, [problem]);
 
   return(
     <Pressable style={styles} onPress={() => sendMail()}>
-      <DefaultText text={"E-Mail"}/>
+      <Text style={buttonText}>E-Mail</Text>
     </Pressable>
   );
 }

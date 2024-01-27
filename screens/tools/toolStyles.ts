@@ -27,6 +27,7 @@ export const toolStyles = StyleSheet.create(
       marginVertical: 30
     },
     transcriptContainer: {
+      marginTop: 20,
       padding: 0,
       position: "relative",
     },

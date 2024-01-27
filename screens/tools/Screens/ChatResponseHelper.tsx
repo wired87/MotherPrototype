@@ -22,9 +22,9 @@ const placeholderTranscript:string = "The suggestions will be shown here...";
 const heading:string = "Chat response helper";
 
 
-const chatHistoryPlaceholder:string = "Provide me all context that could be relevant...";
-const extraInformationsPlaceholder:string = "What should i also may know?";
-const goalPlaceholder:string = "Goal of the Chat";
+const chatHistoryPlaceholder:string = "e.g. \nHe: hi \nShe: no";
+const extraInformationsPlaceholder:string = "e.g. I want a Pizza";
+const goalPlaceholder:string = "e.g. Eat Pizza";
 
 const ChatResponseHelper: React.FC = () => {
   const [response, setResponse] = useState<string>("");
@@ -89,6 +89,7 @@ const ChatResponseHelper: React.FC = () => {
     return(
       <>
         <DefaultInput
+          label={"Context"}
           value={input}
           placeholder={chatHistoryPlaceholder}
           onChangeAction={setInput}
@@ -101,6 +102,7 @@ const ChatResponseHelper: React.FC = () => {
         />
 
         <DefaultInput
+          label={"Extra information's"}
           value={context}
           placeholder={extraInformationsPlaceholder}
           onChangeAction={setContext}
@@ -113,6 +115,7 @@ const ChatResponseHelper: React.FC = () => {
           />
 
         <DefaultInput
+          label={"Goal"}
           value={goal}
           placeholder={goalPlaceholder}
           onChangeAction={setGoal}
