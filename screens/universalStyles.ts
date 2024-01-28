@@ -8,10 +8,10 @@ export const uniStyles = StyleSheet.create({
     headerContainer: {
         flexDirection: "row",
         zIndex: 100,
+        top:0,
         justifyContent: "center",
         alignItems: "center",
-        height: 40,
-        top: 5,
+        height: 50,
         position: "absolute",
     },
     containerHeader: {

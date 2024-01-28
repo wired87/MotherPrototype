@@ -32,7 +32,6 @@ export async function postNewColorValues(bool: boolean){
 
 export async function getDarkmode() {
   try {
-    console.log("Success at getting the colors")
     return await SecureStore.getItemAsync("darkmode")
   } catch (e) {
     console.error('Error at requesting the Colors: ', e);

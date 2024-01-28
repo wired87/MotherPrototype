@@ -45,7 +45,7 @@ const firstNamePlaceholder:string = "First Name";
 const firstNameSetForm:string = "first_name";
 const lastNamePlaceholder:string = "Last Name";
 const lastNameSetForm:string = "last_name";
-const emailPlaceholder:string = "E-Mail Address";
+const emailPlaceholder:string = "e.g. E-Mail Address";
 const emailSetForm:string = "e_mail";
 
 
@@ -131,6 +131,7 @@ const Contact: React.FC = () => {
       />
 
       <DefaultInput
+        label={"First Name"}
         placeholder={firstNamePlaceholder}
         onChangeAction={(text: any) => handleChange(text, firstNameSetForm)}
         secure={false}
@@ -142,6 +143,7 @@ const Contact: React.FC = () => {
       />
 
       <DefaultInput
+        label={"Last Name"}
         placeholder={lastNamePlaceholder}
         onChangeAction={(text: any) => handleChange(text, lastNameSetForm)}
         secure={false}
@@ -153,6 +155,7 @@ const Contact: React.FC = () => {
       />
 
       <DefaultInput
+        label={"Contact information's"}
         placeholder={emailPlaceholder}
         onChangeAction={(text: any) => handleChange(text, emailSetForm)}
         secure={false}
@@ -163,9 +166,10 @@ const Contact: React.FC = () => {
         noBorder
       />
 
-      <Picker style={pickerStyles}
-              selectedValue={(form as any)["option"]}
-              onValueChange={(itemValue) => handleChange(itemValue, "option")}>
+      <Picker
+        style={pickerStyles}
+        selectedValue={(form as any)["option"]}
+        onValueChange={(itemValue) => handleChange(itemValue, "option")}>
         {options.map((item, index) => (
           <Picker.Item style={inputStyles.defaultInput} label={item} value={item} key={index}/>
         ))}

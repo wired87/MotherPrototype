@@ -104,8 +104,7 @@ const ProductMain: React.FC  = () => {
             onChangeAction={setKind}
             extraStyles={{}}
             max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
+            />
 
           <DefaultInput
             label={"Product/Company Name:"}
@@ -114,8 +113,7 @@ const ProductMain: React.FC  = () => {
             onChangeAction={setTitle}
             extraStyles={{}}
             max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
+        />
 
           {fieldErrorText(fieldError)}
 
@@ -126,8 +124,7 @@ const ProductMain: React.FC  = () => {
             onChangeAction={setData}
             extraStyles={{}}
             max_length={maxLengthSmall}
-            recordingOption
-            showClearButton/>
+        />
 
           <DefaultInput
             label={"Extra Information's to provide?"}
@@ -136,8 +133,6 @@ const ProductMain: React.FC  = () => {
             onChangeAction={setExtraInfos}
             extraStyles={moreInfosInput}
             max_length={maxLengthBig}
-            recordingOption
-            showClearButton
             multiline
             numberOfLines={3}
           />

@@ -22,29 +22,29 @@ export const chatStyles = StyleSheet.create({
 
     aiMessageContainer: {
         width: "auto",
-        position: "relative",
         height: "auto",
         minHeight: 30,
-        marginRight: windowWidth * .11,
-        paddingVertical: 14,
-        paddingHorizontal: 15,
-
+        marginLeft: windowWidth *.1,
+        paddingVertical: 5,
+        paddingHorizontal: 5,
+        position: "relative",
     },
+
     userMessageContainer: {
         minHeight: 30,
         position: "relative",
-        paddingVertical: 14,
-        paddingHorizontal: 15,
+        paddingVertical: 5,
+        paddingHorizontal: 5,
         height: "auto",
         justifyContent: "flex-start",
         alignItems: "flex-end",
-        marginLeft: windowWidth * .11
+        marginLeft: windowWidth * .19
     },
     voiceMessage: {
         height: 44,
         borderRadius: 14,
         width: "auto",
-        marginLeft: windowWidth * .11,
+        marginLeft: windowWidth * .14,
         position: "relative",
         justifyContent: "space-between",
         alignItems: "center",

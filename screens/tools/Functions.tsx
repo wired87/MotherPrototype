@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useCallback} from "react";
+import {Dispatch, SetStateAction} from "react";
 import LottieView, {AnimationObject} from "lottie-react-native";
 import {toolStyles as ts} from "./toolStyles";
 

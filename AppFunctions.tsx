@@ -1,19 +1,13 @@
 import * as SecureStore from "expo-secure-store";
-import {Alert, Pressable, View, StyleSheet} from "react-native";
+import {Alert} from "react-native";
 import {JwtToken} from "./screens/Context";
 import RNRestart from 'react-native-restart';
-import {Dispatch, memo, SetStateAction, useState} from "react";
+import {Dispatch, SetStateAction} from "react";
 import {CHECK_JWT, LOGIN_JWT} from "@env";
 import {getAuth} from "firebase/auth";
 import { Buffer } from 'buffer';
 import * as RNLocalize from "react-native-localize";
-import React from "react";
 // EXPO COOL STUFF
-import { Camera, CameraType } from 'expo-camera';
-import {DefaultText} from "./components/text/DefaultText";
-
-
-
 
 // URLS
 const checkEndpoint: string = CHECK_JWT;
@@ -31,9 +25,7 @@ export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
     const JwtToken = await SecureStore.getItemAsync("JwtData");
     console.log("Token available...");
     if (JwtToken) {
-      const parsedToken = JSON.parse(JwtToken);
-      console.log("parsedToken checkTokenAvailability:", parsedToken)
-      return parsedToken;
+      return JSON.parse(JwtToken);
     }
   }catch(e: unknown){
     if (e instanceof Error)
@@ -44,7 +36,7 @@ export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
 
 export const saveJwtToken = async (data: JwtToken) => {
   const jsonData = JSON.stringify(data);
-  console.log("Data saved in Secure Store:", jsonData);
+  console.log("Data saved in Secure Store...");
   await SecureStore.setItemAsync("JwtData", jsonData);
 }
 
@@ -80,9 +72,7 @@ export const checkExistingToken = async (token: JwtToken, setJwtToken: Dispatch<
 
   if (response.refresh && response.refresh.access) {
     console.log("AccessToken valid...");
-    console.log("AccessToken checkexistingToken:", response.refresh.access);
     token.access = response.refresh.access;
-    console.log("Updated Token.access checkexistingToken:", token.access);
     await saveJwtToken(token);
     setJwtToken(token);
     console.log("Token successfully Set...");
@@ -115,7 +105,6 @@ export const getNewTokenProcess = async (setJwtToken: Dispatch<SetStateAction<Jw
 const getNewToken = async(): Promise<JwtToken | null> => {
   console.log("getNewToken started..");
   const senderObject = JSON.stringify({"user_id": getAuth().currentUser?.uid});
-  console.log("senderObject created:", senderObject);
   try {
     const res = await fetch(
       getEndpoint, {
@@ -126,7 +115,6 @@ const getNewToken = async(): Promise<JwtToken | null> => {
         body: senderObject,
       }
     );
-    console.log("res:", res)
     const response = await res.json();
     console.log("response getNewToken:", response);
     if (response.access && response.refresh) {
@@ -142,8 +130,6 @@ const getNewToken = async(): Promise<JwtToken | null> => {
 export const getTokenInfoData = (jwtToken: JwtToken) => {
   const refreshToken = jwtToken.refresh;
   const accessToken = jwtToken.access;
-  console.log("INFO DATA REFRESH:", refreshToken);
-  console.log("INFO DATA ACCESS:", accessToken);
 
   // get th encoded data
   const refreshPayload = refreshToken.split('.')[1];
@@ -152,27 +138,22 @@ export const getTokenInfoData = (jwtToken: JwtToken) => {
   // decode the token strings
   const decodedRefreshPayload = Buffer.from(refreshPayload, 'base64').toString();
   const decodedAccessPayload = Buffer.from(accessPayload, 'base64').toString();
-  console.log("INFO DATA DECODED REFRESH PAYLOAD:", decodedRefreshPayload)
-  console.log("INFO DATA DECODED ACCESS PAYLOAD:", decodedAccessPayload)
+
 
   // transform Token back to Json
   const refreshTokenData = JSON.parse(decodedRefreshPayload);
   const accessTokenData = JSON.parse(decodedAccessPayload);
-  console.log("INFO DATA DECODED REFRESH ENCODED DATA:", refreshTokenData);
-  console.log("INFO DATA DECODED ACCESS ENCODED DATA:", accessTokenData);
+
 
   // check if Tokens are expired
   const currentDate = new Date();
   const refreshExpirationDate = new Date(refreshTokenData.exp * 1000);
   const accessExpirationDate = new Date(accessTokenData.exp * 1000);
-  console.log("INFO DATE:", currentDate);
-  console.log("INFO REFRESH EXP DATA:", refreshExpirationDate);
-  console.log("INFO ACCESS EXP DATA:", accessExpirationDate);
+
 
   const refreshExpired= currentDate > refreshExpirationDate;
   const accessExpired= currentDate > accessExpirationDate;
-  console.log("INFO REFRESH EXP BOOL:", refreshExpired);
-  console.log("INFO ACCESS EXP BOOL:", accessExpired);
+
 
   return {
     "refreshTokenData": refreshTokenData,
@@ -219,19 +200,17 @@ export const connectionAlert = () => {
   );
 }
 
-const handleCameraClick = () => {
+/*
 
-}
-
-const handleImageClick = () => {
-
-}
-
-const handleDocumentClick = () => {
-
-}
-
-
+const readImageAsBase64 = async (uri: string) => {
+  try {
+    // Lesen der Bilddaten als Base64
+    return await FileSystem.readAsStringAsync(uri, {encoding: FileSystem.EncodingType.Base64});
+  } catch (error) {
+    console.error('Fehler beim Lesen der Datei:', error);
+    throw error;
+  }
+};
 
 
 
@@ -245,23 +224,7 @@ const handleDocumentClick = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 
 
 

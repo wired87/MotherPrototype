@@ -4,7 +4,6 @@ import {ContactFormTypes} from "../container/modalContainers/Contact/Contact";
 import {CONTACT_REQUEST_URL} from "@env";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {DefaultText} from "../text/DefaultText";
 
 const ls =  StyleSheet.create(
   {
@@ -43,7 +42,7 @@ const ContactAutoButton: React.FC<ContactButtonType> = (
   const { defaultPostRequest } = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
   const color:object = {color: "white"};
-  const buttonText = [{marginVertical: 5, marginHorizontal: 7, fontsize: 13}, color]
+  const buttonText = [{marginVertical: 5, marginHorizontal: 7, fontSize: 13}, color]
   const sendData = useCallback(async () => {
     if (form && form["message"].length == 0 && form["last_name"].length == 0 && form["first_name"].length == 0){
       Vibration.vibrate();

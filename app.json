@@ -24,14 +24,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Give MIRACLE AI access to your Gallery."
-        }
-      ],
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow MIRACLE AI to access your camera.",
-          "microphonePermission": "Allow MIRACLE AI to access your microphone"
+          "photosPermission": "Give MIRACLE AI access to your Gallery.",
+          "cameraPermission": "Allow MIRACLE AI to access your Camera."
         }
       ]
     ],
@@ -51,7 +45,7 @@
       }
     },
     "android": {
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/screen.png",
         "backgroundColor": "#ffffff"

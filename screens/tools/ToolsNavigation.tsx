@@ -45,6 +45,7 @@ const ToolsNavigator: React.FC = () => {
       screenOptions={screenHeaderOptions}>
 
       <ToolStack.Screen
+        options={{ headerShown: false }}
         name="ToolsMain"
         component={ToolsMain}
       />

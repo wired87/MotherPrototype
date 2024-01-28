@@ -7,9 +7,11 @@ import { TypeIndicator } from "../animations/TypeIndicator";
 import {showAds} from "../../screens/chat/functions/AdLogic";
 import {FunctionContext, InputContext, MediaContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 import {DefaultInput} from "../input/DefaultInput";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MediaPreview from "./imageContainers/MediaPreview";
 import FilePreviewContainer from "./FilePreviewContainer";
+import FloatingMediaButton from "../buttons/FloatingMediaButton";
 
 
 interface MessageInputTypes {
@@ -27,7 +29,6 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
   const [error, setError] = useState<string>("");
 
   const {
-    messages,
     input, setInput,
     setMessagesLeft,
     typing,
@@ -41,7 +42,7 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
 
 
 
-  const { pickedImage, updatePickedImage, doc } = useContext(MediaContext);
+  const { pickedImage, doc } = useContext(MediaContext);
 
   const { sendMessageProcess } = useContext(FunctionContext);
 
@@ -67,17 +68,14 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
 
 
   const send = async () => {
-    console.log("real messages", messages)
     if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
       Vibration.vibrate();
       await sendMessageProcess();
     } else if (messageRef.current === "0") {
-
-      console.log("MESSAGES LEFT IN SEND:",  messageRef.current);
-      console.log("User clicked the send btn while messages === 0 -> Ads initialized..")
+      console.log("Ads initialized...")
       showAds(messageRef.current, setMessagesLeft).then(() => setInput(""))
     } else {
-      console.log("Already Sent Message, length === 0 or just whitespace")
+      console.log("Already Sent Message...")
     }
   }//, [messagesLeft, typing, input, messages]);
 
@@ -129,7 +127,7 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
     }
   }, [pickedImage, input, doc]);
 
-  // <FloatingMediaButton />
+  //
 
   return (
     <DefaultContainer
@@ -140,7 +138,7 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
       </View>
 
       <View style={moreContainerInputStyles}>
-
+        <FloatingMediaButton />
         <View style={extraMessageContainerStyles}>
           {media()}
           <DefaultInput
@@ -167,16 +165,3 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
 }
 
 
-
-/*
-
- <TextInput style={extraInputStyles}
-           maxLength={2000}
-           placeholder={"Ask something!"}
-           placeholderTextColor={customTheme.text}
-           cursorColor={customTheme.placeholder}
-           value={input}
-           onChangeText={setInput}
-           multiline={true}
-        />
- */

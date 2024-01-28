@@ -1,9 +1,8 @@
-import {FlatList, View} from "react-native";
+import {FlatList, View, ActivityIndicator} from "react-native";
 import {HeadingText} from "../../text/HeadingText";
 import {DefaultText} from "../../text/DefaultText";
 
 import React, {memo, useContext, useMemo} from "react";
-import { ActivityIndicator } from "react-native-paper";
 import {uniStyles} from "../../../screens/universalStyles"
 import {InputContext, PrimaryContext, ThemeContext} from "../../../screens/Context";
 import {HistoryItem} from "./HistoryItem";
@@ -33,15 +32,11 @@ const ChatMenuModalContent = (
   //////////////////////////////////
 
   const renderContent = useMemo(() => {
-    console.log("USER IN HISTORY CONTENT CONTAIENR", user)
     // filter th e last 5 textMessages from user
     const textItems = messages.filter(item => item.type === 'text' && item.publisher === "USER");
     const numberOfItems = textItems.length < 5 ? textItems.length : 5;
     const lastItems = textItems.slice(-numberOfItems);
-
-    /*if (!user) {
-      return <ModalContentNoLog />;
-    }*/
+    
     if (loading) {
       return <ActivityIndicator color={customTheme.primaryButton} size={indicatorSize} />;
     }

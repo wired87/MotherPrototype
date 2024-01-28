@@ -2,7 +2,6 @@ import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {NavigationContainer} from '@react-navigation/native';
-import { Provider as PaperProvider } from 'react-native-paper';
 import * as SplashScreen from 'expo-splash-screen';
 
 
@@ -42,10 +41,9 @@ import {
 
 
 import {sendObject} from "./screens/chat/functions/SendProcess";
-import {CameraCapturedPicture} from "expo-camera";
+
 import {DocumentPickerResult} from "expo-document-picker";
 import {ImagePickerResult} from "expo-image-picker";
-
 
 let errorCodes = [
   "400",
@@ -55,7 +53,6 @@ let errorCodes = [
   "500",
   "300",
 ]
-
 
 export default function App() {
 
@@ -79,49 +76,24 @@ export default function App() {
     setAlreadyRunning(value);
   }
 
-
   // TOOL CONTEXT STATE VARIABLES
   const [toolActionValue, setToolActionValue] = useState<string>("");
-
-
-
-  // MEDIA PRESSED CONTEXT
-  const [cameraClicked, setCameraClicked] = useState<boolean>(false);
 
   const [pickedImage, setPickedImage] =
     useState<ImagePickerResult | undefined>(undefined);
 
-  const [video, setVideo] =
-    useState<{uri: string} | undefined>(undefined);
-
   const [doc, setDoc] =
     useState<DocumentPickerResult | undefined>(undefined);
-
-  const [picture, setPicture] =
-    useState<CameraCapturedPicture | undefined>(undefined);
-
 
   const updatePickedImage = (image:ImagePickerResult | undefined) => {
     setPickedImage(image);
   }
+
   const updateDoc = (doc:DocumentPickerResult | undefined) => {
     setDoc(doc);
   }
 
-  const closeCam = ():void => {
-    console.log("Cam bool:", cameraClicked);
-    setCameraClicked(!cameraClicked);
-  }
 
-  const updatePicture = (image: CameraCapturedPicture | undefined):void => {
-    console.log("updatePicture...");
-    setPicture(image);
-  }
-
-  const updateVideo = (video: {uri: string} | undefined):void => {
-    console.log("updateVideo...");
-    setVideo(video);
-  }
 
 
   // INPUT CONTEXT
@@ -396,42 +368,28 @@ export default function App() {
   }
 
 
-  useEffect(() => {
-    if (picture && picture.uri || video && video.uri){
-      console.log("NEW URI SET:", picture?.uri || video?.uri)
-      setLoading(false)
-    }
-  }, [picture?.uri, video?.uri]);
-
-
     return (
       <ThemeContext.Provider value={{customTheme}}>
         <MediaContext.Provider value={{
-          cameraClicked, closeCam,
-          video, updateVideo,
-          picture, updatePicture,
           pickedImage, updatePickedImage,
           doc, updateDoc}}>
           <InputContext.Provider value={elements}>
             <PrimaryContext.Provider
               value={contextValue}>
               <ToolContext.Provider value={toolElements}>
-                <PaperProvider>
-                  <GestureHandlerRootView style={{ flex: 1 }}>
-                    <BottomSheetModalProvider>
-                      <NavigationContainer>
-                        <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact}/>
-                      </NavigationContainer>
-                    </BottomSheetModalProvider>
-                  </GestureHandlerRootView>
-                </PaperProvider>
+                <GestureHandlerRootView style={{ flex: 1, backgroundColor: customTheme.primary }}>
+                  <BottomSheetModalProvider>
+                    <NavigationContainer>
+                      <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact}/>
+                    </NavigationContainer>
+                  </BottomSheetModalProvider>
+                </GestureHandlerRootView>
               </ToolContext.Provider>
             </PrimaryContext.Provider>
           </InputContext.Provider>
         </MediaContext.Provider>
       </ThemeContext.Provider>
     );
-
 }
 
 

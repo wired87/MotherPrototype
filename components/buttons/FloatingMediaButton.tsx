@@ -1,7 +1,7 @@
 
 
 import { Entypo } from '@expo/vector-icons';
-import React, {memo, useCallback, useContext, useState} from 'react';
+import React, {memo, useContext, useState} from 'react';
 import {Pressable, StyleSheet, View, ViewProps} from 'react-native';
 import Animated, {
   Extrapolate,
@@ -12,7 +12,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import {MediaContext, ThemeContext} from "../../screens/Context";
 import * as ImagePicker from 'expo-image-picker';
-import {ImagePickerResult} from "expo-image-picker";
 import * as DocumentPicker from 'expo-document-picker';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -49,27 +48,6 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
       backgroundColor: "transparent",
       shadowColor: customTheme.text,
     }, rotationAnimatedStyle];
-
-
-  const pinAnimatedStyle = useAnimatedStyle(() => {
-    const translateYAnimation = interpolate(
-      animation.value,
-      [0, 1],
-      [0, -20],
-      Extrapolate.CLAMP
-    );
-
-    return {
-      transform: [
-        {
-          scale: withSpring(animation.value),
-        },
-        {
-          translateY: withSpring(translateYAnimation),
-        },
-      ],
-    };
-  });
 
 
   const thumbAnimatedStyle = useAnimatedStyle(() => {
@@ -164,14 +142,20 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
     });
   }
 
-  const pickImage = async () => {
-    let result: ImagePickerResult = await ImagePicker.launchImageLibraryAsync({
+  const getImage = async (recordImage: boolean) => {
+    const options: ImagePicker.ImagePickerOptions = {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-    });
-
+    }
+    let result;
+    if (recordImage) {
+      await ImagePicker.requestCameraPermissionsAsync();
+      result = await ImagePicker.launchCameraAsync(options);
+    } else {
+      result = await ImagePicker.launchImageLibraryAsync(options);
+    }
     console.log(result);
 
     if (result && result.assets && !result.canceled) {
@@ -199,7 +183,7 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
         </Animated.View>
       </Pressable>
 
-      <Pressable onPress={pickImage}>
+      <Pressable onPress={() => getImage(false)}>
         <Animated.View
           style={[
             styles.button,
@@ -209,6 +193,19 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
           ]}
         >
           <Entypo name="image" size={24} color={iconColor} />
+        </Animated.View>
+      </Pressable>
+
+      <Pressable onPress={() => getImage(true)}>
+        <Animated.View
+          style={[
+            styles.button,
+            styles.secondary,
+            thumbAnimatedStyle,
+            opacityAnimatedStyle,
+          ]}
+        >
+          <Entypo name="camera" size={24} color={iconColor} />
         </Animated.View>
       </Pressable>
 

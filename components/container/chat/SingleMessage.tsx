@@ -35,22 +35,21 @@ export const SingleMessage: React.FC<SingleMessageTypes> =
   const containerStyles = styles? styles[item.class] : undefined;
 
   const extraStyles = {
-    marginTop: 12, bottom: 0, justifyContent: "space-between", borderRadius: 14,
+    marginTop: 12, bottom: 0, justifyContent: "space-between", borderRadius: 14, minHeight: 70,paddingBottom: 20,
     backgroundColor: Number(item.id) % 2 === 0 ? customTheme.textMessage : customTheme.aiTextMessage,
     borderColor: customTheme.text, borderWidth: 1,
     /*IOS Props:*/shadowColor: customTheme.text, shadowOpacity: .2, shadowRadius: 14, width: windowWidth * .8
   };
 
   const messageTime = item.timeToken;
-
   return(
     <View style={[containerStyles, extraStyles]}>
-      {item.image? (
-        <Image style={ls.image} source={{uri: item.image}} />
+      {item.file? (
+        <Image style={ls.image} source={{uri: item.file}} />
       ):null}
-      <DefaultText text={item.message.toString()} moreStyles={primaryTextStyles}/>
+      <DefaultText text={item.message} moreStyles={primaryTextStyles}/>
       <DefaultText text={messageTime.toString()} moreStyles={secondaryTextStylesText}/>
-      <CopyButton value={item.message.toString()} size={15}/>
+      <CopyButton value={item.message} size={15}/>
     </View>
   );
 }
@@ -60,7 +59,11 @@ const ls = StyleSheet.create(
   {
     image: {
       resizeMode: "cover",
-      width: "90%",
+      width: "100%",
+      height: 200,
+      top: 0,
+      borderRadius: 14,
+      marginBottom: 10,
     }
   }
 )

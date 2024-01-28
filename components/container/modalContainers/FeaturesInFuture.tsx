@@ -2,7 +2,7 @@ import {DefaultContainer} from "../DefaultContainer";
 import {DefaultText} from "../../text/DefaultText";
 import {View} from "react-native";
 
-import React, {memo, useContext, useState} from "react";
+import React, {memo, useContext} from "react";
 import {ThemeContext} from "../../../screens/Context";
 import { StyleSheet } from "react-native";
 
@@ -39,7 +39,6 @@ const notHere: string = "Do you have any ideas for future tools?";
 const contactFeatureText:string = "Please fill out the Contact Form with your wishes. \nWe will contact you ASAP.";
 
 const FeaturesInFuture: React.FC = () => {
-  const [value, setValue] = useState<string>("");
   const { customTheme } = useContext(ThemeContext);
   const extraTextStyles = [localStyles.extraTextStyles, {color: customTheme.text}];
 

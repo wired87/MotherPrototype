@@ -3,19 +3,10 @@ import {DocumentPickerResult} from "expo-document-picker";
 import {View, Text, Image} from "react-native";
 import {styles} from "./contiStyles";
 import {toolStyles} from "../../screens/tools/toolStyles";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface FilePreviewTypes {
   document: DocumentPickerResult | undefined;
 }
-
-const imageMimeTypes = [
-  "image/jpg",
-  "image/png",
-  "image/jpeg",
-
-]
-
 
 
 

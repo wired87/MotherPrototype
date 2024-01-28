@@ -1,11 +1,10 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import React, {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
-import * as FileSystem from 'expo-file-system';
 
 // @ts-ignore
 import {ChatMain} from "./ChatMain";
-import {StyleSheet, Vibration} from "react-native";
+import {Pressable, StyleSheet} from "react-native";
 
 // Context
 import {FunctionContext, InputContext, JwtToken, MediaContext, PrimaryContext, ThemeContext} from "../Context";
@@ -15,9 +14,9 @@ import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, showAds}
 import {createMessageObject, getCurrentTime, sendObject} from "./functions/SendProcess";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
-import {IconButton} from "react-native-paper";
 import SwipeModal from "../../components/modals/SwipeModal";
 import ChatMenuModalContent from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface ChatNavigationTypes {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;//(number: number) => void;
@@ -29,8 +28,7 @@ interface ChatNavigationTypes {
 export interface userMesssageObject {
   id: number | string,
   message: string,
-  image: string | null;
-  file: string | null;
+  file: string | undefined;
   timeToken: string | number
   publisher: string,
   class: string,
@@ -129,15 +127,13 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   }, []);
 
   useEffect(() => {
-    console.log("jwt changed in ChatNavigator:", jwtToken);
     jwtTokenRef.current = jwtToken;
-    console.log("jwt ref:", jwtTokenRef.current);
   }, [jwtToken]);
 
   const errorMessageAIResponse = () => {
     console.log("Error AIResponse created.. ")
     const aiResponse = createMessageObject(
-      "We could not authenticate you. I have contacted the support Team, for you, to fix the problem." +
+      "I could not authenticate you. I have contacted the support Team, for you, to fix the problem." +
       "Feel free to Contact us directly also. Sometimes a Refresh can also solve the Problem.",
       "error",
       messageIndex,
@@ -154,15 +150,12 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     try {
       console.log("Sending Message Object...")
       if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
-        console.log("jwtTokenRef sendPackage:", jwtTokenRef);
         const response = await sendObject(userMessage, jwtTokenRef.current, setJwtToken);
-
         if (!response) {
           // Error while sending the message. -> Send contact
           console.log("sendObject Response === null... (in ChatNav)")
           errorMessageAIResponse();
         } else {
-          console.log("Create AI Message with response:", response);
           aiResponse = createMessageObject(
             response.message,
             "text",
@@ -177,11 +170,9 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
         }
         console.log("Finished the sendPackage function..");
       } else {
-        console.log("sendPackage Response === null...")
         errorMessageAIResponse();
       }
     } catch (error) {
-      console.log("Error occurred while try sending the request:", error);
       errorMessageAIResponse();
     } finally {
       setTyping(false);
@@ -213,15 +204,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   }, [])
 
 
-  const readImageAsBase64 = async (uri: string) => {
-    try {
-      // Lesen der Bilddaten als Base64
-      return await FileSystem.readAsStringAsync(uri, {encoding: FileSystem.EncodingType.Base64});
-    } catch (error) {
-      console.error('Fehler beim Lesen der Datei:', error);
-      throw error;
-    }
-  };
+
 
 
   const createUserMessage = async() => {
@@ -237,21 +220,14 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
       "class": "userMessageContainer",
       "user_id": user?.uid || "1",
       "type": "text",
-      "image": null,
-      "file": null,
+      "file": undefined,
       "start": firstMessage
     }
-
-    if (docRef.current) {
-      const base64File:string = await readImageAsBase64(docRef.current.toString());
+    const uri = docRef.current || picRef.current
+    if (uri) {
       console.log("create base64File...");
       senderObject["type"] = "IMAGE"
-      senderObject["file"] = base64File
-    }else if (picRef.current) {
-      console.log("create base64Image...");
-      const base64Image:string = await readImageAsBase64(picRef.current.toString());
-      senderObject["type"] = "IMAGE"
-      senderObject["image"] = base64Image
+      senderObject["file"] = uri
     }
     return senderObject;
   }
@@ -341,13 +317,15 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
                 {...props}
                 extraStyles={undefined}
                 childrenMiddle={
-                  <IconButton
-                      icon="menu"
-                      iconColor={customTheme.headerIconColors}
-                      style={iconStyles.headerIcon}
-                      onPress={() => updateModalIndex(2)}
+                  <Pressable
+                    style={iconStyles.headerIcon}
+                    onPress={() => updateModalIndex(2)}>
+                    <MaterialCommunityIcons
+                      name="menu"
+                      color={customTheme.headerIconColors}
                       size={30}
-                  />
+                    />
+                  </Pressable>
                 }
                 childrenRight={undefined}
               />

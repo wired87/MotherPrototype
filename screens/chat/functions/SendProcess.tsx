@@ -1,9 +1,9 @@
 import firebase from "firebase/compat";
 import {JwtToken} from "../../Context";
 import {Dispatch, SetStateAction} from "react";
-import {checkExistingToken, getNewTokenProcess, getToken, getTokenInfoData} from "../../../AppFunctions";
+import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions";
 import {CHAT_REQUEST_URL} from "@env";
-
+import * as FileSystem from "expo-file-system";
 export const getCurrentTime = () => {
   const timeNow = new Date();
   let timeHoursNow = timeNow.getHours();
@@ -18,6 +18,39 @@ export const getCurrentTime = () => {
 
 
 
+const postMediaObject = async (
+  jwtToken: string,
+  senderObject: any,
+  postUrl: string,
+) => {
+  const uri = senderObject.image || senderObject.file
+  try {
+    console.log("Send media...")
+    return await FileSystem.uploadAsync(
+      postUrl, uri, {
+      httpMethod: 'POST',
+      headers: {
+        'Authorization': `Bearer ${jwtToken}`,
+      },
+      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+      fieldName: 'file',
+      parameters: {
+        user_id: senderObject.user_id,
+        message: senderObject.message,
+        type: senderObject.type,
+
+      },
+    });
+  } catch (e:unknown) {
+    if (e instanceof Error) {
+      console.log("Send media error occurred:", e)
+    }
+    return null;
+  }
+};
+
+
+
 export const postMessageObject = async (
   jwtToken: string,
   senderObject: any,
@@ -29,29 +62,40 @@ export const postMessageObject = async (
   const { timeout = 20000 } = options;
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-  console.log("POSTMESSAGEOBJECT JWT TOKEN:", jwtToken);
   try {
-    const response = await fetch(postUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${jwtToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(senderObject),
-      ...options,
-      signal: controller.signal
-    });
+    let response;
+    if(senderObject.type === "text"){
+      response = await fetch(postUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${jwtToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(senderObject),
+        ...options,
+        signal: controller.signal
+      });
+      clearTimeout(id);
+      let data;
+      try {
+        data = await response?.json();
+        console.log("Data postMessageObject:", data);
+        return data;
+      }catch {
+        return null;
+      }
 
-    console.log("Response postMessageObject:", response);
-
-    clearTimeout(id);
-    let data;
-    try {
-      data = await response.json();
-      console.log("Data postMessageObject:", data);
-      return data;
-    }catch {
-      return null;
+    }else if (senderObject.type === "IMAGE"){
+      console.log("IMAGE REQUEST...")
+      response = await postMediaObject(
+        jwtToken,
+        senderObject,
+        postUrl,
+      )
+    }
+    console.log("Response postMessageObject MEDIA:", response);
+    if (response) {
+      return JSON.parse(response.body);
     }
   } catch (e: unknown) {
     clearTimeout(id);
@@ -94,14 +138,17 @@ export const sendObject = async (
   // POST THE MESSAGE
   try {
     console.log("Create the post Object with accessToken:", jwtToken.access)
+    console.log("upload Type:", senderObject.type)
     const response = await postMessageObject(
-      jwtToken.access,
-      senderObject,
-      customPostUrl || CHAT_REQUEST_URL,
-      {
-        timeout: 20000
-      }
-    );
+        jwtToken.access,
+        senderObject,
+        customPostUrl || CHAT_REQUEST_URL,
+        {
+          timeout: 20000
+        }
+      );
+
+
 
     console.log("sendObject res ===", response)
     if (!response) {
@@ -121,7 +168,6 @@ export const sendObject = async (
             timeout: 20000
           }
         );
-        console.log("sendObject res ===", response)
         if (!response || response.detail) {
           return;
         }else{

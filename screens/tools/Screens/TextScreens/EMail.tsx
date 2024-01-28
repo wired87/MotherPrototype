@@ -108,8 +108,7 @@ const EmailMain: React.FC  = () => {
               onChangeAction={setPurpose}
               extraStyles={{}}
               max_length={maxLengthSmall}
-              recordingOption
-              showClearButton
+
             />
 
             <DefaultInput
@@ -119,8 +118,7 @@ const EmailMain: React.FC  = () => {
               onChangeAction={setRecipeName}
               extraStyles={{}}
               max_length={maxLengthSmall}
-              recordingOption
-              showClearButton
+
             />
 
             {fieldErrorText()}
@@ -132,8 +130,7 @@ const EmailMain: React.FC  = () => {
               onChangeAction={setRelationShip}
               extraStyles={{}}
               max_length={maxLengthSmall}
-              recordingOption
-              showClearButton
+
             />
 
             <DefaultInput
@@ -143,8 +140,7 @@ const EmailMain: React.FC  = () => {
               onChangeAction={setTone}
               extraStyles={{}}
               max_length={maxLengthSmall}
-              recordingOption
-              showClearButton
+
             />
 
             <DefaultInput
@@ -154,8 +150,6 @@ const EmailMain: React.FC  = () => {
               onChangeAction={setKeyPoints}
               extraStyles={moreInfosInput}
               max_length={maxLengthBig}
-              recordingOption
-              showClearButton
               multiline
               numberOfLines={3}
             />

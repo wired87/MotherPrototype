@@ -34,12 +34,12 @@ const ErrorMailButton: React.FC<errorMailButton> = (
   const styles = [ls.main, {backgroundColor: customTheme.primaryButton}]
 
   const color:object = {color: "white"}
-  const buttonText = [{marginVertical: 5, marginHorizontal: 7, fontsize: 13}, color]
+  const buttonText = [{marginVertical: 5, marginHorizontal: 7, fontSize: 13}, color]
 
   const sendMail = useCallback(() => {
     const errorUrl: string =
       `https://mail.google.com/mail/?view=cm&fs=1&to=codingWizardaix@gmail.com&su=Error-while-Application-Process-detected&body=${problem}`
-      Linking.openURL(errorUrl).then(r => {})
+      Linking.openURL(errorUrl).then(() => {})
   }, [problem]);
 
   return(

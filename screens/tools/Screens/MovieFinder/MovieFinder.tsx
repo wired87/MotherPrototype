@@ -28,9 +28,9 @@ import {StyleProps} from "react-native-reanimated";
 import {defaultLottie} from "../../Functions";
 
 import toolError from "../../../../assets/animations/toolError.json";
-import {IconButton} from "react-native-paper";
 import LottieContainer from "../../../../components/container/LottieContainer";
 import ToolIndicator from "../../../../components/indicators/ToolIndIcator";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 // STRINGS
 const buttonText:string = "Search Movie";
@@ -266,7 +266,8 @@ const MovieFinder = () => {
           source={toolError}
           text={responseError}
           extraChild={
-            <IconButton size={40} iconColor={customTheme.primaryButton} icon={reFreshIcon} onPress={handleSearch} />
+            <MaterialCommunityIcons
+              size={40} color={customTheme.primaryButton} name={reFreshIcon} onPress={handleSearch} />
           }
         />
       );

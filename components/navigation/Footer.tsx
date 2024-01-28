@@ -1,20 +1,18 @@
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useTheme} from 'react-native-paper';
 
 import {SettingNavigation} from "../../screens/settings/SettingsNavigator";
 import {Platform, StyleSheet} from "react-native";
 import ChatNavigation from "../../screens/chat/ChatNavigator";
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useRef, useState} from "react";
+import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useRef} from "react";
 
 // GOOGLE ADMOB
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 
-import {PrimaryContext, InputContext, ThemeContext} from "../../screens/Context";
+import {PrimaryContext, ThemeContext} from "../../screens/Context";
 
 import { BANNER_FOOTER_IOS, BANNER_FOOTER_ANDORID, BANNER_HEADER_IOS, BANNER_HEADER_ANDROID } from "@env";
 import ToolsNavigator from "../../screens/tools/ToolsNavigation";
@@ -65,19 +63,9 @@ const NavigationMain: React.FC<NavMainTypes> = (
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
-
-
-
   const {customTheme} = useContext(ThemeContext)
 
-  // make Active Tabbar Shadow color transparent
-  const theme = useTheme();
-  theme.colors.secondaryContainer = "transparent"
-
-
-
-  const {bottomSheetLoaded,} = useContext(PrimaryContext);
-
+  const {bottomSheetLoaded} = useContext(PrimaryContext);
 
   const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
 
@@ -85,10 +73,8 @@ const NavigationMain: React.FC<NavMainTypes> = (
   useEffect(() => {
     if(welcomeBottomSheetRef && firstContact ) {
       setTimeout(() => {
-        console.log("4 sec...")
         updateWelcomeBottomSheetIndex(1);
       }, 4000);
-      console.log("0 sec...")
     }
   }, [bottomSheetLoaded]);
 
@@ -196,17 +182,3 @@ const NavigationMain: React.FC<NavMainTypes> = (
   );
 }
 export default memo(NavigationMain);
-
-/*
-
-footr
-
- <Tab.Navigator
-        shifting={false}
-        labeled={false}
-        initialRouteName="ToolsNavigator"
-        activeColor={footerActiveIconColor}
-        inactiveColor={footerIconColor}
-        backBehavior={"firstRoute"}
-        barStyle={[localStyles.barStyles, { backgroundColor: customTheme.primary }]}>
- */

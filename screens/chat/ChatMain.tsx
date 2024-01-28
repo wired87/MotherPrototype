@@ -8,7 +8,7 @@ import {
   StyleSheet
 } from "react-native";
 
-import {chatStyles} from "./chatStyles";
+import {chatStyles, windowWidth} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
 import {MessageInputContainer} from "../../components/container/MessageInputContainer";
 
@@ -57,13 +57,13 @@ export const ChatMain = () => {
 
   const miracleText = useMemo(() => {
     const aixTextStyles =
-      [localStyles.centeredText, {color: "transparent", opacity: 0}];
+      [localStyles.centeredText, {color: customTheme.placeholder, opacity: 1}];
     return <View style={
       [
         chatStyles.chatBackground,
         {
           borderColor: customTheme.borderColor,
-          backgroundColor: customTheme.view
+          backgroundColor: "transparent"
         }
       ]
     }>
@@ -122,11 +122,15 @@ const localStyles = StyleSheet.create(
       flex: 1,
     },
     fullPercent: {
-      marginTop: 20,
+      marginTop: 40,
       marginBottom: 10,
+
     },
     columnReverse: {
-      flexDirection: 'column-reverse'
+      flexDirection: 'column-reverse',
+      justifyContent: "flex-end",
+      alignItems: "flex-end",
+      width: windowWidth
     },
     customFontSize: {
       fontSize: 10,

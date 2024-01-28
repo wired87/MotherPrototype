@@ -1,10 +1,11 @@
-import {StyleSheet} from "react-native";
-import { Appbar } from "react-native-paper";
+import {StyleSheet, View} from "react-native";
+
 import {useNavigation, useRoute} from "@react-navigation/native";
 import React, {memo, useCallback, useContext} from "react";
 import {uniStyles} from "../../screens/universalStyles";
 import {HeaderView} from "../container/headerContainer";
 import {ThemeContext} from "../../screens/Context";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 const localStyles = StyleSheet.create(
@@ -13,6 +14,7 @@ const localStyles = StyleSheet.create(
       justifyContent: "flex-start",
       alignItems: "flex-end",
       height: 20,
+
     },
     leftExtraStyles: {
       alignItems: "flex-start",
@@ -93,15 +95,14 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
 
   if (shouldShowChildren()) {
     return (
-      <Appbar.Header style={headerStyles}>
+      <View style={headerStyles}>
         <HeaderView extraStyles={localStyles.leftExtraStyles}>
           {shouldShowBackIcon() && (
-            <Appbar.Action
-              icon={backIconName}
+            <MaterialCommunityIcons
+              name={backIconName}
               style={localStyles.backIcon}
-              color={customTheme.text}
-              size={27}
-              iconColor={customTheme.headerIconColors}
+              size={30}
+              color={customTheme.headerIconColors}
               onPress={navigateBack}
             />
           )}
@@ -115,7 +116,7 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
           {childrenRight}
         </HeaderView>
 
-      </Appbar.Header>
+      </View>
     );
   }
 }
