@@ -1,6 +1,5 @@
 import {toolStyles as ts} from "../../../screens/tools/toolStyles";
 import {DefaultInput} from "../../input/DefaultInput";
-import {IconButton} from "react-native-paper";
 import {KeyboardAvoidingView, View, ActivityIndicator} from "react-native";
 import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 
@@ -17,6 +16,7 @@ import {DefaultText} from "../../text/DefaultText";
 import {defaultLottie} from "../../../screens/tools/Functions";
 import ToolIndicator from "../../indicators/ToolIndIcator";
 import {StyleSheet} from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 // STRINGS
 
@@ -173,7 +173,10 @@ const UniversalTextCreator: React.FC<TextResultTypes> = (
           extraChild={
           <>
             <DefaultText moreStyles={ls.refreshButton} error text={"Retry"}/>
-            <IconButton size={40}  iconColor={customTheme.primaryButton} icon={reFreshIcon} onPress={handleClick} />
+            <MaterialCommunityIcons size={40}
+                                    color={customTheme.primaryButton}
+                                    name={reFreshIcon}
+                                    onPress={handleClick} />
 
           </>
           }

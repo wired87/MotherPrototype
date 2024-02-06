@@ -1,7 +1,4 @@
-
-
 const windowWidth = Dimensions.get('window').width;
-
 import {Dimensions, StyleSheet} from "react-native";
 
 export const uniStyles = StyleSheet.create({

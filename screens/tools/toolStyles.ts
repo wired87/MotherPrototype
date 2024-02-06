@@ -33,8 +33,8 @@ export const toolStyles = StyleSheet.create(
     },
     copyButton: {
       position: "absolute",
-      right: 2,
-      bottom: -2,
+      right: 5,
+      bottom: 5,
       padding:0,
     },
     clearButton: {

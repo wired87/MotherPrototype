@@ -34,7 +34,9 @@ const MediaPreview: React.FC<ImagePreviewTypes> = (
         size={20}
         onPress={updateMedia}
       />
-      {children}
+      {
+        children
+      }
     </View>
   );
 }

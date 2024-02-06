@@ -1,10 +1,10 @@
 import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
-import {IconButton} from "react-native-paper";
-import {Vibration} from "react-native";
+import {Pressable, Vibration} from "react-native";
 import Voice, {SpeechErrorEvent} from "@react-native-voice/voice";
 import * as RNLocalize from 'react-native-localize';
 import {styles as s} from "./styles";
-import {ThemeContext} from "../../screens/Context"; // Später nur ein mal am Anfang getten und innsecurestore speichern,
+import {ThemeContext} from "../../screens/Context";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Später nur ein mal am Anfang getten und innsecurestore speichern,
 
 // STRINGS
 const defaultIcon = "microphone";
@@ -36,7 +36,7 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   const [languageTag, setLanguageTag] = useState('');
 
   // styles
-  const recordingButtonStyles = buttonStyles || [s.redordingButton, {borderColor: customTheme.text}];
+  const recordingButtonStyles = buttonStyles || [s.recordingButton, {borderColor: customTheme.text}];
 
   const iconColorProp = currentSpeech ? "red" : customTheme.text;
 
@@ -111,12 +111,13 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   }, [currentSpeech]);
 
   return(
-    <IconButton
-      iconColor={iconColorProp}
-      style={recordingButtonStyles}
-      icon={buttonIcon || defaultIcon}
-      onPress={handleSpeechToText}
-    />
+    <Pressable style={recordingButtonStyles} onPress={handleSpeechToText}>
+      <MaterialCommunityIcons
+        color={iconColorProp}
+        name={buttonIcon || defaultIcon}
+        size={28}
+      />
+    </Pressable>
   );
 }
 

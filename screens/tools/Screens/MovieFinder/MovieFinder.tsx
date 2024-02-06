@@ -102,9 +102,6 @@ const MovieFinder = () => {
       postObject(),
       setResponseError,
       setSearchResult,
-      undefined,
-      true
-
     )
   };
 
@@ -129,11 +126,6 @@ const MovieFinder = () => {
   }, [fieldError]);
 
 
-  useEffect(() => {
-    console.log("Movies received:", searchResult);
-  }, [searchResult]);
-
-
   const getDeviceLanguage = () => {
     const locales = RNLocalize.getLocales();
     if (locales.length > 0) {
@@ -156,7 +148,7 @@ const MovieFinder = () => {
   
 
   const renderInputs = useCallback(() => {
-    const inputStyles = [ts.input, textColor];
+    const inputStyles = [ts.input, textColor, {textAlignVertical: "center"}];
     return (
       <View style={ts.justifyAlign}>
 
@@ -238,13 +230,11 @@ const MovieFinder = () => {
       successAnimationFinish &&
       !loading
     ) {
-      console.log("success ani must be shown...")
       return searchResult.map((item) => {
           return movieItem(item)
         }
       );
     }else if (!loading && !searchResult && responseError.length == 0){
-      console.log("default ani must be shown...")
       return (
         <>
           <LottieView style={ts.lottie} source={popcornDefault} autoPlay loop={false} />
@@ -252,15 +242,12 @@ const MovieFinder = () => {
         </>
       )
     }else if (loading) {
-      console.log("loading spinner mnus t be shown...")
       return <ToolIndicator />
 
     }else if (!loading && searchResult && !successAnimationFinish && responseError.length == 0) {
-      console.log("success...")
       return defaultLottie(successPopcorn, setSuccessAnimationFinish);
 
     }else if (responseError.length > 0 && !loading && !searchResult) {
-      console.log("error ani must be shown...")
       return(
         <LottieContainer
           source={toolError}

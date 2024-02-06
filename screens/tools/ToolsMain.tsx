@@ -4,13 +4,19 @@ import React, {memo, useCallback, useContext, useMemo, useState} from 'react';
 import {FlatList, Pressable, StyleProp, Text, View, ViewStyle, Image, Linking} from 'react-native';
 import ToolItemButton from "../../components/buttons/ToolitemButton";
 import {ThemeContext} from "../Context";
-import {DEEP_SWAP_AFFILIATE_URL, NEURONWRITER_AFFILIATE_LINK, ORIGIBNALITY_AFFILITE_UTR} from "@env";
+import {
+  DEEP_SWAP_AFFILIATE_URL,
+  FRASE_AFFILIATE_URL,
+  NEURONWRITER_AFFILIATE_LINK,
+  ORIGIBNALITY_AFFILITE_UTR
+} from "@env";
 import {toolStyles as styles} from "./toolStyles";
 
 //Affiliate Images
 import neuronNoBg from "../../assets/affiliateImages/neuronNoBg.png";
 import originalityNoBg from "../../assets/affiliateImages/originalityNoBg.png";
 import ds_noBg from "../../assets/affiliateImages/ds_noBg.png";
+import frase from "../../assets/affiliateImages/frase.png";
 import CategoryButton from "../../components/buttons/CategoryNavigationButton";
 
 //////////////////////////////////////// IN APP RECENSION BUILD IN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -23,13 +29,14 @@ interface CarouselDataTypes {
   url: string,
 }
 
-interface DataItem {
+export interface DataItem {
   text: string,
   color: string,
   icon: string,
   navigation: string,
   extraText?: string,
-  screen: string,
+  screen: string | any,
+
 }
 
 
@@ -46,6 +53,12 @@ const carouselData: CarouselDataTypes[] =
     image: ds_noBg,
     backgroundColor: "rgb(0,0,0)",
     url: DEEP_SWAP_AFFILIATE_URL
+  },
+  {
+    text: "Smart AI for Smarter SEO",
+    image: frase,
+    backgroundColor: "rgb(8, 31, 64)",
+    url: FRASE_AFFILIATE_URL
   },
   {
     text: "Optimize your Website content",
@@ -67,7 +80,7 @@ const businessButtonList: DataItem[] = [
     text: "Product Text writer",
     color: "rgb(49,239,0)",
     icon: "sticker-text-outline",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Create Slogans, product Descriptions,...",
     screen: "ProductWriter"
   },
@@ -75,7 +88,7 @@ const businessButtonList: DataItem[] = [
     text: "Idea finder",
     color: "#eed919",
     icon: "lightbulb-on-outline",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Share your ideas for feedback or create some for your next Business",
     screen: "IdeaFinder"
   },
@@ -83,7 +96,7 @@ const businessButtonList: DataItem[] = [
     text: "Resume creator",
     color: "rgb(0,103,239)",
     icon: "format-float-left",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "AI job Application writer",
     screen: "ResumeCreator"
   },
@@ -91,7 +104,7 @@ const businessButtonList: DataItem[] = [
     text: "E-Mail \nwriter",
     color: "rgb(229,94,0)",
     icon: "gmail",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Professional Email writer",
     screen: "EmailWriter"
   },
@@ -106,7 +119,7 @@ const creativeButtonList: DataItem[] = [
     text: 'Speech-to- Text',
     color: "rgb(178,8,8)",
     icon: "text-to-speech",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Transcribe your thoughts",
     screen: "Speech-to-Text"
   },
@@ -114,7 +127,7 @@ const creativeButtonList: DataItem[] = [
     text: 'Card writer',
     color: "rgb(12,170,225)",
     icon: "map-outline",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Create greeting Cards for Birthday, Christmas,...",
     screen: "CardWriter"
   },
@@ -122,7 +135,7 @@ const creativeButtonList: DataItem[] = [
     text: "Story writer",
     color: "rgb(245,85,29)",
     icon: "book-open-page-variant",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Write the next best seller...",
     screen: "StoryWriter"
   },
@@ -130,7 +143,7 @@ const creativeButtonList: DataItem[] = [
     text: "Lyric writer",
     color: "rgb(158,25,245)",
     icon: "cellphone-text",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Create Lyrics for every Music genre",
     screen: "LyricWriter"
   },
@@ -141,14 +154,14 @@ const lifeButtonList: DataItem[] = [
     text: "Movie/Series-\nfinder",
     color: "#c72e2e",
     icon: "television-shimmer",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Find the best Movie for your Movie night",
     screen: "MovieFinder"
   },
   {
     text: "Chat",
     icon: "comment-multiple-outline",
-    navigation: "ChatNavigator",
+    navigation: "Chat",
     color: "rgb(255,255,255)",
     extraText: "Keep yourself informed!",
     screen: "ChatMain"
@@ -156,7 +169,7 @@ const lifeButtonList: DataItem[] = [
   {
     text: "Fitness Assistant",
     icon: "food-apple",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     color: "rgb(0,255,4)",
     extraText: "Create Free Diet or training plans",
     screen: "FitnessWriter"
@@ -165,7 +178,7 @@ const lifeButtonList: DataItem[] = [
     text: "Chat response helper",
     color: "rgb(148,184,234)",
     icon: "tooltip-image-outline",
-    navigation: "ChatNavigator",
+    navigation: "ToolsNavigator",
     extraText: "Dont know how to answer to an Text Message? Our Model does!",
     screen: "ChatResponseHelper"
   }
@@ -179,7 +192,7 @@ interface ToolItemProps {
 const ToolItem: React.FC<ToolItemProps> = ({ item, index}) => {
   return (
     <View key={index}>
-      <ToolItemButton text={item.text} color={item.color} icon={item.icon} navigationScreen={item.screen}/>
+      <ToolItemButton item={item}/>
     </View>
   );
 };
@@ -311,10 +324,3 @@ const ToolsMain: React.FC = () => {
 };
 
 export default memo(ToolsMain);
-
-
-/*
-Image editor: input a image and a string for description, send it to my backend and get a image and string as response (after user chooses an image it must me alsdo displayed in the ui)
-ideafinder: for business ideas. user choose the category (tech, ......) from a Picker ("@react-native-picker/picker")
-and the last one is a
- */

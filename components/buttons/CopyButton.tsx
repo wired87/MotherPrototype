@@ -1,8 +1,8 @@
 import React, {memo, useCallback, useContext} from "react";
-import {IconButton} from "react-native-paper";
 import {toolStyles as ts} from "../../screens/tools/toolStyles";
 import * as Clipboard from "expo-clipboard";
 import {ThemeContext} from "../../screens/Context";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 // STRINGS
 const copy = "content-copy";
@@ -31,7 +31,13 @@ const CopyButton: React.FC<CopyButtonTypes> = (
   }, [value]);
 
   return(
-    <IconButton size={size || 20} iconColor={copyButtonColor} style={ts.copyButton} onPress={handleCopyClick} icon={copy} />
+    <MaterialCommunityIcons
+      size={size || 20}
+      color={copyButtonColor}
+      style={ts.copyButton}
+      onPress={handleCopyClick}
+      name={copy}
+    />
   );
 }
 

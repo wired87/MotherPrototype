@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     messageContainer: {
       borderWidth: 1,
       flexDirection: "column",
-      justifyContent: "center",
+      justifyContent: "flex-start",
       alignItems: "flex-end",
       borderRadius: 15,
       overflow: "visible",

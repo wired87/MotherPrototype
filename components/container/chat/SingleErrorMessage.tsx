@@ -38,6 +38,7 @@ const SingleErrorMessage: React.FC<SingleErrorTypes> = (
   }];
 
   const form: ContactFormTypes = {
+    type: "contact",
     option: "problem",
     first_name: "ChatMessageError",
     last_name: "unknown",

@@ -1,10 +1,8 @@
 import {DefaultContainer} from "./DefaultContainer";
-import {View, Vibration, ActivityIndicator, Image} from "react-native";
+import {View, ActivityIndicator, Image} from "react-native";
 import {styles} from "./contiStyles";
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import { TypeIndicator } from "../animations/TypeIndicator";
-
-import {showAds} from "../../screens/chat/functions/AdLogic";
 import {FunctionContext, InputContext, MediaContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 import {DefaultInput} from "../input/DefaultInput";
 
@@ -68,12 +66,11 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
 
 
   const send = async () => {
-    if (!typing && input?.length >= 1 && input.trim().length > 0 && messagesLeft !== "0") {
-      Vibration.vibrate();
+    if (!typing && input?.length >= 1 && input.trim().length > 0/* && messagesLeft !== "0"*/) {
       await sendMessageProcess();
-    } else if (messageRef.current === "0") {
+    /*} else if (messageRef.current === "0") {
       console.log("Ads initialized...")
-      showAds(messageRef.current, setMessagesLeft).then(() => setInput(""))
+      showAds(messageRef.current, setMessagesLeft).then(() => setInput(""))*/
     } else {
       console.log("Already Sent Message...")
     }
@@ -89,16 +86,13 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
     }
   },[typing]);
 
-  useEffect(() => {
-    console.log("MESSAGESLEFT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:", messagesLeft)
-  }, [messagesLeft]);
 
-  const sendButton = useMemo(() => {
+  const sendButton = useCallback(() => {
     const extraSendStyles = styles.sendIcon;
     if (input?.trim().length > 0) {
       return(
         <MaterialCommunityIcons
-          color={customTheme.headerIconColors}
+          color={customTheme.text}
           style={extraSendStyles}
           name={"atlassian"}
           onPress={send}
@@ -107,7 +101,7 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
       )
     }
     return <></>
-  }, [input, error, darkmode, typing]);
+  }, [input, error, customTheme, typing]);
 
 
 
@@ -140,7 +134,9 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
       <View style={moreContainerInputStyles}>
         <FloatingMediaButton />
         <View style={extraMessageContainerStyles}>
-          {media()}
+          {
+            media()
+          }
           <DefaultInput
             placeholder={"Ask something!"}
             value={input}
@@ -156,7 +152,9 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
         </View>
 
         <View style={[styles.container, {borderColor: customTheme.borderColor}]}>
-          {sendButton}
+          {
+            sendButton()
+          }
         </View>
 
       </View>

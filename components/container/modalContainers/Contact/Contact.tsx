@@ -50,6 +50,7 @@ const emailSetForm:string = "e_mail";
 
 
 export interface ContactFormTypes {
+  type: string;
   first_name: string;
   last_name: string;
   e_mail: string;
@@ -66,6 +67,7 @@ const Contact: React.FC = () => {
   const {customTheme} = useContext(ThemeContext);
 
   const [form, setForm] = useState<ContactFormTypes>({
+    type: "contact",
     option: "security",
     first_name: "",
     last_name: "",

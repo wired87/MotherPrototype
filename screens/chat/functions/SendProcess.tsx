@@ -64,7 +64,14 @@ export const postMessageObject = async (
   const id = setTimeout(() => controller.abort(), timeout);
   try {
     let response;
-    if(senderObject.type === "text"){
+    if (senderObject.type === "IMAGE"){
+      console.log("IMAGE REQUEST...")
+      response = await postMediaObject(
+        jwtToken,
+        senderObject,
+        postUrl,
+      )
+    }else{
       response = await fetch(postUrl, {
         method: 'POST',
         headers: {
@@ -84,14 +91,6 @@ export const postMessageObject = async (
       }catch {
         return null;
       }
-
-    }else if (senderObject.type === "IMAGE"){
-      console.log("IMAGE REQUEST...")
-      response = await postMediaObject(
-        jwtToken,
-        senderObject,
-        postUrl,
-      )
     }
     console.log("Response postMessageObject MEDIA:", response);
     if (response) {

@@ -121,7 +121,7 @@ const ChatResponseHelper: React.FC = () => {
           onChangeAction={setGoal}
           editable={true}
           keyboardType={undefined}
-          extraStyles={[ts.input, {marginBottom: 20,}]}
+          extraStyles={[ts.input, {marginBottom: 20, textAlignVertical: "center"}]}
           multiline={true}
           max_length={300}
         />

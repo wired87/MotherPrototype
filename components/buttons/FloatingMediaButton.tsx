@@ -162,7 +162,7 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
       if (doc) {
         updateDoc(undefined);
       }
-      updatePickedImage(result)
+      updatePickedImage(result);
     }
   };
 
@@ -177,9 +177,8 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
             styles.secondary,
             heartAnimatedStyle,
             opacityAnimatedStyle,
-          ]}
-        >
-          <MaterialCommunityIcons name="file-outline" size={26} color={iconColor} />
+          ]}>
+          <MaterialCommunityIcons name="file-document-outline" size={26} color={iconColor} />
         </Animated.View>
       </Pressable>
 
@@ -190,22 +189,8 @@ const FloatingMediaButton:React.FC<FloatingButtonProps> = (
             styles.secondary,
             thumbAnimatedStyle,
             opacityAnimatedStyle,
-          ]}
-        >
+          ]}>
           <Entypo name="image" size={24} color={iconColor} />
-        </Animated.View>
-      </Pressable>
-
-      <Pressable onPress={() => getImage(true)}>
-        <Animated.View
-          style={[
-            styles.button,
-            styles.secondary,
-            thumbAnimatedStyle,
-            opacityAnimatedStyle,
-          ]}
-        >
-          <Entypo name="camera" size={24} color={iconColor} />
         </Animated.View>
       </Pressable>
 
@@ -249,6 +234,19 @@ const styles = StyleSheet.create({
 
 
 /*
+<Pressable onPress={() => getImage(true)}>
+        <Animated.View
+          style={[
+            styles.button,
+            styles.secondary,
+            thumbAnimatedStyle,
+            opacityAnimatedStyle,
+          ]}
+        >
+          <Entypo name="camera" size={24} color={iconColor} />
+        </Animated.View>
+      </Pressable>
+
 <Pressable onPress={closeCam}>
     <Animated.View
       style={[

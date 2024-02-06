@@ -8,11 +8,13 @@ export const inputStyles = StyleSheet.create({
         textAlign: "justify",
         borderRadius: 9,
         paddingVertical: 4,
-        paddingHorizontal: 10,
+        paddingLeft: 5,
+        paddingRight: 15,
         color: '#000000',
         minHeight: 50,
         minWidth: 250,
         textAlignVertical: "center",
+
     },
 
     streamHeadingInput: {

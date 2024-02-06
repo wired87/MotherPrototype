@@ -36,7 +36,7 @@ import NetInfo from "@react-native-community/netinfo";
 import {
   checkToolActionValue,
   getToolActionValue,
-  postToolActionValue, showToolAds,
+  postToolActionValue,
 } from "./screens/chat/functions/AdLogic";
 
 
@@ -72,6 +72,7 @@ export default function App() {
   const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
   const [firstContact, setFirstContact] = useState<boolean>(true);
 
+
   const updateAlreadyRunning = (value:boolean) => {
     setAlreadyRunning(value);
   }
@@ -92,8 +93,6 @@ export default function App() {
   const updateDoc = (doc:DocumentPickerResult | undefined) => {
     setDoc(doc);
   }
-
-
 
 
   // INPUT CONTEXT
@@ -118,12 +117,29 @@ export default function App() {
     currentRecording, setCurrentRecording
   }
 
+  // TOOL CONTEXT STUFF
+  const checkToolActionValueProcess = async (): Promise<boolean> => {
+    const valueToolActions = await getToolActionValue();
+    console.log("Try to get the user Tool Action Value", valueToolActions);
+    if (!valueToolActions) {
+      await postToolActionValue("1").then(async () => {
+        setToolActionValue("1");
+      });
+    } else {
+      setToolActionValue(valueToolActions);
+    }
+    const success = await checkToolActionValue(valueToolActions || "1", setToolActionValue);
+    console.log("Return Value check toola Action value:", success);
+    return success
+  };
+
 
   const toggleTheme = () => setDarkmode(!darkmode);
 
+
   const defaultPostRequest = async (
     postUrl: string,
-    postObject: object,
+    postObject: any,
     setError: Dispatch<SetStateAction<string>>,
     setResponse: Dispatch<SetStateAction<string>>,
     setStatus?:Dispatch<SetStateAction<number>>,
@@ -131,16 +147,19 @@ export default function App() {
   ):Promise<any> => {
 
     console.log("jwtToken n Application Content:", jwtToken);
-
+    if (postObject.type !== "contact" && toolAction) { // check for tA because i can handle the show process better
+      await checkToolActionValueProcess();
+    }
     // just show if in one of the tool screens
-    if (toolActionValue === "0" && toolAction) {
+    /*if (toolActionValue === "0" && toolAction && !toolSuccess) {
       console.log("User has 0 Actions left. Init Ads...")
       await showToolAds( toolActionValue, setToolActionValue);
-    }
+    }*/
     if (toolAction) {
       console.log("SET TOOL ACTION VALUE TO 0...")
       setToolActionValue("0");
     }
+
     setLoading(true);
     setError("");
 
@@ -344,21 +363,6 @@ export default function App() {
         .then(() => console.log("Alright"));
     }
   }, [darkmode, appIsReady]);
-
-
-  // TOOL CONTEXT STUFF
-  const checkToolActionValueProcess = async (): Promise<boolean> => {
-    const valueToolActions = await getToolActionValue();
-    console.log("Try to get the user Tool Action Value", valueToolActions);
-    if (!valueToolActions) {
-      await postToolActionValue("1").then(async () => {
-        setToolActionValue("1");
-      });
-    } else {
-      setToolActionValue(valueToolActions);
-    }
-    return await checkToolActionValue(valueToolActions || "1", setToolActionValue);
-  };
 
 
   const toolElements = {

@@ -1,5 +1,5 @@
 import {KeyboardTypeOptions, TextInput, View,StyleSheet} from "react-native";
-import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useMemo, useState} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 import {inputStyles} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import TranscribeButton from "../buttons/TranscribeButton";
@@ -44,7 +44,6 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
 
 ) => {
 
-  const route = useRoute();
 
   const [recordingError, setRecordingError] = useState<string>("");
   const { customTheme } = useContext(ThemeContext);
@@ -115,7 +114,7 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
           blurOnSubmit={true}
           accessibilityLabel={label || ""}
         />
-        {value && value.length > 0?(
+        {value && value.length > 0 ? (
           <ClearButton value={value} setValue={onChangeAction} ms={ls.clearContainer} />
         ): recordingButton?(
           <TranscribeButton
@@ -142,8 +141,8 @@ const ls = StyleSheet.create(
     },
     recordingButton: {
       position: "absolute",
-      right: -5,
-      bottom: 0
+      right: 0,
+      bottom: 15
     },
     labelText: {
       fontSize: 13,

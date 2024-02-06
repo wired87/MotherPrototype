@@ -1,0 +1,2 @@
+banners rm:
+- rm ad banners

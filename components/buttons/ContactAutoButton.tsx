@@ -41,8 +41,11 @@ const ContactAutoButton: React.FC<ContactButtonType> = (
 
   const { defaultPostRequest } = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
+
   const color:object = {color: "white"};
-  const buttonText = [{marginVertical: 5, marginHorizontal: 7, fontSize: 13}, color]
+
+  const buttonText = [{marginVertical: 5, marginHorizontal: 7, fontSize: 13}, color];
+
   const sendData = useCallback(async () => {
     if (form && form["message"].length == 0 && form["last_name"].length == 0 && form["first_name"].length == 0){
       Vibration.vibrate();
@@ -58,6 +61,7 @@ const ContactAutoButton: React.FC<ContactButtonType> = (
   }, [form]);
 
   const buttonStyles = [ls.button, {backgroundColor: customTheme.primaryButton}];
+
   return(
     <Pressable
       onPress={sendData}

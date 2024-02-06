@@ -59,13 +59,12 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
 
   const [history, setHistory] = useState(false);
 
-
   // Context //////////////////////////
   const {
     messagesLeft, setMessagesLeft,
     setInput, input,
     messageIndex,
-    setTyping, typing,
+    setTyping,
     setMessages,
     setMessageIndex,
   } = useContext(InputContext);
@@ -166,7 +165,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
           )
           setMessageIndex((state: number) => state + 1);
           setMessages(prevMessages => [...prevMessages, aiResponse]);
-          console.log("Final response Object: ", aiResponse);
         }
         console.log("Finished the sendPackage function..");
       } else {
@@ -209,8 +207,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
 
   const createUserMessage = async() => {
     const firstMessage = messageIndex === 0;
-    console.log("Choosed Document:", docRef);
-    console.log("Choosed image:", picRef);
 
     const senderObject:userMesssageObject = {
       "id": messageIndex ,
@@ -235,46 +231,43 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
 
   const sendMessageProcess = useCallback(async() => {
     textMessageStart();
-    console.log("inputRef.current", inputRef.current);
-    console.log("typing", typing);
-    const success = await checkMessagesLeftProcess();
+    /*const success = await checkMessagesLeftProcess();
 
-    if (success) {
-      if (inputRef.current?.trim().length !== 0) {
-        const userMessage: userMesssageObject =  await createUserMessage();
-        setMessageIndex((state: number) => state + 1)
-        console.log("Sender Object created: ", userMessage)
-        console.log("Updating the messageList..")
+    if (success) {*/
+    if (inputRef.current?.trim().length !== 0) {
+      const userMessage: userMesssageObject =  await createUserMessage();
+      setMessageIndex((state: number) => state + 1)
+      console.log("Sender Object created: ", userMessage)
 
-        setMessages(prevMessages => [...prevMessages, userMessage]);
+      setMessages(prevMessages => [...prevMessages, userMessage]);
 
-        inputRef.current = "";
-        docRef.current = undefined;
-        picRef.current = undefined;
+      inputRef.current = "";
+      docRef.current = undefined;
+      picRef.current = undefined;
 
-        sendPackage(userMessage)
-          .then(() => console.log("Payload successfully sent.."))
-          .catch(e => console.log("Error while try send the message", e))
-          .finally(
-            () => setTyping(false)
-          )
-      } else {
-        console.log("0 input try again")
-        const response:object = createMessageObject(
-          "Im here to help. How can i do that?",
-          "text",
-          messageIndex,
-          user,
-          "AI",
-          "aiMessageContainer"
-        );
-        setMessages(prevMessages => [...prevMessages, response]);
-        setTyping(false);
-      }
-    }else {
-      // Ads in useEffect above will be showed
+      sendPackage(userMessage)
+        .then(() => console.log("Payload successfully sent.."))
+        .catch(e => console.log("Error while try send the message", e))
+        .finally(
+          () => setTyping(false)
+        )
+    } else {
+      console.log("0 input try again")
+      const response:object = createMessageObject(
+        "Im here to help. How can i do that?",
+        "text",
+        messageIndex,
+        user,
+        "AI",
+        "aiMessageContainer"
+      );
+      setMessages(prevMessages => [...prevMessages, response]);
       setTyping(false);
     }
+    /*}else {
+      // Ads in useEffect above will be showed
+      setTyping(false);
+    }*/
   }, [
     user,
     messageIndex,
@@ -287,8 +280,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   useEffect(() => {
     if (history) {
      sendMessageProcess()
-       .then(() => console.log("Finished History send Message Process.."))
-       .catch(e => console.error("Error in Message sent Process", e))
        .finally(() => setHistory(false));
     }
   }, [history]);

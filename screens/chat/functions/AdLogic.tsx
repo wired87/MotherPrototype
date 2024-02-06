@@ -8,7 +8,6 @@ import {
 import {Platform} from "react-native";
 
 import {FULL_SCREEN_ANDROID, FULL_SCREEN_IOS} from "@env";
-import {Dispatch, SetStateAction} from "react";
 
 const adUnitIdFullScreenAd = __DEV__
   ? TestIds.REWARDED_INTERSTITIAL
@@ -48,9 +47,8 @@ export async function postMessageInfoData(value: string) {
 export async function postToolActionValue(value: string) {
   try {
     await SecureStore.setItemAsync("totalToolActions", value);
-    console.log('Saved Secure Store Data (ToolActions)..');
+    console.log('Saved ToolActions in SecureStore:', value);
   } catch (e) {
-
     console.error('Error while save the Data', e);
   }
 }
@@ -103,10 +101,10 @@ export const checkToolActionValue = async (value: string | boolean | null, setTo
     } else {
       await postMessageInfoData("0").then(() => setToolActionValue("0"));
     }
-    console.log("VALUE IN CHECK TOOL ACTIONS(before update) -> true: ", value)
+    console.log("VALUE IN CHECK TOOL ACTIONS(before update) -> true: ", value);
     return true;
   } else {
-    console.log("VALUE IN CHECK TOOL ACTIONS(before update) -> false: ", value)
+    console.log("VALUE IN CHECK TOOL ACTIONS(before update) -> false: ", value);
     return false;
   }
 }
@@ -132,7 +130,6 @@ export const showAds = async (messagesLeft: string, setMessagesLeft: any) => {
             console.log('User finished the Ad and earned reward of ', reward);
           })
           .catch(() => setMessagesLeft("3"))
-
       },
     );
     // Start loading the rewarded interstitial ad straight away

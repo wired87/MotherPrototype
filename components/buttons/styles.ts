@@ -73,12 +73,14 @@ export const styles = StyleSheet.create(
       textAlign: 'center',
     },
 
-    redordingButton: {
+    recordingButton: {
       borderRadius: 50,
       width: 150,
       height: 150,
       borderWidth: 2,
-      marginVertical: 30
+      marginVertical: 30,
+      justifyContent: "center",
+      alignItems: "center"
     },
 
     historyItemTextStyles: {

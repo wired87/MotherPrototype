@@ -1,5 +1,4 @@
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {SettingNavigation} from "../../screens/settings/SettingsNavigator";
 import {Platform, StyleSheet} from "react-native";
 import ChatNavigation from "../../screens/chat/ChatNavigator";
@@ -105,7 +104,6 @@ const NavigationMain: React.FC<NavMainTypes> = (
         initialRouteName="Chat" // Erster Tab beim Start der App
         backBehavior="initialRoute" // Verhalten, wenn die Zurück-Taste gedrückt wird
         screenOptions={{
-
           headerShown: false,
           tabBarActiveTintColor: footerActiveIconColor, // Farbe des aktiven Tabs
           tabBarInactiveTintColor: footerIconColor, // Farbe der inaktiven Tabs

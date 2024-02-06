@@ -3,6 +3,7 @@ import {Text, StyleSheet, Pressable} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {LinearGradient} from "expo-linear-gradient";
 import {useNavigation} from "@react-navigation/native";
+import {DataItem} from "../../screens/tools/ToolsMain";
 
 
 
@@ -55,19 +56,12 @@ function randomChoice(array: string[]) {
 }
 
 interface ToolitemButton {
-  text?: string;
-  color: string;
-  icon: string,
-  navigationScreen?: string;
+  item: DataItem;
 }
 
 const ToolitemButton: React.FC<ToolitemButton> = (
   {
-    text,
-    color,
-    icon,
-    navigationScreen
-
+    item
   }
 ) => {
 
@@ -76,18 +70,18 @@ const ToolitemButton: React.FC<ToolitemButton> = (
 
   const finalButton = useCallback((className: any) => {
     return [className, {width: 170}]
-  }, [icon]);
+  }, [item.icon]);
 
   const getRandomBoolean = useCallback(() => {
     return Math.random() < 0.5
-  }, [icon]);
+  }, [item.icon]);
 
   const navigate = useCallback(() => {
-    if (navigationScreen) {
+    if (item.screen) {
       // @ts-ignore
-      navigation.navigate(navigationScreen);
+      navigation.navigate(item.navigation, {screen: item.screen});
     }
-  }, [navigationScreen, navigation]);
+  }, [item.screen, navigation]);
 
 
   return(
@@ -97,8 +91,8 @@ const ToolitemButton: React.FC<ToolitemButton> = (
         colors={[randomChoice(coolColors), "black"]}
         start={{ x: 0, y: 0 }}
         end={{ x: .1, y: .8 }}>
-        <MaterialCommunityIcons size={30} style={ls.icon} color={color} name={icon} />
-          <Text style={ls.text}>{text}</Text>
+        <MaterialCommunityIcons size={30} style={ls.icon} color={item.color} name={item.icon} />
+          <Text style={ls.text}>{item.text}</Text>
       </LinearGradient>
     </Pressable>
   );
