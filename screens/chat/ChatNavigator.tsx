@@ -168,10 +168,14 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
         }
         console.log("Finished the sendPackage function..");
       } else {
+        console.log("Error occurred...")
         errorMessageAIResponse();
       }
-    } catch (error) {
-      errorMessageAIResponse();
+    } catch (e:unknown) {
+      if (e instanceof Error) {
+        errorMessageAIResponse();
+        console.log("Error while post request:", e)
+      }
     } finally {
       setTyping(false);
       console.log("Function end...")

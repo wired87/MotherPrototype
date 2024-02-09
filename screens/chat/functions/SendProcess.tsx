@@ -137,7 +137,7 @@ export const sendObject = async (
   // POST THE MESSAGE
   try {
     console.log("Create the post Object with accessToken:", jwtToken.access)
-    console.log("upload Type:", senderObject.type)
+    console.log("upload Type:", senderObject.type, senderObject.input_type);
     const response = await postMessageObject(
         jwtToken.access,
         senderObject,

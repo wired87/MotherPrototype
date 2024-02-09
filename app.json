@@ -3,7 +3,7 @@
     "scheme": "aichat501",
     "name": "AiChat501",
     "slug": "AiChat501",
-    "version": "1.0.1",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icons/iconFinal.png",
     "userInterfaceStyle": "light",
@@ -27,6 +27,12 @@
           "photosPermission": "Give MIRACLE AI access to your Gallery.",
           "cameraPermission": "Allow MIRACLE AI to access your Camera."
         }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow MOTHER to access your microphone."
+        }
       ]
     ],
     "splash": {
@@ -45,7 +51,7 @@
       }
     },
     "android": {
-      "versionCode": 5,
+      "versionCode": 6,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/screen.png",
         "backgroundColor": "#ffffff"

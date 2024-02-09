@@ -235,7 +235,7 @@ export default function App() {
     bottomSheetLoaded, setBottomSheetLoaded, defaultPostRequest, alreadyRunning, updateAlreadyRunning
   };
 
-  //////////// INIT THE APPLICATION
+//////////// INIT THE APPLICATION
   useEffect(() => {
     NetInfo.fetch().then((state) => {
       console.log("Internet Connection set:", state.isConnected);
@@ -343,7 +343,7 @@ export default function App() {
     }
   }, []);
 
-  
+
   useEffect(() => {
     console.log("darkmodeAPP.tsx", darkmode);
     const updateDarkMode = async () => {
@@ -372,29 +372,30 @@ export default function App() {
   }
 
 
-    return (
-      <ThemeContext.Provider value={{customTheme}}>
-        <MediaContext.Provider value={{
-          pickedImage, updatePickedImage,
-          doc, updateDoc}}>
-          <InputContext.Provider value={elements}>
-            <PrimaryContext.Provider
-              value={contextValue}>
-              <ToolContext.Provider value={toolElements}>
-                <GestureHandlerRootView style={{ flex: 1, backgroundColor: customTheme.primary }}>
-                  <BottomSheetModalProvider>
-                    <NavigationContainer>
-                      <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact}/>
-                    </NavigationContainer>
-                  </BottomSheetModalProvider>
-                </GestureHandlerRootView>
-              </ToolContext.Provider>
-            </PrimaryContext.Provider>
-          </InputContext.Provider>
-        </MediaContext.Provider>
-      </ThemeContext.Provider>
-    );
+  return (
+    <ThemeContext.Provider value={{customTheme}}>
+      <MediaContext.Provider value={{
+        pickedImage, updatePickedImage,
+        doc, updateDoc}}>
+        <InputContext.Provider value={elements}>
+          <PrimaryContext.Provider
+            value={contextValue}>
+            <ToolContext.Provider value={toolElements}>
+              <GestureHandlerRootView style={{ flex: 1, backgroundColor: customTheme.primary }}>
+                <BottomSheetModalProvider>
+                  <NavigationContainer>
+                    <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact}/>
+                  </NavigationContainer>
+                </BottomSheetModalProvider>
+              </GestureHandlerRootView>
+            </ToolContext.Provider>
+          </PrimaryContext.Provider>
+        </InputContext.Provider>
+      </MediaContext.Provider>
+    </ThemeContext.Provider>
+  );
 }
+
 
 
 
@@ -437,3 +438,51 @@ getAuth().currentUser.getIdTokenResult()
   }, [isConnected]);
 
  */
+
+
+/*
+FIREBASE REVENUE CAT CHECK IFR A USER IS ON PAID PLAN
+getAuth().currentUser.getIdTokenResult()
+  .then((idTokenResult) => {
+    // Confirm the user has a premium entitlement.
+    if (!!idTokenResult.claims.activeEntitlements.includes("premium")) {
+      // Show premium UI.
+      showPremiumUI();
+    } else {
+      // Show regular user UI.
+      showFreeUI();
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+  useEffect(() => {
+    console.log("Check for the internet connection..")
+    if(!isConnected){
+      console.log("Connection online..")
+      const unsubscribe = NetInfo.addEventListener((state) => {
+        if (state.isConnected) {
+          setUserObject()
+            .then(() => console.log("Connection successfully restored.."));
+        } else {
+          console.log("Could not restore the connection..");
+          connectionAlert()
+        }
+      });
+      return () => unsubscribe();
+    } else {
+      console.log("isConnected:", isConnected);
+      connectionAlert();
+    }
+  }, [isConnected]);
+
+ */
+
+
+
+/*
+
+
+
+*/

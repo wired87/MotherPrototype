@@ -3933,6 +3933,11 @@ expo-asset@~8.10.1:
     path-browserify "^1.0.0"
     url-parse "^1.5.9"
 
+expo-av@~13.4.1:
+  version "13.4.1"
+  resolved "https://registry.yarnpkg.com/expo-av/-/expo-av-13.4.1.tgz#83029b3202e64bf060f0a7a24591d93bf7ab728c"
+  integrity sha512-0K8QEFzZeNGrppzYUs8wOtjOyPPkxzlVYbEHM6WzIQOG1uYYNOJkJB3aQHVFXHmz+AzoHwMrUjcschofwaMNeg==
+
 expo-clipboard@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/expo-clipboard/-/expo-clipboard-4.5.0.tgz#4ef8f1f5635dbe4813503898d7372c2e278fbc6c"
@@ -6748,6 +6753,11 @@ react-native-screens@^3.29.0:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
+
+react-native-track-player@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-track-player/-/react-native-track-player-4.0.1.tgz#df80c27290db610f92dc73d89ecae8e354acb28d"
+  integrity sha512-DpqKL4TQS0kGlHwEtmMrL++mdgWb+uc75eQiP3vfYSlgvAJjbXbkL9h+cofndSuq4TTCp8jclAK+hZKqtMw6+A==
 
 react-native-vector-icons@^10.0.1:
   version "10.0.1"

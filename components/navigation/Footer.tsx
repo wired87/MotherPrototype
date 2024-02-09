@@ -19,6 +19,7 @@ import ToolsNavigator from "../../screens/tools/ToolsNavigation";
 import SwipeModal from "../modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
+import MotherMain from "../../screens/mother/MotherMain";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -149,6 +150,15 @@ const NavigationMain: React.FC<NavMainTypes> = (
           options={{
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons name={focused ? "view-dashboard" : "view-dashboard-outline"} color={color} size={29} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Mother"
+          component={MotherMain}
+          options={{
+            tabBarIcon: ({ color, focused }) => (
+                <MaterialCommunityIcons name={focused ? "account-child-circle" : "account-child-outline"} color={color} size={29} />
             ),
           }}
         />

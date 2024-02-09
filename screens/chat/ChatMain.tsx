@@ -10,7 +10,7 @@ import {
 
 import {chatStyles, windowWidth} from "./chatStyles";
 import {SingleMessage} from "../../components/container/chat/SingleMessage";
-import {MessageInputContainer} from "../../components/container/MessageInputContainer";
+import MessageInputContainer from "../../components/container/MessageInputContainer";
 
 // @ts-ignore
 import {InputContext, ThemeContext} from "../Context";

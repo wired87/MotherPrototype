@@ -6,7 +6,6 @@ import TranscribeButton from "../buttons/TranscribeButton";
 import {DefaultText} from "../text/DefaultText";
 import ClearButton from "../buttons/ClearButton";
 import {toolStyles} from "../../screens/tools/toolStyles";
-import {useRoute} from "@react-navigation/native";
 
 
 export default interface DefaulttextInputTypes {

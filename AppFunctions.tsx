@@ -174,11 +174,6 @@ export const getCurrentLanguage = () => {
 };
 
 
-
-
-
-
-
 // ALERTS
 
 export const connectionAlert = () => {

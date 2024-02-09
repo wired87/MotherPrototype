@@ -1,4 +1,4 @@
-import {DefaultContainer} from "../DefaultContainer";
+import DefaultContainer from "../DefaultContainer";
 import {DefaultText} from "../../text/DefaultText";
 
 import {StyleSheet} from "react-native";

@@ -24,5 +24,6 @@ declare module '@env' {
   export const CHAT_COMPLETION_REQUEST: string;
   export const RESUME_URL: string;
   export const DEEP_SWAP_AFFILIATE_URL: string;
+  export const LOVO_API_KEY: string;
 
 }

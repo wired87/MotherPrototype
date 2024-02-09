@@ -1,7 +1,7 @@
-import {DefaultContainer} from "./DefaultContainer";
+import DefaultContainer from "./DefaultContainer";
 import {View, ActivityIndicator, Image} from "react-native";
 import {styles} from "./contiStyles";
-import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import { TypeIndicator } from "../animations/TypeIndicator";
 import {FunctionContext, InputContext, MediaContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 import {DefaultInput} from "../input/DefaultInput";
@@ -16,7 +16,7 @@ interface MessageInputTypes {
   messagesLeft: string;
 }
 
-export const MessageInputContainer: React.FC<MessageInputTypes> = (
+const MessageInputContainer: React.FC<MessageInputTypes> = (
   {
     messagesLeft
   }
@@ -162,4 +162,4 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
   );
 }
 
-
+export default memo(MessageInputContainer);

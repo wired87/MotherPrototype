@@ -11,7 +11,7 @@ const defaultIcon = "microphone";
 
 
 interface TranscribeButtonTypes {
-  setTranscript?: Dispatch<SetStateAction<string>>;
+  setTranscript: ((text:string) => void);//Dispatch<SetStateAction<string>>;
   setError: Dispatch<SetStateAction<string>>;
   buttonIcon?: string;
   buttonStyles?: any;

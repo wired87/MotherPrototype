@@ -216,9 +216,8 @@ const MovieFinder = () => {
           </View>
         </Pressable>
       )
-    }else{
-      return <></>
     }
+    return <></>
   }, [successAnimationFinish, searchResult])
 
 
@@ -269,7 +268,9 @@ const MovieFinder = () => {
 
       <TextStream  message={heading} />
 
-      {renderInputs()}
+      {
+        renderInputs()
+      }
 
       <DefaultButton
         text={buttonText}
