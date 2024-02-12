@@ -44,6 +44,7 @@ import {sendObject} from "./screens/chat/functions/SendProcess";
 
 import {DocumentPickerResult} from "expo-document-picker";
 import {ImagePickerResult} from "expo-image-picker";
+import {checkUserAvailability, saveUser} from "./AppFunctions/UserFunctions";
 
 let errorCodes = [
   "400",
@@ -269,22 +270,21 @@ export default function App() {
   const setUserObject = async () => {
     console.log("Init the UserObject..");
     try {
-      signInAnonymously(FIREBASE_AUTH)
-        .then(() => {
-          setAuthenticated(true);
-        });
-      /*
-      save created User in Secure Store + push and save Backend
-       */
-    } catch (e: unknown) {
-      console.log("Error, cant sign in anonymously:", e);
-      if (e instanceof Error) {
-        console.log("Could not set the user", e)
+      const existingUser = await checkUserAvailability();
+      if (existingUser) {
+        setUser(existingUser); /////////////////////////////////////////////////////////////////////////////////////////
+        setAuthenticated(true);
+      } else {
+        await signInAnonymously(FIREBASE_AUTH);
+        setAuthenticated(true);
       }
+    } catch (e) {
+      console.error("Error during user initialization:", e);
     }
   }
 
 
+  // REWORK FROM "SAVE WHOLE USER OBJECT" -> "JUST SAVE THE UID"
   useEffect(() => {
     getAuth().onAuthStateChanged((userObject) => {
       if (userObject) {

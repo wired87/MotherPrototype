@@ -3,7 +3,6 @@ import {JwtToken} from "../screens/Context";
 
 interface UserObjectTypes {
   uid: string;
-  emailLocked: boolean;
 }
 
 
