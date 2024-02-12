@@ -8,7 +8,7 @@ import {ScrollView, Vibration} from "react-native";
 import {toolStyles, toolStyles as ts} from "../../toolStyles";
 import cardLoading from "../../../../assets/animations/cardLoading.json";
 import {TEXT_REQUEST_URL} from "@env";
-import {getLanguage} from "../../../../AppFunctions";
+import {getLanguage} from "../../../../AppFunctions/AppFunctions";
 import {DefaultText} from "../../../../components/text/DefaultText";
 
 

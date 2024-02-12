@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from "react";
+import React, {memo} from "react";
 import {Pressable} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -23,21 +23,17 @@ const AppIcon: React.FC<AppIconTypes> = (
     backgroundColor: "transparent"
   }];
 
-  const navigation = useNavigation();
+  const navigation = useNavigation()
 
-  const navigate = useCallback(() => {
-    if (item && item.screen) {
-      // @ts-ignore
-      navigation.navigate(item.screen);
-    }
-  }, [item.screen])
-
+  const navigate = () => {
+    // @ts-ignore
+    navigation.navigate("MotherNavigator", {screen: item.screen});
+  }
 
   return(
     <Pressable
       style={containerStyles}
-      onPress={navigate}
-    >
+      onPress={() => navigate()}>
       <MaterialCommunityIcons
         size={30}
         color={item.color}

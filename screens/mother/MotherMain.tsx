@@ -6,7 +6,7 @@ import {PrimaryContext} from "../Context";
 import {Audio} from 'expo-av';
 import {MotherTranscriptButton} from "../../components/buttons/MotherTranscriptButton";
 import {SpeechErrorEvent} from "@react-native-voice/voice";
-import {getLanguage} from "../../AppFunctions";
+import {getLanguage} from "../../AppFunctions/AppFunctions";
 
 
 const lovoErrorCodes = [

@@ -13,7 +13,7 @@ import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultText} from "../../../../components/text/DefaultText";
 
 import {Vibration} from "react-native";
-import {getCurrentLanguage} from "../../../../AppFunctions";
+import {getCurrentLanguage} from "../../../../AppFunctions/AppFunctions";
 import {toolStyles as ts} from "../../toolStyles";
 import {StyleProps} from "react-native-reanimated";
 import { RESUME_URL } from "@env";
@@ -121,7 +121,7 @@ const ResumeContent: React.FC<ResumeTypes> = (
         value={skills}
         multiline={true}
         numberOfLines={5}
-        extraStyles={extraInputStyles}
+        extraStyles={workExperienceStyles}
         onChangeAction={setSkills}
       />
 

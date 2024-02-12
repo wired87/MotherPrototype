@@ -2,6 +2,7 @@ import {Share} from "react-native";
 import React from "react";
 import {DefaultText} from "../components/text/DefaultText";
 import {toolStyles as ts} from "./tools/toolStyles";
+import {useNavigation} from "@react-navigation/native";
 
 export const share = async(
   customTheme: any,
@@ -33,6 +34,7 @@ export const share = async(
     console.log(error.message);
   }
 }
+
 
 
 export const fieldErrorText = (fieldError: string) => {

@@ -98,5 +98,11 @@ export const styles = StyleSheet.create(
       alignItems: 'center',
       marginTop: 20,
     },
+    confirmButton: {
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      marginVertical: 10,
+      borderRadius: 15,
+    }
   }
 )

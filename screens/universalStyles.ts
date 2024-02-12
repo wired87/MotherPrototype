@@ -9,6 +9,7 @@ export const uniStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         height: 50,
+
         position: "absolute",
     },
     containerHeader: {
@@ -117,5 +118,40 @@ export const uniStyles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center"
-    }
+    },
+    scrollMain: {
+        flexGrow: 1
+    },
+    justifyAlignStart: {
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+    },
+    justifyAlignCenter: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    justifyAlignCenterStart: {
+        justifyContent: "flex-start",
+        alignItems: "center",
+    },
+    fullScreenWidth: {
+        width: windowWidth
+    },
+
+    border:{
+        borderColor: "black",
+        borderWidth: 2,
+    },
+    paddingV20: {
+        paddingVertical: 20
+    },
+    paddingV50: {
+        paddingVertical: 50
+    },
+    paddingH20: {
+        paddingHorizontal: 20
+    },
+    row: {
+        flexDirection: "row"
+    },
 });

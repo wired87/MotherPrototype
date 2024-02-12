@@ -27,7 +27,7 @@ import * as Font from "expo-font";
 import {getAuth, signInAnonymously} from "firebase/auth";
 import firebase from "firebase/compat";
 import {FIREBASE_AUTH} from "./firebase.config";
-import {connectionAlert, getToken} from "./AppFunctions";
+import {connectionAlert, getToken} from "./AppFunctions/AppFunctions";
 
 
 import NetInfo from "@react-native-community/netinfo";
@@ -235,7 +235,7 @@ export default function App() {
     bottomSheetLoaded, setBottomSheetLoaded, defaultPostRequest, alreadyRunning, updateAlreadyRunning
   };
 
-//////////// INIT THE APPLICATION
+  //////////// INIT THE APPLICATION
   useEffect(() => {
     NetInfo.fetch().then((state) => {
       console.log("Internet Connection set:", state.isConnected);
@@ -243,15 +243,19 @@ export default function App() {
     });
   }, []);
 
-
+  /*
+  user = CHECK IF EXISISTING USER IN SECURE STORE.
+  if !prototype immer manuelle Anmeldung oder über service creds anmelden
+   */
   useEffect(() => {
-    console.log("Check for the internet connection..")
-    if(isConnected){
-      console.log("Connection online..")
+    console.log("Check for the internet connection..");
+    if (isConnected) {
+      console.log("Connection online...");
       const unsubscribe = NetInfo.addEventListener((state) => {
         if (state.isConnected) {
           setUserObject()
             .then(() => console.log("Connection successfully restored.."));
+        /*else if user: setUser*/
         } else {
           console.log("Could not restore the connection..");
           connectionAlert()
@@ -269,6 +273,9 @@ export default function App() {
         .then(() => {
           setAuthenticated(true);
         });
+      /*
+      save created User in Secure Store + push and save Backend
+       */
     } catch (e: unknown) {
       console.log("Error, cant sign in anonymously:", e);
       if (e instanceof Error) {

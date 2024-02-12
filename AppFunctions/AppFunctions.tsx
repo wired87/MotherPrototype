@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import {Alert} from "react-native";
-import {JwtToken} from "./screens/Context";
+import {JwtToken} from "../screens/Context";
 import RNRestart from 'react-native-restart';
 import {Dispatch, SetStateAction} from "react";
 import {CHECK_JWT, LOGIN_JWT} from "@env";

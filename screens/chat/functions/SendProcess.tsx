@@ -1,7 +1,7 @@
 import firebase from "firebase/compat";
 import {JwtToken} from "../../Context";
 import {Dispatch, SetStateAction} from "react";
-import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions";
+import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions/AppFunctions";
 import {CHAT_REQUEST_URL} from "@env";
 import * as FileSystem from "expo-file-system";
 export const getCurrentTime = () => {

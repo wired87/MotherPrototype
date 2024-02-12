@@ -1,5 +1,5 @@
 import {ActivityIndicator, Pressable, Text} from "react-native";
-import React, {ReactNode, useContext, useMemo} from "react";
+import React, {ReactNode, useCallback, useContext, useMemo} from "react";
 import {styles as s} from "./styles";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
 import {StyleProps} from "react-native-reanimated";
@@ -24,28 +24,27 @@ export const DefaultButton: React.FC<DefaultButtonStyles> = (
   }
 ) => {
 
-  const {
-    loading
-
-  } = useContext(PrimaryContext);
+  const { loading} = useContext(PrimaryContext);
 
   const { customTheme } = useContext(ThemeContext);
 
   const pressableStyles =
     [extraStyles || null, s.changeInfoBtn, {backgroundColor: customTheme.primaryButton, color: '#fff'}]
 
-  const loadingSpinner = useMemo(()=> {
+  const loadingSpinner = useCallback(()=> {
     if (loading) {
       return <ActivityIndicator size={"small"}/>
     }else {
-      return secondIcon || null
+      return <></>
     }
-  }, [secondIcon]);
+  }, [secondIcon, loading]);
 
   return(
-      <Pressable style={pressableStyles} onPress={onPressAction} >
-        <Text style={buttonStyles}>{text || "Create"}</Text>
-        {loadingSpinner}
-      </Pressable>
+    <Pressable style={pressableStyles} onPress={onPressAction} >
+      <Text style={buttonStyles}>{text || "Create"}</Text>
+      {
+        loadingSpinner()
+      }
+    </Pressable>
   );
 }

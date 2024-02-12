@@ -21,7 +21,7 @@ const TextStream: React.FC<TextStreamTypes> = (
 
   // STYLES
   const defaultTextColor = {color: customTheme.text};
-  const moreHeadingStreamInputStyles = [inputStyles.streamHeadingInput, defaultTextColor];
+  const moreHeadingStreamInputStyles:object[] = [inputStyles.streamHeadingInput, defaultTextColor];
 
 
   useEffect(() => {

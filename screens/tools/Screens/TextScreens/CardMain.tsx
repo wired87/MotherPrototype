@@ -8,7 +8,7 @@ import {ScrollView, Vibration} from "react-native";
 import cardLoading from "../../../../assets/animations/cardLoading.json";
 import {toolStyles as ts} from "../../toolStyles";
 import {DefaultText} from "../../../../components/text/DefaultText";
-import {getLanguage} from "../../../../AppFunctions";
+import {getLanguage} from "../../../../AppFunctions/AppFunctions";
 
 //STRINGS
 const placeholder:string = "Your written Card will be shown here";

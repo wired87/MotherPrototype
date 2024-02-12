@@ -17,6 +17,7 @@ import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import SwipeModal from "../../components/modals/SwipeModal";
 import ChatMenuModalContent from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import HeaderButton from "../../components/buttons/navigation/HeaderButton";
 
 interface ChatNavigationTypes {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;//(number: number) => void;
@@ -40,13 +41,7 @@ export interface userMesssageObject {
 
 /////////////////////////////////////// VARIABLES
 
-const iconStyles = StyleSheet.create(
-  {
-    headerIcon: {
-      backgroundColor: "transparent",
-    }
-  }
-)
+
 
 // STACK DEFINITIONS ///////////////////////
 const ChatStack = createNativeStackNavigator();
@@ -310,17 +305,11 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
             (props: any) =>
               <DefaultHeader
                 {...props}
-                extraStyles={undefined}
                 childrenMiddle={
-                  <Pressable
-                    style={iconStyles.headerIcon}
-                    onPress={() => updateModalIndex(2)}>
-                    <MaterialCommunityIcons
-                      name="menu"
-                      color={customTheme.headerIconColors}
-                      size={30}
-                    />
-                  </Pressable>
+                  <HeaderButton
+                    action={() => updateModalIndex(2)}
+                    icon={"menu"}
+                  />
                 }
                 childrenRight={undefined}
               />

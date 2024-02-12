@@ -1,4 +1,4 @@
-import {FlatList} from "react-native";
+import {FlatList, View} from "react-native";
 import React, {memo} from "react";
 import MotherAppIcon from "../../components/buttons/mother/MotherAppIcon";
 import {motherMainStyles as mms} from "./styles";
@@ -18,25 +18,30 @@ const apps: AppTypes[] = [
     icon: "gmail",
     color: "red",
     bgColor: "blue",
-    screen: "GmailScreen",
+    screen: "EmailAuthScreen",
   },
 ]
 
 
 const MotherTools: React.FC = () => {
+
+  const mainContainerStyles: object[] = [mms.flexColumn, mms.marginVer50, mms.flex, mms.justifyAlignCenter];
+
   return(
-    <FlatList
-      numColumns={4}
-      style={mms.flatList}
-      keyExtractor={(_, index) => index.toString()}
-      data={apps}
-      renderItem={({ item }) =>
-        <MotherAppIcon
-          item={item}
-          key={item.name}
-        />
-      }
-    />
+    <View style={mainContainerStyles}>
+      <FlatList
+        numColumns={3}
+        style={mms.flatList}
+        keyExtractor={(_, index) => index.toString()}
+        data={apps}
+        renderItem={({ item }) =>
+          <MotherAppIcon
+            item={item}
+            key={item.name}
+          />
+        }
+      />
+    </View>
   );
 }
 

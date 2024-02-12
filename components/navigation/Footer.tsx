@@ -20,6 +20,7 @@ import SwipeModal from "../modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
 import {MotherMain} from "../../screens/mother/MotherMain";
+import MotherNavigator from "../../screens/mother/MotherNavigator";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -154,11 +155,11 @@ const NavigationMain: React.FC<NavMainTypes> = (
           }}
         />
         <Tab.Screen
-          name="Mother"
-          component={MotherMain}
+          name="MotherNavigator"
+          component={MotherNavigator}
           options={{
             tabBarIcon: ({ color, focused }) => (
-                <MaterialCommunityIcons name={focused ? "account-child-circle" : "account-child-outline"} color={color} size={29} />
+              <MaterialCommunityIcons name={focused ? "account-child-circle" : "account-child-outline"} color={color} size={29} />
             ),
           }}
         />
@@ -190,3 +191,10 @@ const NavigationMain: React.FC<NavMainTypes> = (
   );
 }
 export default memo(NavigationMain);
+
+
+/*
+
+
+
+ */

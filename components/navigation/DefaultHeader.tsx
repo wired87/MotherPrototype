@@ -7,6 +7,26 @@ import {HeaderView} from "../container/headerContainer";
 import {ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+/*
+"AccountMain",
+      "PasswordChange",
+      "EmailChange",
+      "NewPasswordConfirmation",
+      "ForgotPassword",
+      "AuthNavigator",
+      "Speech-to-Text",
+      "ResumeCreator",
+      "ChatResponseHelper",
+      "MovieFinder",
+      "EmailWriter",
+      "CardWriter",
+      "ProductWriter",
+      "StoryWriter",
+      "FitnessWriter",
+      "LyricWriter",
+      "IdeaFinder",
+      "MotherTools",
+ */
 
 const localStyles = StyleSheet.create(
   {
@@ -25,7 +45,9 @@ const localStyles = StyleSheet.create(
     backIcon: {
       left: 5,
       position: "absolute",
-      zIndex: 900000
+
+      padding: 10
+
     },
     rightExtra: {
       justifyContent: "flex-start",
@@ -60,26 +82,13 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
 
   const shouldShowBackIcon = useCallback(() => {
     const screensToShowBackIcon = [
-      "AccountMain",
-      "PasswordChange",
-      "EmailChange",
-      "NewPasswordConfirmation",
-      "ForgotPassword",
-      "AuthNavigator",
-      "Speech-to-Text",
-      "ResumeCreator",
-      "ChatResponseHelper",
-      "MovieFinder",
-      "EmailWriter",
-      "CardWriter",
-      "ProductWriter",
-      "StoryWriter",
-      "FitnessWriter",
-      "LyricWriter",
-      "IdeaFinder"
+      "SettingsMain",
+      "MotherMain",
+      "MotherNavigator",
+      "ChatMain",
+      "ChatNavigation",
     ];
-    return navigation.canGoBack() && screensToShowBackIcon.includes(route.name) &&
-      !["ChatMain", "ChatNavigation"].includes(route.name);
+    return navigation.canGoBack() && !(screensToShowBackIcon.includes(route.name))
   }, [navigation, route.name,]);
 
   const shouldShowChildren = useCallback(() => {
@@ -91,7 +100,7 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
     navigation.goBack();
   }, [navigation]);
 
-  const headerStyles = [uniStyles.headerContainer, {backgroundColor: customTheme.primary}]
+  const headerStyles: object[] = [uniStyles.headerContainer, {backgroundColor: customTheme.primary}]
 
   if (shouldShowChildren()) {
     return (
@@ -109,11 +118,15 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
         </HeaderView>
 
         <HeaderView extraStyles={localStyles.middleExtra}>
-          {childrenMiddle}
+          {
+            childrenMiddle
+          }
         </HeaderView>
 
         <HeaderView extraStyles={localStyles.rightExtra}>
-          {childrenRight}
+          {
+            childrenRight
+          }
         </HeaderView>
 
       </View>

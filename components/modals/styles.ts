@@ -27,6 +27,26 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 22,
     },
+
+
+    lottieAnimationViewContainer: {
+        width: 200,
+
+    },
+    main: {
+        flex: 1,
+    },
+    justifyAlignStart: {
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+    },
+
+
+    justifyAlignCenter: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
     modalView: {
         margin: 20,
         backgroundColor: 'white',
@@ -41,10 +61,6 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-    },
-    lottieAnimationViewContainer: {
-        width: 200,
-
     },
 
 

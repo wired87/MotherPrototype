@@ -4,14 +4,19 @@ import {showToolAds} from "../chat/functions/AdLogic";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {MotherMain} from "./MotherMain";
+import MotherTools from "./MotherTools";
+import HeaderButton from "../../components/buttons/navigation/HeaderButton";
+import {motherMainStyles as mms} from "./styles";
+import {useNavigation} from "@react-navigation/native";
+import EmailAuthScreen from "./ToolScreens/EmailAuthScreen";
 
 const MotherStack = createNativeStackNavigator();
 
 const MotherNavigator: React.FC = () => {
+  const navigation = useNavigation()
 
   // Context
   const { setToolActionValue, toolActionValue} = useContext(ToolContext);
-
 
   // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {
@@ -20,9 +25,25 @@ const MotherNavigator: React.FC = () => {
       .then(() => console.log("Ads successfully showed. Refilled the Messages"));
   }, [toolActionValue]);
 
+  const navigate = (screen: string) => {
+    // @ts-ignore
+    navigation.navigate(screen);
+  }
 
   const screenHeaderOptions = useMemo(() => ({
-    header: () => <DefaultHeader />,
+    header:
+      () =>
+        <DefaultHeader
+          childrenRight={
+            <HeaderButton
+              action={
+                () => navigate("MotherTools")
+              }
+              icon={"align-horizontal-right"}
+              eS={mms.marginVertical10}
+            />
+          }
+        />
   }), []);
 
   return(
@@ -31,9 +52,18 @@ const MotherNavigator: React.FC = () => {
       screenOptions={screenHeaderOptions}>
 
       <MotherStack.Screen
-        options={{ headerShown: false }}
         name="MotherMain"
         component={MotherMain}
+      />
+
+      <MotherStack.Screen
+        name="MotherTools"
+        component={MotherTools}
+      />
+
+      <MotherStack.Screen
+        name="EmailAuthScreen"
+        component={EmailAuthScreen}
       />
 
     </MotherStack.Navigator>
