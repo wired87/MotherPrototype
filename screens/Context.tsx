@@ -1,6 +1,5 @@
 import {createContext, Dispatch, SetStateAction} from "react";
 
-import firebase from "firebase/compat";
 import {ImagePickerResult} from "expo-image-picker";
 import {DocumentPickerResult} from "expo-document-picker";
 
@@ -9,6 +8,13 @@ export interface JwtToken {
   refresh: string;
 }
 
+export interface UserObject {
+  uid: string;
+  email?: string;
+  emailService?: boolean;
+}
+
+
 export const PrimaryContext = createContext(
   {
     darkmode: false,
@@ -16,8 +22,8 @@ export const PrimaryContext = createContext(
 
     toggleTheme: (() => {}),
 
-    user: null as firebase.User | null,
-    setUser: (() => {}) as Dispatch<SetStateAction<firebase.User | null>>,
+    user: null as UserObject | null,
+    setUser: (() => {}) as Dispatch<SetStateAction<UserObject | null>>,
 
     loading: false,
     setLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,

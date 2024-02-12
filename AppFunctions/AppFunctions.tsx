@@ -19,7 +19,7 @@ export const getLanguage = () => {
     return locales[0].languageTag;
   }
 }
-
+/////////////// CHECK GET SET JWT /////////////
 export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
   try {
     const JwtToken = await SecureStore.getItemAsync("JwtData");

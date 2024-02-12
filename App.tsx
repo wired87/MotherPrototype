@@ -14,7 +14,7 @@ import {
   darkModeTheme,
   JwtToken,
   MediaContext,
-  InputContext
+  InputContext, UserObject
 } from "./screens/Context";
 
 
@@ -44,7 +44,8 @@ import {sendObject} from "./screens/chat/functions/SendProcess";
 
 import {DocumentPickerResult} from "expo-document-picker";
 import {ImagePickerResult} from "expo-image-picker";
-import {checkUserAvailability, saveUser} from "./AppFunctions/UserFunctions";
+import {checkUserAvailability, saveUser, setUserObject} from "./AppFunctions/UserFunctions";
+import {useAuthenticated, useUser} from "./AppHooks/PrimaryHooks";
 
 let errorCodes = [
   "400",
@@ -57,16 +58,18 @@ let errorCodes = [
 
 export default function App() {
 
+
+  // HOOKS
+  const { user, setUser } = useUser();
+  const {authenticated, setAuthenticated} = useAuthenticated();
+
   /////////// PRIMARY CONTEXT STATE VARIABLES
   const [darkmode, setDarkmode] = useState<boolean>(false);
-  const [user, setUser] = useState<firebase.User | null>(null);
   const [customTheme, setCustomTheme] =
     useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
   const [loading, setLoading] = useState(false);
   const [appIsReady, setAppIsReady] = useState(false);
   const [clearMessages, setClearMessages] = useState(false);
-  const [authenticated, setAuthenticated] = useState(false);
-  const [jwtToken, setJwtToken] = useState<JwtToken | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [bottomSheetLoaded, setBottomSheetLoaded] =
     useState<boolean>(false);
@@ -244,51 +247,17 @@ export default function App() {
     });
   }, []);
 
-  /*
-  user = CHECK IF EXISISTING USER IN SECURE STORE.
-  if !prototype immer manuelle Anmeldung oder über service creds anmelden
-   */
-  useEffect(() => {
-    console.log("Check for the internet connection..");
-    if (isConnected) {
-      console.log("Connection online...");
-      const unsubscribe = NetInfo.addEventListener((state) => {
-        if (state.isConnected) {
-          setUserObject()
-            .then(() => console.log("Connection successfully restored.."));
-        /*else if user: setUser*/
-        } else {
-          console.log("Could not restore the connection..");
-          connectionAlert()
-        }
-      });
-      return () => unsubscribe();
-    }
-  }, [isConnected]);
 
 
-  const setUserObject = async () => {
-    console.log("Init the UserObject..");
-    try {
-      const existingUser = await checkUserAvailability();
-      if (existingUser) {
-        setUser(existingUser); /////////////////////////////////////////////////////////////////////////////////////////
-        setAuthenticated(true);
-      } else {
-        await signInAnonymously(FIREBASE_AUTH);
-        setAuthenticated(true);
-      }
-    } catch (e) {
-      console.error("Error during user initialization:", e);
-    }
-  }
-
-
-  // REWORK FROM "SAVE WHOLE USER OBJECT" -> "JUST SAVE THE UID"
   useEffect(() => {
     getAuth().onAuthStateChanged((userObject) => {
       if (userObject) {
-        setUser((userObject as firebase.User));
+        const customuserObject:UserObject= {
+          uid: userObject.uid,
+          email: undefined,
+          emailService: undefined
+        }
+        setUser(customuserObject);
         console.log("User object set: ", userObject)
       } else {
         console.log("User could not be set in App")

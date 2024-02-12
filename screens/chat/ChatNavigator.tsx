@@ -16,8 +16,8 @@ import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
 import SwipeModal from "../../components/modals/SwipeModal";
 import ChatMenuModalContent from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import HeaderButton from "../../components/buttons/navigation/HeaderButton";
+import {getUserID} from "../../AppFunctions/UserFunctions";
 
 interface ChatNavigationTypes {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;//(number: number) => void;
@@ -71,7 +71,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     updateDoc
   } = useContext(MediaContext);
 
-  const {customTheme} = useContext(ThemeContext);
   const {
     user,
     setClearMessages,
@@ -131,7 +130,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
       "Feel free to Contact us directly also. Sometimes a Refresh can also solve the Problem.",
       "error",
       messageIndex,
-      user,
+      getUserID(user),
       "AI",
       "aiMessageContainer"
     )
@@ -154,7 +153,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
             response.message,
             "text",
             messageIndex,
-            user,
+            getUserID(user),
             "AI",
             "aiMessageContainer",
           )
@@ -201,11 +200,8 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
   }, [])
 
 
-
-
-
   const createUserMessage = async() => {
-    const firstMessage = messageIndex === 0;
+    const firstMessage:boolean = messageIndex === 0;
 
     const senderObject:userMesssageObject = {
       "id": messageIndex ,
@@ -213,7 +209,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
       "timeToken": getCurrentTime(),
       "publisher": "USER",
       "class": "userMessageContainer",
-      "user_id": user?.uid || "1",
+      "user_id": getUserID(user),
       "type": "text",
       "file": undefined,
       "start": firstMessage
@@ -256,7 +252,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
         "Im here to help. How can i do that?",
         "text",
         messageIndex,
-        user,
+        getUserID(user),
         "AI",
         "aiMessageContainer"
       );

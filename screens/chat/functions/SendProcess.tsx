@@ -1,5 +1,5 @@
 import firebase from "firebase/compat";
-import {JwtToken} from "../../Context";
+import {JwtToken, UserObject} from "../../Context";
 import {Dispatch, SetStateAction} from "react";
 import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions/AppFunctions";
 import {CHAT_REQUEST_URL} from "@env";
@@ -241,7 +241,7 @@ export const createMessageObject = (
   input: string,
   type: string,
   messageIndex: string | number,
-  user: firebase.User | null,
+  user: string,
   publisher: string,
   className: string
 ) => {
@@ -253,7 +253,7 @@ export const createMessageObject = (
       "timeToken": getCurrentTime(),
       "publisher": publisher,
       "class": className,
-      "user_id": user?.uid || "1",
+      "user_id": user,
       "type": type
     }
   );
