@@ -3,7 +3,7 @@ import {ToolContext} from "../Context";
 import {showToolAds} from "../chat/functions/AdLogic";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import MotherMain from "./MotherMain";
+import {MotherMain} from "./MotherMain";
 
 const MotherStack = createNativeStackNavigator();
 

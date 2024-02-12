@@ -12,7 +12,6 @@ import succSpeechToText from "../../../assets/animations/succSpeechToText.json";
 
 // Strings
 const placeholderTranscript: string = "Your generated transcript will be shown here";
-
 const heading: string = "Transcribe your thoughts..";
 
 const SpeechToText: React.FC = () => {
@@ -36,6 +35,7 @@ const SpeechToText: React.FC = () => {
         successAnimation={succSpeechToText}
         Content={
           <TranscribeButton
+            key={"Rolf"}
             setTranscript={setTranscript}
             setError={setError}
             transcript={transcript}

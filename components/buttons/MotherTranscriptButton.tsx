@@ -1,35 +1,34 @@
-import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 import {Pressable, Vibration} from "react-native";
 import Voice, {SpeechErrorEvent} from "@react-native-voice/voice";
 import * as RNLocalize from 'react-native-localize';
 import {styles as s} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {useRoute} from "@react-navigation/native";
 
 // STRINGS
 const defaultIcon:string = "microphone";
 
-
 interface TranscribeButtonTypes {
-  setTranscript: Dispatch<SetStateAction<string>>; //((text:string) => void);//
-  setError: Dispatch<SetStateAction<string>>;
   buttonIcon?: string;
   buttonStyles?: any;
-  transcript: string;
+  onSpeechResults: ((r: any) => void);
+  onSpeechError: ((e: SpeechErrorEvent) => void);
 }
 
 
-const TranscribeButton: React.FC<TranscribeButtonTypes> = (
+export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
 
   {
-    setTranscript,
-    setError,
     buttonIcon,
     buttonStyles,
-    transcript
+    onSpeechResults,
+    onSpeechError
   }
 
-  ) => {
+) => {
+  console.log("MOTHER TRANSCRIBE BUTTON NEW INITILAIZED")
 
   const { customTheme } = useContext(ThemeContext);
   const [currentSpeech, setCurrentSpeech] = useState(false);
@@ -37,33 +36,22 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
 
   // styles
   const recordingButtonStyles = buttonStyles || [s.recordingButton, {borderColor: customTheme.text}];
-
+  const route = useRoute();
   const iconColorProp = currentSpeech ? "red" : customTheme.text;
 
   useEffect(() => {
-    Voice.onSpeechError = onSpeechError;
-    Voice.onSpeechResults = onSpeechResults;
-
+    // need to reset the Voice object because otherwise it will alltimes take the listener functions from last method
+    Voice.destroy()
+      .then(() => {
+        console.log("Voice object reset...");
+        Voice.onSpeechResults = onSpeechResults;
+        Voice.onSpeechError = onSpeechError;
+      })
     return () => {
       Voice.destroy()
         .then(() => Voice.removeAllListeners)
     }
-  }, []);
-  console.log("DEFAULT TRANSCRIBE BUTTON NEW INITILAIZED")
-
-  const onSpeechError = useCallback((e: SpeechErrorEvent) => {
-    if (e.error && e.error.message) {
-      setError(e.error.message.toString());
-    } else {
-      setError("An error has occurred while trying to transcribe: " + e.toString());
-    }
-  }, [setError]);
-
-
-  const onSpeechResults = (r: any) => {
-    const newTranscript:string = transcript + " " + r.value[0] + " ";
-    setTranscript? setTranscript(newTranscript) : null;
-  }
+  }, [onSpeechError, onSpeechResults, route.name]);
 
 
   useEffect(() => {
@@ -91,10 +79,9 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   const handleSpeechToText = useCallback(() => {
     Vibration.vibrate();
     if (currentSpeech) {
-      console.log("VOICE STOPPED IN DEFAULT ")
       stopSpeech()
         .then(() => {
-          console.log("Voice recording ended..")
+            console.log("Voice recording ended..")
           }
         )
         .catch(e => console.log("Error while stop the recording occurred:", e));
@@ -102,7 +89,7 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
     } else {
       startSpeech()
         .then(() => {
-          console.log("Voice recording started..");
+            console.log("Voice recording started..");
             setCurrentSpeech(!currentSpeech);
           }
         )
@@ -121,4 +108,3 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
     </Pressable>
   );
 }
-export default memo(TranscribeButton);

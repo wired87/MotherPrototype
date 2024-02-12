@@ -16,7 +16,7 @@ interface MessageInputTypes {
   messagesLeft: string;
 }
 
-const MessageInputContainer: React.FC<MessageInputTypes> = (
+export const MessageInputContainer: React.FC<MessageInputTypes> = (
   {
     messagesLeft
   }
@@ -121,7 +121,7 @@ const MessageInputContainer: React.FC<MessageInputTypes> = (
     }
   }, [pickedImage, input, doc]);
 
-  //
+
 
   return (
     <DefaultContainer
@@ -162,4 +162,3 @@ const MessageInputContainer: React.FC<MessageInputTypes> = (
   );
 }
 
-export default memo(MessageInputContainer);

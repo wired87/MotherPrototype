@@ -1,12 +1,12 @@
-import React, {memo, useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import DefaultContainer from "../../components/container/DefaultContainer";
-import TranscribeButton from "../../components/buttons/TranscribeButton";
 import {Vibration} from "react-native";
-import {LOVO_API_KEY, TEXT_REQUEST_URL} from "@env";
+import {LOVO_API_KEY, MOTHER_URL} from "@env";
 import {PrimaryContext} from "../Context";
-import {getLanguage} from "../../AppFunctions";
 import {Audio} from 'expo-av';
-
+import {MotherTranscriptButton} from "../../components/buttons/MotherTranscriptButton";
+import {SpeechErrorEvent} from "@react-native-voice/voice";
+import {getLanguage} from "../../AppFunctions";
 
 
 const lovoErrorCodes = [
@@ -14,7 +14,8 @@ const lovoErrorCodes = [
   401,
   402,
   422
-]
+];
+
 interface LovoObjectTypes {
   speed: number;
   speaker: string;
@@ -28,64 +29,46 @@ interface MotherMainTypes {
 - USER TRANSCRIBE AUDIO
 - SEND AUDIO TO BACKEND
 - GEMINI ANSWERS THE TEXT INPUT AND SEND IT BACK
-- SEND RESPONSE TO LOVO ENDPOINT
+- CHECK THE LEN AND SPLIT IT
+- LOOP THROUGH THE LIST AND SEND EVERY ITEM TO LOVO ENDPOINT
 - RECEIVE THE AUDIO URL
 - PLAY THE AUDIO
  */
 
 
-
-const MotherMain: React.FC<MotherMainTypes> = (
-
-) => {
-
+export const MotherMain: React.FC<MotherMainTypes> = () => {
   const [error, setError] = useState<string>("");
-  const [transcript, setTranscript] = useState<string>("");
+  const [text, setText] = useState<string>("");
   const [response, setResponse] = useState<string>("");
-  const [sound, setSound] = useState<Audio.Sound>();
+  const [sound, setSound] = useState<Audio.Sound | null>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const {user, defaultPostRequest } = useContext(PrimaryContext);
 
-  const getData = ():object => {
+  const getData = (newTranscript: string):object => {
     return {
       "user_id": user?.uid,
-      "input_type": "talk",
+      "type": "talk",
       "language": getLanguage(),
-      "input": transcript,
+      "message": text,
     }
   }
 
-  const sendData = useCallback(async () => {
-    if ( transcript.length == 0 ) {
-      Vibration.vibrate();
-      console.log("No planType or gender provided...")
-      setError("No planType or gender provided...");
-      return;
-    }
+  const sendData = useCallback(async (newTranscript: string) => {
+    setLoading(true);
     await defaultPostRequest(
-      TEXT_REQUEST_URL,
-      getData(),
+      MOTHER_URL,
+      getData(newTranscript),
       setError,
       setResponse,
     )
-  }, [transcript]);
+  }, [setError, setResponse]);
 
 
-  useEffect(() => {
-    if ( transcript.length > 0 ) {
-      console.log("Send the transcript...")
-      sendData()
-        .then(() => {
-          console.log("Talk Data sent...");
-          setTranscript("");
-        }
-      )
-    }
-  }, [transcript]);
-  async function playSound(fileUri:string) {
+  async function playSound(item: string) {
     console.log('Loading Sound...');
-    if (fileUri) {
-      const { sound } = await Audio.Sound.createAsync({uri: fileUri});
+    if (item) {
+      const { sound } = await Audio.Sound.createAsync({uri: item});
       setSound(sound);
 
       console.log('Playing Sound...');
@@ -103,18 +86,19 @@ const MotherMain: React.FC<MotherMainTypes> = (
   }, [sound]);
 
 
-  const errorHandling = () => {
+  const errorHandling = () => {};
 
-  }
-  const getLovoObject = (): LovoObjectTypes => {
+
+  const getLovoObject = (text:string): LovoObjectTypes => {
     return{
       speed: 1,
-      text: response,
+      text: text,
       speaker: "63b417fb241a82001d51df6a"
     }
   };
 
-  const textToSpeech = useCallback(async() => {
+  const textToSpeech = useCallback(async(text: string) => {
+    //const splittedResponse:string[] = splitString(response);
     const options = {
       method: 'POST',
       headers: {
@@ -122,7 +106,7 @@ const MotherMain: React.FC<MotherMainTypes> = (
         'content-type': 'application/json',
         'X-API-KEY': LOVO_API_KEY
       },
-      body: JSON.stringify(getLovoObject())
+      body: JSON.stringify(getLovoObject(text))
     };
     try {
       const speechResponse = await fetch('https://api.genny.lovo.ai/api/v1/tts/sync', options);
@@ -131,7 +115,8 @@ const MotherMain: React.FC<MotherMainTypes> = (
       if (lovoErrorCodes.includes(jsonResponse.statusCode)) {
         errorHandling();
       } else if(jsonResponse && jsonResponse.data[0] && jsonResponse.data[0].urls) {
-        await playSound(jsonResponse.data.urls);
+        await playSound(jsonResponse.data[0].urls[0]);
+        //setAudioUris((prevState: string[]) => [...prevState, jsonResponse.data[0].urls[0]]);
       }else {
         console.log("Something unexpected happened...");
         setError("Unexpected Error. Please try again...")
@@ -141,38 +126,83 @@ const MotherMain: React.FC<MotherMainTypes> = (
         console.log("Error occurred:", e);
         setError(e.toString());
       }
+    }finally{
+      setLoading(false);
     }
   }, [response]);
 
+  const splitString = (inputString:string) => {
+    let stringList = [];
+    while (inputString.length > 500) {
+      stringList.push(inputString.substring(0, 499));
+      inputString = inputString.substring(499);
+    }
+    stringList.push(inputString);
+    return stringList;
+  }
 
+  const onSpeechResults = (r: any) => {
+    const newTranscript:string = r.value[0];
+    if ( newTranscript.length > 0 ) {
+      console.log("Send the transcript...")
+      sendData(newTranscript)
+        .then(() => {
+            console.log("Talk Data sent...");
+          }
+        )
+    }else {
+      Vibration.vibrate();
+      console.log("Transcript Length === 0...")
+      setError("Couldn't transcribe anything...");
+    }
+  }
+
+  const onSpeechError = useCallback((e: SpeechErrorEvent) => {
+    textToSpeech("Sorry, i couldn't hear anything. Please repeat it a bit louder. Im not the youngest")
+      .then(() => {
+        console.log("ErrorMessage Sent")
+      })
+  }, []);
 
 
   useEffect(() => {
     if ( response.length > 0 ) {
       console.log("Response.length > 0:",response);
-      textToSpeech()
+      textToSpeech(response)
         .then(() => {
           console.log("tts finished...")
       })
     }
   }, [response]);
 
-  const updateTranscript = (text: string) => {
-    setTranscript(text)
-  }
+
+  const motherButton = useCallback(() => {
+    if (loading){
+      return <></>
+    }else {
+      return(
+        <MotherTranscriptButton
+          key={"Rudolf"}
+          onSpeechError={onSpeechError}
+          onSpeechResults={onSpeechResults}
+        />
+      );
+    }
+  }, [
+    onSpeechError,
+    onSpeechResults,
+    loading
+  ]);
 
   return(
     <DefaultContainer>
-      <TranscribeButton
-        setError={setError}
-        transcript={transcript}
-        setTranscript={updateTranscript}
-      />
+      {
+        motherButton()
+      }
     </DefaultContainer>
   );
 }
 
-export default memo(MotherMain);
 
 
 /* EXAMPLE SPEAKER

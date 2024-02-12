@@ -2,16 +2,17 @@ import {KeyboardTypeOptions, TextInput, View,StyleSheet} from "react-native";
 import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 import {inputStyles} from "./styles";
 import {ThemeContext} from "../../screens/Context";
-import TranscribeButton from "../buttons/TranscribeButton";
 import {DefaultText} from "../text/DefaultText";
 import ClearButton from "../buttons/ClearButton";
 import {toolStyles} from "../../screens/tools/toolStyles";
+import {SpeechErrorEvent} from "@react-native-voice/voice";
+import {MotherTranscriptButton} from "../buttons/MotherTranscriptButton";
 
 
 export default interface DefaulttextInputTypes {
   placeholder?: string;
   value: string;
-  onChangeAction?: Dispatch<SetStateAction<string>>;
+  onChangeAction: Dispatch<SetStateAction<string>>;
   secure?: boolean;
   editable?: boolean;
   keyboardType?: KeyboardTypeOptions;
@@ -42,8 +43,13 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
   }
 
 ) => {
-
-
+  const [error, setError] = useState<string>("");
+  const setInputTranscript = (text:string) => {
+    if (onChangeAction) {
+      console.log("Try set Transcript...")
+      onChangeAction(text);
+    }
+  }
   const [recordingError, setRecordingError] = useState<string>("");
   const { customTheme } = useContext(ThemeContext);
 
@@ -89,6 +95,44 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     }
   }, [label]);
 
+
+
+  const onSpeechError = useCallback((e: SpeechErrorEvent) => {
+    if (e.error && e.error.message) {
+      setError(e.error.message.toString());
+    } else {
+      setError("An error has occurred while trying to transcribe: " + e.toString());
+    }
+  }, [setError]);
+
+
+  const onSpeechResults = (r: any) => {
+    const newTranscript:string = value + " " + r.value[0] + " ";
+    onChangeAction? onChangeAction(newTranscript) : null;
+  }
+
+  const inputButton = useCallback(() => {
+    if (value && value.length > 0) {
+      return <ClearButton value={value} setValue={onChangeAction} ms={ls.clearContainer}/>
+    } else if (recordingButton) {
+      return (
+        <MotherTranscriptButton
+          key={"Udo"}
+          buttonStyles={ls.recordingButton}
+          onSpeechError={onSpeechError}
+          onSpeechResults={onSpeechResults}
+        />
+      )
+    }
+  }, [
+    onSpeechError,
+    onSpeechResults,
+    recordingButton,
+    value,
+    onChangeAction,
+  ]);
+
+
   return(
     <View style={mainContainerStyles}>
       <View style={ls.main}>
@@ -113,16 +157,9 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
           blurOnSubmit={true}
           accessibilityLabel={label || ""}
         />
-        {value && value.length > 0 ? (
-          <ClearButton value={value} setValue={onChangeAction} ms={ls.clearContainer} />
-        ): recordingButton?(
-          <TranscribeButton
-            setTranscript={onChangeAction}
-            setError={setRecordingError}
-            transcript={value}
-            buttonStyles={ls.recordingButton}
-          />
-        ):null}
+        {
+          inputButton()
+        }
       </View>
       {
         recordingErrorMessage()

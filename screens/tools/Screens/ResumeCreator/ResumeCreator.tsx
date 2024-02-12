@@ -22,7 +22,6 @@ const ResumeCreator: React.FC = () => {
   // Context
   const { customTheme } = useContext(ThemeContext);
 
-
   // STYLES
   const backgroundColor = {backgroundColor: customTheme.primary};
 
