@@ -19,8 +19,9 @@ import ToolsNavigator from "../../screens/tools/ToolsNavigation";
 import SwipeModal from "../modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
-import {MotherMain} from "../../screens/mother/MotherMain";
 import MotherNavigator from "../../screens/mother/MotherNavigator";
+import {startListening, stopListening} from "../../AppFunctions/AppFunctions";
+import {useRoute} from "@react-navigation/native";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -69,6 +70,8 @@ const NavigationMain: React.FC<NavMainTypes> = (
   const {bottomSheetLoaded} = useContext(PrimaryContext);
 
   const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
+
+
 
 
   useEffect(() => {

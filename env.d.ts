@@ -25,6 +25,7 @@ declare module '@env' {
   export const RESUME_URL: string;
   export const DEEP_SWAP_AFFILIATE_URL: string;
   export const LOVO_API_KEY: string;
+  export const PORCUPINE_API_KEY: string;
   export const MOTHER_URL: string;
 
 }

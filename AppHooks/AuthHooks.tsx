@@ -7,9 +7,9 @@ export const useAuthenticated = () => {
   return {authenticated, setAuthenticated}
 }
 
+
 export const useJwt = () => {
   const [jwtToken, setJwtToken] = useState<JwtToken | null>(null);
-
   return {jwtToken, setJwtToken}
 }
 
@@ -19,7 +19,7 @@ export const useUser = () => {
   const [user, setUser] = useState<UserObject | null>(null);
 
   const {authenticated, setAuthenticated} = useAuthenticated();
-  const {jwtToken, setJwtToken} = useJwt();
+  const {setJwtToken} = useJwt();
 
   const checkJwt = () => {
     if (authenticated && user) {
@@ -33,7 +33,6 @@ export const useUser = () => {
   useEffect(() => {
     checkJwt();
   }, [authenticated, user]);
-
 
   return {user, setUser}
 }

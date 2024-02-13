@@ -1,243 +1,53 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {NavigationContainer} from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
 
-
 import {
   PrimaryContext,
   ToolContext,
-  Theme,
   ThemeContext,
   lightModeTheme,
   darkModeTheme,
-  JwtToken,
   MediaContext,
   InputContext, UserObject
 } from "./screens/Context";
-
 
 import NavigationMain from "./components/navigation/Footer";
 import { getDarkmode } from "./components/container/modalContainers/DarkMode";
 import * as SecureStore from "expo-secure-store";
 import * as Font from "expo-font";
 
-
-import {getAuth, signInAnonymously} from "firebase/auth";
-import firebase from "firebase/compat";
-import {FIREBASE_AUTH} from "./firebase.config";
-import {connectionAlert, getToken} from "./AppFunctions/AppFunctions";
-
+import {getAuth} from "firebase/auth";
 
 import NetInfo from "@react-native-community/netinfo";
 
+// HOOKS
+import {useUser} from "./AppHooks/AuthHooks";
+import {useAppIsReady, useFirstContact, useIsConnected} from "./AppHooks/InitHooks";
+import {useCustomTheme, useDarkmode} from "./AppHooks/ThemeHook";
+import {useInputContextHooks} from "./AppHooks/ContextHooks/InputContextHooks";
+import {usePrimaryContextHooks} from "./AppHooks/ContextHooks/PrimaryContextHooks";
+import {useToolHooks} from "./AppHooks/ToolHooks";
+import {useMediaContextHooks} from "./AppHooks/ContextHooks/MediaContextHooks";
 
-import {
-  checkToolActionValue,
-  getToolActionValue,
-  postToolActionValue,
-} from "./screens/chat/functions/AdLogic";
-
-
-import {sendObject} from "./screens/chat/functions/SendProcess";
-
-import {DocumentPickerResult} from "expo-document-picker";
-import {ImagePickerResult} from "expo-image-picker";
-import {checkUserAvailability, saveUser, setUserObject} from "./AppFunctions/UserFunctions";
-import {useAuthenticated, useUser} from "./AppHooks/PrimaryHooks";
-
-let errorCodes = [
-  "400",
-  "401",
-  "404",
-  "505",
-  "500",
-  "300",
-]
 
 export default function App() {
+  // AUTH HOOKS
+  const {setUser } = useUser();
 
+  // INIT HOOKS
+  const {appIsReady, setAppIsReady} = useAppIsReady();
+  const {setIsConnected} = useIsConnected();
+  const {firstContact, setFirstContact} = useFirstContact();
 
-  // HOOKS
-  const { user, setUser } = useUser();
-  const {authenticated, setAuthenticated} = useAuthenticated();
+  // THEME HOOKS
+  const {darkmode, setDarkmode}= useDarkmode();
+  const {customTheme, setCustomTheme} = useCustomTheme();
 
-  /////////// PRIMARY CONTEXT STATE VARIABLES
-  const [darkmode, setDarkmode] = useState<boolean>(false);
-  const [customTheme, setCustomTheme] =
-    useState<Theme>(darkmode? darkModeTheme : lightModeTheme);
-  const [loading, setLoading] = useState(false);
-  const [appIsReady, setAppIsReady] = useState(false);
-  const [clearMessages, setClearMessages] = useState(false);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [bottomSheetLoaded, setBottomSheetLoaded] =
-    useState<boolean>(false);
-  const [alreadyRunning, setAlreadyRunning] = useState<boolean>(false);
-  const [firstContact, setFirstContact] = useState<boolean>(true);
-
-
-  const updateAlreadyRunning = (value:boolean) => {
-    setAlreadyRunning(value);
-  }
-
-  // TOOL CONTEXT STATE VARIABLES
-  const [toolActionValue, setToolActionValue] = useState<string>("");
-
-  const [pickedImage, setPickedImage] =
-    useState<ImagePickerResult | undefined>(undefined);
-
-  const [doc, setDoc] =
-    useState<DocumentPickerResult | undefined>(undefined);
-
-  const updatePickedImage = (image:ImagePickerResult | undefined) => {
-    setPickedImage(image);
-  }
-
-  const updateDoc = (doc:DocumentPickerResult | undefined) => {
-    setDoc(doc);
-  }
-
-
-  // INPUT CONTEXT
-  // InputContext definitions
-  const [messageIndex, setMessageIndex] = useState(0);
-  const [input, setInput] = useState("");
-  const [messagesLeft, setMessagesLeft] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
-  const [messageBreakOption, setMessageBreakOption] = useState(false);
-  const [typing, setTyping] = useState(false); // typing indicator
-  const [currentRecording, setCurrentRecording] = useState(false);
-
-  const elements = {
-    input, setInput,
-    messagesLeft, setMessagesLeft,
-    messages, setMessages,
-    messageIndex,
-    setMessageIndex,
-    messageBreakOption,
-    setMessageBreakOption,
-    typing, setTyping,
-    currentRecording, setCurrentRecording
-  }
-
-  // TOOL CONTEXT STUFF
-  const checkToolActionValueProcess = async (): Promise<boolean> => {
-    const valueToolActions = await getToolActionValue();
-    console.log("Try to get the user Tool Action Value", valueToolActions);
-    if (!valueToolActions) {
-      await postToolActionValue("1").then(async () => {
-        setToolActionValue("1");
-      });
-    } else {
-      setToolActionValue(valueToolActions);
-    }
-    const success = await checkToolActionValue(valueToolActions || "1", setToolActionValue);
-    console.log("Return Value check toola Action value:", success);
-    return success
-  };
-
-
-  const toggleTheme = () => setDarkmode(!darkmode);
-
-
-  const defaultPostRequest = async (
-    postUrl: string,
-    postObject: any,
-    setError: Dispatch<SetStateAction<string>>,
-    setResponse: Dispatch<SetStateAction<string>>,
-    setStatus?:Dispatch<SetStateAction<number>>,
-    toolAction?: boolean
-  ):Promise<any> => {
-
-    console.log("jwtToken n Application Content:", jwtToken);
-    if (postObject.type !== "contact" && toolAction) { // check for tA because i can handle the show process better
-      await checkToolActionValueProcess();
-    }
-    // just show if in one of the tool screens
-    /*if (toolActionValue === "0" && toolAction && !toolSuccess) {
-      console.log("User has 0 Actions left. Init Ads...")
-      await showToolAds( toolActionValue, setToolActionValue);
-    }*/
-    if (toolAction) {
-      console.log("SET TOOL ACTION VALUE TO 0...")
-      setToolActionValue("0");
-    }
-
-    setLoading(true);
-    setError("");
-
-    let response;
-    try {
-      if (jwtToken?.refresh && jwtToken.access) {
-        console.log("Application data sent: ", postObject);
-        response = await sendObject(
-          postObject,
-          jwtToken,
-          setJwtToken,
-          postUrl
-        );
-
-      } else {
-        console.error("No token provided");
-        const newToken = await getToken(setJwtToken);
-        if (newToken) {
-          response = await sendObject(
-            postObject,
-            newToken,
-            setJwtToken,
-            postUrl
-          );
-
-        } else {
-          console.error("New Token request failed...");
-          setError("Authentication Error");
-        }
-      }
-      if (response) {
-        if (response.message && !response.error && !errorCodes.includes(response.status)){
-          console.log("Response Successfully:", response);
-          setResponse(response.message);
-        }else if(!response.message && response.error || errorCodes.includes(response.status)) {
-          console.error("Received no result:", response);
-          setError(response.error);
-          if (setStatus){
-            setStatus(Number(response.status));
-          }
-        }else{
-          try{
-            setError(response.message)
-          }catch(e:unknown){
-            if (e instanceof Error) {
-              console.error("Could nat classify the response:", e)
-              setError("An unexpected error occurred. Please try again or contact the Support.")
-            }
-            if (setStatus){
-              setStatus(500);
-            }
-          }
-        }
-      }
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        setError(e.message);
-        console.error("Error while contact submit occurred:", e.message);
-      }
-      if (setStatus){
-        setStatus(500);
-      }
-    } finally {
-      console.log("Application request finished without trouble...");
-      setLoading(false);
-    }
-  }
-
-
-  const contextValue = {
-    darkmode, toggleTheme, setDarkmode, user, setUser, loading, setLoading,
-    clearMessages, setClearMessages, jwtToken, setJwtToken, isConnected, setIsConnected,
-    bottomSheetLoaded, setBottomSheetLoaded, defaultPostRequest, alreadyRunning, updateAlreadyRunning
-  };
+  // STYLES
+  const gestureHandlerStyles = { flex: 1, backgroundColor: customTheme.primary }
 
   //////////// INIT THE APPLICATION
   useEffect(() => {
@@ -246,7 +56,6 @@ export default function App() {
       setIsConnected(state.isConnected || false);
     });
   }, []);
-
 
 
   useEffect(() => {
@@ -265,16 +74,7 @@ export default function App() {
     });
   }, []);
 
-
-  useEffect(() => {
-    if (authenticated && user) {
-      getToken(setJwtToken)
-        .then(
-          () => setAuthenticated(false)
-        );
-    }
-  }, [authenticated, user]);
-
+  // IF user && authenticated STATE: getJwtToken -> in AuthHooks
 
   useEffect(() => {
     console.log("appIsReady", appIsReady);
@@ -321,7 +121,7 @@ export default function App() {
 
 
   useEffect(() => {
-    console.log("darkmodeAPP.tsx", darkmode);
+    console.log("darkModeAPP.tsx", darkmode);
     const updateDarkMode = async () => {
       try {
         await SecureStore.setItemAsync("darkmode", String(darkmode));
@@ -341,23 +141,13 @@ export default function App() {
   }, [darkmode, appIsReady]);
 
 
-  const toolElements = {
-    toolActionValue,
-    setToolActionValue,
-    checkToolActionValueProcess,
-  }
-
-
   return (
     <ThemeContext.Provider value={{customTheme}}>
-      <MediaContext.Provider value={{
-        pickedImage, updatePickedImage,
-        doc, updateDoc}}>
-        <InputContext.Provider value={elements}>
-          <PrimaryContext.Provider
-            value={contextValue}>
-            <ToolContext.Provider value={toolElements}>
-              <GestureHandlerRootView style={{ flex: 1, backgroundColor: customTheme.primary }}>
+      <MediaContext.Provider value={useMediaContextHooks()}>
+        <InputContext.Provider value={useInputContextHooks()}>
+          <PrimaryContext.Provider value={usePrimaryContextHooks()}>
+            <ToolContext.Provider value={useToolHooks()}>
+              <GestureHandlerRootView style={gestureHandlerStyles}>
                 <BottomSheetModalProvider>
                   <NavigationContainer>
                     <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact}/>
@@ -371,8 +161,6 @@ export default function App() {
     </ThemeContext.Provider>
   );
 }
-
-
 
 
 

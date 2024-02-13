@@ -2181,6 +2181,26 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@picovoice/cheetah-react-native@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react-native/-/cheetah-react-native-2.0.1.tgz#66a76d8606b994d4658aec382d0feec3558259f7"
+  integrity sha512-l8pbnUF1HNXOXKXXgVE7u3R2/l238KBCKNxshtrndVvq/009H00hau2AAIWnLn8dZyTAnV44KMXxCh2J/dXTkw==
+
+"@picovoice/porcupine-react-native@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@picovoice/porcupine-react-native/-/porcupine-react-native-3.0.2.tgz#8eabb16222ad95902a48202b427d669032df2c6a"
+  integrity sha512-nmvk1aBVPQ45kCdfToq5DhvyQDdkSO9XZjBO/2KRgTs1qNXDfYeo0vZGvQuUWdGpfzgZExYcVcNLfs8k0jB5fg==
+
+"@picovoice/react-native-voice-processor@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@picovoice/react-native-voice-processor/-/react-native-voice-processor-1.2.2.tgz#dac86c918a3f299d859a3988fe25f98faa5d13a2"
+  integrity sha512-l3pQWNfPI7lJiVnMhyjQx9WoF1QhvsBNf9pEIVcEGipHrfdW1HTZ3RPRRHfZLUSPiIGHrQf1R/tMshQPZmkY3w==
+
+"@picovoice/rhino-react-native@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@picovoice/rhino-react-native/-/rhino-react-native-3.0.2.tgz#5ae7736d1883818b33567132ce5d5c88e07030f2"
+  integrity sha512-aVABth45eaAIWTAnYj3kVRosK8rHxbPKtoFRKTT3V0aU6g98ShQEh0t4ft9EUo5pcQiKCYCG0YhXaH9phOT6Zg==
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.npmjs.org/@protobufjs/aspromise/-/aspromise-1.1.2.tgz"

@@ -3,11 +3,22 @@ import {Alert} from "react-native";
 import {JwtToken} from "../screens/Context";
 import RNRestart from 'react-native-restart';
 import {Dispatch, SetStateAction} from "react";
-import {CHECK_JWT, LOGIN_JWT} from "@env";
+import {CHECK_JWT, LOGIN_JWT, PORCUPINE_API_KEY} from "@env";
 import {getAuth} from "firebase/auth";
 import { Buffer } from 'buffer';
 import * as RNLocalize from "react-native-localize";
-// EXPO COOL STUFF
+import { Audio } from 'expo-av';
+// PORCUPINE
+import {
+  PorcupineManager,
+  BuiltInKeywords,
+} from '@picovoice/porcupine-react-native';
+import {Cheetah, CheetahErrors} from '@picovoice/cheetah-react-native';
+// import {OrcaWorker} from '@picovoice/orca-react-native';
+import {
+  VoiceProcessor,
+  VoiceProcessorError,
+} from '@picovoice/react-native-voice-processor';
 
 // URLS
 const checkEndpoint: string = CHECK_JWT;
@@ -19,6 +30,7 @@ export const getLanguage = () => {
     return locales[0].languageTag;
   }
 }
+
 /////////////// CHECK GET SET JWT /////////////
 export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
   try {
@@ -194,6 +206,129 @@ export const connectionAlert = () => {
     ]
   );
 }
+
+let porcupineManager: PorcupineManager | undefined = undefined;
+
+export const startListening = async () => {
+  try {
+    if (!porcupineManager) {
+      console.log("Creating new PorcupineManager instance")
+      porcupineManager = await PorcupineManager.fromBuiltInKeywords(
+        PORCUPINE_API_KEY,
+        [BuiltInKeywords.JARVIS],
+        (keyword:number) => {
+          console.log("Detected Keyword!");
+          startCheetahRecording()
+        },
+        () => {}
+      );
+    }
+    await porcupineManager?.start();
+  }catch (e:unknown) {
+    if (e instanceof Error) {
+      console.error("Error while listening occurred", e);
+    }
+  }
+};
+
+
+const getAudioFrameRate = async (audioFileUri: string) => {
+  try {
+    const { sound } = await Audio.Sound.createAsync({ uri: audioFileUri });
+    const status = await sound.getStatusAsync();
+    return status.sampleRate;
+  } catch (error) {
+    console.error("Error while getting audio frame rate", error);
+  }
+};
+
+
+
+const startCheetahRecording = async (
+  updateTranscript: (text:string) => void
+) => {
+
+
+  let cheetah;
+  try {
+    cheetah = await Cheetah.create(
+      PORCUPINE_API_KEY,
+      "../PicoVoice/Cheetah/cheetah_params.pv"
+    );
+  } catch (err:unknown) {
+    if (err instanceof Error) {
+      console.error("Error while creating Cheetah", err);
+      return;
+    }
+  }
+
+  let transcript = "";
+
+  try {
+    while (1) {
+      const partialResult = await cheetah?.process(FUNCTION());
+      transcript += partialResult?.transcript;
+      if (partialResult?.isEndpoint) {
+        const finalResult = await cheetah?.flush();
+        transcript += finalResult?.transcript;
+      }
+    }
+  } catch (e) {
+    console.error("Error while recording", e);
+  }
+};
+
+export const stopListening = async () => {
+  if (porcupineManager) {
+    await porcupineManager.stop();
+    porcupineManager = undefined;
+  }
+};
+
+/*
+
+const orca = await OrcaWorker.fromPublicDirectory(
+  accessKey,
+  modelPath
+);
+
+const speech = await orca.generate(text);
+
+*/
+
+
+
+
+const detectedKeyWord = async (
+  detected: boolean,
+  setDetected: Dispatch<SetStateAction<boolean>>
+) => {
+  if (detected) {
+    return
+  }
+  setDetected(true);
+  // start processing
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 

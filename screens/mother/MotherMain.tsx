@@ -6,7 +6,7 @@ import {PrimaryContext} from "../Context";
 import {Audio} from 'expo-av';
 import {MotherTranscriptButton} from "../../components/buttons/MotherTranscriptButton";
 import {SpeechErrorEvent} from "@react-native-voice/voice";
-import {getLanguage} from "../../AppFunctions/AppFunctions";
+import {getLanguage, startListening} from "../../AppFunctions/AppFunctions";
 
 
 const lovoErrorCodes = [
@@ -44,6 +44,7 @@ export const MotherMain: React.FC<MotherMainTypes> = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const {user, defaultPostRequest } = useContext(PrimaryContext);
+
 
   const getData = (newTranscript: string):object => {
     return {

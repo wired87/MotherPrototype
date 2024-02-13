@@ -7,8 +7,9 @@ import {MotherMain} from "./MotherMain";
 import MotherTools from "./MotherTools";
 import HeaderButton from "../../components/buttons/navigation/HeaderButton";
 import {motherMainStyles as mms} from "./styles";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import EmailAuthScreen from "./ToolScreens/EmailAuthScreen";
+import {startListening, stopListening} from "../../AppFunctions/AppFunctions";
 
 const MotherStack = createNativeStackNavigator();
 
@@ -29,6 +30,27 @@ const MotherNavigator: React.FC = () => {
     // @ts-ignore
     navigation.navigate(screen);
   }
+  const route = useRoute();
+
+
+  // VOICE LISTENER LOGIC
+  useEffect(() => {
+    console.log("ROUTE NAME:", route.name);
+    if (route.name === "MotherMain" || route.name === "MotherNavigator") {
+      startListening()
+        .then(() => {
+            console.log("Start listening...");
+          }
+        )
+    } else {
+      stopListening()
+        .then(() => {
+            console.log("Route name changed Stop Listening...");
+          }
+        )
+    }
+  }, [route.name]);
+
 
   const screenHeaderOptions = useMemo(() => ({
     header:

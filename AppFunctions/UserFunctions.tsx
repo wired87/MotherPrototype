@@ -43,10 +43,17 @@ type userObjectType = (
 ) => [null | UserObjectTypes, React.Dispatch<React.SetStateAction<UserObjectTypes | null>>];
 
 type SetUserObjectTypes =
-  (initialValue: Dispatch<SetStateAction<UserObjectTypes | null>>, initialValue2: Dispatch<SetStateAction<boolean>>
+  (
+    setUser: Dispatch<SetStateAction<UserObjectTypes | null>>,
+    setAuthenticated: Dispatch<SetStateAction<boolean>>,
+    setError: Dispatch<SetStateAction<string>>
   ) => Promise<void>;
 
-export const setUserObject: SetUserObjectTypes = async (setUser, setAuthenticated) => {
+export const setUserObject: SetUserObjectTypes = async (
+  setUser,
+  setAuthenticated,
+  setError
+) => {
   console.log("Init the UserObject..");
   try {
     const existingUser = await checkUserAvailability();
