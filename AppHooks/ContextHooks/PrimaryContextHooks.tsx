@@ -1,8 +1,8 @@
 
 import {useJwt, useUser} from "../AuthHooks";
-import {useBottomSheetLoaded, useIsConnected} from "../InitHooks";
+import {useBottomSheetLoaded} from "../InitHooks";
 import {useDarkmode} from "../ThemeHook";
-import {useError, useLoading} from "../PrimaryHooks";
+import {useIsConnected, useLoading} from "../PrimaryHooks";
 import {Dispatch, SetStateAction} from "react";
 import {sendObject} from "../../screens/chat/functions/SendProcess";
 import {getToken} from "../../AppFunctions/AppFunctions";
@@ -37,7 +37,6 @@ export const usePrimaryContextHooks = () => {
 
   // PRIMARY HOOKS
   const {loading, setLoading} = useLoading();
-  const {error, setError} = useError();
 
   // MESSAGE HOOKS
   const {clearMessages, setClearMessages} = useClearMessages();

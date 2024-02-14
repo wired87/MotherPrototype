@@ -4,10 +4,9 @@ import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 // @ts-ignore
 import {ChatMain} from "./ChatMain";
-import {Pressable, StyleSheet} from "react-native";
 
 // Context
-import {FunctionContext, InputContext, JwtToken, MediaContext, PrimaryContext, ThemeContext} from "../Context";
+import {FunctionContext, InputContext, JwtToken, MediaContext, PrimaryContext} from "../Context";
 
 // Ads
 import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, showAds} from "./functions/AdLogic";
@@ -142,10 +141,10 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     let aiResponse: object;
     try {
       console.log("Sending Message Object...")
+      console.log("jwtTokenRef?.current send Package ChatNav:", jwtTokenRef?.current);
       if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
         const response = await sendObject(userMessage, jwtTokenRef.current, setJwtToken);
         if (!response) {
-          // Error while sending the message. -> Send contact
           console.log("sendObject Response === null... (in ChatNav)")
           errorMessageAIResponse();
         } else {
@@ -226,9 +225,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
 
   const sendMessageProcess = useCallback(async() => {
     textMessageStart();
-    /*const success = await checkMessagesLeftProcess();
-
-    if (success) {*/
     if (inputRef.current?.trim().length !== 0) {
       const userMessage: userMesssageObject =  await createUserMessage();
       setMessageIndex((state: number) => state + 1)
@@ -249,7 +245,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     } else {
       console.log("0 input try again")
       const response:object = createMessageObject(
-        "Im here to help. How can i do that?",
+        "Do you need help for something?",
         "text",
         messageIndex,
         getUserID(user),
@@ -259,10 +255,6 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
       setMessages(prevMessages => [...prevMessages, response]);
       setTyping(false);
     }
-    /*}else {
-      // Ads in useEffect above will be showed
-      setTyping(false);
-    }*/
   }, [
     user,
     messageIndex,

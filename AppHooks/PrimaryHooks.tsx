@@ -1,12 +1,10 @@
-import {UserObject} from "../screens/Context";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import NetInfo from "@react-native-community/netinfo";
 import {setUserObject} from "../AppFunctions/UserFunctions";
 import {connectionAlert} from "../AppFunctions/AppFunctions";
 
 import {useAuthenticated, useUser} from "./AuthHooks";
 
-type UseUserType = () => [UserObject | null, React.Dispatch<React.SetStateAction<UserObject>>];
 
 
 // Loading Hook
@@ -39,7 +37,7 @@ export function useMotherError() {
 
 
 
-export const useConnected = () => {
+export const useIsConnected = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   const { setUser } = useUser();

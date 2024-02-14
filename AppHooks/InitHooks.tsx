@@ -7,11 +7,7 @@ export function useAppIsReady() {
   return {appIsReady, setAppIsReady};
 }
 
-// IsConnected Hook
-export function useIsConnected() {
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  return {isConnected, setIsConnected};
-}
+
 
 // BottomSheetLoaded Hook
 export function useBottomSheetLoaded() {

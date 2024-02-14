@@ -25,12 +25,13 @@ import NetInfo from "@react-native-community/netinfo";
 
 // HOOKS
 import {useUser} from "./AppHooks/AuthHooks";
-import {useAppIsReady, useFirstContact, useIsConnected} from "./AppHooks/InitHooks";
+import {useAppIsReady, useFirstContact} from "./AppHooks/InitHooks";
 import {useCustomTheme, useDarkmode} from "./AppHooks/ThemeHook";
 import {useInputContextHooks} from "./AppHooks/ContextHooks/InputContextHooks";
 import {usePrimaryContextHooks} from "./AppHooks/ContextHooks/PrimaryContextHooks";
 import {useToolHooks} from "./AppHooks/ToolHooks";
 import {useMediaContextHooks} from "./AppHooks/ContextHooks/MediaContextHooks";
+import {useIsConnected} from "./AppHooks/PrimaryHooks";
 
 
 export default function App() {

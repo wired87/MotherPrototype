@@ -1,7 +1,7 @@
 import DefaultContainer from "./DefaultContainer";
 import {View, ActivityIndicator, Image} from "react-native";
 import {styles} from "./contiStyles";
-import React, {memo, useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import { TypeIndicator } from "../animations/TypeIndicator";
 import {FunctionContext, InputContext, MediaContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 import {DefaultInput} from "../input/DefaultInput";
@@ -66,7 +66,7 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
 
 
   const send = async () => {
-    if (!typing && input?.length >= 1 && input.trim().length > 0/* && messagesLeft !== "0"*/) {
+    if (!typing && input.trim().length > 0/* && messagesLeft !== "0"*/) {
       await sendMessageProcess();
     /*} else if (messageRef.current === "0") {
       console.log("Ads initialized...")
