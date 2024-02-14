@@ -12,10 +12,11 @@ type UseUserType = () => [UserObject | null, React.Dispatch<React.SetStateAction
 // Loading Hook
 export function useLoading() {
   const [loading, setLoading] = useState<boolean>(false);
-  return {loading, setLoading};
+
+  const updateLoading = () => setLoading(!loading);
+
+  return {loading, setLoading, updateLoading};
 }
-
-
 
 
 export function useError() {
@@ -23,6 +24,16 @@ export function useError() {
 
   return {error, setError};
 }
+
+
+export function useMotherError() {
+  const [motherError, setMotherError] = useState<string>("");
+  const updateMotherError = (text:string) => {setMotherError(text)}
+
+  return {motherError, setMotherError, updateMotherError};
+}
+
+
 
 
 

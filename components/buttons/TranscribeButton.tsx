@@ -1,14 +1,13 @@
 import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
 import {Pressable, Vibration} from "react-native";
-import Voice, {SpeechErrorEvent} from "@react-native-voice/voice";
-import * as RNLocalize from 'react-native-localize';
+import Voice, {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
 import {styles as s} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {startSpeech, stopSpeech} from "../../AppFunctions/TranscribeFunctions";
 
 // STRINGS
 const defaultIcon:string = "microphone";
-
 
 interface TranscribeButtonTypes {
   setTranscript: Dispatch<SetStateAction<string>>; //((text:string) => void);//
@@ -33,7 +32,6 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
 
   const { customTheme } = useContext(ThemeContext);
   const [currentSpeech, setCurrentSpeech] = useState(false);
-  const [languageTag, setLanguageTag] = useState('');
 
   // styles
   const recordingButtonStyles = buttonStyles || [s.recordingButton, {borderColor: customTheme.text}];
@@ -60,39 +58,19 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   }, [setError]);
 
 
-  const onSpeechResults = (r: any) => {
-    const newTranscript:string = transcript + " " + r.value[0] + " ";
-    setTranscript? setTranscript(newTranscript) : null;
+  const onSpeechResults = (e: SpeechResultsEvent) => {
+    if (e && e.value) {
+      const newTranscript:string = transcript + " " + e.value[0] + " ";
+      setTranscript? setTranscript(newTranscript) : null;
+    }
   }
 
-
-  useEffect(() => {
-    const getDeviceLanguage = () => {
-      const locales = RNLocalize.getLocales();
-      if (locales.length > 0) {
-        setLanguageTag(locales[0].languageTag);
-      } else {
-        setLanguageTag("en-US");
-      }
-    };
-    getDeviceLanguage();
-  }, []);
-
-
-  const startSpeech = async () => {
-    console.log("Recognized voice language", languageTag);
-    await Voice.start(languageTag);
-  }
-
-  const stopSpeech = async () => {
-    await Voice.stop();
-  }
 
   const handleSpeechToText = useCallback(() => {
     Vibration.vibrate();
     if (currentSpeech) {
       console.log("VOICE STOPPED IN DEFAULT ")
-      stopSpeech()
+      stopSpeech(Voice)
         .then(() => {
           console.log("Voice recording ended..")
           }
