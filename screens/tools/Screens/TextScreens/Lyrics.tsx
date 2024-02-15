@@ -7,7 +7,7 @@ import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {ScrollView, Vibration} from "react-native";
 import {TEXT_REQUEST_URL} from "@env";
 import lyric from "../../../../assets/animations/lyric.json";
-import {getLanguage} from "../../../../AppFunctions/AppFunctions";
+import {getLanguage} from "../../../../AppFunctions/JwtFunctions";
 import {toolStyles as ts} from "../../toolStyles";
 import {fieldErrorText} from "../../../Functions";
 

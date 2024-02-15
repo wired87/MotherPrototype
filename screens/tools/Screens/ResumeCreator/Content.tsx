@@ -13,7 +13,7 @@ import {DefaultButton} from "../../../../components/buttons/DefaultButton";
 import {DefaultText} from "../../../../components/text/DefaultText";
 
 import {Vibration} from "react-native";
-import {getCurrentLanguage} from "../../../../AppFunctions/AppFunctions";
+import {getCurrentLanguage} from "../../../../AppFunctions/JwtFunctions";
 import {toolStyles as ts} from "../../toolStyles";
 import {StyleProps} from "react-native-reanimated";
 import { RESUME_URL } from "@env";

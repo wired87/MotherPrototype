@@ -1,22 +1,16 @@
 import * as SecureStore from "expo-secure-store";
 import {Alert} from "react-native";
-import {JwtToken} from "../screens/Context";
 import RNRestart from 'react-native-restart';
 import {Dispatch, SetStateAction} from "react";
 import {CHECK_JWT, LOGIN_JWT, PORCUPINE_API_KEY} from "@env";
-import {getAuth} from "firebase/auth";
 import { Buffer } from 'buffer';
 import * as RNLocalize from "react-native-localize";
-import { Audio } from 'expo-av';
-// PORCUPINE
-import {
-  PorcupineManager,
-  BuiltInKeywords,
-} from '@picovoice/porcupine-react-native';
-import {Cheetah} from '@picovoice/cheetah-react-native';
-// import {OrcaWorker} from '@picovoice/orca-react-native';
 
-import Voice from "@react-native-voice/voice";
+import {Cheetah} from '@picovoice/cheetah-react-native';
+
+// import {OrcaWorker} from '@picovoice/orca-react-native'; ////////////////////////////////////////////////////////////
+
+import {JwtToken} from "../AppInterfaces/AuthInterfaces";
 
 // URLS
 const checkEndpoint: string = CHECK_JWT;
@@ -33,10 +27,10 @@ export const getLanguage = () => {
 /////////////// CHECK GET SET JWT /////////////
 export const checkTokenAvailability = async (): Promise<JwtToken | null> => {
   try {
-    const JwtToken = await SecureStore.getItemAsync("JwtData");
-    console.log("Token available...");
-    if (JwtToken) {
-      return JSON.parse(JwtToken);
+    const jwtToken = await SecureStore.getItemAsync("JwtData");
+    if (jwtToken) {
+      console.log("Token available:", jwtToken);
+      return JSON.parse(jwtToken);
     }
   }catch(e: unknown){
     if (e instanceof Error)
@@ -51,25 +45,30 @@ export const saveJwtToken = async (data: JwtToken) => {
   await SecureStore.setItemAsync("JwtData", jsonData);
 }
 
-export const getToken = async (setJwtToken: Dispatch<SetStateAction<JwtToken | null>>) => {
+export const getToken = async (updateJwtToken: (value:JwtToken | null) => void, userID?:string) => {
+  console.log("Try get Token...")
   const userJwtTokenExist = await checkTokenAvailability();
   if (userJwtTokenExist) {
     try {
-      await checkExistingToken(userJwtTokenExist, setJwtToken);
+      await checkExistingToken(userJwtTokenExist, updateJwtToken, userID);
     }catch (e) {
       if (e instanceof Error) {
         console.error("Error occurred AAAAAAAH,", e);
       }
     }
   }else {
-    const tokenResponse = await getNewTokenProcess(setJwtToken);
+    const tokenResponse = await getNewTokenProcess(updateJwtToken, userID);
     console.log("tokenResponse getToken:", tokenResponse);
     return tokenResponse;
   }
 }
 
-export const checkExistingToken = async (token: JwtToken, setJwtToken: Dispatch<SetStateAction<JwtToken | null>>) => {
+export const checkExistingToken = async (
+  token: JwtToken, updateJwtToken: (value:JwtToken | null) => void,
+  userID?:string
+) => {
   // Generate here a new access token with sending the refresh token to the Backend
+  console.log("Check existing Token...");
   const res = await fetch(checkEndpoint, {
     method: 'POST',
     headers: {
@@ -79,19 +78,19 @@ export const checkExistingToken = async (token: JwtToken, setJwtToken: Dispatch<
   });
   const response = await res.json();
 
-  console.log("checkEndpoint Response:", response);
+  console.log("Check Token Response", response);
 
   if (response.refresh && response.refresh.access) {
-    console.log("AccessToken valid...");
+    console.log("Received AccessToken valid...");
     token.access = response.refresh.access;
     await saveJwtToken(token);
-    setJwtToken(token);
+    updateJwtToken(token);
     console.log("Token successfully Set...");
 
     return response.refresh;
   }else {
     console.log("response contains no valid token...")
-    const tokenResponse = await getNewTokenProcess(setJwtToken);
+    const tokenResponse = await getNewTokenProcess(updateJwtToken, userID);
     if (!tokenResponse) {
       return null;
     }
@@ -99,13 +98,13 @@ export const checkExistingToken = async (token: JwtToken, setJwtToken: Dispatch<
   }
 }
 
-export const getNewTokenProcess = async (setJwtToken: Dispatch<SetStateAction<JwtToken | null>>) => {
+export const getNewTokenProcess = async ( updateJwtToken: (value:JwtToken | null) => void, userID?:string ) => {
   // Generate here a new TokenObject
-  console.log("getNewTokenProcess started..")
-  const tokenObject: JwtToken | null  = await getNewToken();
+  console.log("getNewTokenProcess started...");
+  const tokenObject: JwtToken | null  = await getNewToken(userID);
   console.log("tokenObject getNewTokenProcess:", tokenObject);
   if (tokenObject) {
-    setJwtToken(tokenObject);
+    updateJwtToken(tokenObject);
     return tokenObject
   }else {
     console.log("Could not save the new JWT Token!")
@@ -113,9 +112,10 @@ export const getNewTokenProcess = async (setJwtToken: Dispatch<SetStateAction<Jw
   }
 }
 
-const getNewToken = async(): Promise<JwtToken | null> => {
+
+const getNewToken = async(userID?:string): Promise<JwtToken | null> => {
   console.log("getNewToken started..");
-  const senderObject = JSON.stringify({"user_id": getAuth().currentUser?.uid});
+  const senderObject = JSON.stringify({"user_id": userID});
   try {
     const res = await fetch(
       getEndpoint, {

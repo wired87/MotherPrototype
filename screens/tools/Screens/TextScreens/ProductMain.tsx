@@ -5,7 +5,7 @@ import React from "react";
 import UniversalTextCreator from "../../../../components/container/Tools/UniversalTextCreator";
 import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {toolStyles as ts} from "../../toolStyles";
-import {getLanguage} from "../../../../AppFunctions/AppFunctions";
+import {getLanguage} from "../../../../AppFunctions/JwtFunctions";
 import {ScrollView, Vibration} from "react-native";
 import {TEXT_REQUEST_URL} from "@env";
 import cardLoading from "../../../../assets/animations/cardLoading.json";

@@ -6,7 +6,7 @@ import UniversalTextCreator from "../../../../components/container/Tools/Univers
 import {DefaultInput} from "../../../../components/input/DefaultInput";
 import {toolStyles as ts} from "../../toolStyles";
 import {ScrollView, Vibration} from "react-native";
-import {getLanguage} from "../../../../AppFunctions/AppFunctions";
+import {getLanguage} from "../../../../AppFunctions/JwtFunctions";
 import {TEXT_REQUEST_URL} from "@env";
 import fitness from "../../../../assets/animations/fitness.json";
 import {DefaultText} from "../../../../components/text/DefaultText";

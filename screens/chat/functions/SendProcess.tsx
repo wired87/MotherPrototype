@@ -1,9 +1,10 @@
-import firebase from "firebase/compat";
-import {JwtToken, UserObject} from "../../Context";
 import {Dispatch, SetStateAction} from "react";
-import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions/AppFunctions";
+import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions/JwtFunctions";
 import {CHAT_REQUEST_URL} from "@env";
 import * as FileSystem from "expo-file-system";
+import {JwtToken} from "../../../AppInterfaces/AuthInterfaces";
+
+
 export const getCurrentTime = () => {
   const timeNow = new Date();
   let timeHoursNow = timeNow.getHours();

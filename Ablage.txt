@@ -1,0 +1,88 @@
+
+
+/*
+FIREBASE REVENUE CAT CHECK IFR A USER IS ON PAID PLAN
+getAuth().currentUser.getIdTokenResult()
+  .then((idTokenResult) => {
+    // Confirm the user has a premium entitlement.
+    if (!!idTokenResult.claims.activeEntitlements.includes("premium")) {
+      // Show premium UI.
+      showPremiumUI();
+    } else {
+      // Show regular user UI.
+      showFreeUI();
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+  useEffect(() => {
+    console.log("Check for the internet connection..")
+    if(!isConnected){
+      console.log("Connection online..")
+      const unsubscribe = NetInfo.addEventListener((state) => {
+        if (state.isConnected) {
+          setUserObject()
+            .then(() => console.log("Connection successfully restored.."));
+        } else {
+          console.log("Could not restore the connection..");
+          connectionAlert()
+        }
+      });
+      return () => unsubscribe();
+    } else {
+      console.log("isConnected:", isConnected);
+      connectionAlert();
+    }
+  }, [isConnected]);
+
+ */
+
+
+/*
+FIREBASE REVENUE CAT CHECK IFR A USER IS ON PAID PLAN
+getAuth().currentUser.getIdTokenResult()
+  .then((idTokenResult) => {
+    // Confirm the user has a premium entitlement.
+    if (!!idTokenResult.claims.activeEntitlements.includes("premium")) {
+      // Show premium UI.
+      showPremiumUI();
+    } else {
+      // Show regular user UI.
+      showFreeUI();
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+  useEffect(() => {
+    console.log("Check for the internet connection..")
+    if(!isConnected){
+      console.log("Connection online..")
+      const unsubscribe = NetInfo.addEventListener((state) => {
+        if (state.isConnected) {
+          setUserObject()
+            .then(() => console.log("Connection successfully restored.."));
+        } else {
+          console.log("Could not restore the connection..");
+          connectionAlert()
+        }
+      });
+      return () => unsubscribe();
+    } else {
+      console.log("isConnected:", isConnected);
+      connectionAlert();
+    }
+  }, [isConnected]);
+
+ */
+
+
+
+/*
+
+
+
+*/

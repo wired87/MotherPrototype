@@ -2,17 +2,7 @@ import {createContext, Dispatch, SetStateAction} from "react";
 
 import {ImagePickerResult} from "expo-image-picker";
 import {DocumentPickerResult} from "expo-document-picker";
-
-export interface JwtToken {
-  access: string;
-  refresh: string;
-}
-
-export interface UserObject {
-  uid: string;
-  email?: string;
-  emailService?: boolean;
-}
+import {JwtToken, UserObjectInterface} from "../AppInterfaces/AuthInterfaces";
 
 
 export const PrimaryContext = createContext(
@@ -22,8 +12,8 @@ export const PrimaryContext = createContext(
 
     toggleTheme: (() => {}),
 
-    user: null as UserObject | null,
-    setUser: (() => {}) as Dispatch<SetStateAction<UserObject | null>>,
+    user: null as UserObjectInterface | null,
+    setUser: (() => {}) as Dispatch<SetStateAction<UserObjectInterface | null>>,
 
     loading: false,
     setLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
@@ -35,7 +25,7 @@ export const PrimaryContext = createContext(
     setJwtToken: (() => {}) as Dispatch<SetStateAction<JwtToken | null>>,
 
     isConnected: false,
-    setIsConnected: (() => {}) as Dispatch<SetStateAction<boolean>>,
+    updateIsConnected: (value: boolean):void => {},
 
     bottomSheetLoaded: false,
     setBottomSheetLoaded: (() => {}) as Dispatch<SetStateAction<boolean>>,

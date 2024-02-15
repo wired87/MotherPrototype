@@ -1,11 +1,9 @@
 import {useEffect, useState} from "react";
 import NetInfo from "@react-native-community/netinfo";
 import {setUserObject} from "../AppFunctions/UserFunctions";
-import {connectionAlert} from "../AppFunctions/AppFunctions";
+import {connectionAlert} from "../AppFunctions/JwtFunctions";
 
-import {useAuthenticated, useUser} from "./AuthHooks";
-
-
+import {UseIsConnectedInterface, UseIsConnectedParams} from "../AppInterfaces/PrimaryContextHooks";
 
 // Loading Hook
 export function useLoading() {
@@ -32,36 +30,41 @@ export function useMotherError() {
 }
 
 
+export const useIsConnected = (
+  {
+   updateUser,
+   updateAuthenticated,
+   updateInitError
+  }: UseIsConnectedParams
+): UseIsConnectedInterface => {
 
-
-
-
-
-export const useIsConnected = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  const { setUser } = useUser();
-  const {setAuthenticated} = useAuthenticated();
-  const {setError} = useError();
+  const updateIsConnected = (value: boolean) => { setIsConnected(value); };
 
-    useEffect(() => {
-      console.log("Check for the internet connection..");
-      if (isConnected) {
-        console.log("Connection online...");
-        const unsubscribe = NetInfo.addEventListener((state) => {
-          if (state.isConnected) {
-            setUserObject(setUser, setAuthenticated, setError)
-              .then(() => console.log("Connection successfully restored.."));
-          } else {
-            console.log("Could not restore the connection..");
-            connectionAlert()
-          }
-        });
-        return () => unsubscribe();
-      }
-    }, [isConnected]);
+  useEffect(() => {
+    console.log("Check for the internet connection..");
+    if (isConnected) {
+      console.log("Connection online...");
+      const unsubscribe = NetInfo.addEventListener((state) => {
+        if (state.isConnected) {
+          setUserObject(updateUser, updateAuthenticated, updateInitError)
+            .then(() => console.log("Connection successfully restored.."));
+        } else {
+          console.log("Could not restore the connection..");
+          connectionAlert();
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, [isConnected]);
 
-  return {isConnected, setIsConnected}
+  return {
+    isConnected,
+    setIsConnected,
+    updateIsConnected
+  };
 }
+
 
 

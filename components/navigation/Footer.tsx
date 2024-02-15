@@ -20,8 +20,6 @@ import SwipeModal from "../modals/SwipeModal";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import WelcomeContainer from "../container/WelcomeContainer";
 import MotherNavigator from "../../screens/mother/MotherNavigator";
-import {startListening, stopListening} from "../../AppFunctions/AppFunctions";
-import {useRoute} from "@react-navigation/native";
 
 const adUnitIdBannerAdFooter = __DEV__
   ? TestIds.BANNER
@@ -63,15 +61,17 @@ const NavigationMain: React.FC<NavMainTypes> = (
   }
 ) => {
 
+  // REFS
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
-
-  const {customTheme} = useContext(ThemeContext)
-
-  const {bottomSheetLoaded} = useContext(PrimaryContext);
-
   const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
+  // CONTEXT
+  const {customTheme} = useContext(ThemeContext)
+  const {bottomSheetLoaded, user} = useContext(PrimaryContext);
 
 
+  useEffect(() => {
+    console.log("User set in Context:", user)
+  }, [user]);
 
 
   useEffect(() => {
@@ -194,10 +194,3 @@ const NavigationMain: React.FC<NavMainTypes> = (
   );
 }
 export default memo(NavigationMain);
-
-
-/*
-
-
-
- */

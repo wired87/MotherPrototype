@@ -1,4 +1,4 @@
-import {getLanguage} from "./AppFunctions";
+import {getLanguage} from "./JwtFunctions";
 import {LovoObjectTypes} from "../AppInterfaces/MotherInterfaces";
 
 export const getMotherRequestData = (newTranscript: string, userID?: string, ):object => {

@@ -1,5 +1,5 @@
 import Voice, {SpeechErrorEvent} from "@react-native-voice/voice";
-import {getLanguage} from "./AppFunctions";
+import {getLanguage} from "./JwtFunctions";
 import {Dispatch, SetStateAction} from "react";
 
 export const startSpeech = async () => {

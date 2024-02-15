@@ -5,13 +5,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
 
 import {
-  PrimaryContext,
   ToolContext,
   ThemeContext,
   lightModeTheme,
   darkModeTheme,
   MediaContext,
-  InputContext, UserObject
+  InputContext,
 } from "./screens/Context";
 
 import NavigationMain from "./components/navigation/Footer";
@@ -19,63 +18,31 @@ import { getDarkmode } from "./components/container/modalContainers/DarkMode";
 import * as SecureStore from "expo-secure-store";
 import * as Font from "expo-font";
 
-import {getAuth} from "firebase/auth";
-
-import NetInfo from "@react-native-community/netinfo";
-
 // HOOKS
-import {useUser} from "./AppHooks/AuthHooks";
 import {useAppIsReady, useFirstContact} from "./AppHooks/InitHooks";
 import {useCustomTheme, useDarkmode} from "./AppHooks/ThemeHook";
 import {useInputContextHooks} from "./AppHooks/ContextHooks/InputContextHooks";
-import {usePrimaryContextHooks} from "./AppHooks/ContextHooks/PrimaryContextHooks";
 import {useToolHooks} from "./AppHooks/ToolHooks";
 import {useMediaContextHooks} from "./AppHooks/ContextHooks/MediaContextHooks";
-import {useIsConnected} from "./AppHooks/PrimaryHooks";
+
+// PROVIDER
+import PrimaryContextProvider from "./AppContextCoponents/PrimaryContextProvider";
 
 
 export default function App() {
-  // AUTH HOOKS
-  const {setUser } = useUser();
 
-  // INIT HOOKS
-  const {appIsReady, setAppIsReady} = useAppIsReady();
-  const {setIsConnected} = useIsConnected();
-  const {firstContact, setFirstContact} = useFirstContact();
+
+  const { appIsReady, setAppIsReady} = useAppIsReady();
+
+  const { firstContact, setFirstContact} = useFirstContact();
 
   // THEME HOOKS
-  const {darkmode, setDarkmode}= useDarkmode();
+  const {darkmode, setDarkmode} = useDarkmode();
   const {customTheme, setCustomTheme} = useCustomTheme();
 
   // STYLES
   const gestureHandlerStyles = { flex: 1, backgroundColor: customTheme.primary }
 
-  //////////// INIT THE APPLICATION
-  useEffect(() => {
-    NetInfo.fetch().then((state) => {
-      console.log("Internet Connection set:", state.isConnected);
-      setIsConnected(state.isConnected || false);
-    });
-  }, []);
-
-
-  useEffect(() => {
-    getAuth().onAuthStateChanged((userObject) => {
-      if (userObject) {
-        const customuserObject:UserObject= {
-          uid: userObject.uid,
-          email: undefined,
-          emailService: undefined
-        }
-        setUser(customuserObject);
-        console.log("User object set: ", userObject)
-      } else {
-        console.log("User could not be set in App")
-      }
-    });
-  }, []);
-
-  // IF user && authenticated STATE: getJwtToken -> in AuthHooks
 
   useEffect(() => {
     console.log("appIsReady", appIsReady);
@@ -146,108 +113,20 @@ export default function App() {
     <ThemeContext.Provider value={{customTheme}}>
       <MediaContext.Provider value={useMediaContextHooks()}>
         <InputContext.Provider value={useInputContextHooks()}>
-          <PrimaryContext.Provider value={usePrimaryContextHooks()}>
+          <PrimaryContextProvider>
             <ToolContext.Provider value={useToolHooks()}>
               <GestureHandlerRootView style={gestureHandlerStyles}>
                 <BottomSheetModalProvider>
                   <NavigationContainer>
-                    <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact}/>
+                    <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact} />
                   </NavigationContainer>
                 </BottomSheetModalProvider>
               </GestureHandlerRootView>
             </ToolContext.Provider>
-          </PrimaryContext.Provider>
+          </PrimaryContextProvider>
         </InputContext.Provider>
       </MediaContext.Provider>
     </ThemeContext.Provider>
   );
 }
 
-
-
-/*
-FIREBASE REVENUE CAT CHECK IFR A USER IS ON PAID PLAN
-getAuth().currentUser.getIdTokenResult()
-  .then((idTokenResult) => {
-    // Confirm the user has a premium entitlement.
-    if (!!idTokenResult.claims.activeEntitlements.includes("premium")) {
-      // Show premium UI.
-      showPremiumUI();
-    } else {
-      // Show regular user UI.
-      showFreeUI();
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
-  useEffect(() => {
-    console.log("Check for the internet connection..")
-    if(!isConnected){
-      console.log("Connection online..")
-      const unsubscribe = NetInfo.addEventListener((state) => {
-        if (state.isConnected) {
-          setUserObject()
-            .then(() => console.log("Connection successfully restored.."));
-        } else {
-          console.log("Could not restore the connection..");
-          connectionAlert()
-        }
-      });
-      return () => unsubscribe();
-    } else {
-      console.log("isConnected:", isConnected);
-      connectionAlert();
-    }
-  }, [isConnected]);
-
- */
-
-
-/*
-FIREBASE REVENUE CAT CHECK IFR A USER IS ON PAID PLAN
-getAuth().currentUser.getIdTokenResult()
-  .then((idTokenResult) => {
-    // Confirm the user has a premium entitlement.
-    if (!!idTokenResult.claims.activeEntitlements.includes("premium")) {
-      // Show premium UI.
-      showPremiumUI();
-    } else {
-      // Show regular user UI.
-      showFreeUI();
-    }
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
-  useEffect(() => {
-    console.log("Check for the internet connection..")
-    if(!isConnected){
-      console.log("Connection online..")
-      const unsubscribe = NetInfo.addEventListener((state) => {
-        if (state.isConnected) {
-          setUserObject()
-            .then(() => console.log("Connection successfully restored.."));
-        } else {
-          console.log("Could not restore the connection..");
-          connectionAlert()
-        }
-      });
-      return () => unsubscribe();
-    } else {
-      console.log("isConnected:", isConnected);
-      connectionAlert();
-    }
-  }, [isConnected]);
-
- */
-
-
-
-/*
-
-
-
-*/
