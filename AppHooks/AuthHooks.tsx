@@ -29,13 +29,13 @@ export const useJwt = ():JwtHookInterface => {
 export const useUser = (
   {
     authenticated,
-    updateAuthenticated
+    updateAuthenticated,
+    updateJwtToken
   }:UserParamInterface
 ):UserHookInterface => {
   const [user, setUser] =
     useState<UserObjectInterface | null>(null);
 
-  const {updateJwtToken} = useJwt();
 
 
   const updateUser = (value:UserObjectInterface | null) =>

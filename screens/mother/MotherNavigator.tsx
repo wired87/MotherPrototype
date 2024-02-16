@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useContext, useEffect, useMemo, useState} from "react";
-import {PrimaryContext, ToolContext} from "../Context";
+import {PrimaryContext} from "../Context";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {MotherMain} from "./MotherMain";
@@ -8,8 +8,7 @@ import HeaderButton from "../../components/buttons/navigation/HeaderButton";
 import {motherMainStyles as mms} from "./styles";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import EmailAuthScreen from "./ToolScreens/EmailAuthScreen";
-import {startSpeech, stopSpeech} from "../../AppFunctions/TranscribeFunctions";
-import Voice, {SpeechErrorEvent} from "@react-native-voice/voice";
+import {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
 import {MOTHER_URL, PORCUPINE_API_KEY} from "@env";
 import {useLoading, useMotherError} from "../../AppHooks/PrimaryHooks";
 import {BuiltInKeywords, PorcupineManager} from "@picovoice/porcupine-react-native";
@@ -17,21 +16,22 @@ import {stopListening} from "../../AppFunctions/PicoVoice/Porcupine";
 import {getMotherRequestData} from "../../AppFunctions/GetObjectFunctions";
 import {Vibration} from "react-native";
 import {textToSpeech} from "../../AppFunctions/TTSFunctions";
-import {useMotherResponse, useSound} from "../../AppHooks/AudioHooks";
+import {useMotherResponse, useSound, useStt} from "../../AppHooks/AudioHooks";
+import {startSpeech, stopSpeech} from "../../AppFunctions/TranscribeFunctions";
+import {TranscriptHookPropsInterface} from "../../AppInterfaces/HookInterfaces/AudioHookInterface";
 
-// VARIABLES
+
 const MotherStack = createNativeStackNavigator();
 let porcupineManager: PorcupineManager | undefined = undefined;
 
 const MotherNavigator: React.FC = () => {
   // STATES
   const navigation = useNavigation()
-  const [listening, setListening] = useState<boolean>(false);
   // HOOKS
-  const {updateLoading} = useLoading();
+  const {updateLoading, loading} = useLoading();
   const { updateSound } = useSound();
   const { updateMotherError } = useMotherError();
-  const { updateMotherResponse, setMotherResponse } = useMotherResponse();
+  const { setMotherResponse } = useMotherResponse();
   const {setMotherError} = useMotherError();
   // Context
   const {user, defaultPostRequest } = useContext(PrimaryContext);
@@ -44,18 +44,8 @@ const MotherNavigator: React.FC = () => {
   }
   const route = useRoute();
 
-  useEffect(() => {
-    Voice.onSpeechError = onSpeechError;
-    Voice.onSpeechResults = onSpeechResults;
-    Voice.onSpeechEnd = onSpeechEnd;
-
-    return () => {
-      Voice.destroy()
-        .then(() => Voice.removeAllListeners)
-    }
-  }, []);
-
   const onSpeechError = useCallback((e: SpeechErrorEvent) => {
+    console.error("Error occurred while handling the speech:", e);
     textToSpeech(
       "Sorry, i couldn't hear anything. Please repeat it a bit louder. Im not the youngest",
       errorHandling,
@@ -69,29 +59,14 @@ const MotherNavigator: React.FC = () => {
   }, []);
 
   const onSpeechEnd = () => {
-    const timeOutMs:number = 2000;
-    setTimeout(() => {
-      console.log("Stop timer started...")
-      stopSpeech(Voice)
-        .then(() => console.log("Voice stopped..."));
-    }, timeOutMs);
-  }
-
-  const sendData = useCallback(async (newTranscript: string) => {
-    updateLoading();
-    await defaultPostRequest(
-      MOTHER_URL,
-      getMotherRequestData(newTranscript, user?.uid),
-      setMotherError,
-      setMotherResponse,
-    )
-  }, [setMotherError, setMotherResponse]);
-
-
-  const onSpeechResults = (r: any) => {
+    stopSpeech()
+      .then(() => console.log("Voice stopped..."));
+  };
+  const onSpeechResults = (r:SpeechResultsEvent) => {
     console.log("Speech Result created. Begin sending Process...");
-    const newTranscript:string = r.value[0];
-    if ( newTranscript.length > 0 ) {
+    const newTranscript:string | undefined = r?.value?.[0];
+    if ( newTranscript && newTranscript.length > 0 ) {
+      updateLoading();
       console.log("Send the transcript...")
       sendData(newTranscript)
         .then(() => {
@@ -104,6 +79,23 @@ const MotherNavigator: React.FC = () => {
       setMotherError("Couldn't transcribe anything...");
     }
   }
+
+  const sendData = useCallback(async (newTranscript: string) => {
+    try{
+      await defaultPostRequest(
+        MOTHER_URL,
+        getMotherRequestData(newTranscript, user?.uid),
+        setMotherError,
+        setMotherResponse,
+      )
+    }catch(e:unknown) {
+      if(e instanceof Error) {
+        console.log("Could not send the Mother Request cause the following error:", e);
+      }
+    }finally {
+      updateLoading();
+    }
+  }, [setMotherError, setMotherResponse]);
 
 
   const startListening = async () => {
@@ -146,6 +138,11 @@ const MotherNavigator: React.FC = () => {
         )
     }
   }, [route.name]);
+
+
+  const useSttArgs:TranscriptHookPropsInterface = {onSpeechResults, onSpeechEnd, onSpeechError}
+  const {} = useStt(useSttArgs);
+
 
 
   const screenHeaderOptions = useMemo(() => ({

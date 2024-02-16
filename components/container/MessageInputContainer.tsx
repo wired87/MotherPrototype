@@ -10,6 +10,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import MediaPreview from "./imageContainers/MediaPreview";
 import FilePreviewContainer from "./FilePreviewContainer";
 import FloatingMediaButton from "../buttons/FloatingMediaButton";
+import {useError} from "../../AppHooks/PrimaryHooks";
 
 
 interface MessageInputTypes {
@@ -21,28 +22,26 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
     messagesLeft
   }
 ) => {
-
-  const {darkmode} = useContext(PrimaryContext);
+  // CONTEXT
   const { customTheme } = useContext(ThemeContext);
-  const [error, setError] = useState<string>("");
-
   const {
     input, setInput,
-    setMessagesLeft,
     typing,
-    } = useContext(InputContext);
+  } = useContext(InputContext);
+  const { sendMessageProcess } = useContext(FunctionContext);
+  const { pickedImage, doc } = useContext(MediaContext);
 
+  // HOOKS
+  const {error} = useError();
+
+  // REFS
   const messageRef = useRef(messagesLeft)
+
 
   useEffect(() => {
     messageRef.current = messagesLeft;
   }, [messagesLeft]);
 
-
-
-  const { pickedImage, doc } = useContext(MediaContext);
-
-  const { sendMessageProcess } = useContext(FunctionContext);
 
     // Styles
   const extraInputStyles = [

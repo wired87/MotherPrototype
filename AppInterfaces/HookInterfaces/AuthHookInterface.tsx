@@ -10,6 +10,7 @@ export interface UserHookInterface {
 export interface UserParamInterface {
   authenticated: boolean;
   updateAuthenticated: (value: boolean) => void;
+  updateJwtToken: (value: JwtToken | null) => void;
 }
 
 // JWT INTERFACE

@@ -14,6 +14,6 @@ export const getLovoObject = (text:string): LovoObjectTypes => {
   return{
     speed: 1,
     text: text,
-    speaker: "63b417fb241a82001d51df6a"
+    speaker: "64191022c25c1f00222c0ab1"
   }
 };

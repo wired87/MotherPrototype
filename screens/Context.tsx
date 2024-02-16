@@ -7,10 +7,6 @@ import {JwtToken, UserObjectInterface} from "../AppInterfaces/AuthInterfaces";
 
 export const PrimaryContext = createContext(
   {
-    darkmode: false,
-    setDarkmode: (() => {}) as Dispatch<SetStateAction<boolean>>,
-
-    toggleTheme: (() => {}),
 
     user: null as UserObjectInterface | null,
     setUser: (() => {}) as Dispatch<SetStateAction<UserObjectInterface | null>>,
@@ -182,9 +178,17 @@ export const darkModeTheme: Theme = {
 }
 
 export interface ThemeContextType {
-  customTheme: Theme
+  customTheme: Theme;
+  darkmode: boolean;
+  setDarkmode: Dispatch<SetStateAction<boolean>>;
+  toggleTheme: () => void;
 }
 
 export const ThemeContext = createContext<ThemeContextType>({
+  darkmode: false,
+  setDarkmode: (() => {}) as Dispatch<SetStateAction<boolean>>,
+
+  toggleTheme: (() => {}),
+
   customTheme: lightModeTheme
 });

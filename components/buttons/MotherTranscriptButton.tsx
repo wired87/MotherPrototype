@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useEffect, useState} from "react";
 import {Pressable, Vibration} from "react-native";
 import Voice, {SpeechErrorEvent} from "@react-native-voice/voice";
 import * as RNLocalize from 'react-native-localize';
@@ -28,7 +28,6 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
   }
 
 ) => {
-  console.log("MOTHER TRANSCRIBE BUTTON NEW INITILAIZED")
 
   const { customTheme } = useContext(ThemeContext);
   const [currentSpeech, setCurrentSpeech] = useState(false);
@@ -43,7 +42,6 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
     // need to reset the Voice object because otherwise it will alltimes take the listener functions from last method
     Voice.destroy()
       .then(() => {
-        console.log("Voice object reset...");
         Voice.onSpeechResults = onSpeechResults;
         Voice.onSpeechError = onSpeechError;
       })

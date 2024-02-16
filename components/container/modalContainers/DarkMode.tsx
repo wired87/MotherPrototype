@@ -6,7 +6,8 @@ import {View, StyleSheet} from "react-native";
 import {DefaultButton} from "../../buttons/DefaultButton";
 import * as SecureStore from "expo-secure-store";
 
-import {PrimaryContext} from "../../../screens/Context";
+import {PrimaryContext, ThemeContext} from "../../../screens/Context";
+import ThemeContextProvider from "../../../AppContextCoponents/ThemeContextProvider";
 
 const localStyles = StyleSheet.create(
   {
@@ -44,7 +45,7 @@ const DarkMode = () => {
     {
       darkmode,
       setDarkmode
-    } = useContext(PrimaryContext);
+    } = useContext(ThemeContext);
 
   useEffect(() => {
     console.log("---DarkMode", darkmode)

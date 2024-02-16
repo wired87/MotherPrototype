@@ -4,11 +4,14 @@ import Voice, {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/v
 import {styles as s} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {startSpeech, stopSpeech} from "../../AppFunctions/TranscribeFunctions";
+import {getLanguage} from "../../AppFunctions/JwtFunctions";
+import {useStt} from "../../AppHooks/AudioHooks";
+import {TranscriptHookPropsInterface} from "../../AppInterfaces/HookInterfaces/AudioHookInterface";
 
 // STRINGS
 const defaultIcon:string = "microphone";
-
+// Const
+const transVoice = Voice;
 interface TranscribeButtonTypes {
   setTranscript: Dispatch<SetStateAction<string>>; //((text:string) => void);//
   setError: Dispatch<SetStateAction<string>>;
@@ -19,7 +22,6 @@ interface TranscribeButtonTypes {
 
 
 const TranscribeButton: React.FC<TranscribeButtonTypes> = (
-
   {
     setTranscript,
     setError,
@@ -27,27 +29,18 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
     buttonStyles,
     transcript
   }
-
   ) => {
 
   const { customTheme } = useContext(ThemeContext);
   const [currentSpeech, setCurrentSpeech] = useState(false);
+
 
   // styles
   const recordingButtonStyles = buttonStyles || [s.recordingButton, {borderColor: customTheme.text}];
 
   const iconColorProp = currentSpeech ? "red" : customTheme.text;
 
-  useEffect(() => {
-    Voice.onSpeechError = onSpeechError;
-    Voice.onSpeechResults = onSpeechResults;
 
-    return () => {
-      Voice.destroy()
-        .then(() => Voice.removeAllListeners)
-    }
-  }, []);
-  console.log("DEFAULT TRANSCRIBE BUTTON NEW INITILAIZED")
 
   const onSpeechError = useCallback((e: SpeechErrorEvent) => {
     if (e.error && e.error.message) {
@@ -58,19 +51,18 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   }, [setError]);
 
 
-  const onSpeechResults = (e: SpeechResultsEvent) => {
-    if (e && e.value) {
-      const newTranscript:string = transcript + " " + e.value[0] + " ";
+  const onSpeechResults = (r: SpeechResultsEvent) => {
+    if (r && r.value) {
+      const newTranscript:string = transcript + " " + r.value[0] + " ";
       setTranscript? setTranscript(newTranscript) : null;
     }
   }
-
 
   const handleSpeechToText = useCallback(() => {
     Vibration.vibrate();
     if (currentSpeech) {
       console.log("VOICE STOPPED IN DEFAULT ")
-      stopSpeech(Voice)
+      stopSpeech()
         .then(() => {
           console.log("Voice recording ended..")
           }
@@ -88,6 +80,10 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
       setCurrentSpeech(!currentSpeech);
     }
   }, [currentSpeech]);
+
+  const onSpeechEnd = () => {};
+  const useSstArgs: TranscriptHookPropsInterface = {onSpeechResults, onSpeechEnd , onSpeechError}
+  const{stopSpeech, startSpeech} = useStt(useSstArgs);
 
   return(
     <Pressable style={recordingButtonStyles} onPress={handleSpeechToText}>

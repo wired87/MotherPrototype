@@ -5,11 +5,11 @@ import {Dispatch, SetStateAction} from "react";
 export const startSpeech = async () => {
   const langauge:string = getLanguage();
   console.log("Recognized voice language:", langauge, "Start recording...");
-  await Voice.start(langauge);
+  await Voice?.start(langauge);
 }
 
-export const stopSpeech = async (Voice: { stop: () => any; } | undefined) => {
-  await Voice?.stop();
+export const stopSpeech = async () => {
+  await Voice.stop();
 }
 
 

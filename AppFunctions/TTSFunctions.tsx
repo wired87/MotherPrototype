@@ -24,8 +24,6 @@ export const playSound = async (
 };
 
 
-
-
 export const textToSpeech = async (
   text: string,
   errorHandling: () => void,

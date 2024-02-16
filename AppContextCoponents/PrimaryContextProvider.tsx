@@ -1,5 +1,5 @@
 
-import React, {Dispatch, memo, ReactNode, SetStateAction, useEffect} from "react";
+import React, {Dispatch, memo, SetStateAction, useEffect} from "react";
 import {useAuthenticated, useJwt, useUser} from "../AppHooks/AuthHooks";
 import {useIsConnected, useLoading} from "../AppHooks/PrimaryHooks";
 import {useBottomSheetLoaded} from "../AppHooks/InitHooks";
@@ -14,6 +14,7 @@ import NetInfo from "@react-native-community/netinfo";
 import {useInitError} from "../AppHooks/ErrorHooks/InitErrorHook";
 import {UseIsConnectedParams} from "../AppInterfaces/PrimaryContextHooks";
 import {UserParamInterface} from "../AppInterfaces/HookInterfaces/AuthHookInterface";
+import {ContextProviderInterface} from "../AppInterfaces/ContextProviderInterface";
 
 
 let errorCodes:string[] = [
@@ -25,24 +26,19 @@ let errorCodes:string[] = [
   "300",
 ]
 
-interface PrimaryContextProviderTypes {
-  children: ReactNode
-}
 
-const PrimaryContextProvider: React.FC<PrimaryContextProviderTypes> = (
+
+const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
   {
     children
   }
 ) => {
 
 
-  const {jwtToken, setJwtToken} = useJwt();
+  const {jwtToken, setJwtToken,updateJwtToken} = useJwt();
 
   const {bottomSheetLoaded, setBottomSheetLoaded} = useBottomSheetLoaded();
   const {alreadyRunning, updateAlreadyRunning} = useAlreadyRunning();
-
-  // THEME HOOKS
-  const {darkmode, setDarkmode, toggleTheme}= useDarkmode();
 
   // TOOL HOOKS
   const {setToolActionValue, checkToolActionValueProcess} = useToolHooks();
@@ -54,10 +50,8 @@ const PrimaryContextProvider: React.FC<PrimaryContextProviderTypes> = (
   const {clearMessages, setClearMessages} = useClearMessages();
   const {authenticated, updateAuthenticated} = useAuthenticated();
 
-
-
   // AUTH HOOKS
-  const useUserArgs:UserParamInterface = {authenticated, updateAuthenticated};
+  const useUserArgs:UserParamInterface = {authenticated, updateAuthenticated, updateJwtToken};
   const { user, setUser, updateUser } = useUser(useUserArgs);
 
   // INIT HOOKS
@@ -164,7 +158,6 @@ const PrimaryContextProvider: React.FC<PrimaryContextProviderTypes> = (
   }
 
   const elements = {
-    darkmode, setDarkmode, toggleTheme,
     user, setUser,
     loading, setLoading,
     clearMessages, setClearMessages,

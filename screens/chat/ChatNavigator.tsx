@@ -6,7 +6,7 @@ import DefaultHeader from "../../components/navigation/DefaultHeader";
 import {ChatMain} from "./ChatMain";
 
 // Context
-import {FunctionContext, InputContext, JwtToken, MediaContext, PrimaryContext} from "../Context";
+import {FunctionContext, InputContext, MediaContext, PrimaryContext} from "../Context";
 
 // Ads
 import {checkUserMessageValue, getMessageInfoData, postMessageInfoData, showAds} from "./functions/AdLogic";
@@ -17,6 +17,7 @@ import SwipeModal from "../../components/modals/SwipeModal";
 import ChatMenuModalContent from "../../components/container/ChatMenuModalContainer/ChatMenuModalContent";
 import HeaderButton from "../../components/buttons/navigation/HeaderButton";
 import {getUserID} from "../../AppFunctions/UserFunctions";
+import {JwtToken} from "../../AppInterfaces/AuthInterfaces";
 
 interface ChatNavigationTypes {
   bottomSheetRef: React.RefObject<BottomSheetMethods>;//(number: number) => void;
@@ -78,8 +79,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     setJwtToken,
   } = useContext(PrimaryContext);
 
-
-// REFS
+  // REFS
   const inputRef = useRef(input);
   const picRef = useRef(pickedImage?.assets?.[0].uri);
   const docRef = useRef(doc?.assets?.[0].uri);
@@ -103,6 +103,10 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     }
   }, [doc]);
 
+  useEffect(() => {
+    console.log("JWT TOKEN IN CHAT NAV:", jwtToken);
+    jwtTokenRef.current = jwtToken;
+  }, [jwtToken]);
 
   // GOOGLE MOBILE AD LOGIC ////////////////////
   useEffect(() => {
@@ -118,9 +122,7 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     }
   }, []);
 
-  useEffect(() => {
-    jwtTokenRef.current = jwtToken;
-  }, [jwtToken]);
+
 
   const errorMessageAIResponse = () => {
     console.log("Error AIResponse created.. ")
