@@ -1,12 +1,11 @@
 import {BuiltInKeywords, PorcupineManager} from "@picovoice/porcupine-react-native";
 import {PORCUPINE_API_KEY} from "@env";
+import {startSpeech} from "../TranscribeFunctions";
 
 let porcupineManager: PorcupineManager | undefined = undefined;
 
 
-
-
-export const startListening = async (handleListenerAction: () => Promise<void>) => {
+export const startListening = async () => {
   try {
     if (!porcupineManager) {
       console.log("Creating new PorcupineManager instance")
@@ -15,10 +14,7 @@ export const startListening = async (handleListenerAction: () => Promise<void>) 
         [BuiltInKeywords.JARVIS],
         (keyword:number) => {
           console.log("Detected Keyword!");
-          handleListenerAction()
-            .then(() => {console.log("Handle Listener Action started...")
-            }
-          )
+          startSpeech();
         },
         () => {}
       );
@@ -30,6 +26,7 @@ export const startListening = async (handleListenerAction: () => Promise<void>) 
     }
   }
 };
+
 export const stopListening = async () => {
   if (porcupineManager) {
     await porcupineManager.stop();

@@ -5,10 +5,13 @@ import {useLoading, useMotherError} from "./PrimaryHooks";
 import {textToSpeech} from "../AppFunctions/TTSFunctions";
 import Voice from "@react-native-voice/voice";
 import {TranscriptHookPropsInterface} from "../AppInterfaces/HookInterfaces/AudioHookInterface";
-import {getLanguage} from "../AppFunctions/JwtFunctions";
+import {onSpeechEnd, stopSpeech} from "../AppFunctions/TranscribeFunctions";
+import {startListening, stopListening} from "../AppFunctions/PicoVoice/Porcupine";
 
 export function useSound() {
   const [sound, setSound] = useState<Audio.Sound | null>();
+
+
 
   useEffect(() => {
     return sound
@@ -28,8 +31,8 @@ export function useSound() {
 
 export const useStt = (
   {
+    route,
     onSpeechResults,
-    onSpeechEnd,
     onSpeechError
   }:TranscriptHookPropsInterface
 ) => {
@@ -38,15 +41,25 @@ export const useStt = (
 
   const updateTranscript = (text:string) => setTranscript(text);
 
-  const startSpeech = async () => {
-    const langauge:string = getLanguage();
-    console.log("Recognized voice language:", langauge, "Start recording...");
-    await Voice.start(langauge);
-  }
 
-  const stopSpeech = async () => {
-    await Voice.stop();
-  }
+  // VOICE LISTENER LOGIC
+  useEffect(() => {
+    console.log("ROUTE NAME:", route.name);
+    if (route.name === "MotherMain" || route.name === "MotherNavigator") {
+      startListening()
+        .then(() => {
+            console.log("Start listening...");
+          }
+        )
+    } else {
+      stopListening()
+        .then(() => {
+            console.log("Route name changed Stop Listening...");
+          }
+        )
+    }
+  }, [route.name]);
+
 
   useEffect(() => {
     if (Voice) {
@@ -63,7 +76,6 @@ export const useStt = (
 
   return {
     transcript, updateTranscript,
-    startSpeech, stopSpeech
   }
 }
 

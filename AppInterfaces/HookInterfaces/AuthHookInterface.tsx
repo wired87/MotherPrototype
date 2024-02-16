@@ -1,7 +1,7 @@
 import {JwtToken, UserObjectInterface} from "../AuthInterfaces";
 import {Dispatch, SetStateAction} from "react";
 
-// USER INTEFACES
+// USER INTEFACE
 export interface UserHookInterface {
   user: UserObjectInterface | null;
   setUser: Dispatch<SetStateAction<UserObjectInterface | null>>;

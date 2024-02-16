@@ -24,7 +24,7 @@ const localStyles = StyleSheet.create(
 
 export async function postNewColorValues(bool: boolean){
   try {
-    await SecureStore.setItemAsync("darkmode", String(bool));
+    await SecureStore.setItemAsync("darkMode", String(bool));
   } catch (e) {
     // @ts-ignore
     throw new Error('Error while saving the data: ', e.message);
@@ -33,7 +33,7 @@ export async function postNewColorValues(bool: boolean){
 
 export async function getDarkmode() {
   try {
-    return await SecureStore.getItemAsync("darkmode")
+    return await SecureStore.getItemAsync("darkMode")
   } catch (e) {
     console.error('Error at requesting the Colors: ', e);
     return false;

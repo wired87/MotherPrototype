@@ -1,24 +1,17 @@
-import React, {Dispatch, memo, SetStateAction, useCallback, useContext, useEffect, useState} from "react";
+import React, { memo, useCallback, useContext, useState} from "react";
 import {Pressable, Vibration} from "react-native";
-import Voice, {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
+import {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
 import {styles as s} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {getLanguage} from "../../AppFunctions/JwtFunctions";
 import {useStt} from "../../AppHooks/AudioHooks";
 import {TranscriptHookPropsInterface} from "../../AppInterfaces/HookInterfaces/AudioHookInterface";
+import {startSpeech, stopSpeech} from "../../AppFunctions/TranscribeFunctions";
+import {useRoute} from "@react-navigation/native";
+import {TranscribeButtonTypes} from "../../AppInterfaces/components/buttons/ButtonInterfaces";
 
 // STRINGS
 const defaultIcon:string = "microphone";
-// Const
-const transVoice = Voice;
-interface TranscribeButtonTypes {
-  setTranscript: Dispatch<SetStateAction<string>>; //((text:string) => void);//
-  setError: Dispatch<SetStateAction<string>>;
-  buttonIcon?: string;
-  buttonStyles?: any;
-  transcript: string;
-}
 
 
 const TranscribeButton: React.FC<TranscribeButtonTypes> = (
@@ -40,15 +33,15 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
 
   const iconColorProp = currentSpeech ? "red" : customTheme.text;
 
+  const route = useRoute();
 
-
-  const onSpeechError = useCallback((e: SpeechErrorEvent) => {
+  const onSpeechError = (e: SpeechErrorEvent) => {
     if (e.error && e.error.message) {
-      setError(e.error.message.toString());
+      setError(e.error.message.toString()); // case: none
     } else {
       setError("An error has occurred while trying to transcribe: " + e.toString());
     }
-  }, [setError]);
+  }
 
 
   const onSpeechResults = (r: SpeechResultsEvent) => {
@@ -81,9 +74,8 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
     }
   }, [currentSpeech]);
 
-  const onSpeechEnd = () => {};
-  const useSstArgs: TranscriptHookPropsInterface = {onSpeechResults, onSpeechEnd , onSpeechError}
-  const{stopSpeech, startSpeech} = useStt(useSstArgs);
+  const useSstArgs: TranscriptHookPropsInterface = {route, onSpeechResults , onSpeechError}
+  const{} = useStt(useSstArgs);
 
   return(
     <Pressable style={recordingButtonStyles} onPress={handleSpeechToText}>

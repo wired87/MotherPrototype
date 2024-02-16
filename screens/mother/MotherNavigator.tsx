@@ -9,20 +9,16 @@ import {motherMainStyles as mms} from "./styles";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import EmailAuthScreen from "./ToolScreens/EmailAuthScreen";
 import {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
-import {MOTHER_URL, PORCUPINE_API_KEY} from "@env";
+import {MOTHER_URL} from "@env";
 import {useLoading, useMotherError} from "../../AppHooks/PrimaryHooks";
-import {BuiltInKeywords, PorcupineManager} from "@picovoice/porcupine-react-native";
-import {stopListening} from "../../AppFunctions/PicoVoice/Porcupine";
 import {getMotherRequestData} from "../../AppFunctions/GetObjectFunctions";
 import {Vibration} from "react-native";
 import {textToSpeech} from "../../AppFunctions/TTSFunctions";
 import {useMotherResponse, useSound, useStt} from "../../AppHooks/AudioHooks";
-import {startSpeech, stopSpeech} from "../../AppFunctions/TranscribeFunctions";
 import {TranscriptHookPropsInterface} from "../../AppInterfaces/HookInterfaces/AudioHookInterface";
 
 
 const MotherStack = createNativeStackNavigator();
-let porcupineManager: PorcupineManager | undefined = undefined;
 
 const MotherNavigator: React.FC = () => {
   // STATES
@@ -30,9 +26,9 @@ const MotherNavigator: React.FC = () => {
   // HOOKS
   const {updateLoading, loading} = useLoading();
   const { updateSound } = useSound();
-  const { updateMotherError } = useMotherError();
+  const { updateMotherError , setMotherError} = useMotherError();
   const { setMotherResponse } = useMotherResponse();
-  const {setMotherError} = useMotherError();
+
   // Context
   const {user, defaultPostRequest } = useContext(PrimaryContext);
 
@@ -44,7 +40,7 @@ const MotherNavigator: React.FC = () => {
   }
   const route = useRoute();
 
-  const onSpeechError = useCallback((e: SpeechErrorEvent) => {
+  const onSpeechError = (e: SpeechErrorEvent) => {
     console.error("Error occurred while handling the speech:", e);
     textToSpeech(
       "Sorry, i couldn't hear anything. Please repeat it a bit louder. Im not the youngest",
@@ -56,12 +52,9 @@ const MotherNavigator: React.FC = () => {
       .then(() => {
         console.log("ErrorMessage Sent")
       })
-  }, []);
+  }
 
-  const onSpeechEnd = () => {
-    stopSpeech()
-      .then(() => console.log("Voice stopped..."));
-  };
+
   const onSpeechResults = (r:SpeechResultsEvent) => {
     console.log("Speech Result created. Begin sending Process...");
     const newTranscript:string | undefined = r?.value?.[0];
@@ -98,50 +91,9 @@ const MotherNavigator: React.FC = () => {
   }, [setMotherError, setMotherResponse]);
 
 
-  const startListening = async () => {
-    try {
-      if (!porcupineManager) {
-        console.log("Creating new PorcupineManager instance")
-        porcupineManager = await PorcupineManager.fromBuiltInKeywords(
-          PORCUPINE_API_KEY,
-          [BuiltInKeywords.JARVIS],
-          (keyword:number) => {
-            console.log("Detected Keyword!");
-            startSpeech();
-          },
-          () => {}
-        );
-      }
-      await porcupineManager?.start();
-    }catch (e:unknown) {
-      if (e instanceof Error) {
-        console.error("Error while listening occurred", e);
-      }
-    }
-  };
 
-
-  // VOICE LISTENER LOGIC
-  useEffect(() => {
-    console.log("ROUTE NAME:", route.name);
-    if (route.name === "MotherMain" || route.name === "MotherNavigator") {
-      startListening()
-        .then(() => {
-            console.log("Start listening...");
-          }
-        )
-    } else {
-      stopListening()
-        .then(() => {
-            console.log("Route name changed Stop Listening...");
-          }
-        )
-    }
-  }, [route.name]);
-
-
-  const useSttArgs:TranscriptHookPropsInterface = {onSpeechResults, onSpeechEnd, onSpeechError}
-  const {} = useStt(useSttArgs);
+  const useSttArgs:TranscriptHookPropsInterface = {route, onSpeechResults, onSpeechError}
+  const {transcript, updateTranscript} = useStt(useSttArgs);
 
 
 
