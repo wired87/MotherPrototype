@@ -104,7 +104,7 @@ const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
         );
 
       } else {
-        console.error("No token provided");
+        console.error("No token provided. Current Access Token:", jwtToken?.access, "\n\n current refresh token:", jwtToken?.refresh);
         const newToken = await getToken(setJwtToken, user?.uid);
         if (newToken) {
           response = await sendObject(

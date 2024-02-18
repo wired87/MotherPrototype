@@ -6,6 +6,7 @@ import {styles as s} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useRoute} from "@react-navigation/native";
+import {stopSpeech} from "../../AppFunctions/TranscribeFunctions";
 
 // STRINGS
 const defaultIcon:string = "microphone";
@@ -43,6 +44,7 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
     Voice.destroy()
       .then(() => {
         Voice.onSpeechResults = onSpeechResults;
+        Voice.onSpeechEnd = onSpeechEnd;
         Voice.onSpeechError = onSpeechError;
       })
     return () => {
@@ -64,6 +66,12 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
     getDeviceLanguage();
   }, []);
 
+  const onSpeechEnd = () => {
+    console.log("Stop talking...");
+    setCurrentSpeech(false);
+    stopSpeech()
+      .then(() => console.log("Voice successfully stopped..."));
+  };
 
   const startSpeech = async () => {
     console.log("Recognized voice language", languageTag);

@@ -1,14 +1,12 @@
-import React, { memo, useCallback, useContext, useState} from "react";
+import React, {memo, useCallback, useContext, useEffect} from "react";
 import {Pressable, Vibration} from "react-native";
-import {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
+import Voice, {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
 import {styles as s} from "./styles";
 import {ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {useStt} from "../../AppHooks/AudioHooks";
-import {TranscriptHookPropsInterface} from "../../AppInterfaces/HookInterfaces/AudioHookInterface";
-import {startSpeech, stopSpeech} from "../../AppFunctions/TranscribeFunctions";
-import {useRoute} from "@react-navigation/native";
 import {TranscribeButtonTypes} from "../../AppInterfaces/components/buttons/ButtonInterfaces";
+import {startSpeech, stopSpeech} from "../../AppFunctions/TranscribeFunctions";
+import {useCurrentSpeech} from "../../AppHooks/AudioHooks";
 
 // STRINGS
 const defaultIcon:string = "microphone";
@@ -25,17 +23,14 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   ) => {
 
   const { customTheme } = useContext(ThemeContext);
-  const [currentSpeech, setCurrentSpeech] = useState(false);
-
-
+  const {currentSpeech, setCurrentSpeech, updateCurrentSpeech} = useCurrentSpeech();
   // styles
   const recordingButtonStyles = buttonStyles || [s.recordingButton, {borderColor: customTheme.text}];
 
   const iconColorProp = currentSpeech ? "red" : customTheme.text;
 
-  const route = useRoute();
-
   const onSpeechError = (e: SpeechErrorEvent) => {
+    console.error("Error detected onSpeechError", e);
     if (e.error && e.error.message) {
       setError(e.error.message.toString()); // case: none
     } else {
@@ -43,8 +38,30 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
     }
   }
 
+  useEffect(() => {
+    console.log("TB Voice Listener active...");
+    Voice.onSpeechError = onSpeechError;
+    Voice.onSpeechResults = onSpeechResults;
+    Voice.onSpeechEnd = onSpeechEnd;
+
+    return () => {
+      Voice.destroy()
+        .then(() => {
+          Voice.removeAllListeners();
+          console.log("Remove Listeners in useEffect...");
+        })
+    }
+  }, []);
+
+  const onSpeechEnd = () => {
+    updateCurrentSpeech(false);
+    console.log("Stop talking...")
+    stopSpeech()
+      .then(() => console.log("Voice successfully stopped..."));
+  };
 
   const onSpeechResults = (r: SpeechResultsEvent) => {
+    console.log("onSpeechResult:", r.value?.[0]);
     if (r && r.value) {
       const newTranscript:string = transcript + " " + r.value[0] + " ";
       setTranscript? setTranscript(newTranscript) : null;
@@ -74,8 +91,6 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
     }
   }, [currentSpeech]);
 
-  const useSstArgs: TranscriptHookPropsInterface = {route, onSpeechResults , onSpeechError}
-  const{} = useStt(useSstArgs);
 
   return(
     <Pressable style={recordingButtonStyles} onPress={handleSpeechToText}>
@@ -88,3 +103,43 @@ const TranscribeButton: React.FC<TranscribeButtonTypes> = (
   );
 }
 export default memo(TranscribeButton);
+
+
+
+/*
+
+  const onSpeechError = (e: SpeechErrorEvent) => {
+    console.error("Error detected onSpeechError", e);
+    if (e.error && e.error.message) {
+      setError(e.error.message.toString()); // case: none
+    } else {
+      setError("An error has occurred while trying to transcribe: " + e.toString());
+    }
+  }
+
+  const onSpeechResults = (r: SpeechResultsEvent) => {
+    console.log("onSpeechResult:", r.value?.[0]);
+    if (r && r.value) {
+      const newTranscript:string = transcript + " " + r.value[0] + " ";
+      setTranscript? setTranscript(newTranscript) : null;
+    }
+  }
+useEffect(() => {
+    console.log("ROUTE NAME:", route.name);
+    if (route.name === "MotherMain" || route.name === "MotherNavigator") {
+      startListening()
+        .then(() => {
+            console.log("Start listening...");
+          }
+        )
+    } else {
+      stopListening()
+        .then(() => {
+            console.log("Route name changed Stop Listening...");
+            Voice.removeAllListeners()
+            console.log("Remove Listeners...");
+          }
+        )
+    }
+  }, [route.name]);
+ */

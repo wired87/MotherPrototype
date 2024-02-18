@@ -45,6 +45,7 @@ export const textToSpeech = async (
     const jsonResponse = await speechResponse.json();
     console.log("JSONRESPONSE LOVO:", jsonResponse);
     if (lovoErrorCodes.includes(jsonResponse.statusCode)) {
+      console.log("Response contains statusCode:", jsonResponse.statusCode);
       errorHandling();
     } else if(jsonResponse && jsonResponse.data[0] && jsonResponse.data[0].urls) {
       await playSound(

@@ -6,7 +6,9 @@ import {DefaultText} from "../text/DefaultText";
 import ClearButton from "../buttons/ClearButton";
 import {toolStyles} from "../../screens/tools/toolStyles";
 import {SpeechErrorEvent} from "@react-native-voice/voice";
+import TranscribeButton from "../buttons/TranscribeButton";
 import {MotherTranscriptButton} from "../buttons/MotherTranscriptButton";
+import {stopSpeech} from "../../AppFunctions/TranscribeFunctions";
 
 
 export default interface DefaulttextInputTypes {
@@ -44,12 +46,7 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
 
 ) => {
   const [error, setError] = useState<string>("");
-  const setInputTranscript = (text:string) => {
-    if (onChangeAction) {
-      console.log("Try set Transcript...")
-      onChangeAction(text);
-    }
-  }
+
   const [recordingError, setRecordingError] = useState<string>("");
   const { customTheme } = useContext(ThemeContext);
 
@@ -61,7 +58,6 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
         color: customTheme.text,
         borderWidth: noBorder? 0:1,
         borderColor: noBorder? "transparent" : customTheme.text,
-
       }
     ];
 
@@ -86,7 +82,6 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
   }, [recordingError])
 
 
-
   const labelComponent = useCallback(() => {
     if (label && label.length > 0) {
       return <DefaultText text={label} moreStyles={ls.labelText} />
@@ -94,7 +89,6 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
       return <></>
     }
   }, [label]);
-
 
 
   const onSpeechError = useCallback((e: SpeechErrorEvent) => {
@@ -117,7 +111,6 @@ export const DefaultInput: React.FC<DefaulttextInputTypes> = (
     } else if (recordingButton) {
       return (
         <MotherTranscriptButton
-          key={"Udo"}
           buttonStyles={ls.recordingButton}
           onSpeechError={onSpeechError}
           onSpeechResults={onSpeechResults}
@@ -211,7 +204,12 @@ const ls = StyleSheet.create(
 
 
 
-
+  const setInputTranscript = (text:string) => {
+    if (onChangeAction) {
+      console.log("Try set Transcript...")
+      onChangeAction(text);
+    }
+  }
 
 
 

@@ -1,7 +1,14 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useContext} from "react";
 import DefaultContainer from "../../components/container/DefaultContainer";
-
-import {useLoading} from "../../AppHooks/PrimaryHooks";
+import {useMotherResponse, useSound} from "../../AppHooks/AudioHooks";
+import {MOTHER_URL} from "@env";
+import {getMotherRequestData} from "../../AppFunctions/GetObjectFunctions";
+import {useLoading, useMotherError} from "../../AppHooks/PrimaryHooks";
+import {PrimaryContext} from "../Context";
+import {MotherTranscriptButton} from "../../components/buttons/MotherTranscriptButton";
+import {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
+import {Vibration} from "react-native";
+import {textToSpeech} from "../../AppFunctions/TTSFunctions";
 
 interface MotherMainTypes {
 
@@ -19,7 +26,12 @@ interface MotherMainTypes {
 
 
 export const MotherMain: React.FC<MotherMainTypes> = () => {
-  const {loading} = useLoading();
+  // HOOKS
+  const { updateSound } = useSound();
+  const { updateMotherError , setMotherError} = useMotherError();
+  const {updateLoading} = useLoading();
+  const {defaultPostRequest, user} = useContext(PrimaryContext);
+  const {setMotherResponse} = useMotherResponse();
 
   const splitString = (inputString:string) => {
     let stringList = [];
@@ -30,6 +42,72 @@ export const MotherMain: React.FC<MotherMainTypes> = () => {
     stringList.push(inputString);
     return stringList;
   }
+
+
+  const _onSpeechResults = (r:SpeechResultsEvent) => {
+    console.log("Speech Result created. Begin sending Process...");
+    const newTranscript:string | undefined = r?.value?.[0];
+    if ( newTranscript && newTranscript.length > 0 ) {
+      updateLoading();
+      console.log("Send the transcript...")
+      sendData(newTranscript)
+        .then(() => {
+            console.log("Talk Data sent...");
+          }
+        )
+    }else {
+      Vibration.vibrate();
+      console.log("Transcript Length === 0...")
+      setMotherError("Couldn't transcribe anything...");
+    }
+  }
+
+  const sendData = useCallback(async (newTranscript: string) => {
+    try{
+      await defaultPostRequest(
+        MOTHER_URL,
+        getMotherRequestData(newTranscript, user?.uid),
+        setMotherError,
+        setMotherResponse,
+      )
+    }catch(e:unknown) {
+      if(e instanceof Error) {
+        console.log("Could not send the Mother Request cause the following error:", e);
+      }
+    }finally {
+      updateLoading();
+    }
+  }, [setMotherError, setMotherResponse]);
+
+  const errorHandling = () => {};
+
+  const _onSpeechError = (e: SpeechErrorEvent) => {
+    console.error("Error occurred while handling the speech:", e);
+    textToSpeech(
+      "Sorry, i couldn't hear anything. Please repeat it a bit louder. Im not the youngest",
+      errorHandling,
+      updateMotherError,
+      updateLoading,
+      updateSound,
+    )
+      .then(() => {
+        console.log("ErrorMessage Sent")
+      })
+  }
+
+  return(
+    <DefaultContainer>
+      <MotherTranscriptButton
+        onSpeechError={_onSpeechError}
+        onSpeechResults={_onSpeechResults}
+      />
+    </DefaultContainer>
+  );
+}
+
+
+
+/* EXAMPLE SPEAKER
 
   const motherAnimation = useCallback(() => {
     if (loading){
@@ -45,18 +123,6 @@ export const MotherMain: React.FC<MotherMainTypes> = () => {
     loading
   ]);
 
-  return(
-    <DefaultContainer>
-      {
-        motherAnimation()
-      }
-    </DefaultContainer>
-  );
-}
-
-
-
-/* EXAMPLE SPEAKER
       "id": "63b417fb241a82001d51df6a",
       "displayName": "Aahna Konar",
       "locale": "ta-MY",

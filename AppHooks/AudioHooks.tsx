@@ -3,15 +3,15 @@ import {Audio} from "expo-av";
 
 import {useLoading, useMotherError} from "./PrimaryHooks";
 import {textToSpeech} from "../AppFunctions/TTSFunctions";
-import Voice from "@react-native-voice/voice";
 import {TranscriptHookPropsInterface} from "../AppInterfaces/HookInterfaces/AudioHookInterface";
-import {onSpeechEnd, stopSpeech} from "../AppFunctions/TranscribeFunctions";
-import {startListening, stopListening} from "../AppFunctions/PicoVoice/Porcupine";
+
+import {PorcupineManager} from "@picovoice/porcupine-react-native";
+import {startSpeech} from "../AppFunctions/TranscribeFunctions";
+import Voice from "@react-native-voice/voice";
+let porcupineManager: PorcupineManager | undefined = undefined;
 
 export function useSound() {
   const [sound, setSound] = useState<Audio.Sound | null>();
-
-
 
   useEffect(() => {
     return sound
@@ -25,59 +25,39 @@ export function useSound() {
   const updateSound = (sound: Audio.Sound) => {
     setSound(sound);
   }
-
   return { sound, updateSound };
 }
 
-export const useStt = (
-  {
-    route,
-    onSpeechResults,
-    onSpeechError
-  }:TranscriptHookPropsInterface
-) => {
 
-  const [transcript, setTranscript] = useState<string | null>(null);
-
-  const updateTranscript = (text:string) => setTranscript(text);
-
-
-  // VOICE LISTENER LOGIC
-  useEffect(() => {
-    console.log("ROUTE NAME:", route.name);
-    if (route.name === "MotherMain" || route.name === "MotherNavigator") {
-      startListening()
-        .then(() => {
-            console.log("Start listening...");
-          }
-        )
-    } else {
-      stopListening()
-        .then(() => {
-            console.log("Route name changed Stop Listening...");
-          }
-        )
-    }
-  }, [route.name]);
-
+export const useInitVoice = () => {
+  const [initVoice, setInitVoice] = useState<boolean>(false)
+  const updateInitVoice = (value:boolean) => setInitVoice(value);
 
   useEffect(() => {
-    if (Voice) {
-      Voice.onSpeechError = onSpeechError;
-      Voice.onSpeechResults = onSpeechResults;
-      Voice.onSpeechEnd = onSpeechEnd;
-
-      return () => {
-        Voice.destroy()
-          .then(() => Voice.removeAllListeners)
-      }
+    if (initVoice) {
+      startSpeech()
+        .then(() => {
+          console.log("Speech initialized...")
+        });
     }
-  }, []);
+  }, [initVoice]);
 
-  return {
-    transcript, updateTranscript,
-  }
+  return { initVoice, setInitVoice, updateInitVoice }
 }
+
+
+export const useTranscript= () => {
+  const [transcript, setTranscript] = useState<string>("");
+
+  const updateTranscript = (value:string) => setTranscript(value)
+
+
+  return {transcript, setTranscript, updateTranscript}
+}
+
+
+
+
 
 
 export function useMotherResponse() {
@@ -124,7 +104,15 @@ export function useMotherResponse() {
 }
 
 
+export const useCurrentSpeech = () => {
+  const [currentSpeech, setCurrentSpeech] = useState<boolean>(false);
 
+  const updateCurrentSpeech = (value:boolean) => setCurrentSpeech(value)
+
+  return {
+    currentSpeech, setCurrentSpeech, updateCurrentSpeech
+  }
+}
 
 
 

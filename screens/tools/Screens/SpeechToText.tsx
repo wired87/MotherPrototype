@@ -9,15 +9,15 @@ import {ThemeContext} from "../../Context";
 import UniversalTextCreator from "../../../components/container/Tools/UniversalTextCreator";
 import TranscribeButton from "../../../components/buttons/TranscribeButton";
 import succSpeechToText from "../../../assets/animations/succSpeechToText.json";
+import {useTranscript} from "../../../AppHooks/AudioHooks";
 
 // Strings
 const placeholderTranscript: string = "Your generated transcript will be shown here";
 const heading: string = "Transcribe your thoughts..";
 
 const SpeechToText: React.FC = () => {
-  const [transcript, setTranscript] = useState<string>("");
   const [error, setError] = useState<string>("");
-
+  const {transcript, setTranscript, updateTranscript} = useTranscript();
   // Context
   const { customTheme } = useContext(ThemeContext);
 
@@ -35,7 +35,6 @@ const SpeechToText: React.FC = () => {
         successAnimation={succSpeechToText}
         Content={
           <TranscribeButton
-            key={"Rolf"}
             setTranscript={setTranscript}
             setError={setError}
             transcript={transcript}
