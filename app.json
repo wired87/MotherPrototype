@@ -37,7 +37,7 @@
       "expo-secure-store"
     ],
     "splash": {
-      "image": "./assets/icons/screen.png",
+      "image": "./assets/icons/iconFinal.png",
       "resizeMode": "cover"
     },
     "assetBundlePatterns": [
@@ -54,7 +54,7 @@
     "android": {
       "versionCode": 7,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/screen.png",
+        "foregroundImage": "./assets/icons/iconFinal.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.wired87.AiChat501",

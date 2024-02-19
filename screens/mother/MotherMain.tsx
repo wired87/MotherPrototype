@@ -8,7 +8,7 @@ import {PrimaryContext} from "../Context";
 import {MotherTranscriptButton} from "../../components/buttons/MotherTranscriptButton";
 import {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
 import {Vibration} from "react-native";
-import {textToSpeech} from "../../AppFunctions/TTSFunctions";
+import {expoSpeak, textToSpeech} from "../../AppFunctions/TTSFunctions";
 
 interface MotherMainTypes {
 
@@ -83,16 +83,7 @@ export const MotherMain: React.FC<MotherMainTypes> = () => {
 
   const _onSpeechError = (e: SpeechErrorEvent) => {
     console.error("Error occurred while handling the speech:", e);
-    textToSpeech(
-      "Sorry, i couldn't hear anything. Please repeat it a bit louder. Im not the youngest",
-      errorHandling,
-      updateMotherError,
-      updateLoading,
-      updateSound,
-    )
-      .then(() => {
-        console.log("ErrorMessage Sent")
-      })
+    expoSpeak("Sorry, i couldn't hear anything. Please repeat it a bit louder. Im not the youngest")
   }
 
   return(

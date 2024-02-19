@@ -1,6 +1,8 @@
 import {LOVO_API_KEY} from "@env";
 import {getLovoObject} from "./GetObjectFunctions";
 import {Audio} from "expo-av";
+import {SpeechOptions} from "expo-speech";
+import * as Speech from "expo-speech";
 
 const lovoErrorCodes = [
   400,
@@ -22,6 +24,17 @@ export const playSound = async (
     await sound.playAsync();
   }
 };
+
+export const expoSpeak = (text: string, updateText?: (test:string) => void) => {
+  const options: SpeechOptions = {
+    language: "en-US"//getLanguage(),
+  }
+  Speech.speak(text, options);
+  if (updateText) {
+    updateText("");
+  }
+  console.log("Speak function ended...");
+}
 
 
 export const textToSpeech = async (

@@ -2,11 +2,13 @@ import {useEffect, useState} from "react";
 import {Audio} from "expo-av";
 
 import {useLoading, useMotherError} from "./PrimaryHooks";
-import {textToSpeech} from "../AppFunctions/TTSFunctions";
+import {expoSpeak} from "../AppFunctions/TTSFunctions";
 
 import {PorcupineManager} from "@picovoice/porcupine-react-native";
 import {startSpeech} from "../AppFunctions/TranscribeFunctions";
-let porcupineManager: PorcupineManager | undefined = undefined;
+
+
+// let porcupineManager: PorcupineManager | undefined = undefined;
 
 export function useSound() {
   const [sound, setSound] = useState<Audio.Sound | null>();
@@ -27,21 +29,6 @@ export function useSound() {
 }
 
 
-export const useInitVoice = () => {
-  const [initVoice, setInitVoice] = useState<boolean>(false)
-  const updateInitVoice = (value:boolean) => setInitVoice(value);
-
-  useEffect(() => {
-    if (initVoice) {
-      startSpeech()
-        .then(() => {
-          console.log("Speech initialized...")
-        });
-    }
-  }, [initVoice]);
-
-  return { initVoice, setInitVoice, updateInitVoice }
-}
 
 
 export const useTranscript= () => {
@@ -75,28 +62,18 @@ export function useMotherResponse() {
     }
   }
 
-  const errorHandling = ():void => {};
+
+  const updateMotherResponse = (text:string) => {
+    setMotherResponse(text);
+  }
 
 
   useEffect(() => {
     if ( motherResponse.length > 0 ) {
       console.log("Response.length > 0:", motherResponse);
-      textToSpeech(
-        motherResponse,
-        errorHandling,
-        updateMotherError,
-        updateLoading,
-        updateSound
-      )
-        .then(() => {
-          console.log("tts finished...")
-        })
+      expoSpeak(motherResponse, updateMotherResponse);
     }
   }, [motherResponse]);
-
-  const updateMotherResponse = (text:string) => {
-    setMotherResponse(text);
-  }
 
   return { motherResponse, setMotherResponse, updateMotherResponse };
 }
@@ -115,6 +92,16 @@ export const useCurrentSpeech = () => {
 
 
 /*
+textToSpeech(
+        motherResponse,
+        errorHandling,
+        updateMotherError,
+        updateLoading,
+        updateSound
+      )
+        .then(() => {
+          console.log("tts finished...")
+        })
 export const useTts = () => {
   const onSpeechError = useCallback((e: SpeechErrorEvent) => {
     console.error("Error occurred while handling the speech:", e);

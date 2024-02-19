@@ -33,6 +33,7 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
   const [currentSpeech, setCurrentSpeech] = useState(false);
   const [languageTag, setLanguageTag] = useState('');
   const { jwtToken } = useContext(PrimaryContext);
+
   // styles
   const recordingButtonStyles = buttonStyles || [s.recordingButton, {borderColor: customTheme.text}];
   const route = useRoute();
