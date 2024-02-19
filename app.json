@@ -33,7 +33,8 @@
         {
           "microphonePermission": "Allow MOTHER to access your microphone."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "splash": {
       "image": "./assets/icons/screen.png",
@@ -47,7 +48,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.wired87.AiChat501",
       "config": {
-      "usesNonExemptEncryption": false
+        "usesNonExemptEncryption": false
       }
     },
     "android": {

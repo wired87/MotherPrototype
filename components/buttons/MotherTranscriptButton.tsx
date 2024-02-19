@@ -3,10 +3,9 @@ import {Pressable, Vibration} from "react-native";
 import Voice, {SpeechErrorEvent} from "@react-native-voice/voice";
 import * as RNLocalize from 'react-native-localize';
 import {styles as s} from "./styles";
-import {ThemeContext} from "../../screens/Context";
+import {PrimaryContext, ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useRoute} from "@react-navigation/native";
-import {stopSpeech} from "../../AppFunctions/TranscribeFunctions";
 
 // STRINGS
 const defaultIcon:string = "microphone";
@@ -33,7 +32,7 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
   const { customTheme } = useContext(ThemeContext);
   const [currentSpeech, setCurrentSpeech] = useState(false);
   const [languageTag, setLanguageTag] = useState('');
-
+  const { jwtToken } = useContext(PrimaryContext);
   // styles
   const recordingButtonStyles = buttonStyles || [s.recordingButton, {borderColor: customTheme.text}];
   const route = useRoute();
@@ -83,24 +82,28 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
   }
 
   const handleSpeechToText = useCallback(() => {
-    Vibration.vibrate();
-    if (currentSpeech) {
-      stopSpeech()
-        .then(() => {
-            console.log("Voice recording ended..")
-          }
-        )
-        .catch(e => console.log("Error while stop the recording occurred:", e));
-      setCurrentSpeech(!currentSpeech);
-    } else {
-      startSpeech()
-        .then(() => {
-            console.log("Voice recording started..");
-            setCurrentSpeech(!currentSpeech);
-          }
-        )
-        .catch(e => console.log("Error while stop the recording occurred:", e));
-      setCurrentSpeech(!currentSpeech);
+    if (jwtToken){
+      Vibration.vibrate();
+      if (currentSpeech) {
+        stopSpeech()
+          .then(() => {
+              console.log("Voice recording ended..")
+            }
+          )
+          .catch(e => console.log("Error while stop the recording occurred:", e));
+        setCurrentSpeech(!currentSpeech);
+      } else {
+        startSpeech()
+          .then(() => {
+              console.log("Voice recording started..");
+              setCurrentSpeech(!currentSpeech);
+            }
+          )
+          .catch(e => console.log("Error while stop the recording occurred:", e));
+        setCurrentSpeech(!currentSpeech);
+      }
+    }else {
+      console.log("No jwtToken at the current Time in TB...");
     }
   }, [currentSpeech]);
 

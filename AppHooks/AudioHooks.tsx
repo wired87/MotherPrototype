@@ -3,11 +3,9 @@ import {Audio} from "expo-av";
 
 import {useLoading, useMotherError} from "./PrimaryHooks";
 import {textToSpeech} from "../AppFunctions/TTSFunctions";
-import {TranscriptHookPropsInterface} from "../AppInterfaces/HookInterfaces/AudioHookInterface";
 
 import {PorcupineManager} from "@picovoice/porcupine-react-native";
 import {startSpeech} from "../AppFunctions/TranscribeFunctions";
-import Voice from "@react-native-voice/voice";
 let porcupineManager: PorcupineManager | undefined = undefined;
 
 export function useSound() {
