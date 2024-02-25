@@ -64,17 +64,18 @@ export const getToken = async (updateJwtToken: (value:JwtToken | null) => void, 
 }
 
 export const checkExistingToken = async (
-  token: JwtToken, updateJwtToken: (value:JwtToken | null) => void,
+  token: JwtToken,
+  updateJwtToken: (value:JwtToken | null) => void,
   userID?:string
 ) => {
   // Generate here a new access token with sending the refresh token to the Backend
-  console.log("Check existing Token...");
+  console.log("Check existing Token... user id:", userID);
   const res = await fetch(checkEndpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({"refresh": token.refresh}),
+    body: JSON.stringify({"refresh": token.refresh, "user_id": userID}),
   });
   const response = await res.json();
 
@@ -187,10 +188,14 @@ export const getCurrentLanguage = () => {
 
 // ALERTS
 
-export const connectionAlert = () => {
+export const connectionAlert = (
+  title:string = 'No internet connection detected',
+  message:string=`You need a internet connection to use our service. 
+  \nYou think that's an issue? Please report it and we check it ASAP`
+) => {
   Alert.alert(
-    'No internet connection detected',
-    `You need a internet connection to use our service. \nYou think that's an issue? Please report it and we check it ASAP`,
+    title,
+    message,
     [
       {
         text: 'close',
@@ -198,7 +203,7 @@ export const connectionAlert = () => {
         style: 'cancel',
       },
       {
-        text: 'refresh App',
+        text: 'Refresh the App',
         onPress: () => RNRestart.restart(),
         style: 'destructive',
       },

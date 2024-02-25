@@ -1,0 +1,6 @@
+gmail (send, view, del):
+          "https://mail.google.com/",
+
+
+people API:
+https://www.googleapis.com/auth/contacts	See, edit, download, and permanently delete your contacts -> very good

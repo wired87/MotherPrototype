@@ -144,8 +144,8 @@ const ChatNavigation: React.FC<ChatNavigationTypes> = (
     try {
       console.log("Sending Message Object...")
       console.log("jwtTokenRef?.current send Package ChatNav:", jwtTokenRef?.current);
-      if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access) {
-        const response = await sendObject(userMessage, jwtTokenRef.current, setJwtToken);
+      if (jwtTokenRef?.current && jwtTokenRef.current.refresh && jwtTokenRef.current.access && user?.uid) {
+        const response = await sendObject(userMessage, jwtTokenRef.current, setJwtToken, user.uid);
         if (!response) {
           console.log("sendObject Response === null... (in ChatNav)")
           errorMessageAIResponse();

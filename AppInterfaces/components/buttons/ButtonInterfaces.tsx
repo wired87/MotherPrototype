@@ -7,3 +7,7 @@ export interface TranscribeButtonTypes {
   buttonStyles?: any;
   transcript: string;
 }
+
+export interface SwitchButtonInterface {
+  action: () => void;
+}

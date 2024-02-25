@@ -6,7 +6,7 @@ import {styles as s} from "./styles";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useRoute} from "@react-navigation/native";
-
+import {Audio} from "expo-av"
 // STRINGS
 const defaultIcon:string = "microphone";
 
@@ -82,7 +82,7 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
     await Voice.stop();
   }
 
-  const handleSpeechToText = useCallback(() => {
+  const handleSpeechToText = useCallback(async() => {
     if (jwtToken){
       Vibration.vibrate();
       if (currentSpeech) {
@@ -94,19 +94,22 @@ export const MotherTranscriptButton: React.FC<TranscribeButtonTypes> = (
           .catch(e => console.log("Error while stop the recording occurred:", e));
         setCurrentSpeech(!currentSpeech);
       } else {
-        startSpeech()
-          .then(() => {
-              console.log("Voice recording started..");
-              setCurrentSpeech(!currentSpeech);
-            }
-          )
-          .catch(e => console.log("Error while stop the recording occurred:", e));
-        setCurrentSpeech(!currentSpeech);
+        const permissionResponse = await Audio.requestPermissionsAsync();
+        if (permissionResponse.status === 'granted') {
+          startSpeech()
+            .then(() => {
+                console.log("Voice recording started..");
+                setCurrentSpeech(!currentSpeech);
+              }
+            )
+            .catch(e => console.log("Error while stop the recording occurred:", e));
+          setCurrentSpeech(!currentSpeech);
+        }
       }
     }else {
       console.log("No jwtToken at the current Time in TB...");
     }
-  }, [currentSpeech]);
+  }, [currentSpeech, jwtToken]);
 
   return(
     <Pressable style={recordingButtonStyles} onPress={handleSpeechToText}>

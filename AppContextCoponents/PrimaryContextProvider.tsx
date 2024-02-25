@@ -1,14 +1,13 @@
 
-import React, {Dispatch, memo, SetStateAction, useEffect} from "react";
+import React, {Dispatch, memo, SetStateAction, useCallback, useEffect} from "react";
 import {useAuthenticated, useJwt, useUser} from "../AppHooks/AuthHooks";
 import {useIsConnected, useLoading} from "../AppHooks/PrimaryHooks";
 import {useBottomSheetLoaded} from "../AppHooks/InitHooks";
 import {useAlreadyRunning} from "../AppHooks/InputHooks";
-import {useDarkmode} from "../AppHooks/ThemeHook";
 import {useToolHooks} from "../AppHooks/ToolHooks";
 import {useClearMessages} from "../AppHooks/ChatMessageHooks";
 import {sendObject} from "../screens/chat/functions/SendProcess";
-import {getToken} from "../AppFunctions/JwtFunctions";
+import {connectionAlert, getToken} from "../AppFunctions/JwtFunctions";
 import { PrimaryContext } from "../screens/Context";
 import NetInfo from "@react-native-community/netinfo";
 import {useInitError} from "../AppHooks/ErrorHooks/InitErrorHook";
@@ -28,7 +27,7 @@ let errorCodes:string[] = [
 
 
 
-const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
+export const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
   {
     children
   }
@@ -59,6 +58,7 @@ const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
   const useIcConnectedParams: UseIsConnectedParams = {updateUser, updateAuthenticated, updateInitError}
   const {isConnected, updateIsConnected} = useIsConnected(useIcConnectedParams);
 
+
   useEffect(() => {
     NetInfo.fetch().then((state) => {
       console.log("Internet Connection set:", state.isConnected, typeof state.isConnected);
@@ -66,8 +66,12 @@ const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
     });
   }, []);
 
+  useEffect(() => {
+    console.log("USER CHANGED IN PRIMARY CONTEX TPROVIDER COMPONENT:", user)
+    console.log("JWTTOKEN CHANGED IN PRIMARY CONTEX TPROVIDER COMPONENT:", jwtToken);
+  }, [user, jwtToken]);
 
-  const defaultPostRequest = async (
+  const defaultPostRequest = useCallback(async (
     postUrl: string,
     postObject: any,
     setError: Dispatch<SetStateAction<string>>,
@@ -75,7 +79,18 @@ const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
     setStatus?:Dispatch<SetStateAction<number>>,
     toolAction?: boolean
   ):Promise<any> => {
-    console.log("jwtToken n Application Content:", jwtToken);
+    console.log("jwtToken in Application Content:", jwtToken);
+    console.log("user in Application Content:", user);
+
+    if (!jwtToken) {
+      setError("No Jwt Token Provided...")
+      connectionAlert(
+        "Unexpected authorisation error.",
+        "Please refresh the app."
+      )
+      return;
+    }
+
     if (postObject.type !== "contact" && toolAction) { // check for tA because i can handle the show process better
       await checkToolActionValueProcess();
     }
@@ -94,26 +109,26 @@ const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
 
     let response;
     try {
-      if (jwtToken?.refresh && jwtToken.access) {
-        console.log("Application data sent: ", postObject);
+      if (jwtToken?.refresh && jwtToken.access && user?.uid) {
+        console.log("defaultPostRequest data sent: ", postObject);
         response = await sendObject(
           postObject,
           jwtToken,
           setJwtToken,
+          user?.uid,
           postUrl
         );
-
       } else {
         console.error("No token provided. Current Access Token:", jwtToken?.access, "\n\n current refresh token:", jwtToken?.refresh);
         const newToken = await getToken(setJwtToken, user?.uid);
-        if (newToken) {
+        if (newToken && user?.uid) {
           response = await sendObject(
             postObject,
             newToken,
             setJwtToken,
+            user?.uid,
             postUrl
           );
-
         } else {
           console.error("New Token request failed...");
           setError("Authentication Error");
@@ -152,27 +167,42 @@ const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
         setStatus(500);
       }
     } finally {
-      console.log("Application request finished without trouble...");
+      console.log("Application request finished...");
       setLoading(false);
     }
-  }
+  }, [jwtToken, user]);
 
-  const elements = {
-    user, setUser,
-    loading, setLoading,
-    clearMessages, setClearMessages,
-    jwtToken, setJwtToken,
-    isConnected, updateIsConnected,
-    bottomSheetLoaded, setBottomSheetLoaded,
+
+  const elements = useCallback(() => {
+    console.log("STATE CHANGED...");
+    return {
+      user, setUser,
+      loading, setLoading,
+      clearMessages, setClearMessages,
+      jwtToken, setJwtToken,
+      isConnected, updateIsConnected,
+      bottomSheetLoaded, setBottomSheetLoaded,
+      defaultPostRequest,
+      alreadyRunning, updateAlreadyRunning
+    };
+  }, [
+    user,
+    loading,
+    clearMessages,
+    jwtToken,
+    isConnected,
+    bottomSheetLoaded,
     defaultPostRequest,
-    alreadyRunning, updateAlreadyRunning
-  };
+    alreadyRunning
+  ]);
+
 
   return(
-    <PrimaryContext.Provider value={elements}>
-      {children}
+    <PrimaryContext.Provider value={elements()}>
+      {
+        children
+      }
     </PrimaryContext.Provider>
   )
 }
 
-export default memo(PrimaryContextProvider);

@@ -39,7 +39,7 @@ const ContactAutoButton: React.FC<ContactButtonType> = (
   }
 ) => {
 
-  const { defaultPostRequest } = useContext(PrimaryContext);
+  const { defaultPostRequest, jwtToken } = useContext(PrimaryContext);
   const { customTheme } = useContext(ThemeContext);
 
   const color:object = {color: "white"};

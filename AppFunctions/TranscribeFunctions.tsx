@@ -20,3 +20,4 @@ export const onSpeechEnd = () => {
   stopSpeech()
     .then(() => console.log("Voice successfully stopped..."));
 };
+

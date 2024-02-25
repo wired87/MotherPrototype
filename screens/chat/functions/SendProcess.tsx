@@ -108,7 +108,8 @@ export const sendObject = async (
   senderObject: any,
   jwtToken: JwtToken,
   setJwtToken: Dispatch<SetStateAction<JwtToken | null>>,
-  customPostUrl?: string
+  userID:string,
+  customPostUrl?: string,
 ) => {
 
   // CHECK TOKEN DATA FOR EXP
@@ -126,7 +127,7 @@ export const sendObject = async (
 
   }else if(jwtTokenData.accessExp) {
     console.log("ACCESS Token expired. Creating a new one...");
-    const newTokenObject = await checkExistingToken(jwtToken, setJwtToken);
+    const newTokenObject = await checkExistingToken(jwtToken, setJwtToken, userID);
     if (!newTokenObject) {
       console.log("Could not create a new ACCESS Token..");
       return null;
@@ -148,13 +149,11 @@ export const sendObject = async (
         }
       );
 
-
-
     console.log("sendObject res ===", response)
     if (!response) {
       return null;
     }else if (response.detail){
-      const checkTokenAgain = await checkExistingToken(jwtToken, setJwtToken);
+      const checkTokenAgain = await checkExistingToken(jwtToken, setJwtToken, userID);
       if (!checkTokenAgain) {
         console.log("Could not receive a valid Token postMessageObject...")
         return null;

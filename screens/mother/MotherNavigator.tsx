@@ -1,29 +1,35 @@
-import React, {memo, useMemo} from "react";
+import React, {memo, ReactNode, useCallback, useContext, useMemo, useRef} from "react";
 import DefaultHeader from "../../components/navigation/DefaultHeader";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {MotherMain} from "./MotherMain";
-import MotherTools from "./MotherTools";
-import HeaderButton from "../../components/buttons/navigation/HeaderButton";
-import {motherMainStyles as mms} from "./styles";
-import {useNavigation} from "@react-navigation/native";
-import EmailAuthScreen from "./ToolScreens/EmailAuthScreen";
+
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {SpeechErrorEvent} from "@react-native-voice/voice";
 import {useLoading, useMotherError} from "../../AppHooks/PrimaryHooks";
 
 import {textToSpeech} from "../../AppFunctions/TTSFunctions";
 import {useSound} from "../../AppHooks/AudioHooks";
+import {RightCornerTypes} from "../../AppInterfaces/MotherInterfaces";
+import ChatNavigation from "../chat/ChatNavigator";
+import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
+import {MotherNavContext} from "../Context";
+
+const MotherNavigatorMemoized = memo(() => React.createElement(MotherMain))
+
 
 const MotherStack = createNativeStackNavigator();
 
 const MotherNavigator: React.FC = () => {
+
   // STATES
   const navigation = useNavigation();
+  const route = useRoute();
 
   // HOOKS
   const {updateLoading} = useLoading();
   const { updateSound } = useSound();
-  const { updateMotherError , setMotherError} = useMotherError();
-
+  const { updateMotherError } = useMotherError();
+  const {toggleScreen} = useContext(MotherNavContext);
   const errorHandling = () => {};
 
   const navigate = (screen: string) => {
@@ -46,48 +52,58 @@ const MotherNavigator: React.FC = () => {
   }
 
 
-  /*
-  const useSstArgs: TranscriptHookPropsInterface = {route, onSpeechResults , onSpeechError};
-  const {} = useStt(useSstArgs);
-  */
+  const rightCornerIconElement = useCallback((): RightCornerTypes | undefined => {
+    if (["MotherMain"].includes(route.name)){
+      console.log("new render MotherMain...")
+      return {
+        icon: "align-horizontal-right",
+        action: () => navigate("ToolsMain")
+      }
+    }else if (["ToolsMain"].includes(route.name)) {
+      console.log("new render ToolsMain...")
+      return {
+        icon: "account-plus",
+        action: () => navigate("ToolsMain")
+      }
+    }
+  }, [route.name]);
 
 
-  const screenHeaderOptions = useMemo(() => ({
+  const screenHeaderOptions = () => ({
     header:
       () =>
-        <DefaultHeader
-          childrenRight={
-            <HeaderButton
-              action={
-                () => navigate("MotherTools")
-              }
-              icon={"align-horizontal-right"}
-              eS={mms.marginVertical10}
-            />
-          }
+        <DefaultHeader />
+    }
+  )
+
+  const navigatorSwitch = useMemo(():ReactNode => {
+    if ( toggleScreen ) {
+      return(
+        <MotherStack.Screen
+          name="MotherMain"
+          component={MotherNavigatorMemoized}
         />
-  }), []);
+      )
+    }
+    return(
+      <MotherStack.Screen
+        name="Chat"
+        children={
+          () => <ChatNavigation bottomSheetRef={bottomSheetRef}/>
+        }
+      />
+    )
+  }, [toggleScreen])
+
+  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
   return(
     <MotherStack.Navigator
       initialRouteName="MotherMain"
       screenOptions={screenHeaderOptions}>
-
-      <MotherStack.Screen
-        name="MotherMain"
-        component={MotherMain}
-      />
-
-      <MotherStack.Screen
-        name="MotherTools"
-        component={MotherTools}
-      />
-
-      <MotherStack.Screen
-        name="EmailAuthScreen"
-        component={EmailAuthScreen}
-      />
-
+      {
+        navigatorSwitch
+      }
     </MotherStack.Navigator>
   )
 }

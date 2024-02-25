@@ -1,5 +1,5 @@
 import React, {memo, useState} from "react";
-import UniversalServiceScreen from "./UniversalServiceScreen";
+import UniversalServiceScreen from "../UniversalServiceScreen";
 
 const EmailAuthScreen:React.FC = () => {
   const [serviceUnlocked, setServiceUnLocked] = useState<boolean>(false);

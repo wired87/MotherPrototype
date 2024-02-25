@@ -18,8 +18,9 @@ import {useToolHooks} from "./AppHooks/ToolHooks";
 import {useMediaContextHooks} from "./AppHooks/ContextHooks/MediaContextHooks";
 
 // PROVIDER
-import PrimaryContextProvider from "./AppContextCoponents/PrimaryContextProvider";
+import {PrimaryContextProvider} from "./AppContextCoponents/PrimaryContextProvider";
 import ThemeContextProvider from "./AppContextCoponents/ThemeContextProvider";
+import MotherNavContextProvider from "./AppContextCoponents/MotherNavContextProvider";
 
 export default function App() {
 
@@ -33,15 +34,17 @@ export default function App() {
       <MediaContext.Provider value={useMediaContextHooks()}>
         <InputContext.Provider value={useInputContextHooks()}>
           <PrimaryContextProvider>
-            <ToolContext.Provider value={useToolHooks()}>
-              <GestureHandlerRootView style={gestureHandlerStyles}>
-                <BottomSheetModalProvider>
-                  <NavigationContainer>
-                    <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact} />
-                  </NavigationContainer>
-                </BottomSheetModalProvider>
-              </GestureHandlerRootView>
-            </ToolContext.Provider>
+            <MotherNavContextProvider>
+              <ToolContext.Provider value={useToolHooks()}>
+                <GestureHandlerRootView style={gestureHandlerStyles}>
+                  <BottomSheetModalProvider>
+                    <NavigationContainer>
+                      <NavigationMain firstContact={firstContact} setFirstContact={setFirstContact} />
+                    </NavigationContainer>
+                  </BottomSheetModalProvider>
+                </GestureHandlerRootView>
+              </ToolContext.Provider>
+            </MotherNavContextProvider>
           </PrimaryContextProvider>
         </InputContext.Provider>
       </MediaContext.Provider>

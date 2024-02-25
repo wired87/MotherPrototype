@@ -106,7 +106,7 @@ const NavigationMain: React.FC<NavMainTypes> = (
         }}
       />
       <Tab.Navigator
-        initialRouteName="Chat" // Erster Tab beim Start der App
+        initialRouteName="MotherNavigator" // Erster Tab beim Start der App
         backBehavior="initialRoute" // Verhalten, wenn die Zurück-Taste gedrückt wird
         screenOptions={{
           headerShown: false,
@@ -132,22 +132,6 @@ const NavigationMain: React.FC<NavMainTypes> = (
           tabBarHideOnKeyboard: true, // Bestimmt, ob die Tastatur die Tab-Leiste ausblendet
         }}>
 
-          <Tab.Screen
-            name="Chat"
-            children={
-              () =>
-                  <ChatNavigation bottomSheetRef={bottomSheetRef}/>
-              }
-            options={{
-              tabBarIcon: ({ color, focused }) => (
-                <MaterialCommunityIcons
-                  style={localStyles.icon}
-                  name={focused ? "comment-multiple" : "comment-multiple-outline"}
-                  color={color} size={29}
-                />
-              ),
-            }}
-          />
         <Tab.Screen
           name="ToolsNavigator"
           component={ToolsNavigator}

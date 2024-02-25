@@ -1,4 +1,5 @@
 import {StyleSheet} from "react-native";
+import {windowHeight, windowWidth} from "../../screens/chat/chatStyles";
 
 export const styles = StyleSheet.create({
     errorText: {
@@ -40,15 +41,17 @@ export const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "flex-start",
     },
-
+    fullWidthHeight: {
+      width: windowWidth,
+      height: windowHeight
+    },
 
     justifyAlignCenter: {
         justifyContent: "center",
         alignItems: "center",
     },
-
     modalView: {
-        margin: 20,
+        //marginVertical: 50,
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 35,

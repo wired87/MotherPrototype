@@ -15,6 +15,7 @@
     "@picovoice/rhino-react-native": "^3.0.2",
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-community/netinfo": "11.1.0",
+    "@react-native-google-signin/google-signin": "^11.0.0",
     "@react-native-picker/picker": "2.6.1",
     "@react-native-seoul/masonry-list": "^1.4.2",
     "@react-native-voice/voice": "^3.2.4",

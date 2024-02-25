@@ -13,8 +13,6 @@ declare module '@env' {
   export const NEURONWRITER_AFFILIATE_LINK: string;
   export const FRASE_AFFILIATE_URL: string;
   export const ORIGIBNALITY_AFFILITE_UTR: string;
-  export const TOOLS_IOS_INTERSITIAL: string;
-  export const TOOLS_ANDROID_INTERSITIAL: string;
   export const CHECK_JWT: string;
   export const LOGIN_JWT: string;
   export const CHAT_REQUEST_URL: string;
@@ -27,5 +25,11 @@ declare module '@env' {
   export const LOVO_API_KEY: string;
   export const PORCUPINE_API_KEY: string;
   export const MOTHER_URL: string;
+  export const CREATE_EMAIL_CONTACT_URL: string;
+  export const REGISTER_EMAIL_ACCOUNT: string;
+  export const GET_EMAIL_CONTACT_URL: string;
+  export const GOOGLE_WEB_CLIENT_ID: string;
+  export const GOOGLE_IOS_CLIENT_ID: string;
+  export const SAVE_GOOGLE_OBJECT_URL: string;
 
 }

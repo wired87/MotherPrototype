@@ -4,10 +4,6 @@ const windowWidth:number = Dimensions.get('window').width;
 
 export const motherMainStyles = StyleSheet.create(
   {
-    justifyAlignCenter: {
-      justifyContent: "center",
-      alignItems: "center",
-    },
     flatList: {
       width: windowWidth,
       padding: 3
@@ -17,7 +13,9 @@ export const motherMainStyles = StyleSheet.create(
     },
     marginVer50: {
       marginVertical: 50,
-
+    },
+    marginHor10: {
+      marginHorizontal: 10,
     },
     flexColumn: {
       flexDirection: "column"

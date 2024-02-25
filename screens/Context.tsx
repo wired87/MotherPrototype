@@ -36,9 +36,13 @@ export const PrimaryContext = createContext(
       ) => Promise<any>,
 
     alreadyRunning: false,
-    updateAlreadyRunning: (value:boolean) :void => {}
-  });
+    updateAlreadyRunning: (value:boolean) :void => {},
 
+  });
+export const MotherNavContext = createContext({
+  toggleScreen: false,
+  updateToggleScreen: ():void => {},
+})
 export const InputContext = createContext({
 
   input: "",

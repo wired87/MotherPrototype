@@ -1,6 +1,6 @@
 import React, {useCallback, useContext} from "react";
 import DefaultContainer from "../../components/container/DefaultContainer";
-import {useMotherResponse, useSound} from "../../AppHooks/AudioHooks";
+import {useMotherResponse} from "../../AppHooks/AudioHooks";
 import {MOTHER_URL} from "@env";
 import {getMotherRequestData} from "../../AppFunctions/GetObjectFunctions";
 import {useLoading, useMotherError} from "../../AppHooks/PrimaryHooks";
@@ -8,7 +8,8 @@ import {PrimaryContext} from "../Context";
 import {MotherTranscriptButton} from "../../components/buttons/MotherTranscriptButton";
 import {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
 import {Vibration} from "react-native";
-import {expoSpeak, textToSpeech} from "../../AppFunctions/TTSFunctions";
+import {expoSpeak} from "../../AppFunctions/TTSFunctions";
+
 
 interface MotherMainTypes {
 
@@ -27,11 +28,11 @@ interface MotherMainTypes {
 
 export const MotherMain: React.FC<MotherMainTypes> = () => {
   // HOOKS
-  const { updateSound } = useSound();
-  const { updateMotherError , setMotherError} = useMotherError();
+  const { setMotherError} = useMotherError();
   const {updateLoading} = useLoading();
   const {defaultPostRequest, user} = useContext(PrimaryContext);
   const {setMotherResponse} = useMotherResponse();
+  const { jwtToken } = useContext(PrimaryContext);
 
   const splitString = (inputString:string) => {
     let stringList = [];
@@ -62,7 +63,7 @@ export const MotherMain: React.FC<MotherMainTypes> = () => {
     }
   }
 
-  const sendData = useCallback(async (newTranscript: string) => {
+  const sendData = async (newTranscript: string) => {
     try{
       await defaultPostRequest(
         MOTHER_URL,
@@ -77,13 +78,12 @@ export const MotherMain: React.FC<MotherMainTypes> = () => {
     }finally {
       updateLoading();
     }
-  }, [setMotherError, setMotherResponse]);
+  }
 
-  const errorHandling = () => {};
 
   const _onSpeechError = (e: SpeechErrorEvent) => {
     console.error("Error occurred while handling the speech:", e);
-    expoSpeak("Sorry, i couldn't hear anything. Please repeat it a bit louder. Im not the youngest")
+    expoSpeak("Sorry, i couldn't hear anything. Please repeat it a bit louder.")
   }
 
   return(

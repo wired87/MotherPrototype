@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useContext, useEffect} from "react";
-import {Pressable, Vibration} from "react-native";
+import {Pressable, Vibration, PermissionsAndroid} from "react-native";
 import Voice, {SpeechErrorEvent, SpeechResultsEvent} from "@react-native-voice/voice";
 import {styles as s} from "./styles";
 import {ThemeContext} from "../../screens/Context";

@@ -3,7 +3,7 @@ import {Pressable} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import {useNavigation} from "@react-navigation/native";
-import {AppTypes} from "../../../screens/mother/MotherTools";
+import {AppTypes} from "../../../screens/tools/ToolsMain";
 import {appIconStyles as ais} from "./motherButtonStyles";
 import {DefaultText} from "../../text/DefaultText";
 
@@ -27,7 +27,7 @@ const AppIcon: React.FC<AppIconTypes> = (
 
   const navigate = () => {
     // @ts-ignore
-    navigation.navigate("MotherNavigator", {screen: item.screen});
+    navigation.navigate(item.screen);
   }
 
   return(
@@ -39,7 +39,7 @@ const AppIcon: React.FC<AppIconTypes> = (
         color={item.color}
         name={item.icon}
       />
-      <DefaultText text={item.name}/>
+      <DefaultText moreStyles={{textAlign: "center"}} text={item.name}/>
     </Pressable>
   );
 }

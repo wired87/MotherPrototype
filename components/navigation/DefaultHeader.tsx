@@ -1,11 +1,15 @@
 import {StyleSheet, View} from "react-native";
 
 import {useNavigation, useRoute} from "@react-navigation/native";
-import React, {memo, useCallback, useContext} from "react";
+import React, {memo, ReactNode, useCallback, useContext} from "react";
 import {uniStyles} from "../../screens/universalStyles";
 import {HeaderView} from "../container/headerContainer";
 import {ThemeContext} from "../../screens/Context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import HeaderButton from "../buttons/navigation/HeaderButton";
+import {motherMainStyles as mms} from "../../screens/mother/styles";
+import SwitchButton from "../buttons/SwitchButton";
+
 
 /*
 "AccountMain",
@@ -80,6 +84,7 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
   const route = useRoute();
   const navigation = useNavigation();
 
+
   const shouldShowBackIcon = useCallback(() => {
     const screensToShowBackIcon = [
       "SettingsMain",
@@ -87,24 +92,50 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
       "MotherNavigator",
       "ChatMain",
       "ChatNavigation",
+      "ToolsMain"
     ];
     return navigation.canGoBack() && !(screensToShowBackIcon.includes(route.name))
-  }, [navigation, route.name,]);
+  }, [navigation, route.name]);
+
 
   const shouldShowChildren = useCallback(() => {
-    return ![
-      "SettingsMain"].includes(route.name);
+    return !["SettingsMain"].includes(route.name);
   }, [route.name]);
+
 
   const navigateBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
-  const headerStyles: object[] = [uniStyles.headerContainer, {backgroundColor: customTheme.primary}]
+
+  const headerStyles: object[] = [uniStyles.headerContainer, {backgroundColor: customTheme.primary}];
+
+  const rightCornerIconElement = useCallback(() => {
+    if (["GoogleMain"].includes(route.name)) {
+      return(
+        <HeaderButton
+          action={// @ts-ignore
+            () => navigation.navigate("MotherNavigator", {screen: "EmailContact"})
+          }
+          icon={"account-plus"}
+          eS={mms.marginHor10}
+        />
+      )
+    }
+  }, [route.name]);
+
+  const childrenMiddleComponent = useCallback((): ReactNode | undefined => {
+    if ( ["MotherMain", "Chat"].includes(route.name) ) {
+      return <SwitchButton/>
+    }
+    return childrenMiddle
+
+  }, [route.name]);
+
 
   if (shouldShowChildren()) {
     return (
-      <View style={headerStyles}>
+      <View style={headerStyles} pointerEvents="box-none">
         <HeaderView extraStyles={localStyles.leftExtraStyles}>
           {shouldShowBackIcon() && (
             <MaterialCommunityIcons
@@ -118,17 +149,16 @@ const DefaultHeader: React.FC<DefaultHeaderTypes> =
         </HeaderView>
 
         <HeaderView extraStyles={localStyles.middleExtra}>
-          {
-            childrenMiddle
-          }
+            {
+              childrenMiddleComponent()
+            }
         </HeaderView>
 
         <HeaderView extraStyles={localStyles.rightExtra}>
           {
-            childrenRight
+            rightCornerIconElement()
           }
         </HeaderView>
-
       </View>
     );
   }
