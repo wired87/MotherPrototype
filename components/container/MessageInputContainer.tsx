@@ -1,7 +1,7 @@
 import DefaultContainer from "./DefaultContainer";
 import {View, ActivityIndicator, Image} from "react-native";
 import {styles} from "./contiStyles";
-import React, { useCallback, useContext, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { TypeIndicator } from "../animations/TypeIndicator";
 import {FunctionContext, InputContext, MediaContext, PrimaryContext, ThemeContext} from "../../screens/Context";
 import {DefaultInput} from "../input/DefaultInput";
@@ -13,14 +13,8 @@ import FloatingMediaButton from "../buttons/FloatingMediaButton";
 import {useError} from "../../AppHooks/PrimaryHooks";
 
 
-interface MessageInputTypes {
-  messagesLeft: string;
-}
 
-export const MessageInputContainer: React.FC<MessageInputTypes> = (
-  {
-    messagesLeft
-  }
+export const MessageInputContainer: React.FC = (
 ) => {
   // CONTEXT
   const { customTheme } = useContext(ThemeContext);
@@ -34,14 +28,6 @@ export const MessageInputContainer: React.FC<MessageInputTypes> = (
 
   // HOOKS
   const {error} = useError();
-
-  // REFS
-  const messageRef = useRef(messagesLeft)
-
-
-  useEffect(() => {
-    messageRef.current = messagesLeft;
-  }, [messagesLeft]);
 
 
     // Styles

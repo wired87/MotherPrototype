@@ -1,12 +1,12 @@
 
-import {StyleSheet, Dimensions} from "react-native";
-const windowWidth:number = Dimensions.get('window').width;
+import {StyleSheet} from "react-native";
+import {windowWidth} from "../chat/chatStyles";
 
 export const motherMainStyles = StyleSheet.create(
   {
     flatList: {
       width: windowWidth,
-      padding: 3
+      padding: 3,
     },
     marginVertical10: {
       marginVertical: 10

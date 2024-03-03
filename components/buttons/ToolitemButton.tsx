@@ -3,7 +3,7 @@ import {Text, StyleSheet, Pressable} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {LinearGradient} from "expo-linear-gradient";
 import {useNavigation} from "@react-navigation/native";
-import {DataItem} from "../../screens/tools/ToolsMain";
+import {DataItem} from "../../AppInterfaces/components/screens/ToolHooks";
 
 
 

@@ -174,7 +174,6 @@ export const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
 
 
   const elements = useCallback(() => {
-    console.log("STATE CHANGED...");
     return {
       user, setUser,
       loading, setLoading,

@@ -35,7 +35,7 @@ const ToolsMain: React.FC = () => {
   const {customTheme} = useContext(ThemeContext);
 
   const mainContainerStyles: object[] =
-    [mms.flexColumn, mms.flex, {marginTop:49,flexGrow: 1, backgroundColor: customTheme.primary}];
+    [mms.flexColumn, mms.flex, {marginTop:49,flexGrow: 1,  backgroundColor: customTheme.primary}];
 
   return(
     <View style={mainContainerStyles}>

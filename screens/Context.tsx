@@ -43,6 +43,7 @@ export const MotherNavContext = createContext({
   toggleScreen: false,
   updateToggleScreen: ():void => {},
 })
+
 export const InputContext = createContext({
 
   input: "",

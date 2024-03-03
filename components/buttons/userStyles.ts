@@ -107,7 +107,6 @@ export const userStyles = StyleSheet.create({
         elevation: 20,
         paddingVertical: 4,
         paddingHorizontal: 7,
-        addingHorizontal: 7,
         marginVertical: 10
     },
     extraMarginRight: {

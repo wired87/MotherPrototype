@@ -15,7 +15,6 @@ interface LottieContainer {
 }
 
 const LottieContainer: React.FC<LottieContainer> = (
-
   {
     source,
     text,
@@ -23,7 +22,6 @@ const LottieContainer: React.FC<LottieContainer> = (
     error,
     extraStylesMore
   }
-
 ) => {
 
   const finalSource: string | AnimationObject | { uri: string; } = source? source : defaultTools

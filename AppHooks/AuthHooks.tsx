@@ -9,7 +9,7 @@ import {
 import {User} from "@react-native-google-signin/google-signin";
 import {PrimaryContext} from "../screens/Context";
 import {useError} from "./PrimaryHooks";
-import {SAVE_GOOGLE_OBJECT_URL} from "@env";
+import {DELETE_GOOGLE_OBJECT_URL, SAVE_GOOGLE_OBJECT_URL} from "@env";
 import {saveUser} from "../AppFunctions/UserFunctions";
 
 
@@ -66,63 +66,93 @@ export const useUser = (
 }
 
 
-
 export const useGoogleAuthObject = () => {
   const [authObject, setAuthObject] = useState<User | null>(null);
+  const [deleteObject, setDeleteObject] = useState<boolean>(false);
+
   const [saveResponse, setSaveResponse] = useState<string>("");
+  const [deleteResponse, setDeleteResponse] = useState<string>("");
+  const [save, setSave] = useState<boolean>(false);
 
-  const {defaultPostRequest, setUser, user, jwtToken} = useContext(PrimaryContext);
+  const {defaultPostRequest, setUser, user} = useContext(PrimaryContext);
 
-  const {error, setError} = useError();
+  const {setError} = useError();
 
+  // UPDATES
   const updateAuthObject = (value:User | null) => setAuthObject(value);
+  const updateDeleteObject = (value:boolean) => setDeleteObject(value);
 
-  const getObject = () => {
+
+  const getUnlockObject = () => {
     return {
       "user_id": user?.uid,
       "googleUser": authObject
     }
   }
+  const getLockObject = () => {
+    return {
+      "user_id": user?.uid,
+    }
+  }
 
   useEffect(() => {
     if ( authObject ) {
+      console.log("Save request sent...");
       defaultPostRequest(
         SAVE_GOOGLE_OBJECT_URL,
-        getObject(),
+        getUnlockObject(),
         setError,
         setSaveResponse,
-      ).then(() => {
-        console.log("Google User Object sent...");
-      })
+        ).then(() => {
+          console.log("Google User Object sent ...");
+          setAuthObject(null);
+          setGoogleService(true);
+        }
+      )
+    }else if( deleteObject ) {
+      console.log("Delete request sent...");
+      defaultPostRequest(
+        DELETE_GOOGLE_OBJECT_URL,
+        getLockObject(),
+        setError,
+        setDeleteResponse,
+        ).then(() => {
+          console.log("Google User Object deleted ...");
+          setGoogleService(false);
+          setDeleteObject(false);
+        }
+      )
     }
-  }, [authObject]);
+  }, [authObject, deleteObject]);
 
-  const setGoogleService = () => {
+  const setGoogleService = (value: boolean) => {
+    console.log("Set user gS to false...")
     setUser(prevState => ({
       ...prevState,
-      googleServices: true
+      googleServices: value
     }));
+    setSave(true);
   };
 
   useEffect(() => {
-    // update user object and save in secure store
-    if (saveResponse.includes("Successfully")) {
-      console.log("Success response...");
-      setGoogleService()
-
-    }else if ( saveResponse.includes("Error")) {
-      console.log("Error save Google Object Response...")
-    }
-  }, [saveResponse]);
-
-
-  useEffect(() => {
-    if (user?.googleServices) {
+    console.log("Auth useEffect triggered...")
+    if (  (save && user && ["saveSuccess"].includes(saveResponse)) || (save && user && ["deleteSuccess"].includes(deleteResponse)) ) {
+      console.log("If block triggered")
       saveUser(user)
-        .then(() => console.log("Updated User successfully Saved..."));
+        .then(() => {
+          console.log("Updated User successfully Saved:", user);
+          setSave(false);
+        }
+      );
     }
-  }, [user]);
+  }, [save, saveResponse, user]);
 
 
-  return {authObject, setAuthObject, updateAuthObject}
+  return {
+    updateDeleteObject,
+    updateAuthObject,
+    saveResponse, deleteResponse ,
+    setGoogleService,
+    setDeleteResponse, setSaveResponse
+  }
 }

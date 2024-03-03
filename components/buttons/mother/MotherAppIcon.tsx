@@ -20,7 +20,7 @@ const AppIcon: React.FC<AppIconTypes> = (
 
   const containerStyles = [
     ais.appIcon, ais.justifyAlignCenter, {
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
   }];
 
   const navigation = useNavigation()

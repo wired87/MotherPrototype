@@ -1,5 +1,5 @@
 import {ActivityIndicator, Pressable, Text} from "react-native";
-import React, {ReactNode, useCallback, useContext, useMemo} from "react";
+import React, {ReactNode, useCallback, useContext} from "react";
 import {styles as s} from "./styles";
 import {PrimaryContext, ThemeContext} from "../../screens/Context";
 import {StyleProps} from "react-native-reanimated";
@@ -34,8 +34,8 @@ export const DefaultButton: React.FC<DefaultButtonStyles> = (
   const loadingSpinner = useCallback(()=> {
     if (loading) {
       return <ActivityIndicator size={"small"}/>
-    }else {
-      return <></>
+    }else if (secondIcon) {
+      return secondIcon
     }
   }, [secondIcon, loading]);
 

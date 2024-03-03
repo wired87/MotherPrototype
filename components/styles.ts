@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
         marginTop: 50,
         borderRadius:28,
         paddingVertical: 30,
-        border:'1px solid white'
+
     },
 
 

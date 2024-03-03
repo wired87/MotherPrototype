@@ -45,18 +45,6 @@ const SingleErrorMessage: React.FC = () => {
   return(
     <View style={[us.justifyAlignCenter, {zIndex: 10000000000, flexDirection: "row"}]}>
       <DefaultPageNavigationBtn
-        text={"Talk"}
-        onPressAction={() => updateToggleScreen()}
-        extraTextStyles={{
-          color: talkBtnColor,
-          fontSize: 16,
-          textAlign: "center"
-        }}
-        extraBtnStyles={{
-          backgroundColor: talkBtnBackgroundColor
-        }}
-      />
-      <DefaultPageNavigationBtn
         text={"Write"}
         onPressAction={() => updateToggleScreen()}
         extraTextStyles={{
@@ -66,6 +54,18 @@ const SingleErrorMessage: React.FC = () => {
         }}
         extraBtnStyles={{
           backgroundColor: chatBtnBackgroundColor
+        }}
+      />
+      <DefaultPageNavigationBtn
+        text={"Talk"}
+        onPressAction={() => updateToggleScreen()}
+        extraTextStyles={{
+          color: talkBtnColor,
+          fontSize: 16,
+          textAlign: "center"
+        }}
+        extraBtnStyles={{
+          backgroundColor: talkBtnBackgroundColor
         }}
       />
     </View>

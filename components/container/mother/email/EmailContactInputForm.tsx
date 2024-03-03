@@ -3,11 +3,10 @@ import {SafeAreaView, View} from "react-native";
 import {StyleProps} from "react-native-reanimated";
 import {uniStyles as us} from "../../../../screens/universalStyles";
 import {PrimaryContext, ThemeContext} from "../../../../screens/Context";
-import LockModal from "../../../modals/LockModal";
 import {DefaultInput} from "../../../input/DefaultInput";
 import {DefaultButton} from "../../../buttons/DefaultButton";
 import TextStream from "../../../text/TextStream";
-import {CREATE_EMAIL_CONTACT_URL, MEDIA_URL} from "@env";
+import {CREATE_EMAIL_CONTACT_URL} from "@env";
 import {emailContactPostObject} from "../../../../AppFunctions/GetObjectFunctions";
 
 

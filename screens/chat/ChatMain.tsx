@@ -90,7 +90,7 @@ export const ChatMain = () => {
         </View>
 
         <View style={localStyles.messageInputView}>
-          <MessageInputContainer messagesLeft={messagesLeft}/>
+          <MessageInputContainer />
         </View>
 
       </KeyboardAvoidingView>

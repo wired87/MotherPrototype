@@ -1,4 +1,5 @@
-import {Dispatch, SetStateAction} from "react";
+import {Dispatch, ReactNode, RefObject, SetStateAction} from "react";
+import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
 export interface LovoObjectTypes {
   speed: number;
@@ -14,10 +15,13 @@ export interface RightCornerTypes {
 export interface UniversalServiceScreenTypes {
   serviceUnLocked: boolean;
   serviceName: string;
-  setServiceUnLocked: Dispatch<SetStateAction<boolean>>;
-  unLockService: (() => void);
-  lockService: (() => void);
+  actionButton: () => ReactNode;
+  children: ReactNode;
+  confirmClick: () => void;
+  sheetRef?: RefObject<BottomSheetMethods>;
+  statusChildren?: ReactNode;
 }
+
 
 export interface LockObjectTypes {
   type: string;

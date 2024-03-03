@@ -34,6 +34,9 @@ export const styles = StyleSheet.create({
         width: 200,
 
     },
+    lottie: {
+        width: 100,
+    },
     main: {
         flex: 1,
     },
@@ -50,21 +53,18 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    modalView: {
-        //marginVertical: 50,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
+    justifyAlignStartCenter: {
+        justifyContent: "flex-start",
+        alignItems: "center",
     },
+    marginTop5: {
+        marginTop: 50
+    },
+    modalHeadingText: {
+        fontFamily: "JetBrainsMono",
+        fontSize: 22,
+        textAlign: "center"
+    }
 
 
 
