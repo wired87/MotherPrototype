@@ -1,8 +1,9 @@
-import {FlatList, View} from "react-native";
+import {SwitchChangeEvent, View} from "react-native";
 import React, {memo, useContext} from "react";
-import MotherAppIcon from "../../components/buttons/mother/MotherAppIcon";
 import {motherMainStyles as mms} from "../mother/styles";
 import {ThemeContext} from "../Context";
+import FeedSpot from "../../components/flatlist/FeedSpot";
+
 
 export interface AppTypes {
   name: string;
@@ -10,25 +11,10 @@ export interface AppTypes {
   color: string;
   bgColor: string;
   screen: string;
+  unlocked: boolean | undefined;
+  onSwitch: ((event: SwitchChangeEvent) => void | Promise<void>);
 }
 
-
-const apps: AppTypes[] = [
-  {
-    name: "E-mail",
-    icon: "email",
-    color: "red",
-    bgColor: "blue",
-    screen: "EmailAuthScreen",
-  },
-  {
-    name: "services",
-    icon: "google",
-    color: "red",
-    bgColor: "blue",
-    screen: "GoogleAuthScreen",
-  },
-]
 
 
 const ToolsMain: React.FC = () => {
@@ -37,22 +23,33 @@ const ToolsMain: React.FC = () => {
   const mainContainerStyles: object[] =
     [mms.flexColumn, mms.flex, {marginTop:49,flexGrow: 1,  backgroundColor: customTheme.primary}];
 
+
   return(
     <View style={mainContainerStyles}>
-      <FlatList
-        numColumns={3}
-        style={mms.flatList}
-        keyExtractor={(_, index) => index.toString()}
-        data={apps}
-        renderItem={({ item }) =>
-          <MotherAppIcon
-            item={item}
-            key={item.name}
-          />
-        }
-      />
+      <FeedSpot />
+
     </View>
   );
 }
 
 export default memo(ToolsMain);
+
+
+
+/*
+<View>
+        <DefaultText text={"Services"} />
+        <FlatList
+          numColumns={3}
+          style={mms.flatList}
+          keyExtractor={(_, index) => index.toString()}
+          data={apps}
+          renderItem={({ item }) =>
+            <MotherAppIcon
+              item={item}
+              key={item.name}
+            />
+          }
+        />
+      </View>
+ */

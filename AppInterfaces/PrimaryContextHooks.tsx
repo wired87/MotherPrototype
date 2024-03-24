@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Dispatch, SetStateAction} from "react";
 import {UserObjectInterface} from "./AuthInterfaces";
 
 export interface UseIsConnectedInterface {
@@ -11,4 +11,13 @@ export interface UseIsConnectedParams {
   updateUser: (value: UserObjectInterface | null) => void;
   updateAuthenticated: (value: boolean) => void;
   updateInitError: (value: string) => void;
+}
+
+export interface DefaultPostReqInter {
+  postUrl: string,
+  postObject: object,
+  setError: Dispatch<SetStateAction<string>>,
+  setResponse: Dispatch<SetStateAction<any>>,
+  setStatus?: Dispatch<SetStateAction<number>>,
+  toolAction?:boolean
 }

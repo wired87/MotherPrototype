@@ -1,6 +1,6 @@
 import {Dispatch, SetStateAction} from "react";
 import {checkExistingToken, getNewTokenProcess, getTokenInfoData} from "../../../AppFunctions/JwtFunctions";
-import {CHAT_REQUEST_URL, MOTHER_URL} from "@env";
+import { MOTHER_URL} from "@env";
 import * as FileSystem from "expo-file-system";
 import {JwtToken} from "../../../AppInterfaces/AuthInterfaces";
 
@@ -152,7 +152,7 @@ export const sendObject = async (
     console.log("sendObject res ===", response)
     if (!response) {
       return null;
-    }else if (response.detail){
+    }else if (response.detail){ // if something went wrong . . .
       const checkTokenAgain = await checkExistingToken(jwtToken, setJwtToken, userID);
       if (!checkTokenAgain) {
         console.log("Could not receive a valid Token postMessageObject...")
@@ -162,7 +162,7 @@ export const sendObject = async (
         const response = await postMessageObject(
           checkTokenAgain.access,
           senderObject,
-          customPostUrl || CHAT_REQUEST_URL,
+          customPostUrl || MOTHER_URL,
           {
             timeout: 20000
           }

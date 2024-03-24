@@ -1,7 +1,6 @@
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SettingNavigation} from "../../screens/settings/SettingsNavigator";
-import {Platform, StyleSheet} from "react-native";
-import ChatNavigation from "../../screens/chat/ChatNavigator";
+import {Platform} from "react-native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
@@ -33,21 +32,6 @@ const adUnitIdBannerAdHeaderHeader = __DEV__
     BANNER_HEADER_IOS :
     BANNER_HEADER_ANDROID
 
-const localStyles = StyleSheet.create(
-  {
-    icon: {
-      top: 0,
-      position: "relative",
-      margin: 0,
-    },
-    barStyles: {
-      height: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
-
-    }
-  }
-)
 
 interface NavMainTypes{
   firstContact: boolean;
@@ -62,16 +46,10 @@ const NavigationMain: React.FC<NavMainTypes> = (
 ) => {
 
   // REFS
-  const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const welcomeBottomSheetRef = useRef<BottomSheetMethods>(null);
   // CONTEXT
   const {customTheme} = useContext(ThemeContext)
-  const {bottomSheetLoaded, user} = useContext(PrimaryContext);
-
-
-  useEffect(() => {
-    console.log("User set in Context:", user)
-  }, [user]);
+  const {bottomSheetLoaded} = useContext(PrimaryContext);
 
 
   useEffect(() => {

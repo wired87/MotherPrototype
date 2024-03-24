@@ -1,5 +1,5 @@
 
-import React, {Dispatch, memo, SetStateAction, useCallback, useEffect} from "react";
+import React, {Dispatch, SetStateAction, useCallback, useEffect} from "react";
 import {useAuthenticated, useJwt, useUser} from "../AppHooks/AuthHooks";
 import {useIsConnected, useLoading} from "../AppHooks/PrimaryHooks";
 import {useBottomSheetLoaded} from "../AppHooks/InitHooks";
@@ -51,7 +51,10 @@ export const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
 
   // AUTH HOOKS
   const useUserArgs:UserParamInterface = {authenticated, updateAuthenticated, updateJwtToken};
-  const { user, setUser, updateUser } = useUser(useUserArgs);
+  const {
+    user, setUser,
+    updateUser, updateUserGoogleServices
+  } = useUser(useUserArgs);
 
   // INIT HOOKS
   const {updateInitError} = useInitError();
@@ -66,10 +69,6 @@ export const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
     });
   }, []);
 
-  useEffect(() => {
-    console.log("USER CHANGED IN PRIMARY CONTEX TPROVIDER COMPONENT:", user)
-    console.log("JWTTOKEN CHANGED IN PRIMARY CONTEX TPROVIDER COMPONENT:", jwtToken);
-  }, [user, jwtToken]);
 
   const defaultPostRequest = useCallback(async (
     postUrl: string,
@@ -175,7 +174,7 @@ export const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
 
   const elements = useCallback(() => {
     return {
-      user, setUser,
+      user, setUser, updateUserGoogleServices,
       loading, setLoading,
       clearMessages, setClearMessages,
       jwtToken, setJwtToken,

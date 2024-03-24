@@ -2,7 +2,7 @@ import {createContext, Dispatch, SetStateAction} from "react";
 
 import {ImagePickerResult} from "expo-image-picker";
 import {DocumentPickerResult} from "expo-document-picker";
-import {JwtToken, UserObjectInterface} from "../AppInterfaces/AuthInterfaces";
+import {GoogleServices, JwtToken, UserObjectInterface} from "../AppInterfaces/AuthInterfaces";
 
 
 export const PrimaryContext = createContext(
@@ -10,6 +10,7 @@ export const PrimaryContext = createContext(
 
     user: null as UserObjectInterface | null,
     setUser: (() => {}) as Dispatch<SetStateAction<UserObjectInterface | null>>,
+    updateUserGoogleServices: ((key: keyof GoogleServices, value: boolean) => {}),
 
     loading: false,
     setLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,

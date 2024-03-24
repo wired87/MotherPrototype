@@ -1,4 +1,4 @@
-import {JwtToken, UserObjectInterface} from "../AuthInterfaces";
+import {GoogleServices, JwtToken, UserObjectInterface} from "../AuthInterfaces";
 import {Dispatch, SetStateAction} from "react";
 
 // USER INTEFACE
@@ -6,6 +6,7 @@ export interface UserHookInterface {
   user: UserObjectInterface | null;
   setUser: Dispatch<SetStateAction<UserObjectInterface | null>>;
   updateUser: (value: UserObjectInterface | null) => void;
+  updateUserGoogleServices: (key: keyof GoogleServices, value: boolean) => void;
 }
 export interface UserParamInterface {
   authenticated: boolean;

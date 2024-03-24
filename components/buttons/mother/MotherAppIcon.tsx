@@ -1,47 +1,50 @@
 import React, {memo} from "react";
-import {Pressable} from "react-native";
+import {Switch, View} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import {useNavigation} from "@react-navigation/native";
 import {AppTypes} from "../../../screens/tools/ToolsMain";
 import {appIconStyles as ais} from "./motherButtonStyles";
-import {DefaultText} from "../../text/DefaultText";
+
 
 interface AppIconTypes {
-  item: AppTypes
+  item: AppTypes;
 }
-
 
 const AppIcon: React.FC<AppIconTypes> = (
   {
-    item
+    item,
   }
 ) => {
 
   const containerStyles = [
     ais.appIcon, ais.justifyAlignCenter, {
     backgroundColor: "transparent",
-  }];
 
-  const navigation = useNavigation()
-
-  const navigate = () => {
-    // @ts-ignore
-    navigation.navigate(item.screen);
-  }
+    }];
 
   return(
-    <Pressable
-      style={containerStyles}
-      onPress={() => navigate()}>
+    <View style={containerStyles}>
       <MaterialCommunityIcons
         size={30}
         color={item.color}
         name={item.icon}
       />
-      <DefaultText moreStyles={{textAlign: "center"}} text={item.name}/>
-    </Pressable>
+      <Switch
+        thumbColor={"black"}
+        value={item.unlocked}
+        onChange={item.onSwitch}
+      />
+    </View>
   );
 }
 
 export default memo(AppIcon);
+
+/*
+<Pressable
+        style={containerStyles}
+        onPress={() => navigate()}>
+
+        <DefaultText moreStyles={{textAlign: "center"}} text={item.name}/>
+      </Pressable>
+ */

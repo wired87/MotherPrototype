@@ -1,5 +1,6 @@
-import {Dispatch, ReactNode, RefObject, SetStateAction} from "react";
+import {ReactNode, RefObject} from "react";
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
+import {SwitchChangeEvent} from "react-native";
 
 export interface LovoObjectTypes {
   speed: number;
@@ -35,3 +36,13 @@ export interface UnlockObjectTypes {
   type: string;
   uid?: string
 }
+
+// Email
+export interface SingleEmailServiceInter {
+  name: string;
+  isUnlocked: boolean;
+  onSwitch: ((event: SwitchChangeEvent) => void | Promise<void>);
+}
+
+
+// Google

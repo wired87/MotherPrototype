@@ -1,11 +1,6 @@
 import {useEffect, useState} from "react";
 import {Audio} from "expo-av";
-
-import {useLoading, useMotherError} from "./PrimaryHooks";
 import {expoSpeak} from "../AppFunctions/TTSFunctions";
-
-import {PorcupineManager} from "@picovoice/porcupine-react-native";
-import {startSpeech} from "../AppFunctions/TranscribeFunctions";
 
 
 // let porcupineManager: PorcupineManager | undefined = undefined;
@@ -31,26 +26,11 @@ export function useSound() {
 
 
 
-export const useTranscript= () => {
-  const [transcript, setTranscript] = useState<string>("");
-
-  const updateTranscript = (value:string) => setTranscript(value)
-
-
-  return {transcript, setTranscript, updateTranscript}
-}
-
-
-
-
-
 
 export function useMotherResponse() {
   const [motherResponse, setMotherResponse] = useState<string>("");
 
   const { updateSound } = useSound();
-  const { updateLoading } = useLoading();
-  const { updateMotherError } = useMotherError();
 
   async function playSound(item: string) {
     console.log('Loading Sound...');

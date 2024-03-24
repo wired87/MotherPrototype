@@ -1,4 +1,4 @@
-import React, {Dispatch, memo, SetStateAction, useEffect} from "react";
+import React, {memo, useEffect} from "react";
 import {ContextProviderInterface} from "../AppInterfaces/ContextProviderInterface";
 import {darkModeTheme, lightModeTheme, ThemeContext} from "../screens/Context";
 import {useCustomTheme, useDarkmode} from "../AppHooks/ThemeHook";
@@ -69,7 +69,7 @@ const ThemeContextProvider: React.FC<ContextProviderInterface> = (
         await SecureStore.setItemAsync("darkmode", String(darkmode));
         console.log("DarkMode changed in main darkMode func to", darkmode);
         const storedValue = await getDarkmode();
-        console.log("Stored value in Secure Store:", storedValue);
+        console.log("Stored DarkMode value in Secure Store:", storedValue);
         // update the colors here
         setCustomTheme(darkmode ? darkModeTheme : lightModeTheme);
       } catch (e) {

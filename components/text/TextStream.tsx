@@ -13,7 +13,7 @@ interface TextStreamTypes {
 const TextStream: React.FC<TextStreamTypes> = (
   {
     message,
-    icon
+    icon,
   }
   ) => {
   const [streamedMessage, setStreamedMessage] = useState('');
@@ -24,7 +24,7 @@ const TextStream: React.FC<TextStreamTypes> = (
 
   // STYLES
   const defaultTextColor = {color: customTheme.text};
-  const moreHeadingStreamInputStyles:object[] = [inputStyles.streamHeadingInput, defaultTextColor];
+  const moreHeadingStreamInputStyles:object[] = [inputStyles.streamHeadingInput, defaultTextColor, ];
 
 
   useEffect(() => {

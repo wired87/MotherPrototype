@@ -1,5 +1,89 @@
 import {GoogleSignin, statusCodes, User} from "@react-native-google-signin/google-signin";
+import {GOOGLE_IOS_CLIENT_ID, GOOGLE_WEB_CLIENT_ID} from "@env";
+import {GoogleServices, UserObjectInterface} from "../../../AppInterfaces/AuthInterfaces";
 
+
+
+export const googleProcessConfig = (scopes: string[]) => {
+  GoogleSignin.configure(
+    {
+      scopes: scopes,
+      webClientId: GOOGLE_WEB_CLIENT_ID,
+      offlineAccess: true,
+      iosClientId: GOOGLE_IOS_CLIENT_ID
+    })
+};
+
+export const handleSignOut = async (
+  scopes: string[],
+  updateDeleteObject: (value:boolean) => void
+)=> {
+  console.log("SignOut process started...");
+  googleProcessConfig(scopes);
+  try {
+    await GoogleSignin.revokeAccess();
+    await GoogleSignin.signOut();
+    updateDeleteObject(true);
+    console.log('Access Revoked. Delete Request Started...');
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
+export const handleGoogleSignIn = (
+  scopes: string[],
+  updateDeleteObject: (value:boolean) => void,
+  updateAuthObject: (userObject: User) => void,
+  updateUserGoogleServices: (key: keyof GoogleServices, value: boolean) => void,
+  key: keyof GoogleServices
+) => {
+  googleProcessConfig(scopes);
+  updateDeleteObject(false);
+  try {
+    signIn(updateAuthObject)
+      .then(() => {
+          console.log("USER SUCCESSFULLY SIGNED IN!");
+          updateUserGoogleServices(key, true);
+        }
+      )
+  } catch {
+    console.log("error occurred while try unlock Google services...")
+  }
+};
+
+
+export const handleGoogleAuth = (
+  user: UserObjectInterface | null | undefined,
+  scopes: string[],
+  key: keyof GoogleServices,
+  updateAuthObject: (value:User | null) => void,
+  updateDeleteObject: (value:boolean) => void,
+  updateUserGoogleServices: (key: keyof GoogleServices, value: boolean) => void
+
+) => {
+
+  console.log("User is not signed in with Google try to sign the user in...");
+  if ( user?.services?.googleServices?.signedIn ) {
+    //  CHANGE TO: UPDATE BOTTOM SHEET TO CONFIRM. IF CONFIRTM CALL CODE BELOW
+    handleSignOut(
+      scopes,
+      updateDeleteObject
+    ).then(() => {
+      console.log("User successful signed out...")
+      updateUserGoogleServices(key, false)
+    })
+  } else {
+    console.log("Try to sign in the user...");
+    handleGoogleSignIn(
+      scopes,
+      updateDeleteObject,
+      updateAuthObject,
+      updateUserGoogleServices,
+      key
+    );
+  }
+}
 
 export const signIn = async (updateGoogleUser: (userObject: User) => void) => {
   try {
@@ -20,7 +104,43 @@ export const signIn = async (updateGoogleUser: (userObject: User) => void) => {
   }
 };
 
-
+/*
+[
+        "https://mail.google.com/",
+        "https://www.googleapis.com/auth/dataportability.businessmessaging.conversations",
+        "https://www.googleapis.com/auth/dataportability.chrome.autofill",
+        "https://www.googleapis.com/auth/dataportability.chrome.bookmarks",
+        "https://www.googleapis.com/auth/dataportability.chrome.dictionary",
+        "https://www.googleapis.com/auth/dataportability.chrome.extensions",
+        "https://www.googleapis.com/auth/dataportability.chrome.history",
+        "https://www.googleapis.com/auth/dataportability.chrome.reading_list",
+        "https://www.googleapis.com/auth/dataportability.chrome.settings",
+        "https://www.googleapis.com/auth/dataportability.maps.commute_routes",
+        "https://www.googleapis.com/auth/dataportability.maps.commute_settings",
+        "https://www.googleapis.com/auth/dataportability.maps.ev_profile",
+        "https://www.googleapis.com/auth/dataportability.maps.offering_contributions",
+        "https://www.googleapis.com/auth/dataportability.maps.photos_videos",
+        "https://www.googleapis.com/auth/dataportability.maps.reviews",
+        "https://www.googleapis.com/auth/dataportability.maps.starred_places",
+        "https://www.googleapis.com/auth/dataportability.myactivity.maps",
+        "https://www.googleapis.com/auth/dataportability.myactivity.search",
+        "https://www.googleapis.com/auth/dataportability.myactivity.shopping",
+        "https://www.googleapis.com/auth/dataportability.myactivity.youtube",
+        "https://www.googleapis.com/auth/dataportability.saved.collections",
+        "https://www.googleapis.com/auth/dataportability.shopping.addresses",
+        "https://www.googleapis.com/auth/dataportability.shopping.reviews",
+        "https://www.googleapis.com/auth/dataportability.youtube.channel",
+        "https://www.googleapis.com/auth/dataportability.youtube.comments",
+        "https://www.googleapis.com/auth/dataportability.youtube.live_chat",
+        "https://www.googleapis.com/auth/dataportability.youtube.music",
+        "https://www.googleapis.com/auth/dataportability.youtube.playable",
+        "https://www.googleapis.com/auth/dataportability.youtube.posts",
+        "https://www.googleapis.com/auth/dataportability.youtube.private_playlists",
+        "https://www.googleapis.com/auth/dataportability.youtube.private_videos",
+        "https://www.googleapis.com/auth/dataportability.youtube.public_playlists",
+        "https://www.googleapis.com/auth/dataportability.youtube.public_videos",
+      ],
+ */
 /* EXAMPLE RESPONSE
 GOOGLE USER INFO:  {
 "idToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1YzE4OGE4MzU0NmZjMTg4ZTUxNTc2YmE
@@ -49,7 +169,3 @@ L6NRL3iwEEaLPWTdf_8qS6o9cDR5G7nmbLXWyslPqM827FmQcCZNd6LQ9F6u4uScA",
  */
 
 
-
-/*
-
- */

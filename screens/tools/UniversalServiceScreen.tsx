@@ -1,5 +1,5 @@
 import {memo, useCallback, useContext} from "react";
-import {SafeAreaView, View} from "react-native";
+import {View} from "react-native";
 import React from "react";
 import {StyleProps} from "react-native-reanimated";
 import {PrimaryContext, ThemeContext} from "../Context";
@@ -11,7 +11,7 @@ import SwipeModal from "../../components/modals/SwipeModal";
 import LockContent from "../../components/modals/LockContent";
 import ToolIndicator from "../../components/indicators/ToolIndIcator";
 
-const UniversalServiceScreen: React.FC<UniversalServiceScreenTypes> = (
+const ModalConfirmLock: React.FC<UniversalServiceScreenTypes> = (
 
   {
     serviceUnLocked,
@@ -81,11 +81,11 @@ const UniversalServiceScreen: React.FC<UniversalServiceScreenTypes> = (
         />
       )
     }
-  }, [sheetRef, statusChildren, loading, confirmClick, user, user?.googleServices]);
+  }, [sheetRef, statusChildren, loading, confirmClick, user, user?.services?.googleServices]);
 
 
   return(
-    <SafeAreaView style={mainContainerStyles}>
+    <View style={mainContainerStyles}>
 
       {
         streamAssets()
@@ -103,11 +103,11 @@ const UniversalServiceScreen: React.FC<UniversalServiceScreenTypes> = (
       {
         bottomSheet()
       }
-    </SafeAreaView>
+    </View>
   );
 }
 
-export default memo(UniversalServiceScreen);
+export default memo(ModalConfirmLock);
 
 
 /*
