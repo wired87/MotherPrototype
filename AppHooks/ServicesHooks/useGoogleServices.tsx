@@ -13,13 +13,15 @@ const gmail: keyof GoogleServices = "gmail"
 const calendar: keyof GoogleServices = "calendar"
 const photos: keyof GoogleServices = "photos"
 
+import gmailImage from "../../assets/images/toolImages/gmailImage.png";
+import googlePhotos from "../../assets/images/toolImages/googlePhotos.png";
+// @ts-ignore
+import calendarGoogle from "../../assets/images/toolImages/calendarGoogle.webp";
 
 export function useGoogleServices() {
 
   const { user } = useContext(PrimaryContext);
   const { onSwitchGoogle } = useGoogleAuthObject();
-
-
 
   const googleServicesArray = useCallback((): AppTypes[] => {
     return [
@@ -27,7 +29,7 @@ export function useGoogleServices() {
         name: "YouTube",
         icon: "youtube",
         color: "red",
-        bgColor: "blue",
+        bgColor: "white",
         screen: "EmailAuthScreen",
         unlocked: user?.services?.googleServices?.youtube,
         onSwitch: (event: SwitchChangeEvent) => {
@@ -39,9 +41,9 @@ export function useGoogleServices() {
       },
       {
         name: "Drive",
-        icon: "drive",
-        color: "orange",
-        bgColor: "blue",
+        icon: "google-drive",
+        color: "black",
+        bgColor: "white",
         screen: "EmailAuthScreen",
         unlocked: user?.services?.googleServices?.drive,
         onSwitch: (event: SwitchChangeEvent) => {
@@ -55,9 +57,9 @@ export function useGoogleServices() {
       },
       {
         name: "Gmail",
-        icon: "gmail",
+        image: gmailImage,
         color: "blue",
-        bgColor: "blue",
+        bgColor: "white",
         screen: "EmailAuthScreen",
         unlocked: user?.services?.googleServices?.gmail,
         onSwitch: (event: SwitchChangeEvent) => {
@@ -71,9 +73,9 @@ export function useGoogleServices() {
       },
       {
         name: "Calendar",
-        icon: "google-calendar",
+        image: calendarGoogle,
         color: "blue",
-        bgColor: "blue",
+        bgColor: "white",
         screen: "EmailAuthScreen",
         unlocked: user?.services?.googleServices?.calendar,
         onSwitch: (event: SwitchChangeEvent) => {
@@ -87,9 +89,9 @@ export function useGoogleServices() {
       },
       {
         name: "Google Photos",
-        icon: "google-photos",
+        image: googlePhotos,
         color: "blue",
-        bgColor: "blue",
+        bgColor: "white",
         screen: "EmailAuthScreen",
         unlocked: user?.services?.googleServices?.photos,
         onSwitch: (event: SwitchChangeEvent) => {

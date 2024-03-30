@@ -6,27 +6,33 @@ import {SwitchChangeEvent} from "react-native";
 import {useGoogleAuthObject} from "../AuthHooks";
 import {GoogleServices} from "../../AppInterfaces/AuthInterfaces";
 
+// IMAGES
+import booking from "../../assets/images/toolImages/booking.png";
+import flixbus from "../../assets/images/toolImages/flixbus.png";
+import db from "../../assets/images/toolImages/db.png";
+import kiwi from "../../assets/images/toolImages/kiwi.png";
+
 const data: keyof GoogleServices = "data";
 
-export function useFeedSpot() {
+export function useTravel() {
 
   const { user } = useContext(PrimaryContext);
   const { onSwitchGoogle } = useGoogleAuthObject();
 
-  const feedSpotArray = useCallback((): AppTypes[] => {
+  const travelArray = useCallback((): AppTypes[] => {
     return [
       {
-        name: "Microsoft",
-        icon: "microsoft",
-        color: "green",
+        name: "Booking.com",
+        image: booking,
+        color: "yellow",
         bgColor: "white",
         screen: "EmailAuthScreen",
         unlocked: user?.feedSpot?.microsoft,
         onSwitch: (event: SwitchChangeEvent) => {},
       },
       {
-        name: "Apple",
-        icon: "apple",
+        name: "FlixBus",
+        image: flixbus,
         color: "darkblue",
         bgColor: "white",
         screen: "EmailAuthScreen",
@@ -34,9 +40,9 @@ export function useFeedSpot() {
         onSwitch: (event: SwitchChangeEvent) => {},
       },
       {
-        name: "Google",
-        icon: "google",
-        color: "black",
+        name: "Kiwi Flights",
+        image: kiwi,
+        color: "orange",
         bgColor: "white",
         screen: "EmailAuthScreen",
         unlocked: user?.feedSpot?.google,
@@ -48,25 +54,22 @@ export function useFeedSpot() {
         },
       },
       {
-        name: "Meta",
-        icon: "meta",
-        color: "blue",
+        name: "DB",
+        image: db,
+        color: "orange",
         bgColor: "white",
         screen: "EmailAuthScreen",
-        unlocked: user?.feedSpot?.meta,
-        onSwitch: (event: SwitchChangeEvent) => {},
-      },
-      {
-        name: "Netflix",
-        icon: "netflix",
-        color: "red",
-        bgColor: "white",
-        screen: "EmailAuthScreen",
-        unlocked: user?.feedSpot?.meta,
-        onSwitch: (event: SwitchChangeEvent) => {},
+        unlocked: user?.feedSpot?.google,
+        onSwitch: (event: SwitchChangeEvent) => {
+          return onSwitchGoogle(
+            data,
+            portabilityScopes
+          );
+        },
       },
     ]
   }, [user])
 
-  return { feedSpotArray };
+
+  return { travelArray };
 }

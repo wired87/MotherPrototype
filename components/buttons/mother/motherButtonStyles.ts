@@ -8,9 +8,9 @@ export const appIconStyles = StyleSheet.create(
       alignItems: "center",
     },
     appIcon: {
-      width: 100,
-      height: 100,
-      margin: 10,
+      width: 80,
+      height: 80,
+      margin: 8,
       flexDirection: "column",
     },
 

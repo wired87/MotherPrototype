@@ -1,13 +1,15 @@
-import {SwitchChangeEvent, View} from "react-native";
+import {ImageProps, SwitchChangeEvent, View} from "react-native";
 import React, {memo, useContext} from "react";
 import {motherMainStyles as mms} from "../mother/styles";
 import {ThemeContext} from "../Context";
-import FeedSpot from "../../components/flatlist/FeedSpot";
+import UniversalToolFlatH from "../../components/flatlist/UniversalToolFlatH";
+import {useAllServices} from "../../AppHooks/ServicesHooks/useAllServices";
 
 
 export interface AppTypes {
   name: string;
-  icon: string;
+  icon?: string;
+  image?: ImageProps | Readonly<ImageProps>;
   color: string;
   bgColor: string;
   screen: string;
@@ -17,8 +19,11 @@ export interface AppTypes {
 
 
 
+
 const ToolsMain: React.FC = () => {
   const {customTheme} = useContext(ThemeContext);
+
+  const { allServices } = useAllServices();
 
   const mainContainerStyles: object[] =
     [mms.flexColumn, mms.flex, {marginTop:49,flexGrow: 1,  backgroundColor: customTheme.primary}];
@@ -26,8 +31,9 @@ const ToolsMain: React.FC = () => {
 
   return(
     <View style={mainContainerStyles}>
-      <FeedSpot />
-
+      <UniversalToolFlatH
+        data={allServices()}
+      />
     </View>
   );
 }

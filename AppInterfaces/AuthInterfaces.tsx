@@ -1,11 +1,36 @@
 
+export interface Crypto {
 
+}
+
+export interface Shopping {
+  amazon?: boolean;
+  ebay?: boolean;
+}
+
+export interface Travel {
+  kiwiFlight?: boolean;
+  bookingCom?: boolean;
+  flixBus?: boolean; // https://www.flixbus.de/unternehmen/partner/affiliate-partner
+}
+
+export interface Payment {
+  pyaPal?: boolean;
+  klarna?: boolean;
+  stripe?: boolean;
+  transferWise?: boolean;
+  venmo?: boolean;
+  coinbaseCommerce?: boolean;
+  adyen?: boolean;
+}
 
 export interface UserEmailObject {
   outlook?: boolean;
   gmail?: boolean;
 
 }
+
+
 export interface GoogleServices {
   photos?: boolean;
   youtube?: boolean;
@@ -14,7 +39,7 @@ export interface GoogleServices {
   map?: boolean;
   gmail?: boolean;
   signedIn?: boolean;
-  data?: boolean;
+  data?: string; // available, inProgress, failed, unset
 }
 
 interface SocialMediaInterface {
@@ -32,6 +57,10 @@ interface ServicesInterface {
   steam?: boolean;
   socialMedia?: SocialMediaInterface;
   microsoft?: MicroSoftInterface;
+  payment?: Payment;
+  crypto?: Crypto;
+  shopping?: Shopping;
+  travel?: Travel;
 }
 
 interface FeedSpotInterface {

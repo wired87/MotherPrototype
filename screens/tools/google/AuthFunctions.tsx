@@ -2,6 +2,7 @@ import {GoogleSignin, statusCodes, User} from "@react-native-google-signin/googl
 import {GOOGLE_IOS_CLIENT_ID, GOOGLE_WEB_CLIENT_ID} from "@env";
 import {GoogleServices, UserObjectInterface} from "../../../AppInterfaces/AuthInterfaces";
 
+const data_key: keyof GoogleServices = "data";
 
 
 export const googleProcessConfig = (scopes: string[]) => {
@@ -44,7 +45,7 @@ export const handleGoogleSignIn = (
     signIn(updateAuthObject)
       .then(() => {
           console.log("USER SUCCESSFULLY SIGNED IN!");
-          updateUserGoogleServices(key, true);
+          updateUserGoogleServices(key, key === data_key? "in_progress" : true);
         }
       )
   } catch {
@@ -59,8 +60,9 @@ export const handleGoogleAuth = (
   key: keyof GoogleServices,
   updateAuthObject: (value:User | null) => void,
   updateDeleteObject: (value:boolean) => void,
-  updateUserGoogleServices: (key: keyof GoogleServices, value: boolean) => void
-
+  updateUserGoogleServices: (key: keyof GoogleServices, value: boolean) => void,
+  updateGoogleServicesNull: () => void,
+  updateDataRequest: (value:boolean) => void,
 ) => {
 
   console.log("User is not signed in with Google try to sign the user in...");
@@ -71,7 +73,7 @@ export const handleGoogleAuth = (
       updateDeleteObject
     ).then(() => {
       console.log("User successful signed out...")
-      updateUserGoogleServices(key, false)
+      updateGoogleServicesNull();
     })
   } else {
     console.log("Try to sign in the user...");
@@ -82,6 +84,7 @@ export const handleGoogleAuth = (
       updateUserGoogleServices,
       key
     );
+    updateDataRequest(true);
   }
 }
 

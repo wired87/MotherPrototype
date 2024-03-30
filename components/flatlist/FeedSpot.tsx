@@ -17,7 +17,6 @@ const FeedSpot: React.FC = () => {
     index,
   }), []);
 
-
   return(
     <View>
       <DefaultText text={"Feed spot"} />

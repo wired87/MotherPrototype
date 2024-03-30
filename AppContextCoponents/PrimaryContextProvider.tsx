@@ -53,7 +53,8 @@ export const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
   const useUserArgs:UserParamInterface = {authenticated, updateAuthenticated, updateJwtToken};
   const {
     user, setUser,
-    updateUser, updateUserGoogleServices
+    updateUser, updateUserGoogleServices,
+    updateGoogleServicesNull
   } = useUser(useUserArgs);
 
   // INIT HOOKS
@@ -174,7 +175,7 @@ export const PrimaryContextProvider: React.FC<ContextProviderInterface> = (
 
   const elements = useCallback(() => {
     return {
-      user, setUser, updateUserGoogleServices,
+      user, setUser, updateUserGoogleServices, updateGoogleServicesNull,
       loading, setLoading,
       clearMessages, setClearMessages,
       jwtToken, setJwtToken,

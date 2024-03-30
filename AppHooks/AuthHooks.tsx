@@ -14,6 +14,7 @@ import {saveUser} from "../AppFunctions/UserFunctions";
 import {handleGoogleAuth} from "../screens/tools/google/AuthFunctions";
 
 
+const data_key: keyof GoogleServices = "data";
 
 export const useAuthenticated = ():AuthenticatedHookInterface => {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
@@ -54,7 +55,7 @@ export const useUser = (
     setUser(value);
   }
 
-  function updateUserGoogleServices<T extends keyof GoogleServices>(key: T, value: boolean) {
+  function updateUserGoogleServices<T extends keyof GoogleServices>(key: T, value: boolean | string | undefined) {
     setUser((currentUser) => ({
       ...currentUser,
       services: {
@@ -67,6 +68,28 @@ export const useUser = (
     }));
     setUserFiledUpdate(true);
   }
+
+
+  const updateGoogleServicesNull = () => {
+    setUser((currentUser) => ({
+      ...currentUser,
+      services: {
+        ...currentUser?.services,
+        googleServices: {
+          photos: undefined,
+          youtube: undefined,
+          calendar: undefined,
+          drive: undefined,
+          map: undefined,
+          gmail: undefined,
+          signedIn: undefined,
+          data: undefined,
+        }
+      },
+    }));
+  }
+
+
 
   useEffect(() => {
     if ( userFieldUpdate && user ) {
@@ -85,7 +108,7 @@ export const useUser = (
     }
   }, [authenticated, user]);
 
-  return {user, setUser, updateUser, updateUserGoogleServices}
+  return {user, setUser, updateUser, updateUserGoogleServices, updateGoogleServicesNull}
 }
 
 
@@ -95,6 +118,7 @@ export const useGoogleAuthObject = () => {
   const [updateResponse, setUpdateResponse] = useState<string>("");
   const [saveResponse, setSaveResponse] = useState<string>("");
   const [deleteResponse, setDeleteResponse] = useState<string>("");
+  const [dataRequest, setDataRequest] = useState<boolean>(false);
   const [save, setSave] = useState<boolean>(false);
 
   const {
@@ -102,7 +126,8 @@ export const useGoogleAuthObject = () => {
     setUser,
     user,
     setLoading,
-    updateUserGoogleServices} = useContext(PrimaryContext);
+    updateUserGoogleServices,
+    updateGoogleServicesNull} = useContext(PrimaryContext);
 
   const {setError} = useError();
 
@@ -110,12 +135,14 @@ export const useGoogleAuthObject = () => {
   const updateAuthObject = (value:User | null) => setAuthObject(value);
 
   const updateDeleteObject = (value:boolean) => setDeleteObject(value);
+  const updateDataRequest = (value:boolean) => setDataRequest(value);
 
 
-  const getUnlockObject = () => {
+  const getUnlockObject = (type?: string) => {
     return {
       "user_id": user?.uid,
-      "googleUser": authObject
+      "googleUser": authObject?.user,
+      "type": type
     }
   }
 
@@ -127,12 +154,14 @@ export const useGoogleAuthObject = () => {
   }
 
 
-  const getUpdateObject = (scopes: string[]):object => {
+  const getUpdateObject = (scopes: string[], type?: keyof GoogleServices):object => {
     return {
       "user_id": user?.uid,
-      "scopes": scopes
+      "scopes": scopes,
+      "type": type
     }
   }
+
 
   const addScopesGoogle = async<T extends keyof GoogleServices> (key: T, scopes: string[]) => {
     console.log("User is Signed n with Google -> add scopes...");
@@ -142,12 +171,12 @@ export const useGoogleAuthObject = () => {
       });
       defaultPostRequest(
         UPDATE_GOOGLE_OBJECT_URL,
-        getUpdateObject(scopes),
+        getUpdateObject(scopes, key === data_key? "data" : undefined),
         setError,
         setUpdateResponse,
       ).then(() => {
         console.log("Successfully updated Google User Object on SS...")
-        updateUserGoogleServices(key, true)
+        updateUserGoogleServices(key, key === data_key? "in_progress" : true)
       })
     }catch (e:unknown) {
       if ( e instanceof Error ) {
@@ -163,7 +192,7 @@ export const useGoogleAuthObject = () => {
     console.log("Toggle GoogleService:", key);
     console.log("with scopes:", scopes);
     setLoading(true);
-    if (user?.services?.googleServices?.signedIn) {
+    if (user?.services?.googleServices?.signedIn && user?.services?.googleServices?.[key]) {
       await addScopesGoogle(key, scopes);
     } else {
       try {
@@ -174,6 +203,8 @@ export const useGoogleAuthObject = () => {
           updateAuthObject,
           updateDeleteObject,
           updateUserGoogleServices,
+          updateGoogleServicesNull,
+          updateDataRequest
         );
       }catch (e:unknown) {
         console.log("Couldn't handle the google auth process because the following Error:", e)
@@ -187,7 +218,7 @@ export const useGoogleAuthObject = () => {
       console.log("Save request sent...");
       defaultPostRequest(
         SAVE_GOOGLE_OBJECT_URL,
-        getUnlockObject(),
+        getUnlockObject(dataRequest ? "data" : undefined),
         setError,
         setSaveResponse,
         ).then(() => {

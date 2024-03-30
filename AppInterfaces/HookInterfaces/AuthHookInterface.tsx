@@ -7,6 +7,7 @@ export interface UserHookInterface {
   setUser: Dispatch<SetStateAction<UserObjectInterface | null>>;
   updateUser: (value: UserObjectInterface | null) => void;
   updateUserGoogleServices: (key: keyof GoogleServices, value: boolean) => void;
+  updateGoogleServicesNull: () => void;
 }
 export interface UserParamInterface {
   authenticated: boolean;

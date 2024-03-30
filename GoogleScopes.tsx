@@ -16,6 +16,7 @@ export const portabilityReset: string[] =[
 
 export const portabilityScopes: string[] = [
   "https://www.googleapis.com/auth/dataportability.businessmessaging.conversations",
+
   "https://www.googleapis.com/auth/dataportability.chrome.autofill",
   "https://www.googleapis.com/auth/dataportability.chrome.bookmarks",
   "https://www.googleapis.com/auth/dataportability.chrome.dictionary",
@@ -23,6 +24,7 @@ export const portabilityScopes: string[] = [
   "https://www.googleapis.com/auth/dataportability.chrome.history",
   "https://www.googleapis.com/auth/dataportability.chrome.reading_list",
   "https://www.googleapis.com/auth/dataportability.chrome.settings",
+
   "https://www.googleapis.com/auth/dataportability.maps.commute_routes",
   "https://www.googleapis.com/auth/dataportability.maps.commute_settings",
   "https://www.googleapis.com/auth/dataportability.maps.ev_profile",
@@ -30,13 +32,17 @@ export const portabilityScopes: string[] = [
   "https://www.googleapis.com/auth/dataportability.maps.photos_videos",
   "https://www.googleapis.com/auth/dataportability.maps.reviews",
   "https://www.googleapis.com/auth/dataportability.maps.starred_places",
+
   "https://www.googleapis.com/auth/dataportability.myactivity.maps",
   "https://www.googleapis.com/auth/dataportability.myactivity.search",
   "https://www.googleapis.com/auth/dataportability.myactivity.shopping",
   "https://www.googleapis.com/auth/dataportability.myactivity.youtube",
+
   "https://www.googleapis.com/auth/dataportability.saved.collections",
+
   "https://www.googleapis.com/auth/dataportability.shopping.addresses",
   "https://www.googleapis.com/auth/dataportability.shopping.reviews",
+
   "https://www.googleapis.com/auth/dataportability.youtube.channel",
   "https://www.googleapis.com/auth/dataportability.youtube.comments",
   "https://www.googleapis.com/auth/dataportability.youtube.live_chat",

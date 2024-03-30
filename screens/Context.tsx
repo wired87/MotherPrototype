@@ -11,6 +11,7 @@ export const PrimaryContext = createContext(
     user: null as UserObjectInterface | null,
     setUser: (() => {}) as Dispatch<SetStateAction<UserObjectInterface | null>>,
     updateUserGoogleServices: ((key: keyof GoogleServices, value: boolean) => {}),
+    updateGoogleServicesNull: ():void =>  {},
 
     loading: false,
     setLoading: (() => {}) as Dispatch<SetStateAction<boolean>>,
