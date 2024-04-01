@@ -3,7 +3,7 @@ import {AppTypes} from "../../screens/tools/ToolsMain";
 import {PrimaryContext} from "../../screens/Context";
 import {useGoogleAuthObject} from "../AuthHooks";
 import {SwitchChangeEvent} from "react-native";
-import {youTubeScopes} from "../../GoogleScopes";
+import {driveScopes, googleCalendarScopes, googlePhotosScopes, youTubeScopes} from "../../GoogleScopes";
 import {GoogleServices} from "../../AppInterfaces/AuthInterfaces";
 
 // KEY's
@@ -49,9 +49,7 @@ export function useGoogleServices() {
         onSwitch: (event: SwitchChangeEvent) => {
           return onSwitchGoogle(
             drive,
-            [
-              "https://mail.google.com/"
-            ]
+            driveScopes
           );
         }
       },
@@ -81,9 +79,7 @@ export function useGoogleServices() {
         onSwitch: (event: SwitchChangeEvent) => {
           return onSwitchGoogle(
             calendar,
-            [
-              "https://mail.google.com/"
-            ]
+            googleCalendarScopes
           );
         }
       },
@@ -97,9 +93,7 @@ export function useGoogleServices() {
         onSwitch: (event: SwitchChangeEvent) => {
           return onSwitchGoogle(
             photos,
-            [
-              "https://mail.google.com/"
-            ]
+            googlePhotosScopes
           );
         }
       },

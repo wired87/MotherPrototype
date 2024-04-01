@@ -10,6 +10,47 @@ export const youTubeScopes: string[] = [
   "https://www.googleapis.com/auth/youtubepartner-channel-audit",
 ]
 
+
+
+export const driveScopes: string[] = [
+  "https://www.googleapis.com/auth/drive.activity",
+    "https://www.googleapis.com/auth/documents",
+    "https://www.googleapis.com/auth/documents.readonly",
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/drive.activity",
+    "https://www.googleapis.com/auth/drive.activity.readonly",
+    "https://www.googleapis.com/auth/drive.appdata",
+    "https://www.googleapis.com/auth/drive.metadata",
+    "https://www.googleapis.com/auth/drive.metadata.readonly",
+    "https://www.googleapis.com/auth/drive.photos.readonly",
+    "https://www.googleapis.com/auth/drive.scripts",
+]
+
+export let googleCalendarScopes: string[] = [
+  "https://www.googleapis.com/auth/calendar",
+  "https://www.googleapis.com/auth/calendar.events",
+  "https://www.googleapis.com/auth/calendar.events.readonly",
+  "https://www.googleapis.com/auth/calendar.readonly",
+  "https://www.googleapis.com/auth/calendar.settings.readonly",
+];
+
+
+
+export let googlePhotosScopes: string[] = [
+  "https://www.googleapis.com/auth/photoslibrary",
+  "https://www.googleapis.com/auth/photoslibrary.appendonly",
+  "https://www.googleapis.com/auth/photoslibrary.edit.appcreateddata",
+  "https://www.googleapis.com/auth/photoslibrary.readonly",
+  "https://www.googleapis.com/auth/photoslibrary.readonly.appcreateddata",
+  "https://www.googleapis.com/auth/photoslibrary.sharing",
+];
+
+
+
+
+
 export const portabilityReset: string[] =[
   "POST https://dataportability.googleapis.com/v1/authorization:reset"
 ]
