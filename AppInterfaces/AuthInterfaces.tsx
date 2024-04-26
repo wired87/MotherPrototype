@@ -79,9 +79,6 @@ export interface UserObjectInterface {
 }
 
 
-
-
-
 export interface JwtToken {
   access: string;
   refresh: string;

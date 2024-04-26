@@ -1,0 +1,89 @@
+react-native-msal
+
+app.json: [
+                  "react-native-msal",
+                  {
+                    "androidPackageSignatureHash": "<base64 package signature hash>"
+                  }
+                ],
+
+
+
+/*
+import PublicClientApplication from 'react-native-msal';
+import type { MSALConfiguration /*, etc  } from 'react-native-msal';
+
+const config: MSALConfiguration = {
+  auth: {
+    clientId: 'your-client-id',
+    // This authority is used as the default in `acquireToken` and `acquireTokenSilent` if not provided to those methods.
+    // Defaults to 'https://login.microsoftonline.com/common'
+    authority: 'https://<authority url>',
+  },
+};
+const scopes = ['scope1', 'scope2'];
+C:\Users\wired\OneDrive\Desktop\Design\AiChat501
+// Initialize the public client application:
+export const pca = new PublicClientApplication(config);
+try {
+  await pca.init();
+} catch (error) {
+  console.error('Error initializing the pca, check your config.', error);
+}
+
+// Acquiring a token for the first time, you must call pca.acquireToken
+const params: MSALInteractiveParams = { scopes };
+export const result: MSALResult | undefined = await pca.acquireToken(params); // b
+
+// On subsequent token acquisitions, you can call `pca.acquireTokenSilent`
+// Force the token to refresh with the `forceRefresh` option
+const params: MSALSilentParams = {
+  account: result!.account, // or get this by filtering the result from `pca.getAccounts` (see below)
+  scopes,
+  forceRefresh: true,
+};
+const result: MSALResult | undefined = await pca.acquireTokenSilent(params);
+
+// Get all accounts for which this application has refresh tokens
+const accounts: MSALAccount[] = await pca.getAccounts();
+
+// Retrieve the account matching the identifier
+const account: MSALAccount | undefined = await pca.getAccount(result!.account.identifier);
+
+// Remove all tokens from the cache for this application for the provided account
+const success: boolean = await pca.removeAccount(result!.account);
+
+// Same as `pca.removeAccount` with the exception that, if called on iOS with the `signoutFromBrowser` option set to true, it will additionally remove the account from the system browser
+const params: MSALSignoutParams = {
+  account: result!.account,
+  signoutFromBrowser: true,
+};
+const success: boolean = await pca.signOut(params);
+
+
+export const msalConfig = {
+  clientId: "Ihr_Azure_AD_Client_ID",
+  authority: "https://login.microsoftonline.com/Ihr_Tenant_ID",
+  redirectUri: "msauth://com.yourapp/YourBundleIdInAzureAD",
+};
+
+
+const signIn = async () => {
+  try {
+    const result = await pca.acquireTokenInteractive({
+      scopes: ["User.Read"," Mail.Read", "Contacts.Read", "Calendars.Read", "Files.Read.All", "Sites.Read.All"],
+    });
+    setToken(result.accessToken);
+    // Senden Sie das Token an Ihr Django-Backend
+    sendTokenToBackend(result.accessToken);
+  } catch (error) {
+    if (error instanceof InteractionRequiredAuthError) {
+      // Führen Sie spezielle Aktionen für diesen Fehler durch
+    }
+    console.error(error);
+  }
+};
+
+
+
+ */

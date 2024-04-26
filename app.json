@@ -8,6 +8,7 @@
     "icon": "./assets/icons/iconFinal.png",
     "userInterfaceStyle": "light",
     "plugins": [
+
       [
         "@react-native-voice/voice",
         {

@@ -5,7 +5,7 @@ import DefaultHeader from "../../components/navigation/DefaultHeader";
 
 
 import ToolsMain from "./ToolsMain";
-import GoogleAuthScreen from "./google/GoogleAuthScreen";
+import GoogleAuthScreen from "../../google/GoogleAuthScreen";
 import EmailAuthScreen from "./email/EmailAuthScreen";
 import EmailContactScreen from "./email/EmailContactScreen";
 

@@ -1,16 +1,16 @@
 import React, {memo, ReactNode, useCallback, useContext, useRef} from "react";
-import {PrimaryContext} from "../../Context";
-import UniversalServiceScreen from "../UniversalServiceScreen";
+import {PrimaryContext} from "../screens/Context";
+import UniversalServiceScreen from "../screens/tools/UniversalServiceScreen";
 import {
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
-import {DefaultButton} from "../../../components/buttons/DefaultButton";
-import {useGoogleAuthObject} from "../../../AppHooks/AuthHooks";
+import {DefaultButton} from "../components/buttons/DefaultButton";
+import {useGoogleAuthObject} from "../AppHooks/AuthHooks";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import StatusModalContent from "../../../components/modals/modalContent/StatusModalContent";
+import StatusModalContent from "../components/modals/modalContent/StatusModalContent";
 
-import successLottie from "../../../assets/animations/successLottie.json"
-import failLottie from "../../../assets/animations/failLottie.json"
+import successLottie from "../assets/animations/successLottie.json"
+import failLottie from "../assets/animations/failLottie.json"
 import {BottomSheetMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 import {ActivityIndicator} from "react-native";
 

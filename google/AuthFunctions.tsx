@@ -1,6 +1,6 @@
 import {GoogleSignin, statusCodes, User} from "@react-native-google-signin/google-signin";
 import {GOOGLE_IOS_CLIENT_ID, GOOGLE_WEB_CLIENT_ID} from "@env";
-import {GoogleServices, UserObjectInterface} from "../../../AppInterfaces/AuthInterfaces";
+import {GoogleServices, UserObjectInterface} from "../AppInterfaces/AuthInterfaces";
 
 const data_key: keyof GoogleServices = "data";
 
@@ -64,8 +64,6 @@ export const handleGoogleAuth = (
   updateGoogleServicesNull: () => void,
   updateDataRequest: (value:boolean) => void,
 ) => {
-
-  console.log("User is not signed in with Google try to sign the user in...");
   if ( user?.services?.googleServices?.signedIn ) {
     //  CHANGE TO: UPDATE BOTTOM SHEET TO CONFIRM. IF CONFIRTM CALL CODE BELOW
     handleSignOut(

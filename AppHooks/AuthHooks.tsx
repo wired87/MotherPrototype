@@ -11,7 +11,7 @@ import {PrimaryContext} from "../screens/Context";
 import {useError} from "./PrimaryHooks";
 import {DELETE_GOOGLE_OBJECT_URL, SAVE_GOOGLE_OBJECT_URL, UPDATE_GOOGLE_OBJECT_URL} from "@env";
 import {saveUser} from "../AppFunctions/UserFunctions";
-import {handleGoogleAuth} from "../screens/tools/google/AuthFunctions";
+import {handleGoogleAuth} from "../google/AuthFunctions";
 
 
 const data_key: keyof GoogleServices = "data";
@@ -110,6 +110,19 @@ export const useUser = (
 
   return {user, setUser, updateUser, updateUserGoogleServices, updateGoogleServicesNull}
 }
+
+// MS Graph
+export const useMicrosoft = () => {
+  const [msUser, setMsUser] = useState<User | null>(null);
+  
+}
+
+
+
+
+
+
+
 
 
 export const useGoogleAuthObject = () => {
